@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/* Bolingo design tokens — chunky, playful, Duolingo-style. */
+@theme {
+  --color-duo-green: #58cc02;
+  --color-duo-green-dark: #46a302;
+  --color-duo-blue: #1cb0f6;
+  --color-duo-blue-dark: #1899d6;
+  --color-duo-red: #ff4b4b;
+  --color-duo-red-dark: #ea2b2b;
+  --color-duo-yellow: #ffc800;
+  --color-duo-orange: #ff9600;
+  --color-duo-ink: #3c3c3c;
+  --color-duo-muted: #afafaf;
+  --color-duo-surface: #f7f7f7;
+  --color-duo-border: #e5e5e5;
+  --font-sans: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-duo-ink);
+  background: var(--color-duo-bg);
+}
+
+/* Duolingo-style chunky button: solid color, pressed-down bottom edge. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom-width: 4px;
+  border-bottom-style: solid;
+  user-select: none;
+  cursor: pointer;
+  transition: transform 0.06s ease, filter 0.12s ease;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-green {
+  background: var(--color-duo-green);
+  border-color: var(--color-duo-green-dark);
+  color: white;
+}
+
+.btn-blue {
+  background: var(--color-duo-blue);
+  border-color: var(--color-duo-blue-dark);
+  color: white;
+}
+
+.btn-red {
+  background: var(--color-duo-red);
+  border-color: var(--color-duo-red-dark);
+  color: white;
+}
+
+.btn-ghost {
+  background: white;
+  border-color: transparent;
+  color: var(--color-duo-muted);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--color-duo-surface);
+}
+
+/* Selectable answer cards. */
+.option-card {
+  border-radius: 1rem;
+  border: 2px solid var(--color-duo-border);
+  border-bottom-width: 4px;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  background: white;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.option-card:hover {
+  border-color: var(--color-duo-blue);
+}
+
+.option-card[aria-selected="true"] {
+  border-color: var(--color-duo-blue);
+  background: #e0f2fe;
+}
+
+.option-card:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+@keyframes duo-pop {
+  0% {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pop {
+  animation: duo-pop 0.18s ease-out;
+}
+
+@keyframes duo-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(88, 204, 2, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(88, 204, 2, 0);
+  }
+}
+
+.animate-pulse-ring {
+  animation: duo-pulse 1.6s ease-out infinite;
+}

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Mambo, the speaking-level character">
+  <ellipse cx="60" cy="116" rx="34" ry="5" fill="#000" opacity="0.12"/>
+  <ellipse cx="60" cy="68" rx="38" ry="42" fill="#f97316"/>
+  <circle cx="60" cy="24" r="10" fill="#facc15"/>
+  <circle cx="46" cy="58" r="10" fill="#ffffff"/>
+  <circle cx="74" cy="58" r="10" fill="#ffffff"/>
+  <circle cx="48" cy="60" r="5" fill="#1f2937"/>
+  <circle cx="72" cy="60" r="5" fill="#1f2937"/>
+  <path d="M46 82 Q60 96 74 82 Z" fill="#7f1d1d"/>
+  <path d="M36 104 L44 112 L52 104 M68 104 L76 112 L84 104" fill="none" stroke="#facc15" stroke-width="4" stroke-linecap="round"/>
+</svg>

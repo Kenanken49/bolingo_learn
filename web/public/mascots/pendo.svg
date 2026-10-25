@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Pendo, the guilt-trip reminder">
+  <ellipse cx="60" cy="116" rx="36" ry="5" fill="#000" opacity="0.12"/>
+  <ellipse cx="60" cy="66" rx="40" ry="44" fill="#b45309"/>
+  <path d="M30 40 Q60 6 90 40 Q70 30 60 36 Q50 30 30 40 Z" fill="#1f2937"/>
+  <ellipse cx="46" cy="60" rx="8" ry="10" fill="#ffffff"/>
+  <ellipse cx="74" cy="60" rx="8" ry="10" fill="#ffffff"/>
+  <circle cx="48" cy="62" r="4" fill="#1f2937"/>
+  <circle cx="72" cy="62" r="4" fill="#1f2937"/>
+  <path d="M38 48 L54 52" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>
+  <path d="M82 46 L66 52" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>
+  <path d="M46 86 Q60 78 74 86" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="34" cy="78" rx="5" ry="3" fill="#60a5fa" opacity="0.7"/>
+</svg>

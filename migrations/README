@@ -1,0 +1,18 @@
+# Migrations
+
+Alembic reads `BOLINGO_DATABASE_URL` (via `app.config`) and the models in
+`app/models.py`; there is no database URL in `alembic.ini`.
+
+```bash
+# Apply every migration
+.venv/Scripts/python -m alembic upgrade head
+
+# New migration after changing a model
+.venv/Scripts/python -m alembic revision --autogenerate -m "describe change"
+
+# Adopt an existing zero-config database (created by create_all)
+.venv/Scripts/python -m alembic stamp head
+```
+
+The app still calls `create_all` on startup so `uvicorn app.main:app` works
+with zero configuration; use migrations for any real deployment.

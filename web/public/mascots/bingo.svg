@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Bingo, the middle-level guide">
+  <ellipse cx="60" cy="116" rx="34" ry="5" fill="#000" opacity="0.12"/>
+  <ellipse cx="60" cy="68" rx="38" ry="42" fill="#1cb0f6"/>
+  <path d="M40 30 L50 14 L60 30 L70 14 L80 30" fill="none" stroke="#fde047" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="46" cy="58" r="10" fill="#ffffff"/>
+  <circle cx="74" cy="58" r="10" fill="#ffffff"/>
+  <circle cx="48" cy="60" r="5" fill="#1f2937"/>
+  <circle cx="72" cy="60" r="5" fill="#1f2937"/>
+  <path d="M44 82 Q60 98 76 82" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <path d="M36 102 L44 110 L52 102 M68 102 L76 110 L84 102" fill="none" stroke="#fde047" stroke-width="4" stroke-linecap="round"/>
+</svg>

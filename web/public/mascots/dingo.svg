@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Dingo, the advanced-level guide">
+  <ellipse cx="60" cy="116" rx="34" ry="5" fill="#000" opacity="0.12"/>
+  <ellipse cx="60" cy="68" rx="38" ry="42" fill="#a855f7"/>
+  <path d="M22 36 L60 8 L98 36 L86 40 L60 22 L34 40 Z" fill="#1f2937"/>
+  <circle cx="46" cy="60" r="10" fill="#ffffff"/>
+  <circle cx="74" cy="60" r="10" fill="#ffffff"/>
+  <circle cx="48" cy="62" r="5" fill="#1f2937"/>
+  <circle cx="72" cy="62" r="5" fill="#1f2937"/>
+  <path d="M40 48 L54 54 M80 48 L66 54" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="60" cy="88" rx="12" ry="8" fill="#1f2937"/>
+  <path d="M34 104 L40 112 L46 104 M74 104 L80 112 L86 104" fill="none" stroke="#fde047" stroke-width="4" stroke-linecap="round"/>
+</svg>
