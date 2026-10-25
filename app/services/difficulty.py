@@ -50,6 +50,37 @@ class HeuristicSelector:
             return clamp_level(level - 1)
         return level
 
+    def best_level(self, profile: list[float]) -> int:
+        """Level whose predicted success is closest to TARGET_ACCURACY."""
+        if len(profile) != PROFILE_DIM:
+            raise ValueError(f"profile must have {PROFILE_DIM} dimensions")
+        return min(
+            range(1, MAX_LEVEL + 1),
+            key=lambda lv: abs(profile[lv - 1] - TARGET_ACCURACY),
+        )
+
+
+class TargetSelector(HeuristicSelector):
+    """Default Birdbrain selector: the level nearest the 80% target success."""
+
+    def next_level(self, profile: list[float], current_level: int) -> int:
+        if len(profile) != PROFILE_DIM:
+            raise ValueError(f"profile must have {PROFILE_DIM} dimensions")
+        return self.best_level(profile)
+
+
+def closest_to_target_item(accuracies: list[float]) -> int:
+    """Index of the exercise whose accuracy is nearest TARGET_ACCURACY.
+
+    Ties go to the earlier item, so the choice is stable across requests.
+    """
+    if not accuracies:
+        return 0
+    return min(
+        range(len(accuracies)),
+        key=lambda i: (abs(accuracies[i] - TARGET_ACCURACY), i),
+    )
+
 
 class OnnxSelector:
     """Runs an exported model that maps the 40-dim profile to a level score.
@@ -144,4 +175,4 @@ def build_selector(
         return _http_selectors[server_url]
     if model_path:
         return OnnxSelector(model_path)
-    return HeuristicSelector()
+    return TargetSelector()

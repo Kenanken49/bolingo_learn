@@ -21,7 +21,7 @@ from ..ai.speech import transcribe_audio
 from ..config import settings
 from ..db import get_db
 from ..deps import get_current_user
-from ..models import Attempt, Course, Lesson, SpeechAttempt, User
+from ..models import Attempt, Course, ItemStat, Lesson, SpeechAttempt, User
 from ..schemas import (
     LessonItem,
     AttemptIn,
@@ -47,7 +47,7 @@ from ..services.progress import (
     refill_hearts,
     update_streak,
 )
-from ..services.difficulty import build_selector
+from ..services.difficulty import build_selector, closest_to_target_item
 from ..services.learner_profile import (
     DIFFICULTY_LEVELS,
     InMemoryProfileStore,
@@ -79,7 +79,14 @@ def _selector():
     return build_selector(settings.difficulty_model_path, settings.difficulty_server_url)
 
 
-def _update_profile_and_select(user_id: int, level: int, correct: int, total: int) -> int:
+def _update_profile_and_select(
+    user_id: int,
+    level: int,
+    correct: int,
+    total: int,
+    seconds: float | None = None,
+    hints: int = 0,
+) -> int:
     """Blend the attempt into the learner profile and pick the next level.
 
     The attempt is already scored and committed, so a Redis outage must not
@@ -87,11 +94,15 @@ def _update_profile_and_select(user_id: int, level: int, correct: int, total: in
     """
     try:
         store = _profile_store()
-        profile = update_profile(store.get(user_id), level, correct, total)
+        profile = update_profile(
+            store.get(user_id), level, correct, total, seconds=seconds, hints=hints
+        )
         store.put(user_id, profile)
     except Exception:  # noqa: BLE001 - any Redis failure falls back
         logger.exception("learner profile store failed; using in-memory fallback")
-        profile = update_profile(_memory_store.get(user_id), level, correct, total)
+        profile = update_profile(
+            _memory_store.get(user_id), level, correct, total, seconds=seconds, hints=hints
+        )
         _memory_store.put(user_id, profile)
     return _selector().next_level(profile, level)
 
@@ -127,6 +138,52 @@ def _lesson_score(lesson: Lesson) -> int:
 def _lesson_level(lesson: Lesson) -> int:
     """Map the course difficulty score (1-5) onto the 1-10 Birdbrain levels."""
     return 1 + round((_lesson_score(lesson) - 1) * 9 / 4)
+
+
+def _item_accuracies(user_id: int, lesson: Lesson, items: list[dict], db: Session) -> list[float]:
+    """Per-question accuracy for this learner; unseen questions count as 50%."""
+    stats = {
+        row.item_index: row
+        for row in db.scalars(
+            select(ItemStat).where(
+                ItemStat.user_id == user_id, ItemStat.lesson_id == lesson.id
+            )
+        ).all()
+    }
+    accuracies: list[float] = []
+    for index in range(len(items)):
+        row = stats.get(index)
+        accuracies.append(row.correct / row.total if row and row.total else 0.5)
+    return accuracies
+
+
+def _record_item_stats(
+    user_id: int, lesson: Lesson, results: list[ItemResult], db: Session
+) -> None:
+    """Add each question's right/total from this attempt to the learner's stats."""
+    stats = {
+        row.item_index: row
+        for row in db.scalars(
+            select(ItemStat).where(
+                ItemStat.user_id == user_id, ItemStat.lesson_id == lesson.id
+            )
+        ).all()
+    }
+    for result in results:
+        row = stats.get(result.index)
+        if row is None:
+            row = ItemStat(
+                user_id=user_id,
+                lesson_id=lesson.id,
+                item_index=result.index,
+                correct=0,
+                total=0,
+            )
+            db.add(row)
+            stats[result.index] = row
+        row.total += 1
+        if result.correct:
+            row.correct += 1
 
 
 def _owned_course(course_id: int, user: User, db: Session) -> Course:
@@ -278,6 +335,9 @@ def get_lesson(
         language=lesson.payload.get("language") or (course.language if course else None),
         difficulty=_lesson_score(lesson),
         birdbrain_level=_lesson_level(lesson),
+        focus_index=closest_to_target_item(
+            _item_accuracies(user.id, lesson, items, db)
+        ),
         items=items,
     )
 
@@ -371,10 +431,13 @@ def submit_attempt(
             xp_awarded=xp,
         )
     )
+    _record_item_stats(user.id, lesson, results, db)
     db.commit()
 
     level = _lesson_level(lesson)
-    next_level = _update_profile_and_select(user.id, level, correct, total)
+    next_level = _update_profile_and_select(
+        user.id, level, correct, total, seconds=body.seconds, hints=body.hints
+    )
 
     return AttemptOut(
         lesson_id=lesson.id,

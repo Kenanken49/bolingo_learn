@@ -302,6 +302,8 @@ class LessonDetail(_Strict):
     language: str | None
     difficulty: int = Field(default=1, ge=1, le=5)  # course difficulty score
     birdbrain_level: int = Field(default=1, ge=1, le=10)
+    # Index of the question closest to the 80% target for this learner.
+    focus_index: int = Field(default=0, ge=0)
     items: list[dict]  # correct answers stripped until an attempt is scored
 
 
@@ -310,6 +312,9 @@ class LessonDetail(_Strict):
 
 class AttemptIn(_Strict):
     answers: list[str]
+    # Optional Birdbrain signals: total seconds on the lesson and hints tapped.
+    seconds: float | None = Field(default=None, ge=0)
+    hints: int = Field(default=0, ge=0)
 
 
 class CheckIn(_Strict):

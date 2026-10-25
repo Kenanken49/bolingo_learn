@@ -9,6 +9,7 @@ const LESSON = {
   course_id: 3,
   title: "Capitals",
   birdbrain_level: 1,
+  focus_index: 0,
   items: [
     {
       question_type: "multiple_choice",
@@ -96,7 +97,13 @@ describe("LessonPage", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Finish lesson" }));
 
-    await waitFor(() => expect(api.submitAttempt).toHaveBeenCalledWith(7, ["Paris", "cat"]));
+    await waitFor(() =>
+      expect(api.submitAttempt).toHaveBeenCalledWith(
+        7,
+        ["Paris", "cat"],
+        { seconds: expect.any(Number) },
+      ),
+    );
     expect(await screen.findByText("1 / 2 correct")).toBeInTheDocument();
     expect(screen.getByText("⚡ 10")).toBeInTheDocument();
     expect(screen.getByText("You answered: cat")).toBeInTheDocument();

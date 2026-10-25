@@ -6,7 +6,12 @@ import os
 
 import pytest
 
-from app.services.difficulty import HeuristicSelector, clamp_level
+from app.services.difficulty import (
+    HeuristicSelector,
+    TargetSelector,
+    clamp_level,
+    closest_to_target_item,
+)
 from app.services.learner_profile import (
     PROFILE_DIM,
     InMemoryProfileStore,
@@ -23,6 +28,23 @@ def test_update_profile_moves_level_accuracy_toward_attempt() -> None:
     assert updated[2] > 0.5  # level 3 pulled toward 100%
     assert updated[0] == 0.5  # other levels untouched
     assert update_profile(profile, 3, 0, 0) == profile  # no attempts, no change
+
+
+def test_hints_and_slow_correct_answers_lower_evidence() -> None:
+    base = update_profile(neutral_profile(), 3, 4, 4)
+    hinted = update_profile(neutral_profile(), 3, 4, 4, hints=4)
+    slow = update_profile(neutral_profile(), 3, 4, 4, seconds=4 * 60)
+    assert hinted[2] < base[2]
+    assert slow[2] < base[2]
+    fast = update_profile(neutral_profile(), 3, 4, 4, seconds=4 * 5)
+    assert fast[2] == base[2]
+
+
+def test_target_selector_picks_level_nearest_80_percent() -> None:
+    profile = neutral_profile()
+    profile[4] = 0.79  # level 5 is closest to the 80% target
+    profile[6] = 0.6
+    assert TargetSelector().next_level(profile, 1) == 5
 
 
 def test_heuristic_steps_up_and_down_and_clamps() -> None:
@@ -135,3 +157,15 @@ def test_attempt_returns_next_difficulty_and_updates_profile(client) -> None:
     level = min(max(ord_ + 1, 1), 10)
     profile = lessons_router._memory_store.get(user_id)
     assert profile[level - 1] > 0.5
+
+
+def test_closest_to_target_item_picks_nearest_to_eighty_percent() -> None:
+    assert closest_to_target_item([0.95, 0.6, 0.82, 0.5]) == 2
+
+
+def test_closest_to_target_item_ties_go_to_earlier_item() -> None:
+    assert closest_to_target_item([0.9, 0.9]) == 0
+
+
+def test_closest_to_target_item_empty_lesson_is_zero() -> None:
+    assert closest_to_target_item([]) == 0

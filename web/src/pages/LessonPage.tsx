@@ -33,6 +33,7 @@ export default function LessonPage() {
   const [recording, setRecording] = useState(false);
   const [birdbrainOpen, setBirdbrainOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const startedAtRef = useRef<number>(Date.now());
   const recorderRef = useRef<MediaRecorder | null>(null);
   const [micError, setMicError] = useState<string | null>(null);
 
@@ -43,8 +44,10 @@ export default function LessonPage() {
     setFeedback(new Map());
     try {
       const data = await api.getLesson(Number(lessonId));
+      startedAtRef.current = Date.now();
       setLesson(data);
       setAnswers(new Array(data.items.length).fill(""));
+      setIndex(data.focus_index);
     } catch (err) {
       setLesson(null);
       setError((err as Error).message);
@@ -58,7 +61,18 @@ export default function LessonPage() {
   const item = lesson?.items[index];
   const currentFeedback = feedback.get(index);
   const answer = answers[index] ?? "";
-  const isLast = lesson ? index === lesson.items.length - 1 : false;
+  // Next question still unanswered, wrapping around from the current one so
+  // a lesson that opens mid-way still asks every question.
+  const nextIndex = useMemo(() => {
+    if (!lesson) return undefined;
+    const total = lesson.items.length;
+    for (let step = 1; step < total; step += 1) {
+      const candidate = (index + step) % total;
+      if (!feedback.has(candidate)) return candidate;
+    }
+    return undefined;
+  }, [lesson, index, feedback]);
+  const isLast = nextIndex === undefined;
 
   const setAnswer = useCallback(
     (value: string) => {
@@ -171,7 +185,8 @@ export default function LessonPage() {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await api.submitAttempt(lesson.id, answers);
+      const seconds = (Date.now() - startedAtRef.current) / 1000;
+      const res = await api.submitAttempt(lesson.id, answers, { seconds });
       setResult(res);
       await refresh();
     } catch (err) {
@@ -183,12 +198,12 @@ export default function LessonPage() {
 
   const next = useCallback(() => {
     if (!lesson) return;
-    if (isLast) {
+    if (nextIndex === undefined) {
       void submit();
     } else {
-      setIndex((prev) => prev + 1);
+      setIndex(nextIndex);
     }
-  }, [lesson, isLast, submit]);
+  }, [lesson, nextIndex, submit]);
 
   const progress = useMemo(() => {
     if (!lesson) return 0;

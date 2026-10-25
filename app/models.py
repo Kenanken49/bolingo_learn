@@ -230,6 +230,24 @@ class SpeechAttempt(Base):
     lesson: Mapped[Lesson] = relationship(back_populates="speech_attempts")
 
 
+class ItemStat(Base):
+    """Running right/total counts for one question of one lesson, per learner.
+
+    Drives per-exercise difficulty: the item whose accuracy sits closest to the
+    80% target is the one the lesson opens on.
+    """
+
+    __tablename__ = "item_stats"
+    __table_args__ = (UniqueConstraint("user_id", "lesson_id", "item_index"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    lesson_id: Mapped[int] = mapped_column(ForeignKey("lessons.id"), index=True)
+    item_index: Mapped[int] = mapped_column(Integer)
+    correct: Mapped[int] = mapped_column(Integer, default=0)
+    total: Mapped[int] = mapped_column(Integer, default=0)
+
+
 class UserQuest(Base):
     __tablename__ = "user_quests"
 

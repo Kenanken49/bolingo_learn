@@ -194,6 +194,8 @@ export interface LessonDetail {
   difficulty: number;
   /** Birdbrain level, 1-10, mapped from the difficulty score by the server. */
   birdbrain_level: number;
+  /** Question closest to the 80% target for this learner; the lesson opens there. */
+  focus_index: number;
   items: LessonItem[];
 }
 
@@ -502,9 +504,14 @@ export const api = {
     });
   },
 
-  submitAttempt(lessonId: number, answers: string[]): Promise<AttemptResult> {
+  submitAttempt(
+    lessonId: number,
+    answers: string[],
+    signals: { seconds?: number } = {},
+  ): Promise<AttemptResult> {
     return postJson<AttemptResult>(`/api/lessons/${lessonId}/attempt`, {
       answers,
+      ...(signals.seconds !== undefined ? { seconds: signals.seconds } : {}),
     });
   },
 

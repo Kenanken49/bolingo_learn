@@ -14,6 +14,7 @@ from typing import Protocol
 PROFILE_DIM = 40
 DIFFICULTY_LEVELS = 10
 EMA_ALPHA = 0.2
+SLOW_SECONDS_PER_ITEM = 20.0
 KEY_PREFIX = "bolingo:profile:"
 _FORMAT = f"<{PROFILE_DIM}f"
 
@@ -69,12 +70,30 @@ class InMemoryProfileStore:
         self._data[user_id] = list(vector)
 
 
-def update_profile(vector: list[float], difficulty: int, correct: int, total: int) -> list[float]:
-    """Blend one attempt's accuracy at `difficulty` into the profile."""
+def update_profile(
+    vector: list[float],
+    difficulty: int,
+    correct: int,
+    total: int,
+    *,
+    seconds: float | None = None,
+    hints: int = 0,
+) -> list[float]:
+    """Blend one attempt's accuracy at `difficulty` into the profile.
+
+    Optional signals adjust the evidence: hints count as partial credit lost,
+    and a correct answer that took long counts as weaker recall.
+    """
     if total <= 0:
         return list(vector)
     level = min(max(difficulty, 1), DIFFICULTY_LEVELS) - 1
     accuracy = correct / total
+    accuracy -= min(max(hints, 0), total) / (total * 4)
+    if seconds is not None and seconds > 0 and correct > 0:
+        per_item = seconds / total
+        if per_item > SLOW_SECONDS_PER_ITEM:
+            accuracy -= 0.1 * correct / total
+    accuracy = min(max(accuracy, 0.0), 1.0)
     updated = list(vector)
     updated[level] = (1 - EMA_ALPHA) * updated[level] + EMA_ALPHA * accuracy
     band = DIFFICULTY_LEVELS + min(level // 2, 4)
