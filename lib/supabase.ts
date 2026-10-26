@@ -1,4 +1,5 @@
 import 'react-native-url-polyfill/auto';
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 
@@ -28,6 +29,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storage: AsyncStorage,
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false,
+    // Native parses the deep-link tokens manually in auth.tsx; web relies on
+    // the full-page redirect, so only web auto-detects the session from the URL.
+    detectSessionInUrl: Platform.OS === 'web',
   },
 });

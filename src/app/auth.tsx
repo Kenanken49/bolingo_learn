@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { View, Text, Pressable, ScrollView, TextInput, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, ScrollView, TextInput, Alert, ActivityIndicator, Platform } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as WebBrowser from 'expo-web-browser';
@@ -65,6 +65,17 @@ export default function Auth() {
     setBusy(true);
     setMsg(null);
     try {
+      // Web has no popup/custom-scheme to return to: use a full-page redirect
+      // and let supabase-js (detectSessionInUrl) resume the session on return.
+      if (Platform.OS === 'web') {
+        const webRedirect = makeRedirectUri({ path: 'auth' });
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: webRedirect },
+        });
+        if (error) throw error;
+        return; // browser is navigating to Google; session resumes on return
+      }
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo, skipBrowserRedirect: true },
