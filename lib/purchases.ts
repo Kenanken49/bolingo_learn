@@ -4,6 +4,13 @@ import { supabase } from './supabase';
 
 /** Entitlement id in RevenueCat dashboard — one entitlement gates everything. */
 export const PREMIUM_ENTITLEMENT = 'premium';
+/** Store product ids (must match Play Console + App Store Connect exactly). */
+export const PREMIUM_PRODUCT_IDS = {
+  android: 'bolingo_premium_monthly',
+  ios: 'bolingo_premium_monthly',
+} as const;
+/** Offering identifier in the RevenueCat dashboard. */
+export const PREMIUM_OFFERING_ID = 'default';
 /** $7.70/mo reference price shown before offerings load. */
 export const PREMIUM_PRICE_LABEL = '$7.70/mo';
 

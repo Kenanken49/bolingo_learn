@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, ScrollView, Alert, ActivityIndicator, Platform } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Purchases, { type PurchasesPackage } from 'react-native-purchases';
@@ -10,6 +10,8 @@ import {
   setDebugPremium,
   DEBUG_PREMIUM_UNLOCK,
   PREMIUM_PRICE_LABEL,
+  PREMIUM_PRODUCT_IDS,
+  PREMIUM_OFFERING_ID,
 } from '../../lib/purchases';
 
 export default function Paywall() {
@@ -27,10 +29,14 @@ export default function Paywall() {
     configurePurchases();
     try {
       const offerings = await Purchases.getOfferings();
+      const offering = offerings.all[PREMIUM_OFFERING_ID] ?? offerings.current;
+      const platformProductId =
+        Platform.OS === 'android' ? PREMIUM_PRODUCT_IDS.android : PREMIUM_PRODUCT_IDS.ios;
       const monthly =
-        offerings.current?.monthly ??
-        offerings.current?.availablePackages.find((p) => p.identifier.includes('monthly')) ??
-        offerings.current?.availablePackages[0] ??
+        offering?.availablePackages.find((p) => p.product.identifier === platformProductId) ??
+        offering?.monthly ??
+        offering?.availablePackages.find((p) => p.identifier.includes('monthly')) ??
+        offering?.availablePackages[0] ??
         null;
       if (monthly) {
         setPkg(monthly);

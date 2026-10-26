@@ -397,11 +397,23 @@ export default function PathMap() {
           </Link>
         )}
 
-        <Link href="/refill" asChild>
-          <Pressable className="mt-4">
-            <Text className="text-sm text-slate-400">Hearts refill options →</Text>
-          </Pressable>
-        </Link>
+        <View className="mt-4 flex-row items-center gap-4">
+          <Link href="/refill" asChild>
+            <Pressable>
+              <Text className="text-sm text-slate-400">Hearts refill options →</Text>
+            </Pressable>
+          </Link>
+          <Link href="/uploads" asChild>
+            <Pressable>
+              <Text className="text-sm text-slate-400">My uploads →</Text>
+            </Pressable>
+          </Link>
+          <Link href="/settings" asChild>
+            <Pressable>
+              <Text className="text-sm text-slate-400">⚙️ Settings</Text>
+            </Pressable>
+          </Link>
+        </View>
       </ScrollView>
 
       {/* AI Sandbox FAB */}
