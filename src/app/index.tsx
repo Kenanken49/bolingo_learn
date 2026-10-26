@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text, Pressable, ScrollView, Animated, Modal, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, ScrollView, Animated, Modal, ActivityIndicator, AccessibilityRole } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as DocumentPicker from 'expo-document-picker';
@@ -30,6 +31,7 @@ function PathNode({
   color,
   onPress,
   offset,
+  testID,
 }: {
   state: NodeState;
   icon: string;
@@ -38,6 +40,7 @@ function PathNode({
   color: string;
   onPress?: () => void;
   offset: number;
+  testID?: string;
 }) {
   const pulse = useRef(new Animated.Value(1)).current;
   useEffect(() => {
@@ -60,24 +63,44 @@ function PathNode({
         ? color
         : state === 'processing'
           ? 'bg-slate-200'
-          : 'bg-slate-300';
+          : state === 'failed'
+            ? 'bg-red-100'
+            : 'bg-slate-300';
+  const size = state === 'active' ? 'h-24 w-24' : 'h-20 w-20';
+  const accessibilityLabel = `${label}: ${state}${sub ? `, ${sub}` : ''}`;
+  const role: AccessibilityRole = onPress && !locked ? 'button' : 'text';
 
   return (
     <View className="items-center" style={{ transform: [{ translateX: offset }] }}>
-      <Pressable disabled={locked} onPress={onPress}>
+      <Pressable
+        disabled={locked || state === 'processing' || !onPress}
+        onPress={onPress}
+        accessibilityRole={role}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityState={{ disabled: locked }}
+        testID={testID}
+      >
         <Animated.View
           style={{ transform: [{ scale: pulse }] }}
-          className={`h-20 w-20 items-center justify-center rounded-full border-b-4 ${bg} ${
+          className={`${size} items-center justify-center rounded-full border-b-4 ${bg} ${
             locked ? 'border-slate-400 opacity-60' : 'border-black/20'
-          }`}
+          } ${state === 'active' ? 'shadow-lg' : ''}`}
         >
-          <Text className="text-3xl">{locked ? '🔒' : icon}</Text>
+          {state === 'processing' ? (
+            <ActivityIndicator color="#64748b" />
+          ) : (
+            <Text className="text-3xl">{locked ? '🔒' : state === 'failed' ? '⚠️' : icon}</Text>
+          )}
         </Animated.View>
       </Pressable>
       <Text className={`mt-1 max-w-28 text-center text-sm font-bold ${locked ? 'text-slate-400' : 'text-slate-800'}`}>
         {label}
       </Text>
-      {sub ? <Text className="text-xs text-slate-400">{sub}</Text> : null}
+      {sub ? (
+        <Text className={`text-xs ${state === 'failed' ? 'text-red-500' : 'text-slate-400'}`} numberOfLines={2}>
+          {sub}
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -258,26 +281,38 @@ export default function PathMap() {
   const pendingUploads = uploads.filter((u) => u.status === 'processing');
   const failedLessons = userLessons.filter((l) => lessonStatus(l) === 'failed');
 
+  const lowHearts = hearts <= 1;
+
   return (
-    <View className="flex-1 bg-white">
-      <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-12">
-        {/* Top Bar */}
-        <View className="w-full max-w-sm flex-row items-center justify-between border-b-2 border-slate-100 pb-3">
-          <Text className="text-lg font-extrabold text-orange-500">🔥 {streak}</Text>
-          <Text className="text-lg font-extrabold text-amber-500">⭐ {xp.toLocaleString()}</Text>
-          <Text className="text-lg font-extrabold text-red-500">❤️ {hearts}</Text>
-          <Pressable onPress={() => router.push('/auth')} className={`rounded-full px-3 py-1.5 ${profile ? 'bg-green-100' : 'bg-slate-900'}`}>
+    <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+      {/* Sticky HUD — streak / XP / hearts stay visible while the path scrolls */}
+      <View className="border-b-2 border-slate-100 bg-white px-6 pb-3 pt-2">
+        <View className="w-full max-w-sm flex-row items-center justify-between self-center">
+          <Text accessibilityLabel={`Streak ${streak} days`} className="text-lg font-extrabold text-orange-500">🔥 {streak}</Text>
+          <Text accessibilityLabel={`${xp} experience points`} className="text-lg font-extrabold text-amber-500">⭐ {xp.toLocaleString()}</Text>
+          <Text accessibilityLabel={`${hearts} hearts remaining`} className={`text-lg font-extrabold ${lowHearts ? 'text-red-600' : 'text-red-500'}`}>
+            ❤️ {hearts}{lowHearts ? '!' : ''}
+          </Text>
+          <Pressable
+            onPress={() => router.push('/auth')}
+            accessibilityRole="button"
+            accessibilityLabel={profile ? 'Account' : 'Sign in'}
+            className={`rounded-full px-3 py-1.5 ${profile ? 'bg-green-100' : 'bg-slate-900'}`}
+          >
             <Text className={`text-sm font-extrabold ${profile ? 'text-green-700' : 'text-white'}`}>
               {profile ? (profile.is_premium ? '👑' : '👤') : 'Sign in'}
             </Text>
           </Pressable>
         </View>
+      </View>
 
-        <Text className="mt-4 text-2xl font-extrabold text-slate-900">Your Path</Text>
+      <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-4">
+        <Text className="mt-2 text-2xl font-extrabold text-slate-900">Your Path</Text>
         <Text className="text-base text-slate-500">Finish nodes to earn XP and keep the streak.</Text>
 
-        {/* Starter track */}
-        <View className="mt-6 w-full max-w-sm items-center gap-5">
+        {/* Starter track — winding rail sits behind the nodes */}
+        <View className="relative mt-6 w-full max-w-sm items-center gap-5">
+          <View pointerEvents="none" className="absolute bottom-6 top-6 w-1.5 rounded-full bg-slate-100" />
           {STARTER_NODES.map((n, i) => {
             const isDone = completed.has(n.id);
             const prevDone = i === 0 || completed.has(STARTER_NODES[i - 1].id);
@@ -358,10 +393,19 @@ export default function PathMap() {
           </View>
         )}
         {failedLessons.length > 0 && (
-          <Text className="mt-4 text-sm text-red-500">
-            {failedLessons.length} upload{failedLessons.length > 1 ? 's' : ''} failed to generate — try re-uploading
-            from the sandbox.
-          </Text>
+          <Pressable
+            onPress={() => {
+              setSandboxOpen(true);
+              setSandboxMsg(null);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Re-upload failed lessons"
+            className="mt-4 rounded-2xl border-2 border-red-200 bg-red-50 px-4 py-3"
+          >
+            <Text className="text-center text-sm font-bold text-red-600">
+              {failedLessons.length} upload{failedLessons.length > 1 ? 's' : ''} failed to generate — tap to try again.
+            </Text>
+          </Pressable>
         )}
 
         {!listening ? (
@@ -422,7 +466,9 @@ export default function PathMap() {
           setSandboxOpen(true);
           setSandboxMsg(null);
         }}
-        className="absolute bottom-6 self-center rounded-full bg-slate-900 px-8 py-4 shadow-lg"
+        accessibilityRole="button"
+        accessibilityLabel="Open AI Sandbox"
+        className="absolute bottom-8 self-center rounded-full bg-slate-900 px-8 py-4 shadow-lg active:scale-95"
       >
         <Text className="text-lg font-extrabold text-white">🧠 AI Sandbox</Text>
       </Pressable>
@@ -492,6 +538,6 @@ export default function PathMap() {
       </Modal>
 
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
