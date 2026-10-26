@@ -2,8 +2,14 @@ import { useCallback, useState } from 'react';
 import { View, Text, Pressable, ScrollView, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as WebBrowser from 'expo-web-browser';
+import { makeRedirectUri } from 'expo-auth-session';
 import { supabase } from '../../lib/supabase';
 import { getProfile, type Profile } from '../../lib/progress';
+
+WebBrowser.maybeCompleteAuthSession();
+
+const redirectTo = makeRedirectUri({ scheme: 'bolingo-learn', path: 'auth' });
 
 export default function Auth() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -48,6 +54,38 @@ export default function Auth() {
       } else {
         setMsg('Check your inbox to confirm your email, then sign in.');
       }
+    } catch (e) {
+      setMsg(String(e instanceof Error ? e.message : e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo, skipBrowserRedirect: true },
+      });
+      if (error || !data?.url) throw error ?? new Error('Could not start Google sign-in.');
+      const res = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+      if (res.type !== 'success' || !res.url) {
+        if (res.type !== 'cancel' && res.type !== 'dismiss') setMsg('Google sign-in did not complete.');
+        return;
+      }
+      // Supabase returns tokens in the URL fragment: #access_token=…&refresh_token=…
+      const hash = res.url.split('#')[1] ?? '';
+      const params = new URLSearchParams(hash);
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      if (!access_token || !refresh_token) throw new Error('Google returned no session — is the provider enabled in Supabase?');
+      const { error: sessionError } = await supabase.auth.setSession({ access_token, refresh_token });
+      if (sessionError) throw sessionError;
+      const p = await getProfile();
+      setProfile(p);
+      if (p) router.back();
     } catch (e) {
       setMsg(String(e instanceof Error ? e.message : e));
     } finally {
@@ -136,6 +174,21 @@ export default function Auth() {
         {busy ? <ActivityIndicator color="#fff" /> : <Text className="text-lg font-extrabold text-white">{mode === 'in' ? 'Sign in' : 'Create account'}</Text>}
       </Pressable>
       {msg ? <Text className="mt-2 text-center text-sm text-slate-500">{msg}</Text> : null}
+
+      <View className="mt-4 w-full max-w-sm flex-row items-center gap-2">
+        <View className="h-px flex-1 bg-slate-200" />
+        <Text className="text-xs font-bold text-slate-400">OR</Text>
+        <View className="h-px flex-1 bg-slate-200" />
+      </View>
+
+      <Pressable
+        onPress={signInWithGoogle}
+        disabled={busy}
+        className="mt-4 w-full max-w-sm flex-row items-center justify-center rounded-2xl border-2 border-slate-200 bg-white py-3.5"
+      >
+        <Text className="mr-2 text-lg font-extrabold text-slate-700">G</Text>
+        <Text className="text-base font-bold text-slate-800">Continue with Google</Text>
+      </Pressable>
 
       <Pressable onPress={() => router.back()} className="mt-4 items-center">
         <Text className="font-bold text-slate-400">Continue as guest →</Text>
