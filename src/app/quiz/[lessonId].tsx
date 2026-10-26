@@ -6,6 +6,7 @@ import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/Gamif
 import { supabase, toDbLessonId } from '../../../lib/supabase';
 import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
+import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
 
 const DEMO_QUESTIONS: CodeQuizData[] = [
   {
@@ -40,8 +41,7 @@ export default function QuizPlayer() {
   const [hearts, setHearts] = useState(MAX_HEARTS);
   const [userId, setUserId] = useState<string | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
-  const [done, setDone] = useState(false);
-  const [streak, setStreak] = useState(0);
+  const [answers, setAnswers] = useState<QuestionResult[]>([]);
 
   const load = useCallback(async () => {
     if (lessonId.startsWith('demo-')) {
@@ -113,30 +113,27 @@ export default function QuizPlayer() {
     );
   }
 
-  if (done) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-4xl">🎉</Text>
-        <Text className="mt-2 text-2xl font-extrabold text-slate-900">Lesson complete!</Text>
-        <Text className="mt-1 text-lg text-slate-600">
-          +{correctCount * 10} XP{streak > 0 ? ` • 🔥 Streak ${streak}` : ''}
-        </Text>
-        <Pressable onPress={() => router.back()} className="mt-6 w-full max-w-sm items-center rounded-2xl bg-green-500 py-4">
-          <Text className="text-lg font-extrabold text-white">Back to Path — progress unlocked</Text>
-        </Pressable>
-        <StatusBar style="auto" />
-      </View>
-    );
-  }
-
   const finish = () => {
     const xpEarned = correctCount * 10;
+    const goResults = (streakCount: number) => {
+      setLessonResult({
+        lessonId,
+        title: String(title ?? 'Lesson'),
+        xpEarned,
+        streak: streakCount,
+        correctCount,
+        total: questions?.length ?? 0,
+        results: answers,
+      });
+      router.replace('/results');
+    };
     if (userId) {
       completeLesson(userId, xpEarned, lessonId)
-        .then((p) => setStreak(p.streak_count))
-        .catch(() => {});
+        .then((p) => goResults(p.streak_count))
+        .catch(() => goResults(0));
+    } else {
+      goResults(0);
     }
-    setDone(true);
   };
 
   return (
@@ -153,6 +150,7 @@ export default function QuizPlayer() {
           onHeartsChange={setHearts}
           onOutOfHearts={() => router.push('/refill')}
           onCorrect={() => setCorrectCount((c) => c + 1)}
+          onAnswer={(r) => setAnswers((a) => [...a, r])}
           onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
         />
       </ScrollView>

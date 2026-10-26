@@ -10,6 +10,7 @@ export default function RootLayout() {
       <Stack.Screen name="auth" options={{ presentation: 'modal' }} />
       <Stack.Screen name="uploads" />
       <Stack.Screen name="settings" />
+      <Stack.Screen name="results" />
     </Stack>
   );
 }

@@ -25,6 +25,7 @@ interface Props {
   onOutOfHearts: () => void;
   onCorrect: () => void;
   onContinue: () => void;
+  onAnswer?: (r: { prompt: string; yourAnswer: string; correctAnswer: string; correct: boolean }) => void;
 }
 
 const shuffle = <T,>(arr: T[]): T[] =>
@@ -47,6 +48,7 @@ export default function GamifiedCodePlayer({
   onOutOfHearts,
   onCorrect,
   onContinue,
+  onAnswer,
 }: Props) {
   const [selectedTokens, setSelectedTokens] = useState<string[]>([]);
   const [availableTokens, setAvailableTokens] = useState<string[]>(questionData.scrambledTokens);
@@ -97,6 +99,12 @@ export default function GamifiedCodePlayer({
   const checkAnswer = async () => {
     if (selectedTokens.length === 0 || feedback) return;
     const isCorrect = JSON.stringify(selectedTokens) === JSON.stringify(questionData.correctChain);
+    onAnswer?.({
+      prompt: questionData.prompt,
+      yourAnswer: selectedTokens.join(' '),
+      correctAnswer: questionData.correctChain.join(' '),
+      correct: isCorrect,
+    });
     if (isCorrect) {
       setFeedback('correct');
       correctPlayer.seekTo(0);

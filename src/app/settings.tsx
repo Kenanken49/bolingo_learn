@@ -4,15 +4,18 @@ import { Link, router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { getProfile, grantHearts, MAX_HEARTS, type Profile } from '../../lib/progress';
 import { PREMIUM_PRICE_LABEL } from '../../lib/tiers';
+import { areRemindersOn, configureReminderHandler, setRemindersOn } from '../../lib/reminders';
 
 export default function Settings() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [soundOn, setSoundOn] = useState(true);
   const [hapticsOn, setHapticsOn] = useState(true);
+  const [remindersOn, setReminders] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
       setProfile(await getProfile());
+      setReminders(await areRemindersOn());
     } catch {
       setProfile(null);
     }
@@ -20,9 +23,18 @@ export default function Settings() {
 
   useFocusEffect(
     useCallback(() => {
+      configureReminderHandler();
       refresh();
     }, [refresh])
   );
+
+  const toggleReminders = async (v: boolean) => {
+    const ok = await setRemindersOn(v);
+    setReminders(ok);
+    if (v && !ok) {
+      Alert.alert('Notifications blocked', 'Enable notifications for Bolingo Learn in system settings, then try again.');
+    }
+  };
 
   const refillHearts = async () => {
     if (!profile) {
@@ -68,8 +80,8 @@ export default function Settings() {
         )}
         {row('📚', 'My uploads', 'History, statuses & retries', () => router.push('/uploads'))}
         {row('❤️', 'Refill hearts', 'Ad, wait timer, or premium', () => router.push('/refill'))}
-        {row('🔔', 'Lesson reminders', 'Daily streak nudges (coming soon)', undefined, (
-          <Switch value={false} disabled />
+        {row('🔔', 'Lesson reminders', 'Daily 7pm streak nudge', undefined, (
+          <Switch value={remindersOn} onValueChange={toggleReminders} />
         ))}
         {row('🎵', 'Sound effects', 'Quiz chimes on/off', undefined, (
           <Switch value={soundOn} onValueChange={setSoundOn} />
