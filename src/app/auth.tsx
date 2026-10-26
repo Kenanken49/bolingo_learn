@@ -76,7 +76,7 @@ export default function Auth() {
       const p = await getProfile();
       setProfile(p);
       if (p) {
-        router.back();
+        router.replace('/');
       } else {
         setMsg('Check your inbox to confirm your email, then sign in.');
       }
@@ -122,7 +122,7 @@ export default function Auth() {
       if (sessionError) throw sessionError;
       const p = await getProfile();
       setProfile(p);
-      if (p) router.back();
+      if (p) router.replace('/');
     } catch (e) {
       setMsg(String(e instanceof Error ? e.message : e));
     } finally {
