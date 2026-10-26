@@ -3,7 +3,7 @@ import { View, Text, Pressable, ScrollView } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/GamifiedCodePlayer';
-import { supabase } from '../../../lib/supabase';
+import { supabase, toDbLessonId } from '../../../lib/supabase';
 import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
 
@@ -47,7 +47,8 @@ export default function QuizPlayer() {
     if (lessonId.startsWith('demo-')) {
       setQuestions(DEMO_QUESTIONS);
     } else {
-      const { data, error } = await supabase.from('questions').select('*').eq('lesson_id', lessonId).order('created_at');
+      const dbId = toDbLessonId(lessonId); // "45" -> 45 for the integer FK
+      const { data, error } = await supabase.from('questions').select('*').eq('lesson_id', dbId).order('created_at');
       if (error) throw error;
       const rows = (data as DbQuestion[] | null) ?? [];
       // Multiple-choice answers collapse to a single token; drag-and-drop
@@ -59,7 +60,7 @@ export default function QuizPlayer() {
         return { prompt: q.prompt, correctChain: q.answer.split(' '), scrambledTokens: [...q.options].sort(() => Math.random() - 0.5) };
       });
       // Attach narration when this lesson has generated segments.
-      const { data: lesson } = await supabase.from('lessons').select('content').eq('id', lessonId).single();
+      const { data: lesson } = await supabase.from('lessons').select('content').eq('id', dbId).single();
       const segments = (lesson?.content as { segments?: Array<{ question_id: string; prompt: string; audio_url: string }> } | null)?.segments ?? [];
       if (segments.length > 0) {
         for (let i = 0; i < Math.min(mapped.length, segments.length); i++) {

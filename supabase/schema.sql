@@ -1,16 +1,13 @@
--- Bolingo Learn: initial Supabase schema
--- Run in Supabase SQL editor or via supabase db push.
+-- Bolingo Learn: Supabase schema (integer-keyed lessons edition).
+-- Run in Supabase SQL editor or via supabase db push. Safe to re-run:
+-- tables use IF NOT EXISTS, columns use ADD COLUMN IF NOT EXISTS, and
+-- every policy is dropped before creation.
 --
--- If you get: foreign key "questions_lesson_id_fkey" cannot be implemented
--- (uuid vs integer), a leftover `lessons` table from another project exists.
--- Check it with the diagnostic below; if it is empty/unused, drop it, then
--- re-run this file:
---
---   select column_name, data_type from information_schema.columns
---     where table_schema = 'public' and table_name = 'lessons';
---   select count(*) from public.lessons;
---   -- only if the shape is wrong AND the rows don't matter:
---   drop table if exists public.lessons cascade;
+-- NOTE: `public.lessons` is pre-existing with an INTEGER primary key (kept
+-- as-is, rows preserved). All bolingo tables reference it with integer
+-- lesson ids — at the app boundary convert route strings with parseInt
+-- (see lib/progress / quiz screen). never ALTER lessons.id to uuid:
+-- integers cannot cast to uuid in Postgres.
 
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
@@ -33,28 +30,21 @@ alter table public.profiles
   add column if not exists ai_words_reset_at timestamptz not null default now();
 
 -- Users can read/update only their own profile.
+drop policy if exists "Users manage own profile" on public.profiles;
 create policy "Users manage own profile"
   on public.profiles for all
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
+-- Pre-existing integer-keyed lessons table: create only when missing
+-- (fresh installs), then ensure every column the app needs exists.
 create table if not exists public.lessons (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  language text not null default 'en',
-  level integer not null default 1,
-  content jsonb not null default '{}'::jsonb,
+  id integer primary key generated always as identity,
   created_at timestamptz not null default now()
 );
 
-alter table public.lessons enable row level security;
-
--- Lessons are readable by authenticated users.
-create policy "Authenticated users read lessons"
-  on public.lessons for select
-  using (auth.role() = 'authenticated');
-
 -- Personalized uploads: track user files stored in Supabase Storage.
+-- (Created BEFORE the lessons alterations below, which FK-reference it.)
 create table if not exists public.user_uploads (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references public.profiles (id) on delete cascade,
@@ -67,14 +57,30 @@ create table if not exists public.user_uploads (
 alter table public.user_uploads enable row level security;
 
 -- Users can manage only their own uploads.
+drop policy if exists "Users manage own uploads" on public.user_uploads;
 create policy "Users manage own uploads"
   on public.user_uploads for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
--- Link generated lessons back to the uploaded source file.
+-- Ensure every column the app needs exists on the (possibly pre-existing)
+-- integer-keyed lessons table. Link generated lessons back to the upload.
 alter table public.lessons
-  add column if not exists upload_source_id uuid references public.user_uploads (id);
+  add column if not exists title text not null default 'Untitled lesson',
+  add column if not exists language text not null default 'en',
+  add column if not exists level integer not null default 1,
+  add column if not exists content jsonb not null default '{}'::jsonb,
+  add column if not exists upload_source_id uuid references public.user_uploads (id),
+  add column if not exists user_id uuid references public.profiles (id) on delete cascade,
+  add column if not exists is_user_generated boolean not null default false;
+
+alter table public.lessons enable row level security;
+
+-- Lessons are readable by authenticated users.
+drop policy if exists "Authenticated users read lessons" on public.lessons;
+create policy "Authenticated users read lessons"
+  on public.lessons for select
+  using (auth.role() = 'authenticated');
 
 -- ---------------------------------------------------------------------------
 -- Async curriculum pipeline: User Uploads -> Storage (user-materials) -> Edge Function
@@ -88,6 +94,7 @@ insert into storage.buckets (id, name, public)
   on conflict (id) do nothing;
 
 -- Authenticated users can upload into their own folder.
+drop policy if exists "Users upload own raw files" on storage.objects;
 create policy "Users upload own raw files"
   on storage.objects for insert
   with check (
@@ -97,6 +104,7 @@ create policy "Users upload own raw files"
   );
 
 -- Authenticated users can read their own raw files.
+drop policy if exists "Users read own raw files" on storage.objects;
 create policy "Users read own raw files"
   on storage.objects for select
   using (
@@ -111,15 +119,13 @@ create policy "Users read own raw files"
 -- ---------------------------------------------------------------------------
 -- AI Curation Engine (Text-to-Gamification)
 -- ---------------------------------------------------------------------------
--- Lessons generated from a user's upload are tagged to that user.
-alter table public.lessons
-  add column if not exists user_id uuid references public.profiles (id) on delete cascade,
-  add column if not exists is_user_generated boolean not null default false;
-
 -- One row per interactive quiz element produced by the LLM.
+-- lesson_id is INTEGER to match the pre-existing lessons(id) key.
+-- (App column is `prompt`; if your client code says `question_text`, rename
+-- it to `prompt` or alias on read.)
 create table if not exists public.questions (
   id uuid primary key default gen_random_uuid(),
-  lesson_id uuid references public.lessons (id) on delete cascade,
+  lesson_id integer references public.lessons (id) on delete cascade,
   user_id uuid references public.profiles (id) on delete cascade,
   type text not null check (type in ('multiple-choice', 'drag-and-drop')),
   prompt text not null,
@@ -131,6 +137,7 @@ create table if not exists public.questions (
 alter table public.questions enable row level security;
 
 -- Users manage only their own generated questions.
+drop policy if exists "Users manage own questions" on public.questions;
 create policy "Users manage own questions"
   on public.questions for all
   using (auth.uid() = user_id)
@@ -138,8 +145,9 @@ create policy "Users manage own questions"
 
 -- ---------------------------------------------------------------------------
 -- Learning Path progress: which lesson nodes a user has completed.
--- lesson_id is text (not a UUID FK) so built-in path nodes ('demo-html', …)
--- and generated UUID lessons share one completion record.
+-- lesson_id is text (not an FK) so built-in path nodes ('demo-html', …)
+-- and integer DB lessons share one completion record (route params stay
+-- strings; convert with parseInt only at the questions/lessons boundary).
 -- ---------------------------------------------------------------------------
 create table if not exists public.lesson_completions (
   user_id uuid references public.profiles (id) on delete cascade,
@@ -150,6 +158,7 @@ create table if not exists public.lesson_completions (
 
 alter table public.lesson_completions enable row level security;
 
+drop policy if exists "Users manage own completions" on public.lesson_completions;
 create policy "Users manage own completions"
   on public.lesson_completions for all
   using (auth.uid() = user_id)

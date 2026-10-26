@@ -210,6 +210,8 @@ serve(async (req: Request) => {
     if (quiz.length === 0) throw new Error('LLM returned zero quiz elements.');
 
     // Lesson tagged to the uploading user; questions carry the same owner.
+    // lessons.id is INTEGER (pre-existing table) — lesson.id flows through
+    // as a number into questions.lesson_id, storage paths, and responses.
     const title = upload.file_name.replace(/\.[^.]+$/, '');
     const lessonContent = { title, question_count: quiz.length, questions: quiz };
     const { data: lesson, error: lessonError } = await supabase

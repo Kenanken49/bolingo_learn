@@ -10,7 +10,7 @@ export interface AudioSegment {
 }
 
 export interface Audiobook {
-  lesson_id: string;
+  lesson_id: number;
   title: string;
   full_audio_url: string | null;
   segments: AudioSegment[];
@@ -43,7 +43,7 @@ export async function loadLatestAudiobook(): Promise<Audiobook | null> {
     .limit(1);
   if (error) throw error;
   const lesson = lessons?.[0] as
-    | { id: string; title: string; content: Record<string, unknown> }
+    | { id: number; title: string; content: Record<string, unknown> }
     | undefined;
   if (!lesson) return null;
 

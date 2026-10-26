@@ -210,7 +210,7 @@ export default function PathMap() {
           setAudioMsg('No lesson yet — open the 🧠 AI Sandbox and paste text first.');
           return;
         }
-        const { data: qs } = await supabase.from('questions').select('id,prompt').eq('lesson_id', (lesson as { id: string }).id).order('created_at');
+        const { data: qs } = await supabase.from('questions').select('id,prompt').eq('lesson_id', (lesson as { id: number }).id).order('created_at');
         const prompts = ((qs as Array<{ id: string; prompt: string }> | null) ?? []).map((r) => ({
           question_id: r.id,
           prompt: r.prompt,
@@ -221,7 +221,7 @@ export default function PathMap() {
           setAudioMsg('Lesson has no questions yet — wait for generation to finish.');
           return;
         }
-        setAudiobook({ lesson_id: (lesson as { id: string }).id, title: (lesson as { title: string }).title, full_audio_url: null, segments: prompts });
+        setAudiobook({ lesson_id: (lesson as { id: number }).id, title: (lesson as { title: string }).title, full_audio_url: null, segments: prompts });
         setFreeListen(true);
         setListening(true);
         setAudioMsg(null);
