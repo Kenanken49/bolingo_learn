@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { View, Text, Pressable, ScrollView, TextInput, Alert, ActivityIndicator, Platform } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -32,6 +32,32 @@ export default function Auth() {
       refresh();
     }, [refresh])
   );
+
+  // Web OAuth return: supabase-js init can miss the implicit-flow fragment
+  // (client created before redirect / init race), so consume it explicitly —
+  // same setSession logic as the native popup path — and stay subscribed.
+  useEffect(() => {
+    let cancelled = false;
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && !cancelled) refresh();
+    });
+    (async () => {
+      if (Platform.OS !== 'web' || typeof window === 'undefined') return;
+      if (!window.location.hash.includes('access_token')) return;
+      const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      if (!access_token || !refresh_token) return;
+      const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+      if (error || cancelled) return;
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      await refresh();
+    })();
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
+  }, [refresh]);
 
   const submit = async () => {
     if (!email.includes('@') || password.length < 6) {
