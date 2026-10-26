@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/expo/eas-cli/main/packages/eas-json/schema.json",
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "update": [
+    {
+      "branch": "preview",
+      "message": "Preview channel OTA"
+    },
+    {
+      "branch": "production",
+      "message": "Production channel OTA"
+    }
+  ],
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_DEBUG_PREMIUM": "1"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview"
+    },
+    "production": {
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_DEBUG_PREMIUM": "0"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
