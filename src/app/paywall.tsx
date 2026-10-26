@@ -76,7 +76,7 @@ export default function Paywall() {
       if (customerInfo.entitlements.active['premium']) {
         await afterChange();
         Alert.alert('Welcome to Premium 👑', 'PDF/audio uploads, elite voices, and unlimited hearts are yours.');
-        router.back();
+        router.replace('/');
       }
     } catch (e: unknown) {
       if ((e as { userCancelled?: boolean }).userCancelled) return;
@@ -123,7 +123,7 @@ export default function Paywall() {
       {isPremium ? (
         <View className="mt-6 w-full max-w-sm items-center rounded-3xl bg-amber-100 p-5">
           <Text className="text-lg font-extrabold text-amber-700">✅ Premium active</Text>
-          <Pressable onPress={() => router.back()} className="mt-3 w-full items-center rounded-2xl bg-slate-900 py-3">
+          <Pressable onPress={() => router.replace('/')} className="mt-3 w-full items-center rounded-2xl bg-slate-900 py-3">
             <Text className="font-bold text-white">Back to learning</Text>
           </Pressable>
         </View>
@@ -158,7 +158,7 @@ export default function Paywall() {
         </View>
       )}
 
-      <Pressable onPress={() => router.back()} className="mt-4 items-center">
+      <Pressable onPress={() => router.replace('/')} className="mt-4 items-center">
         <Text className="font-bold text-slate-400">Not now</Text>
       </Pressable>
       <StatusBar style="auto" />

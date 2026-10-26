@@ -106,7 +106,7 @@ export default function QuizPlayer() {
     return (
       <View className="flex-1 items-center justify-center bg-white px-6">
         <Text className="text-lg text-slate-600">No questions in this lesson yet.</Text>
-        <Pressable onPress={() => router.back()} className="mt-4 rounded-2xl bg-slate-800 px-6 py-3">
+        <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-slate-800 px-6 py-3">
           <Text className="font-bold text-white">Back to Path</Text>
         </Pressable>
       </View>

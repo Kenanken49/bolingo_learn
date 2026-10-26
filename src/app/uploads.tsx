@@ -138,7 +138,7 @@ export default function Uploads() {
         </View>
       )}
 
-      <Pressable onPress={() => router.back()} className="mt-4 items-center">
+      <Pressable onPress={() => router.replace('/')} className="mt-4 items-center">
         <Text className="font-bold text-slate-400">Back to Path</Text>
       </Pressable>
       <StatusBar style="auto" />

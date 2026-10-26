@@ -127,7 +127,7 @@ export function RefillView({
         </Pressable>
       </View>
 
-      <Pressable onPress={() => router.back()} className="mt-6 items-center rounded-2xl bg-green-500 px-8 py-4">
+      <Pressable onPress={() => router.replace('/')} className="mt-6 items-center rounded-2xl bg-green-500 px-8 py-4">
         <Text className="text-lg font-extrabold text-white">{hearts > 0 ? 'Back to lesson ❤' : 'Back'}</Text>
       </Pressable>
       <StatusBar style="auto" />

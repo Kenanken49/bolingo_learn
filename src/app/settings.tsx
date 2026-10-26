@@ -93,7 +93,7 @@ export default function Settings() {
       </View>
 
       <Text className="mt-6 text-xs text-slate-400">Bolingo Learn v1.0.0 • Made for learners</Text>
-      <Pressable onPress={() => router.back()} className="mt-2 items-center">
+      <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
         <Text className="font-bold text-slate-400">Back to Path</Text>
       </Pressable>
       <StatusBar style="auto" />
