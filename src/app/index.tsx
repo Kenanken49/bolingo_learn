@@ -266,6 +266,11 @@ export default function PathMap() {
           <Text className="text-lg font-extrabold text-orange-500">🔥 {streak}</Text>
           <Text className="text-lg font-extrabold text-amber-500">⭐ {xp.toLocaleString()}</Text>
           <Text className="text-lg font-extrabold text-red-500">❤️ {hearts}</Text>
+          <Pressable onPress={() => router.push('/auth')} className={`rounded-full px-3 py-1.5 ${profile ? 'bg-green-100' : 'bg-slate-900'}`}>
+            <Text className={`text-sm font-extrabold ${profile ? 'text-green-700' : 'text-white'}`}>
+              {profile ? (profile.is_premium ? '👑' : '👤') : 'Sign in'}
+            </Text>
+          </Pressable>
         </View>
 
         <Text className="mt-4 text-2xl font-extrabold text-slate-900">Your Path</Text>

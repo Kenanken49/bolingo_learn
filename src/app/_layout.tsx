@@ -7,6 +7,7 @@ export default function RootLayout() {
       <Stack.Screen name="quiz/[lessonId]" />
       <Stack.Screen name="refill" options={{ presentation: 'modal' }} />
       <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="auth" options={{ presentation: 'modal' }} />
     </Stack>
   );
 }
