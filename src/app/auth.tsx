@@ -154,7 +154,7 @@ export default function Auth() {
         <Pressable onPress={signOut} className="mt-4 w-full max-w-sm items-center rounded-2xl bg-slate-800 py-3">
           <Text className="font-bold text-white">Sign out</Text>
         </Pressable>
-        <Pressable onPress={() => router.back()} className="mt-2 items-center">
+        <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
           <Text className="font-bold text-slate-400">Back to Path</Text>
         </Pressable>
         <StatusBar style="auto" />
@@ -227,7 +227,7 @@ export default function Auth() {
         <Text className="text-base font-bold text-slate-800">Continue with Google</Text>
       </Pressable>
 
-      <Pressable onPress={() => router.back()} className="mt-4 items-center">
+      <Pressable onPress={() => router.replace('/')} className="mt-4 items-center">
         <Text className="font-bold text-slate-400">Continue as guest →</Text>
       </Pressable>
       <StatusBar style="auto" />

@@ -4,16 +4,6 @@
     "version": ">= 16.0.0",
     "appVersionSource": "remote"
   },
-  "update": [
-    {
-      "branch": "preview",
-      "message": "Preview channel OTA"
-    },
-    {
-      "branch": "production",
-      "message": "Production channel OTA"
-    }
-  ],
   "build": {
     "development": {
       "developmentClient": true,
