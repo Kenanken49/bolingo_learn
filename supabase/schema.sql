@@ -1,5 +1,16 @@
 -- Bolingo Learn: initial Supabase schema
 -- Run in Supabase SQL editor or via supabase db push.
+--
+-- If you get: foreign key "questions_lesson_id_fkey" cannot be implemented
+-- (uuid vs integer), a leftover `lessons` table from another project exists.
+-- Check it with the diagnostic below; if it is empty/unused, drop it, then
+-- re-run this file:
+--
+--   select column_name, data_type from information_schema.columns
+--     where table_schema = 'public' and table_name = 'lessons';
+--   select count(*) from public.lessons;
+--   -- only if the shape is wrong AND the rows don't matter:
+--   drop table if exists public.lessons cascade;
 
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
