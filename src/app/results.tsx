@@ -1,8 +1,10 @@
-import { useCallback, useState } from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { View, Text, Pressable, ScrollView, Animated } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as Haptics from 'expo-haptics';
 import { getLessonResult } from '../../lib/quizResults';
+import { levelProgress, xpForLevel } from '../../lib/levels';
 import { getProfile, type Profile } from '../../lib/progress';
 import { getPendingGuestResult, type PendingGuestResult } from '../../lib/onboarding';
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
@@ -16,6 +18,16 @@ export default function Results() {
   // Profile-second upsell: guests see a save-progress card after winning XP.
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pending, setPending] = useState<PendingGuestResult | null>(null);
+  // Instant gratification: level-up celebration pops over the breakdown.
+  const [showLevelUp, setShowLevelUp] = useState(!!result?.leveledUp);
+  const pop = useRef(new Animated.Value(0.5)).current;
+  useEffect(() => {
+    if (!showLevelUp) return;
+    Animated.spring(pop, { toValue: 1, friction: 5, tension: 120, useNativeDriver: true }).start();
+    try {
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch {}
+  }, [showLevelUp, pop]);
   useFocusEffect(
     useCallback(() => {
       getProfile()
@@ -46,6 +58,7 @@ export default function Results() {
   const block = blockByLessonId(result.lessonId);
 
   return (
+    <View className="flex-1 bg-white">
     <ScrollView contentContainerClassName="items-center bg-white px-6 py-12">
       <Text className="text-5xl">{pct >= 80 ? '🏆' : pct >= 50 ? '🎉' : '💪'}</Text>
       <Text className="mt-2 text-2xl font-extrabold text-slate-900">Lesson complete!</Text>
@@ -157,7 +170,43 @@ export default function Results() {
           <Text className="font-extrabold text-slate-600">📖 Back to syllabus</Text>
         </Pressable>
       ) : null}
-      <StatusBar style="auto" />
+      {/* LEVEL UP! — variable-reward peak moment, shown once per crossing. */}
+      {showLevelUp && result.leveledUp ? (
+        <View className="absolute inset-0 z-10 items-center justify-center bg-slate-900/70 px-6">
+          <Animated.View
+            style={{ transform: [{ scale: pop }] }}
+            className="w-full max-w-sm items-center rounded-3xl bg-white p-6 shadow-xl"
+          >
+            <Text className="text-6xl">🎉</Text>
+            <Text className="mt-2 text-3xl font-extrabold text-slate-900">LEVEL {result.newLevel}!</Text>
+            <Text className="mt-1 text-center text-sm leading-5 text-slate-600">
+              Your brain just grew. {result.newLevel && result.totalXp != null
+                ? `${Math.max(0, xpForLevel(result.newLevel + 1) - result.totalXp)} XP to Level ${result.newLevel + 1} — keep the streak to climb faster.`
+                : 'Keep the streak to climb even faster.'}
+            </Text>
+            {result.totalXp != null ? (
+              <View className="mt-3 h-3 w-full overflow-hidden rounded-full bg-slate-200">
+                <View
+                  className="h-full rounded-full bg-violet-500"
+                  style={{
+                    width: `${Math.round((levelProgress(result.totalXp).into / levelProgress(result.totalXp).needed) * 100)}%`,
+                  }}
+                />
+              </View>
+            ) : null}
+            <Pressable
+              onPress={() => setShowLevelUp(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Continue to results"
+              className="mt-4 w-full items-center rounded-2xl bg-violet-600 py-3.5"
+            >
+              <Text className="text-lg font-extrabold text-white">Keep climbing 🚀</Text>
+            </Pressable>
+          </Animated.View>
+        </View>
+      ) : null}
     </ScrollView>
+      <StatusBar style="auto" />
+    </View>
   );
 }

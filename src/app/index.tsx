@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text, Pressable, ScrollView, Animated, Modal, ActivityIndicator, AccessibilityRole, Platform } from 'react-native';
+import { View, Text, Pressable, ScrollView, Animated, Modal, ActivityIndicator, AccessibilityRole, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -7,12 +7,16 @@ import * as DocumentPicker from 'expo-document-picker';
 import { readAsStringAsync, EncodingType } from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../lib/supabase';
-import { getProfile, getCompletedLessonIds, MAX_HEARTS, type Profile } from '../../lib/progress';
+import { getProfile, getCompletedLessonIds, completeLesson, MAX_HEARTS, type Profile } from '../../lib/progress';
 import { uploadRawFile, waitForUploadReady } from '../../lib/uploads';
 import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
 import { GOALS, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
+import { levelForXp } from '../../lib/levels';
+
+/** Variable reward: one-shot bonus for finishing every block in a unit. */
+const CHEST_XP = 50;
 import AudiobookPlayer from '../../components/AudiobookPlayer';
 
 type NodeState = 'completed' | 'active' | 'locked' | 'processing' | 'failed';
@@ -402,6 +406,13 @@ export default function PathMap() {
 
   const lowHearts = hearts <= 1;
 
+  // Loss-aversion trigger: the streak is alive but hasn't been fed today.
+  // Yesterday => at risk; older => went cold (next lesson restarts it).
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const yesterdayKey = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const lastKey = profile?.last_activity_at ? new Date(profile.last_activity_at).toISOString().slice(0, 10) : null;
+  const streakAtRisk = !!profile && profile.streak_count > 0 && lastKey !== todayKey;
+
   // Per-unit progress across curriculum blocks + demo parity.
   const isBlockDone = (b: CurriculumBlock) => completed.has(b.lessonId) || completed.has(b.id);
   const unitState = (unit: CurriculumUnit, blockIdx: number): NodeState => {
@@ -425,6 +436,24 @@ export default function PathMap() {
     b.kind === 'project'
       ? router.push({ pathname: '/project/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } })
       : router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } });
+
+  // Variable reward, one-shot per unit (tracked as a completion so it
+  // survives reinstalls and syncs across devices like everything else).
+  const claimChest = async (unit: CurriculumUnit) => {
+    const id = `chest:${unit.id}`;
+    if (!profile) {
+      router.push('/auth');
+      return;
+    }
+    if (!unit.blocks.every(isBlockDone) || completed.has(id)) return;
+    try {
+      await completeLesson(profile.id, CHEST_XP, id);
+      Alert.alert('🎁 Chest claimed!', `+${CHEST_XP} XP for finishing ${unit.title}!`);
+      await refresh();
+    } catch {
+      Alert.alert('Claim failed', 'Check your connection and try again.');
+    }
+  };
 
   // Play-first entry: goal defaults to exploring; the funnel starts the
   // moment they tap through — the account prompt waits until results.
@@ -511,6 +540,9 @@ export default function PathMap() {
           </Pressable>
           <Text accessibilityLabel={`Streak ${streak} days`} className="text-lg font-extrabold text-orange-500">🔥 {streak}</Text>
           <Text accessibilityLabel={`${xp} experience points`} className="text-lg font-extrabold text-sky-500">💎 {xp.toLocaleString()}</Text>
+            <View accessibilityLabel={`Level ${levelForXp(xp)}`} className="rounded-full bg-violet-100 px-3 py-1.5">
+              <Text className="text-sm font-extrabold text-violet-700">Lv {levelForXp(xp)}</Text>
+            </View>
           <Text accessibilityLabel={`${hearts} hearts remaining`} className={`text-lg font-extrabold ${lowHearts ? 'text-red-600' : 'text-red-500'}`}>
             ❤️ {hearts}{lowHearts ? '!' : ''}
           </Text>
@@ -540,6 +572,32 @@ export default function PathMap() {
         {Platform.OS === 'web' ? <View className="hidden pt-6 md:flex">{sideNav}</View> : null}
 
         <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-4 md:max-w-xl md:flex-1">
+          {/* Hook trigger: Duo-style mascot nudge when the streak needs feeding. */}
+          {streakAtRisk ? (
+            <View className="mb-4 w-full max-w-sm rounded-3xl border-2 border-orange-200 bg-orange-50 p-4">
+              <Text className="text-lg font-extrabold text-orange-800">
+                {lastKey === yesterdayKey ? '🦉 Your streak is at risk!' : '🦉 Your streak went cold!'}
+              </Text>
+              <Text className="mt-1 text-sm leading-5 text-slate-600">
+                {lastKey === yesterdayKey
+                  ? `One quick lesson today keeps your 🔥 ${profile?.streak_count ?? 0}-day streak alive.`
+                  : `Your fire was at 🔥 ${profile?.streak_count ?? 0} — one lesson restarts it.`}
+              </Text>
+              <Pressable
+                onPress={() => {
+                  const b = nextUpBlock(completed);
+                  if (b) openBlock(b);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={lastKey === yesterdayKey ? 'Keep my streak' : 'Restart my streak'}
+                className="mt-3 items-center rounded-2xl bg-orange-500 py-3"
+              >
+                <Text className="font-extrabold text-white">
+                  ▶ {lastKey === yesterdayKey ? 'Keep my streak' : 'Restart my streak'}
+                </Text>
+              </Pressable>
+            </View>
+          ) : null}
           {/* Inverted onboarding: play first, profile second. First-run guests
               pick a goal and drop straight into a 2-minute lesson — signup
               comes only after they've won XP (see results upsell). */}
@@ -611,16 +669,22 @@ export default function PathMap() {
                       onPress={() => openBlock(b)}
                     />
                   ))}
-                  {/* Duo-style reward chest at the end of each unit */}
-                  <PathNode
-                    state={unit.blocks.every(isBlockDone) ? 'active' : 'locked'}
-                    icon="🎁"
-                    label="Unit chest"
-                    sub={unit.blocks.every(isBlockDone) ? 'Tap to claim +50 XP' : 'Finish the unit'}
-                    color="bg-amber-400"
-                    offset={nextOffset()}
-                    onPress={() => router.push('/results')}
-                  />
+                  {/* Variable-reward chest: one-shot +50 XP claim per finished unit. */}
+                  {(() => {
+                    const unitDone = unit.blocks.every(isBlockDone);
+                    const claimed = completed.has(`chest:${unit.id}`);
+                    return (
+                      <PathNode
+                        state={!unitDone ? 'locked' : claimed ? 'completed' : 'active'}
+                        icon={claimed ? '🏆' : '🎁'}
+                        label="Unit chest"
+                        sub={!unitDone ? 'Finish the unit' : claimed ? `Claimed! +${CHEST_XP} XP` : `Tap to claim +${CHEST_XP} XP`}
+                        color="bg-amber-400"
+                        offset={nextOffset()}
+                        onPress={() => void claimChest(unit)}
+                      />
+                    );
+                  })()}
                 </View>
 
                 {/* FCC-style expandable syllabus (sibling buttons — no nested pressables) */}

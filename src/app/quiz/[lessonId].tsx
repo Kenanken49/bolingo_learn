@@ -8,6 +8,7 @@ import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
 import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
+import { levelForXp } from '../../../lib/levels';
 import { hasSeenQuizIntro, markQuizIntroSeen, markOnboarded, savePendingGuestResult } from '../../../lib/onboarding';
 
 const DEMO_QUESTIONS: CodeQuizData[] = [
@@ -132,7 +133,7 @@ export default function QuizPlayer() {
 
   const finish = () => {
     const xpEarned = correctCount * 10;
-    const goResults = (streakCount: number) => {
+    const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0) => {
       setLessonResult({
         lessonId,
         title: String(title ?? 'Lesson'),
@@ -141,12 +142,20 @@ export default function QuizPlayer() {
         correctCount,
         total: questions?.length ?? 0,
         results: answers,
+        leveledUp,
+        newLevel,
+        totalXp,
       });
       router.replace('/results');
     };
     if (userId) {
       completeLesson(userId, xpEarned, lessonId)
-        .then((p) => goResults(p.streak_count))
+        .then((p) => {
+          // Level-up detection: compare the curve before/after this lesson.
+          const newLevel = levelForXp(p.xp);
+          const leveledUp = newLevel > levelForXp(p.xp - xpEarned);
+          goResults(p.streak_count, leveledUp, newLevel, p.xp);
+        })
         .catch(() => goResults(0));
     } else {
       // Guest played first: stash the winnings so signup can rescue them.

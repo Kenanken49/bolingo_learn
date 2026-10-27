@@ -7,6 +7,7 @@ import CodeEditor, { combineDoc, type CodeDoc } from '../../../components/CodeEd
 import { getCourseProject } from '../../../lib/courses';
 import { completeLesson, getProfile } from '../../../lib/progress';
 import { setLessonResult } from '../../../lib/quizResults';
+import { levelForXp } from '../../../lib/levels';
 
 /** Web preview: react-native-webview has no web implementation, so render a real iframe. */
 function WebPreview({ html }: { html: string }) {
@@ -79,7 +80,7 @@ export default function CertificationProject() {
       correctAnswer: c.hint,
       correct: c.pass,
     }));
-    const goResults = (streakCount: number) => {
+    const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0) => {
       setLessonResult({
         lessonId,
         title: String(title ?? project.title),
@@ -88,13 +89,19 @@ export default function CertificationProject() {
         correctCount: passed,
         total: checks.length,
         results,
+        leveledUp,
+        newLevel,
+        totalXp,
       });
       router.replace('/results');
     };
     const p = await getProfile().catch(() => null);
     if (p) {
       completeLesson(p.id, project.xp, lessonId)
-        .then((prof) => goResults(prof.streak_count))
+        .then((prof) => {
+          const newLevel = levelForXp(prof.xp);
+          goResults(prof.streak_count, newLevel > levelForXp(prof.xp - project.xp), newLevel, prof.xp);
+        })
         .catch(() => goResults(0));
     } else {
       goResults(0);

@@ -14,6 +14,11 @@ export interface LessonResult {
   correctCount: number;
   total: number;
   results: QuestionResult[];
+  /** Level-up celebration: set when the lesson's XP crossed a threshold. */
+  leveledUp?: boolean;
+  newLevel?: number;
+  /** Lifetime XP after this lesson (drives the level-up progress bar). */
+  totalXp?: number;
 }
 
 let current: LessonResult | null = null;
