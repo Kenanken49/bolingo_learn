@@ -40,6 +40,7 @@ export default function Certifications() {
 
       <View className="mt-3 items-center rounded-3xl bg-slate-900 p-6">
         <DuoOwl mood="party" size={84} />
+        <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-300">Bingo 🦉 presents</Text>
         <Text className="mt-2 text-center font-duo text-2xl font-extrabold text-white">Core Certifications</Text>
         <Text className="mt-1 text-center text-sm font-semibold leading-5 text-slate-300">
           7 tracks · 5 mandatory projects each · automated tests grade every build. Pass all 5 to earn the certification.

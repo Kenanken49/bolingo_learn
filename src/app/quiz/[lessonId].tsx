@@ -4,7 +4,7 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/GamifiedCodePlayer';
 import DuoButton from '../../../components/DuoButton';
-import DuoOwl from '../../../components/DuoOwl';
+import Mascot from '../../../components/AfricanMascots';
 import { supabase, toDbLessonId } from '../../../lib/supabase';
 import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
@@ -183,7 +183,8 @@ export default function QuizPlayer() {
   if (reviewEmpty) {
     return (
       <View className="flex-1 items-center justify-center bg-white px-6">
-        <DuoOwl mood="happy" size={110} />
+        <Mascot character="livia" mood="happy" size={110} />
+        <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400">Livia ✋ says well done</Text>
         <Text className="mt-3 font-duo text-2xl font-extrabold text-slate-900">All caught up!</Text>
         <Text className="mt-1 text-center text-base text-slate-500">
           Nothing is due — your memory is fresh. Come back tomorrow to keep it that way.
@@ -278,7 +279,8 @@ export default function QuizPlayer() {
       {showCoach ? (
         <View className="absolute inset-0 z-10 items-center justify-center bg-slate-900/70 px-6">
           <View className="w-full max-w-sm items-center rounded-3xl bg-white p-5 shadow-xl">
-            <DuoOwl mood="happy" size={72} />
+            <Mascot character="zora" mood="happy" size={72} />
+            <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400">Meet Zora ⚡ your coach</Text>
             <Text className="mt-2 font-duo text-xl font-extrabold text-slate-900">How a lesson works</Text>
             {[
               ['👆', 'Tap tokens', 'Build your answer in the drop zone. Tap again to remove one.'],

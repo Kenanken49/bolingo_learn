@@ -21,6 +21,7 @@ const CHEST_XP = 50;
 import AudiobookPlayer from '../../components/AudiobookPlayer';
 import DuoButton from '../../components/DuoButton';
 import DuoOwl from '../../components/DuoOwl';
+import Mascot from '../../components/AfricanMascots';
 import { playCorrect } from '../../lib/sfx';
 
 type NodeState = 'completed' | 'active' | 'locked' | 'processing' | 'failed';
@@ -580,18 +581,18 @@ export default function PathMap() {
         {Platform.OS === 'web' ? <View className="hidden pt-6 md:flex">{sideNav}</View> : null}
 
         <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-4 md:max-w-xl md:flex-1">
-          {/* Hook trigger: Duo-style mascot nudge when the streak needs feeding. */}
+          {/* Hook trigger: Bingo guilt-trips when the streak needs feeding. */}
           {streakAtRisk ? (
             <View className="mb-4 w-full max-w-sm flex-row items-center rounded-3xl border-2 border-orange-200 bg-orange-50 p-4">
               <DuoOwl mood="sad" size={72} />
               <View className="ml-3 flex-1">
                 <Text className="font-duo text-lg font-extrabold text-orange-800">
-                  {lastKey === yesterdayKey ? 'Duo missed you!' : 'Duo is worried…'}
+                  {lastKey === yesterdayKey ? 'Bingo missed you! 🦉' : 'Bingo is worried…'}
                 </Text>
                 <Text className="mt-1 text-sm leading-5 text-slate-600">
                   {lastKey === yesterdayKey
                     ? `One quick lesson today keeps your 🔥 ${profile?.streak_count ?? 0}-day streak alive. Don't let it hit zero!`
-                    : `Your fire was at 🔥 ${profile?.streak_count ?? 0}. Duo forgives you — one lesson restarts it.`}
+                    : `Your fire was at 🔥 ${profile?.streak_count ?? 0}. Bingo forgives you — one lesson restarts it.`}
                 </Text>
                 <View className="mt-3">
                   <DuoButton
@@ -675,15 +676,37 @@ export default function PathMap() {
             </View>
             <Text className="text-2xl font-extrabold text-amber-400">›</Text>
           </Pressable>
+          {/* UI/UX Design Ecosystem: native module + Figma masterclasses + guides hub. */}
+          <Pressable
+            onPress={() => router.push('/design')}
+            accessibilityRole="button"
+            accessibilityLabel="UI UX design ecosystem: lessons, videos, guides"
+            className="mb-4 w-full max-w-sm flex-row items-center rounded-3xl border-2 border-pink-200 bg-pink-50 p-4"
+          >
+            <View className="h-12 w-12 items-center justify-center rounded-full bg-pink-500">
+              <Text className="text-2xl">🎨</Text>
+            </View>
+            <View className="ml-3 flex-1">
+              <Text className="text-xs font-extrabold uppercase tracking-widest text-pink-600">
+                🎨 UI/UX design ecosystem
+              </Text>
+              <Text className="font-duo text-base font-extrabold text-slate-900" numberOfLines={1}>
+                Design module · Figma courses · Guides
+              </Text>
+              <Text className="text-xs font-bold text-slate-500">Hierarchy, Figma, wireframes, flows</Text>
+            </View>
+            <Text className="text-2xl font-extrabold text-pink-400">›</Text>
+          </Pressable>
           {/* Inverted onboarding: play first, profile second. First-run guests
               pick a goal and drop straight into a 2-minute lesson — signup
               comes only after they've won XP (see results upsell). */}
           {!profile && !onboarded ? (
             <View className="mb-4 w-full max-w-sm rounded-3xl bg-slate-900 p-5 shadow-lg">
               <View className="items-center">
-                <DuoOwl mood="happy" size={84} />
+                <Mascot character="livia" mood="happy" size={84} />
               </View>
-              <Text className="mt-2 text-xl font-duo font-extrabold text-white">Learn by doing</Text>
+              <Text className="mt-2 text-center text-xs font-bold uppercase tracking-widest text-amber-300">Meet Livia ✋ your mentor</Text>
+              <Text className="mt-1 text-xl font-duo font-extrabold text-white">Learn by doing</Text>
               <Text className="mt-1 text-sm leading-5 text-slate-300">
                 Try a 2-minute lesson now — no account needed. Save your XP after you win it.
               </Text>

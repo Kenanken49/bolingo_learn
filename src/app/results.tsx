@@ -8,6 +8,7 @@ import { levelProgress, xpForLevel } from '../../lib/levels';
 import { playCorrect } from '../../lib/sfx';
 import DuoButton from '../../components/DuoButton';
 import DuoOwl from '../../components/DuoOwl';
+import Mascot from '../../components/AfricanMascots';
 import { getProfile, type Profile } from '../../lib/progress';
 import { getPendingGuestResult, type PendingGuestResult } from '../../lib/onboarding';
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
@@ -64,7 +65,16 @@ export default function Results() {
   return (
     <View className="flex-1 bg-white">
     <ScrollView contentContainerClassName="items-center bg-white px-6 py-12">
-      <DuoOwl mood={pct >= 80 ? 'party' : pct >= 50 ? 'happy' : 'sad'} size={110} />
+      {pct >= 80 ? (
+        <Mascot character="bingo" mood="party" size={110} />
+      ) : pct >= 50 ? (
+        <Mascot character="livia" mood="happy" size={110} />
+      ) : (
+        <Mascot character="bingo" mood="sad" size={110} />
+      )}
+      <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400">
+        {pct >= 80 ? 'Bingo is dancing 🦉' : pct >= 50 ? 'Livia is proud ✋' : 'Bingo believes in you 🦉'}
+      </Text>
       <Text className="mt-2 font-duo text-2xl font-extrabold text-slate-900">Lesson complete!</Text>
       <Text className="text-base text-slate-500">{result.title}</Text>
 

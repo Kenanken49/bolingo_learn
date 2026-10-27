@@ -34,8 +34,8 @@ export async function setRemindersOn(on: boolean): Promise<boolean> {
     await Notifications.cancelAllScheduledNotificationsAsync();
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: 'Keep your streak alive! 🔥',
-        body: 'One quick lesson keeps the XP flowing. Your future self says thanks.',
+        title: 'Bingo misses you! 🦉🔥',
+        body: 'Livia saved your spot — one quick lesson keeps the streak alive. Zora is warming up!',
       },
       trigger: { type: Notifications.SchedulableTriggerInputTypes.DAILY, hour: 19, minute: 0 },
     });
