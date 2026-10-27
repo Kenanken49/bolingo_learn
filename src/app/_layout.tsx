@@ -1,7 +1,18 @@
 import '../../global.css';
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useFonts, Nunito_700Bold, Nunito_800ExtraBold } from '@expo-google-fonts/nunito';
+
+// Hold the splash until the rounded brand font is ready — no FOUT swap.
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({ Nunito_700Bold, Nunito_800ExtraBold });
+  useEffect(() => {
+    if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
+  }, [fontsLoaded]);
+  if (!fontsLoaded) return null;
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />

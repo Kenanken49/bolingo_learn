@@ -5,6 +5,9 @@ import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { getLessonResult } from '../../lib/quizResults';
 import { levelProgress, xpForLevel } from '../../lib/levels';
+import { playCorrect } from '../../lib/sfx';
+import DuoButton from '../../components/DuoButton';
+import DuoOwl from '../../components/DuoOwl';
 import { getProfile, type Profile } from '../../lib/progress';
 import { getPendingGuestResult, type PendingGuestResult } from '../../lib/onboarding';
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
@@ -23,6 +26,7 @@ export default function Results() {
   const pop = useRef(new Animated.Value(0.5)).current;
   useEffect(() => {
     if (!showLevelUp) return;
+    void playCorrect();
     Animated.spring(pop, { toValue: 1, friction: 5, tension: 120, useNativeDriver: true }).start();
     try {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -60,8 +64,8 @@ export default function Results() {
   return (
     <View className="flex-1 bg-white">
     <ScrollView contentContainerClassName="items-center bg-white px-6 py-12">
-      <Text className="text-5xl">{pct >= 80 ? '🏆' : pct >= 50 ? '🎉' : '💪'}</Text>
-      <Text className="mt-2 text-2xl font-extrabold text-slate-900">Lesson complete!</Text>
+      <DuoOwl mood={pct >= 80 ? 'party' : pct >= 50 ? 'happy' : 'sad'} size={110} />
+      <Text className="mt-2 font-duo text-2xl font-extrabold text-slate-900">Lesson complete!</Text>
       <Text className="text-base text-slate-500">{result.title}</Text>
 
       {/* Duo-style XP / accuracy / streak stat bar */}
@@ -133,31 +137,32 @@ export default function Results() {
           <Text className="mt-1 text-sm leading-5 text-slate-600">
             Nice work! Create a free account to keep this XP, protect your streak, and sync across devices.
           </Text>
-          <Pressable
-            onPress={() => router.push('/auth')}
-            accessibilityRole="button"
-            accessibilityLabel="Save progress by creating an account"
-            className="mt-3 items-center rounded-2xl bg-green-500 py-3"
-          >
-            <Text className="font-extrabold text-white">Save my progress</Text>
-          </Pressable>
+          <View className="mt-3">
+            <DuoButton
+              onPress={() => router.push('/auth')}
+              label="Save progress by creating an account"
+              title="Save my progress"
+            />
+          </View>
         </View>
       ) : null}
 
       <View className="mt-6 w-full max-w-sm flex-row gap-2">
-        <Pressable
-          onPress={() =>
-            isProjectLesson(result.lessonId)
-              ? router.replace({ pathname: '/project/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })
-              : router.replace({ pathname: '/quiz/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })
-          }
-          className="flex-1 items-center rounded-2xl bg-slate-800 py-4"
-        >
-          <Text className="text-lg font-extrabold text-white">Retry 🔁</Text>
-        </Pressable>
-        <Pressable onPress={() => router.replace('/')} className="flex-1 items-center rounded-2xl bg-green-500 py-4">
-          <Text className="text-lg font-extrabold text-white">Path 🗺️</Text>
-        </Pressable>
+        <View className="flex-1">
+          <DuoButton
+            color="slate"
+            onPress={() =>
+              isProjectLesson(result.lessonId)
+                ? router.replace({ pathname: '/project/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })
+                : router.replace({ pathname: '/quiz/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })
+            }
+            label="Retry this lesson"
+            title="Retry 🔁"
+          />
+        </View>
+        <View className="flex-1">
+          <DuoButton onPress={() => router.replace('/')} label="Back to learning path" title="Path 🗺️" />
+        </View>
       </View>
       {block ? (
         <Pressable
@@ -177,8 +182,8 @@ export default function Results() {
             style={{ transform: [{ scale: pop }] }}
             className="w-full max-w-sm items-center rounded-3xl bg-white p-6 shadow-xl"
           >
-            <Text className="text-6xl">🎉</Text>
-            <Text className="mt-2 text-3xl font-extrabold text-slate-900">LEVEL {result.newLevel}!</Text>
+            <DuoOwl mood="party" size={110} />
+            <Text className="mt-2 font-duo text-3xl font-extrabold text-slate-900">LEVEL {result.newLevel}!</Text>
             <Text className="mt-1 text-center text-sm leading-5 text-slate-600">
               Your brain just grew. {result.newLevel && result.totalXp != null
                 ? `${Math.max(0, xpForLevel(result.newLevel + 1) - result.totalXp)} XP to Level ${result.newLevel + 1} — keep the streak to climb faster.`
@@ -194,14 +199,14 @@ export default function Results() {
                 />
               </View>
             ) : null}
-            <Pressable
-              onPress={() => setShowLevelUp(false)}
-              accessibilityRole="button"
-              accessibilityLabel="Continue to results"
-              className="mt-4 w-full items-center rounded-2xl bg-violet-600 py-3.5"
-            >
-              <Text className="text-lg font-extrabold text-white">Keep climbing 🚀</Text>
-            </Pressable>
+            <View className="mt-4 w-full">
+              <DuoButton
+                color="violet"
+                onPress={() => setShowLevelUp(false)}
+                label="Continue to results"
+                title="Keep climbing 🚀"
+              />
+            </View>
           </Animated.View>
         </View>
       ) : null}

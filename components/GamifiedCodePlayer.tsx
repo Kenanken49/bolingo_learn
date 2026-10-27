@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Pressable, Animated } from 'react-native';
+import DuoButton from './DuoButton';
 import Reanimated, {
   useSharedValue,
   useAnimatedStyle,
@@ -212,7 +213,7 @@ export default function GamifiedCodePlayer({
         <Text className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
           Challenge | {questionLabel}
         </Text>
-        <Text className="mb-1 text-xl font-bold text-slate-900">{questionData.prompt}</Text>
+        <Text className="mb-1 font-duo text-xl font-bold text-slate-900">{questionData.prompt}</Text>
         <Text className="text-sm text-slate-500">Assemble the tokens below, run the tests, then check your answer.</Text>
         <Pressable
           onPress={playNarration}
@@ -279,28 +280,27 @@ export default function GamifiedCodePlayer({
 
       {feedback === null ? (
         <View className="mb-8 mt-4 flex-row gap-2">
-          <Pressable
-            onPress={() => setRanTests(true)}
-            disabled={selectedTokens.length === 0}
-            accessibilityRole="button"
-            accessibilityLabel="Run tests without submitting"
-            className={`flex-1 items-center rounded-2xl border-2 py-4 ${selectedTokens.length > 0 ? 'border-slate-800 bg-white' : 'border-slate-200 bg-slate-100'}`}
-          >
-            <Text className={`text-lg font-extrabold ${selectedTokens.length > 0 ? 'text-slate-800' : 'text-slate-400'}`}>▶ Run</Text>
-          </Pressable>
-          <Pressable
-            onPress={checkAnswer}
-            disabled={selectedTokens.length === 0}
-          className={`flex-[2] items-center rounded-2xl py-4 shadow-lg ${
-            selectedTokens.length > 0 ? 'bg-emerald-500' : 'bg-slate-300'
-          }`}
-        >
-            <Text className="text-lg font-bold text-white">CHECK ANSWER</Text>
-          </Pressable>
+          <View className="flex-1">
+            <DuoButton
+              color="blue"
+              onPress={() => setRanTests(true)}
+              disabled={selectedTokens.length === 0}
+              label="Run tests without submitting"
+              title="▶ Run"
+            />
+          </View>
+          <View className="flex-[2]">
+            <DuoButton
+              onPress={checkAnswer}
+              disabled={selectedTokens.length === 0}
+              label="Check answer"
+              title="Check answer"
+            />
+          </View>
         </View>
       ) : (
         <Reanimated.View style={bannerStyle} className={`mb-8 rounded-3xl p-5 ${feedback === 'correct' ? 'bg-green-100' : 'bg-red-100'}`}>
-          <Text className={`text-xl font-extrabold ${feedback === 'correct' ? 'text-green-700' : 'text-red-600'}`}>
+          <Text className={`font-duo text-xl font-extrabold ${feedback === 'correct' ? 'text-green-700' : 'text-red-600'}`}>
             {feedback === 'correct' ? '\u{1F389} Correct! Great job! +10 XP' : '\u274C Incorrect Syntax'}
           </Text>
           <Text className="mt-1 text-slate-600">
@@ -311,9 +311,9 @@ export default function GamifiedCodePlayer({
           {feedback === 'wrong' && questionData.explain ? (
             <Text className="mt-1 text-sm text-slate-500">Why: {questionData.explain}</Text>
           ) : null}
-          <Pressable onPress={onContinue} className="mt-3 items-center rounded-2xl bg-green-500 py-3">
-            <Text className="text-lg font-extrabold text-white">Continue</Text>
-          </Pressable>
+          <View className="mt-3">
+            <DuoButton onPress={onContinue} label="Continue to next question" title="Continue" />
+          </View>
         </Reanimated.View>
       )}
       {/* First-mistake explainer: hearts introduced exactly when they matter. */}
@@ -325,14 +325,14 @@ export default function GamifiedCodePlayer({
             <Text className="mt-1 text-sm leading-5 text-slate-600">
               You have {hearts} {hearts === 1 ? 'heart' : 'hearts'} left. Hearts refill over time — or watch a short ad for +1. Tip: hit Run first to test your code for free!
             </Text>
-            <Pressable
-              onPress={() => setShowHeartsInfo(false)}
-              accessibilityRole="button"
-              accessibilityLabel="Dismiss hearts explanation"
-              className="mt-4 items-center rounded-2xl bg-red-500 py-3"
-            >
-              <Text className="font-extrabold text-white">Got it — I'll be careful</Text>
-            </Pressable>
+            <View className="mt-4">
+              <DuoButton
+                color="red"
+                onPress={() => setShowHeartsInfo(false)}
+                label="Dismiss hearts explanation"
+                title="Got it — I'll be careful"
+              />
+            </View>
           </View>
         </View>
       ) : null}

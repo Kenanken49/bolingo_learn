@@ -3,6 +3,8 @@ import { View, Text, Pressable, ScrollView } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/GamifiedCodePlayer';
+import DuoButton from '../../../components/DuoButton';
+import DuoOwl from '../../../components/DuoOwl';
 import { supabase, toDbLessonId } from '../../../lib/supabase';
 import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
@@ -191,8 +193,9 @@ export default function QuizPlayer() {
       {/* First-visit coach marks: contextual, dismissible, shown exactly once. */}
       {showCoach ? (
         <View className="absolute inset-0 z-10 items-center justify-center bg-slate-900/70 px-6">
-          <View className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-xl">
-            <Text className="text-xl font-extrabold text-slate-900">🎮 How a lesson works</Text>
+          <View className="w-full max-w-sm items-center rounded-3xl bg-white p-5 shadow-xl">
+            <DuoOwl mood="happy" size={72} />
+            <Text className="mt-2 font-duo text-xl font-extrabold text-slate-900">How a lesson works</Text>
             {[
               ['👆', 'Tap tokens', 'Build your answer in the drop zone. Tap again to remove one.'],
               ['▶️', 'Run tests', 'Check your code like a real dev — free, no hearts lost.'],
@@ -206,17 +209,16 @@ export default function QuizPlayer() {
                 </View>
               </View>
             ))}
-            <Pressable
-              onPress={() => {
-                void markQuizIntroSeen();
-                setShowCoach(false);
-              }}
-              accessibilityRole="button"
-              accessibilityLabel="Start playing"
-              className="mt-4 items-center rounded-2xl bg-green-500 py-3.5"
-            >
-              <Text className="text-lg font-extrabold text-white">Got it — let's play</Text>
-            </Pressable>
+            <View className="mt-4 w-full">
+              <DuoButton
+                onPress={() => {
+                  void markQuizIntroSeen();
+                  setShowCoach(false);
+                }}
+                label="Start playing"
+                title="Got it — let's play"
+              />
+            </View>
           </View>
         </View>
       ) : null}

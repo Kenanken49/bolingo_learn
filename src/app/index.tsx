@@ -18,6 +18,9 @@ import { levelForXp } from '../../lib/levels';
 /** Variable reward: one-shot bonus for finishing every block in a unit. */
 const CHEST_XP = 50;
 import AudiobookPlayer from '../../components/AudiobookPlayer';
+import DuoButton from '../../components/DuoButton';
+import DuoOwl from '../../components/DuoOwl';
+import { playCorrect } from '../../lib/sfx';
 
 type NodeState = 'completed' | 'active' | 'locked' | 'processing' | 'failed';
 
@@ -122,7 +125,7 @@ function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: Go
         <Text className="text-xs font-extrabold uppercase tracking-widest text-green-600">
           ⬆️ Up next{goal ? ` · ${goalLabel(goal)}` : ''}
         </Text>
-        <Text className="text-base font-extrabold text-slate-900" numberOfLines={1}>
+        <Text className="font-duo text-base font-extrabold text-slate-900" numberOfLines={1}>
           {block.title}
         </Text>
         <Text className="text-xs font-bold text-slate-500">
@@ -448,6 +451,7 @@ export default function PathMap() {
     if (!unit.blocks.every(isBlockDone) || completed.has(id)) return;
     try {
       await completeLesson(profile.id, CHEST_XP, id);
+      void playCorrect();
       Alert.alert('🎁 Chest claimed!', `+${CHEST_XP} XP for finishing ${unit.title}!`);
       await refresh();
     } catch {
@@ -538,12 +542,12 @@ export default function PathMap() {
             <Text className="text-lg">🌐</Text>
             <Text className="ml-1 text-sm font-extrabold text-slate-600">WEB ▼</Text>
           </Pressable>
-          <Text accessibilityLabel={`Streak ${streak} days`} className="text-lg font-extrabold text-orange-500">🔥 {streak}</Text>
-          <Text accessibilityLabel={`${xp} experience points`} className="text-lg font-extrabold text-sky-500">💎 {xp.toLocaleString()}</Text>
+          <Text accessibilityLabel={`Streak ${streak} days`} className="font-duo text-lg font-extrabold text-orange-500">🔥 {streak}</Text>
+          <Text accessibilityLabel={`${xp} experience points`} className="font-duo text-lg font-extrabold text-sky-500">💎 {xp.toLocaleString()}</Text>
             <View accessibilityLabel={`Level ${levelForXp(xp)}`} className="rounded-full bg-violet-100 px-3 py-1.5">
-              <Text className="text-sm font-extrabold text-violet-700">Lv {levelForXp(xp)}</Text>
+              <Text className="font-duo text-sm font-extrabold text-violet-700">Lv {levelForXp(xp)}</Text>
             </View>
-          <Text accessibilityLabel={`${hearts} hearts remaining`} className={`text-lg font-extrabold ${lowHearts ? 'text-red-600' : 'text-red-500'}`}>
+          <Text accessibilityLabel={`${hearts} hearts remaining`} className={`font-duo text-lg font-extrabold ${lowHearts ? 'text-red-600' : 'text-red-500'}`}>
             ❤️ {hearts}{lowHearts ? '!' : ''}
           </Text>
           <Pressable
@@ -574,28 +578,30 @@ export default function PathMap() {
         <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-4 md:max-w-xl md:flex-1">
           {/* Hook trigger: Duo-style mascot nudge when the streak needs feeding. */}
           {streakAtRisk ? (
-            <View className="mb-4 w-full max-w-sm rounded-3xl border-2 border-orange-200 bg-orange-50 p-4">
-              <Text className="text-lg font-extrabold text-orange-800">
-                {lastKey === yesterdayKey ? '🦉 Your streak is at risk!' : '🦉 Your streak went cold!'}
-              </Text>
-              <Text className="mt-1 text-sm leading-5 text-slate-600">
-                {lastKey === yesterdayKey
-                  ? `One quick lesson today keeps your 🔥 ${profile?.streak_count ?? 0}-day streak alive.`
-                  : `Your fire was at 🔥 ${profile?.streak_count ?? 0} — one lesson restarts it.`}
-              </Text>
-              <Pressable
-                onPress={() => {
-                  const b = nextUpBlock(completed);
-                  if (b) openBlock(b);
-                }}
-                accessibilityRole="button"
-                accessibilityLabel={lastKey === yesterdayKey ? 'Keep my streak' : 'Restart my streak'}
-                className="mt-3 items-center rounded-2xl bg-orange-500 py-3"
-              >
-                <Text className="font-extrabold text-white">
-                  ▶ {lastKey === yesterdayKey ? 'Keep my streak' : 'Restart my streak'}
+            <View className="mb-4 w-full max-w-sm flex-row items-center rounded-3xl border-2 border-orange-200 bg-orange-50 p-4">
+              <DuoOwl mood="sad" size={72} />
+              <View className="ml-3 flex-1">
+                <Text className="font-duo text-lg font-extrabold text-orange-800">
+                  {lastKey === yesterdayKey ? 'Duo missed you!' : 'Duo is worried…'}
                 </Text>
-              </Pressable>
+                <Text className="mt-1 text-sm leading-5 text-slate-600">
+                  {lastKey === yesterdayKey
+                    ? `One quick lesson today keeps your 🔥 ${profile?.streak_count ?? 0}-day streak alive. Don't let it hit zero!`
+                    : `Your fire was at 🔥 ${profile?.streak_count ?? 0}. Duo forgives you — one lesson restarts it.`}
+                </Text>
+                <View className="mt-3">
+                  <DuoButton
+                    color="amber"
+                    onPress={() => {
+                      const b = nextUpBlock(completed);
+                      if (b) openBlock(b);
+                    }}
+                    label={lastKey === yesterdayKey ? 'Keep my streak' : 'Restart my streak'}
+                    title={lastKey === yesterdayKey ? '▶ Keep my streak' : '▶ Restart my streak'}
+                    small
+                  />
+                </View>
+              </View>
             </View>
           ) : null}
           {/* Inverted onboarding: play first, profile second. First-run guests
@@ -603,7 +609,10 @@ export default function PathMap() {
               comes only after they've won XP (see results upsell). */}
           {!profile && !onboarded ? (
             <View className="mb-4 w-full max-w-sm rounded-3xl bg-slate-900 p-5 shadow-lg">
-              <Text className="text-xl font-extrabold text-white">👋 Learn by doing</Text>
+              <View className="items-center">
+                <DuoOwl mood="happy" size={84} />
+              </View>
+              <Text className="mt-2 text-xl font-duo font-extrabold text-white">Learn by doing</Text>
               <Text className="mt-1 text-sm leading-5 text-slate-300">
                 Try a 2-minute lesson now — no account needed. Save your XP after you win it.
               </Text>
@@ -624,14 +633,13 @@ export default function PathMap() {
                   </Pressable>
                 ))}
               </View>
-              <Pressable
-                onPress={() => void startFirstLesson()}
-                accessibilityRole="button"
-                accessibilityLabel="Start my first lesson"
-                className="mt-3 items-center rounded-2xl bg-green-500 py-3.5"
-              >
-                <Text className="text-lg font-extrabold text-white">▶ Start my first lesson</Text>
-              </Pressable>
+              <View className="mt-3">
+                <DuoButton
+                  onPress={() => void startFirstLesson()}
+                  label="Start my first lesson"
+                  title="▶ Start my first lesson"
+                />
+              </View>
             </View>
           ) : nextUpBlock(completed) ? (
             /* Snake-UI guidance: one unambiguous next action, no menu decisions. */
