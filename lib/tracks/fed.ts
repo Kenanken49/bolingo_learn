@@ -287,4 +287,255 @@ export const TRACK_FED: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'fed-react-workshop': {
+    id: 'fed-react-workshop',
+    title: 'Assemble a quote card step by step',
+    theory: [
+      'Workshop: build the quote machine markup exactly as instructed.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — open a quote paragraph with the text id',
+        ['<p', 'id="text"', '>'],
+        ['<p', 'id="text"', '>', 'class', 'id="quote"'],
+        'Tag, required id, closing bracket.'
+      ),
+      BUILD(
+        'Step 2 — show the quote variable inside the heading',
+        ['<h1>', '{quote}', '</h1>'],
+        ['<h1>', '{quote}', '</h1>', '{{quote}}', '<p>'],
+        'Braces embed live values in JSX.'
+      ),
+      BUILD(
+        'Step 3 — add the new-quote button',
+        ['<button', 'id="new-quote"', '>', 'New quote', '</button>'],
+        ['<button', 'id="new-quote"', '>', 'New quote', '</button>', '<div>'],
+        'Contract id plus a label the user understands.'
+      ),
+      MCQ(
+        'The tweet link must share the current quote. How?',
+        'Build its href from the same state the heading renders',
+        [
+          'Build its href from the same state the heading renders',
+          'Hard-code one famous quote forever',
+          'Open a blank tab and let the user type',
+          'Copy the heading text with a screenshot',
+        ],
+        'One state, two consumers: heading and tweet link.'
+      ),
+    ],
+  },
+
+  'fed-state-workshop': {
+    id: 'fed-state-workshop',
+    title: 'Wire editor to preview step by step',
+    theory: [
+      'Workshop: connect the textarea state to the preview pane.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — hold the markdown text in state',
+        ['const', '[text,', 'setText]', '=', 'useState("");'],
+        ['const', '[text,', 'setText]', '=', 'useState("");', 'let'],
+        'Value plus setter, starting empty.'
+      ),
+      BUILD(
+        'Step 2 — give the textarea its editor id',
+        ['<textarea', 'id="editor"', '>'],
+        ['<textarea', 'id="editor"', '>', '<input', 'id="preview"'],
+        'The grader finds the editor by this exact id.'
+      ),
+      BUILD(
+        'Step 3 — render state inside the preview pane',
+        ['<div', 'id="preview"', '>', '{text}', '</div>'],
+        ['<div', 'id="preview"', '>', '{text}', '</div>', '<span>'],
+        'Required id plus live content.'
+      ),
+      MCQ(
+        'Typing updates the preview instantly because…',
+        'Each keystroke sets state, which re-renders both panes',
+        [
+          'Each keystroke sets state, which re-renders both panes',
+          'The browser refreshes the page per key',
+          'The preview polls the server every second',
+          'Textareas and divs share memory natively',
+        ],
+        'State is the wire between input and output.'
+      ),
+    ],
+  },
+
+  'fed-effects-workshop': {
+    id: 'fed-effects-workshop',
+    title: 'Wire pads and keys step by step',
+    theory: [
+      'Workshop: connect keyboard, pads, clips, and display.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — play the Q clip on demand',
+        ['document.getElementById("Q").play();'],
+        ['document.getElementById("Q").play();', '.pause();', 'getElementByClass'],
+        'Grab the key-named clip and play it.'
+      ),
+      BUILD(
+        'Step 2 — announce the hit on the display',
+        ['document.getElementById("display").textContent', '=', 'name;'],
+        ['document.getElementById("display").textContent', '=', 'name;', '.value'],
+        'Same verdict pattern: grab, assign, done.'
+      ),
+      MCQ(
+        'One play function serves keys AND clicks. Why is that better than two copies?',
+        'One fix updates both triggers; they can never disagree',
+        [
+          'One fix updates both triggers; they can never disagree',
+          'Functions cannot be called from two places',
+          'Clicks are louder than key presses',
+          'Key handlers cannot access the display',
+        ],
+        'Share the handler; wire two triggers.'
+      ),
+      MCQ(
+        'The listener is added in an effect with a cleanup. What breaks without cleanup?',
+        'Each re-render stacks another listener — one press plays many times',
+        [
+          'Each re-render stacks another listener — one press plays many times',
+          'The pads lose their colors',
+          'The clips download again per press',
+          'Nothing — cleanups are documentation only',
+        ],
+        'Subscribe once, unsubscribe on unmount.'
+      ),
+    ],
+  },
+
+  'fed-redux-workshop': {
+    id: 'fed-redux-workshop',
+    title: 'Route a digit press step by step',
+    theory: [
+      'Workshop: dispatch the press, reduce the state, show the result.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — describe the digit press as an action',
+        ['dispatch({', 'type:', '"DIGIT",', 'digit:', '"7"', '});'],
+        ['dispatch({', 'type:', '"DIGIT",', 'digit:', '"7"', '});', 'return'],
+        'Facts, not logic: what happened, with payload.'
+      ),
+      BUILD(
+        'Step 2 — evaluate the expression on equals',
+        ['setDisplay(String(eval(expression)));'],
+        ['setDisplay(String(eval(expression)));', 'parseInt(', 'Number('],
+        'Whole-chain evaluation, exactly once, at equals.'
+      ),
+      MCQ(
+        'The reducer must not mutate state. What does it return instead?',
+        'A brand-new state object with the change applied',
+        [
+          'A brand-new state object with the change applied',
+          'The same object with a hidden flag',
+          'Nothing — reducers update the DOM directly',
+          'A promise that resolves to the old state',
+        ],
+        'New object in, new state out — change detection survives.'
+      ),
+      MCQ(
+        'Why does the display default to 0 instead of empty?',
+        'Calculators always show a valid number, even before input',
+        [
+          'Calculators always show a valid number, even before input',
+          'Zero renders faster than empty strings',
+          'The grader cannot read empty elements',
+          'Negative numbers are not supported',
+        ],
+        'Default state is a design decision: show 0, not nothing.'
+      ),
+    ],
+  },
+
+  'fed-timers-workshop': {
+    id: 'fed-timers-workshop',
+    title: 'Run a countdown step by step',
+    theory: [
+      'Workshop: schedule ticks, flip modes, sound the beep.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — tick once per second',
+        ['setInterval(()', '=>', 'tick(),', '1000);'],
+        ['setInterval(()', '=>', 'tick(),', '1000);', 'setTimeout', '500);'],
+        'Repeats forever until cleared.'
+      ),
+      BUILD(
+        'Step 2 — stop the clock on pause',
+        ['clearInterval(timerId);'],
+        ['clearInterval(timerId);', 'stop();', 'pauseTimer'],
+        'Every setInterval needs its clearing partner.'
+      ),
+      BUILD(
+        'Step 3 — sound the beep at zero',
+        ['document.getElementById("beep").play();'],
+        ['document.getElementById("beep").play();', '.stop();', 'getElementByClass'],
+        'The #beep element exists for this exact moment.'
+      ),
+      MCQ(
+        '25:00 ticks once. What must the display read?',
+        '24:59 — seconds wrap, then minutes step down',
+        [
+          '24:59 — seconds wrap, then minutes step down',
+          '25:59 — minutes never change',
+          '00:00 — any tick resets the clock',
+          '24:00 — whole minutes only',
+        ],
+        'Borrow like subtraction: wrap, then decrement.'
+      ),
+    ],
+  },
+
+  'fed-checkpoint': {
+    id: 'fed-checkpoint',
+    title: 'Front End Libraries checkpoint',
+    theory: [
+      'Final check across all five levels: components, state, effects, data flow, and timers.',
+    ],
+    questions: [
+      MCQ(
+        'How do you show a live value inside JSX?',
+        'Wrap it in curly braces: <h1>{quote}</h1>',
+        ['Wrap it in curly braces: <h1>{quote}</h1>', 'Wrap it in quotes: <h1>"quote"</h1>', 'Use an HTML comment: <!--quote-->', 'Prefix it with a dollar sign'],
+        'Braces embed JavaScript in markup.'
+      ),
+      BUILD(
+        'Hold editor text in state',
+        ['const', '[text,', 'setText]', '=', 'useState("");'],
+        ['const', '[text,', 'setText]', '=', 'useState("");', 'let'],
+        'Value plus setter.'
+      ),
+      MCQ(
+        'Why share one play function between keys and clicks?',
+        'One fix updates both — they can never disagree',
+        ['One fix updates both — they can never disagree', 'Functions run only once', 'Clicks ignore shared functions', 'Keys cannot call functions'],
+        'Share the handler.'
+      ),
+      MCQ(
+        'What is a Redux action?',
+        'A plain object describing what happened',
+        ['A plain object describing what happened', 'A CSS animation', 'A server route', 'A database table'],
+        'Facts in, reducer decides.'
+      ),
+      BUILD(
+        'Tick the clock every second',
+        ['setInterval(()', '=>', 'tick(),', '1000);'],
+        ['setInterval(()', '=>', 'tick(),', '1000);', 'setTimeout'],
+        'Repeats until cleared.'
+      ),
+      MCQ(
+        'At 00:00 the clock must…',
+        'Beep, then flip session to break (or back)',
+        ['Beep, then flip session to break (or back)', 'Reset silently to 25:00', 'Delete the beep element', 'Freeze until reload'],
+        'Signal first, then transition.'
+      ),
+    ],
+  },
 };

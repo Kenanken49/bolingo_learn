@@ -287,4 +287,275 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'sec-helmet-workshop': {
+    id: 'sec-helmet-workshop',
+    title: 'Lock headers step by step',
+    theory: [
+      'Workshop: set secure defaults, count fair votes.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — apply Helmet defaults',
+        ['app.use(helmet());'],
+        ['app.use(helmet());', 'helmet.use(', 'secure()'],
+        'One call sets the whole baseline.'
+      ),
+      BUILD(
+        'Step 2 — fetch a stock price by symbol',
+        ['fetch(`/api/stock-prices?stock=${symbol}`)'],
+        ['fetch(`/api/stock-prices?stock=${symbol}`)', 'GET /prices', 'stock()'],
+        'Symbol as query param.'
+      ),
+      MCQ(
+        'A has 5 likes, B has 3. Relative view?',
+        'A: +2 and B: −2 — signed difference',
+        [
+          'A: +2 and B: −2 — signed difference',
+          'Both show 8 pooled',
+          'Both show 0',
+          'Fractions 5/5 and 3/5',
+        ],
+        'Relative means comparative.'
+      ),
+      MCQ(
+        'Why dedupe likes by IP?',
+        'Buttons click forever — IPs approximate one person',
+        [
+          'Buttons click forever — IPs approximate one person',
+          'IPs load faster',
+          'Buttons lack database access',
+          'IPs are unguessable secrets',
+        ],
+        'One like per IP.'
+      ),
+    ],
+  },
+
+  'sec-auth-workshop': {
+    id: 'sec-auth-workshop',
+    title: 'Gate changes step by step',
+    theory: [
+      'Workshop: flag reports, check passwords, float fresh threads.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — flag a thread reported',
+        ['findOneAndUpdate(id,', '{', 'reported:', 'true', '})'],
+        ['findOneAndUpdate(id,', '{', 'reported:', 'true', '})', 'deleteOne'],
+        'Flip the flag; keep the text for moderators.'
+      ),
+      BUILD(
+        'Step 2 — delete only on password match',
+        ['if', '(password', '===', 'stored)', 'deleteOne();'],
+        ['if', '(password', '===', 'stored)', 'deleteOne();', 'drop()'],
+        'Compare first, destroy second.'
+      ),
+      MCQ(
+        'Wrong password on delete. Response?',
+        'Refuse — reveal nothing about the right one',
+        [
+          'Refuse — reveal nothing about the right one',
+          'Delete anyway for effort',
+          'Return the correct password',
+          'Lock the board an hour',
+        ],
+        'Incorrect password, no leaks.'
+      ),
+      MCQ(
+        'Why sort the feed by bumped_on?',
+        'Fresh replies float up automatically',
+        [
+          'Fresh replies float up automatically',
+          'Old threads delete themselves',
+          'Alphabetical by author',
+          'Reports always pin first',
+        ],
+        'Replies bump; sorting rides it.'
+      ),
+    ],
+  },
+
+  'sec-crud-workshop': {
+    id: 'sec-crud-workshop',
+    title: 'Audit writes step by step',
+    theory: [
+      'Workshop: filter reads, validate writes, stamp time.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — find by project plus query',
+        ['Issue.find({', 'project,', '...req.query', '})'],
+        ['Issue.find({', 'project,', '...req.query', '})', '.all()'],
+        'Every param becomes a condition.'
+      ),
+      BUILD(
+        'Step 2 — stamp the update',
+        ['doc.updated_on', '=', 'new', 'Date();'],
+        ['doc.updated_on', '=', 'new', 'Date();', 'created_on'],
+        'PUT moves updated_on only.'
+      ),
+      MCQ(
+        '?open=true&assigned=ana returns?',
+        'Issues matching ALL filters',
+        [
+          'Issues matching ALL filters',
+          'Issues matching ANY filter',
+          'Everything unfiltered',
+          'Only filter names',
+        ],
+        'Filters AND together.'
+      ),
+      MCQ(
+        'A DELETE succeeds. Confirm with?',
+        'A deleted message plus the removed id',
+        [
+          'A deleted message plus the removed id',
+          'All remaining issues',
+          'A replacement issue',
+          'Silence',
+        ],
+        'Client drops it from view.'
+      ),
+    ],
+  },
+
+  'sec-ml-workshop': {
+    id: 'sec-ml-workshop',
+    title: 'Fit honestly step by step',
+    theory: [
+      'Workshop: stack layers, split data, trust only held-out error.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — stack a 64-unit relu layer',
+        ['Dense(64,', 'activation="relu")'],
+        ['Dense(64,', 'activation="relu")', 'Flatten('],
+        'Dense connects; relu bends.'
+      ),
+      BUILD(
+        'Step 2 — score on unseen data',
+        ['model.evaluate(X_test,', 'y_test)'],
+        ['model.evaluate(X_test,', 'y_test)', '.fit('],
+        'Unseen data is the only honest score.'
+      ),
+      MCQ(
+        'model.fit does what?',
+        'Nudges weights over epochs to cut training error',
+        [
+          'Nudges weights over epochs to cut training error',
+          'Checks disk space',
+          'Resizes images',
+          'Deletes weak layers',
+        ],
+        'Fit equals learn.'
+      ),
+      MCQ(
+        'MAE 2.1 on house prices ($1k units) means?',
+        'Miss by $2,100 on average',
+        [
+          'Miss by $2,100 on average',
+          '2.1% exactly right',
+          '2.1 epochs trained',
+          '21 houses perfect',
+        ],
+        'MAE speaks the target units.'
+      ),
+    ],
+  },
+
+  'sec-nlp-workshop': {
+    id: 'sec-nlp-workshop',
+    title: 'Vectorize words step by step',
+    theory: [
+      'Workshop: tokenize, pad, squeeze to probability.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — texts to equal-length sequences',
+        ['pad_sequences(tokenizer.texts_to_sequences(texts))'],
+        ['pad_sequences(tokenizer.texts_to_sequences(texts))', '.split('],
+        'Ids first, padding second.'
+      ),
+      MCQ(
+        'Final Dense uses sigmoid because?',
+        'It squeezes output into a 0–1 spam probability',
+        [
+          'It squeezes output into a 0–1 spam probability',
+          'It trains twice as fast',
+          'It doubles vocabulary',
+          'It writes English sentences',
+        ],
+        'Near 1 spam, near 0 ham.'
+      ),
+      MCQ(
+        '98% accuracy but all spam lands in inboxes. Cause?',
+        'Imbalance — accuracy on mostly-ham hides total spam failure',
+        [
+          'Imbalance — accuracy on mostly-ham hides total spam failure',
+          'Too few milliseconds trained',
+          'Sigmoid cannot output spam',
+          'Tokenizers delete spam words',
+        ],
+        'Read the confusion matrix.'
+      ),
+      MCQ(
+        'Where does the headline score come from?',
+        'evaluate on held-out messages, index 1',
+        [
+          'evaluate on held-out messages, index 1',
+          'Training loss, index 0',
+          'The tokenizer vocabulary size',
+          'The embedding dimension',
+        ],
+        '[loss, accuracy] — index 1.'
+      ),
+    ],
+  },
+
+  'secml-checkpoint': {
+    id: 'secml-checkpoint',
+    title: 'Security & ML checkpoint',
+    theory: [
+      'Final check across all five levels: headers, identity, CRUD, regression, and classification.',
+    ],
+    questions: [
+      MCQ(
+        'What does frameguard stop?',
+        'Clickjacking via invisible framing',
+        ['Clickjacking via invisible framing', 'Slow queries', 'Double likes', 'Typos'],
+        'Deny framing.'
+      ),
+      MCQ(
+        'Delete arrives with wrong password. Action?',
+        'Refuse, reveal nothing',
+        ['Refuse, reveal nothing', 'Delete anyway', 'Return the password', 'Lock the board'],
+        'No leaks.'
+      ),
+      BUILD(
+        'Find by project plus query',
+        ['Issue.find({', 'project,', '...req.query', '})'],
+        ['Issue.find({', 'project,', '...req.query', '})', '.all()'],
+        'Params become conditions.'
+      ),
+      MCQ(
+        'Why hold out validation data?',
+        'To tell patterns apart from memorized rows',
+        ['To tell patterns apart from memorized rows', 'To train faster', 'To double data', 'To train a second model'],
+        'Unseen error is the score.'
+      ),
+      BUILD(
+        'Texts to equal sequences',
+        ['pad_sequences(tokenizer.texts_to_sequences(texts))'],
+        ['pad_sequences(tokenizer.texts_to_sequences(texts))', '.split('],
+        'Ids, then padding.'
+      ),
+      MCQ(
+        'Sigmoid head outputs?',
+        'A 0–1 spam probability',
+        ['A 0–1 spam probability', 'Double speed', 'Double vocabulary', 'English sentences'],
+        'Near 1 spam.'
+      ),
+    ],
+  },
 };

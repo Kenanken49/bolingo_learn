@@ -282,4 +282,260 @@ export const TRACK_DB: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'db-tables-workshop': {
+    id: 'db-tables-workshop',
+    title: 'Declare keys step by step',
+    theory: [
+      'Workshop: write the identity and relationship clauses exactly as instructed.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — an integer id as primary key',
+        ['id', 'INTEGER', 'PRIMARY', 'KEY,'],
+        ['id', 'INTEGER', 'PRIMARY', 'KEY,', 'TEXT'],
+        'Type first, then the constraint.'
+      ),
+      BUILD(
+        'Step 2 — create a table for stars',
+        ['CREATE', 'TABLE', 'star(id', 'SERIAL', 'PRIMARY', 'KEY);'],
+        ['CREATE', 'TABLE', 'star(id', 'SERIAL', 'PRIMARY', 'KEY);', 'DATABASE'],
+        'CREATE TABLE names it; columns follow.'
+      ),
+      BUILD(
+        'Step 3 — point each star at its galaxy',
+        ['galaxy_id', 'INTEGER', 'REFERENCES', 'galaxy(id),'],
+        ['galaxy_id', 'INTEGER', 'REFERENCES', 'galaxy(id),', 'ORDER', 'BY'],
+        'Foreign key: type plus the parent it names.'
+      ),
+      MCQ(
+        'Why create galaxy before star?',
+        'Children cannot reference parents that do not exist yet',
+        [
+          'Children cannot reference parents that do not exist yet',
+          'Alphabetical order is mandatory',
+          'Galaxies are larger than stars',
+          'Postgres allows only one table per day',
+        ],
+        'Parents first, then referencing children.'
+      ),
+    ],
+  },
+
+  'db-select-workshop': {
+    id: 'db-select-workshop',
+    title: 'Filter and sort step by step',
+    theory: [
+      'Workshop: assemble the read query clause by clause.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — read every column from characters',
+        ['SELECT', '*', 'FROM', 'characters;'],
+        ['SELECT', '*', 'FROM', 'characters;', 'TABLE'],
+        'Star means all columns.'
+      ),
+      BUILD(
+        'Step 2 — keep only loud rows, newest sort coming',
+        ['WHERE', 'volume', '>', '5'],
+        ['WHERE', 'volume', '>', '5', 'HAVING', 'IF'],
+        'WHERE filters rows before any sorting.'
+      ),
+      BUILD(
+        'Step 3 — sort the survivors by name',
+        ['ORDER', 'BY', 'name;'],
+        ['ORDER', 'BY', 'name;', 'SORT', 'GROUP'],
+        'ORDER BY is always last.'
+      ),
+      MCQ(
+        'SELECT name FROM characters WHERE volume > 5 ORDER BY name — what returns?',
+        'Names of loud characters, A to Z',
+        [
+          'Names of loud characters, A to Z',
+          'All columns of quiet characters',
+          'One random loud character',
+          'The number 5',
+        ],
+        'Columns, filter, sort — read it in clause order.'
+      ),
+    ],
+  },
+
+  'db-joins-workshop': {
+    id: 'db-joins-workshop',
+    title: 'Pair tables step by step',
+    theory: [
+      'Workshop: assemble the join, then predict who survives it.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — join actions onto characters',
+        ['JOIN', 'actions', 'ON', 'characters.id', '=', 'actions.character_id;'],
+        ['JOIN', 'actions', 'ON', 'characters.id', '=', 'actions.character_id;', 'WHERE'],
+        'Second table, then the key equality.'
+      ),
+      MCQ(
+        'A character with no actions meets this inner join. Result?',
+        'No row — unmatched rows vanish from inner joins',
+        [
+          'No row — unmatched rows vanish from inner joins',
+          'A row with blank action columns',
+          'Two rows, to be safe',
+          'An error message',
+        ],
+        'Inner means matched pairs only.'
+      ),
+      BUILD(
+        'Step 2 — list available bikes with their names',
+        ['SELECT', 'name', 'FROM', 'bikes', 'WHERE', 'available', '=', 'TRUE;'],
+        ['SELECT', 'name', 'FROM', 'bikes', 'WHERE', 'available', '=', 'TRUE;', 'JOIN'],
+        'The rental-availability read.'
+      ),
+      MCQ(
+        'Why join sizes instead of storing the size text on every bike?',
+        'One size row updates everywhere; copies drift apart',
+        [
+          'One size row updates everywhere; copies drift apart',
+          'Text columns are forbidden in Postgres',
+          'Joins make queries shorter to type',
+          'Bikes have no sizes',
+        ],
+        'Normalize: store once, reference by key.'
+      ),
+    ],
+  },
+
+  'db-bash-workshop': {
+    id: 'db-bash-workshop',
+    title: 'Script a rental step by step',
+    theory: [
+      'Workshop: build the helper variable, then the state-changing query.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — run one query through the helper',
+        ['$PSQL', '"SELECT', '1;"'],
+        ['$PSQL', '"SELECT', '1;"', 'ECHO'],
+        'Variable first, quoted SQL second.'
+      ),
+      BUILD(
+        'Step 2 — mark bike 3 rented',
+        ['UPDATE', 'bikes', 'SET', 'available', '=', 'FALSE', 'WHERE', 'bike_id', '=', '3;'],
+        ['UPDATE', 'bikes', 'SET', 'available', '=', 'FALSE', 'WHERE', 'bike_id', '=', '3;', 'SELECT'],
+        'UPDATE table SET column WHERE row.'
+      ),
+      MCQ(
+        'Why does the script use -t --no-align flags?',
+        'So output is bare values scripts can parse',
+        [
+          'So output is bare values scripts can parse',
+          'So queries run ten times faster',
+          'So only admins may connect',
+          'So results encrypt themselves',
+        ],
+        'Humans like tables; scripts like values.'
+      ),
+      MCQ(
+        'Checkout must UPDATE two things. Which two?',
+        'The rental row and the bike availability flag',
+        [
+          'The rental row and the bike availability flag',
+          'The customer name and the shop address',
+          'The psql version and the Bash history',
+          'Nothing — SELECT is enough',
+        ],
+        'Renting is state change on both sides.'
+      ),
+    ],
+  },
+
+  'db-inserts-workshop': {
+    id: 'db-inserts-workshop',
+    title: 'Book safely step by step',
+    theory: [
+      'Workshop: identify first, insert second, never concatenate.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — record the appointment',
+        ['INSERT', 'INTO', 'appointments(customer_id,', 'time)', 'VALUES(7,', '"10:00");'],
+        ['INSERT', 'INTO', 'appointments(customer_id,', 'time)', 'VALUES(7,', '"10:00");', 'SELECT'],
+        'Table, columns, values — the booking write.'
+      ),
+      MCQ(
+        'What must happen before that INSERT runs?',
+        'Look the customer up by phone — reuse or create them',
+        [
+          'Look the customer up by phone — reuse or create them',
+          'Delete all other appointments',
+          'Email the customer a survey',
+          'Restart the database',
+        ],
+        'Identify first, book second.'
+      ),
+      BUILD(
+        'Step 2 — check how busy the shop is',
+        ['SELECT', 'COUNT(*)', 'FROM', 'appointments;'],
+        ['SELECT', 'COUNT(*)', 'FROM', 'appointments;', 'SUM'],
+        'COUNT(*) is the scheduler pulse check.'
+      ),
+      MCQ(
+        'A phone field receives: " OR "1"="1. What is it?',
+        'An injection attempt — validate, never concatenate',
+        [
+          'An injection attempt — validate, never concatenate',
+          'A valid international number',
+          'A typo the database will forgive',
+          'A request for extra services',
+        ],
+        'Quoted input that rewrites logic is hostile by definition.'
+      ),
+    ],
+  },
+
+  'db-checkpoint': {
+    id: 'db-checkpoint',
+    title: 'Relational Databases checkpoint',
+    theory: [
+      'Final check across all five levels: keys, reads, joins, scripts, and safety.',
+    ],
+    questions: [
+      MCQ(
+        'What does PRIMARY KEY guarantee?',
+        'Unique, non-empty identity per row',
+        ['Unique, non-empty identity per row', 'Alphabetical storage', 'Single-user access', 'Automatic backups'],
+        'The row address.'
+      ),
+      BUILD(
+        'Read all columns from characters',
+        ['SELECT', '*', 'FROM', 'characters;'],
+        ['SELECT', '*', 'FROM', 'characters;', 'TABLE'],
+        'Star means everything.'
+      ),
+      MCQ(
+        'What does JOIN … ON declare?',
+        'How rows from two tables pair up',
+        ['How rows from two tables pair up', 'Which table deletes first', 'The table password', 'Insert order'],
+        'Match keys, pair rows.'
+      ),
+      MCQ(
+        'Why -t --no-align in scripts?',
+        'Bare values that scripts can parse',
+        ['Bare values that scripts can parse', 'Faster queries', 'Admin-only mode', 'Encryption'],
+        'Values, not tables.'
+      ),
+      BUILD(
+        'Mark bike 3 rented',
+        ['UPDATE', 'bikes', 'SET', 'available', '=', 'FALSE', 'WHERE', 'bike_id', '=', '3;'],
+        ['UPDATE', 'bikes', 'SET', 'available', '=', 'FALSE', 'WHERE', 'bike_id', '=', '3;', 'SELECT'],
+        'Precision via the key.'
+      ),
+      MCQ(
+        'Phone input reads: " OR "1"="1. Response?',
+        'Reject — never concatenate input into SQL',
+        ['Reject — never concatenate input into SQL', 'Accept as international', 'Trim and store it', 'Book every service'],
+        'Hostile input, safe refusal.'
+      ),
+    ],
+  },
 };

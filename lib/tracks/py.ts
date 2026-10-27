@@ -286,4 +286,270 @@ export const TRACK_PY: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'py-basics-workshop': {
+    id: 'py-basics-workshop',
+    title: 'Grow a ledger step by step',
+    theory: [
+      'Workshop: deposit, refuse overdrafts, total the ledger.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — record a 50 deposit',
+        ['self.ledger.append({"amount":', '50,', '"description":', '"deposit"', '})'],
+        ['self.ledger.append({"amount":', '50,', '"description":', '"deposit"', '})', 'add'],
+        'append grows the list by one record.'
+      ),
+      BUILD(
+        'Step 2 — total all amounts from zero',
+        ['balance', '=', 'sum(item["amount"]', 'for', 'item', 'in', 'self.ledger)'],
+        ['balance', '=', 'sum(item["amount"]', 'for', 'item', 'in', 'self.ledger)', 'total('],
+        'Deposits add, withdrawals subtract.'
+      ),
+      MCQ(
+        'Balance is 30, withdraw(50) is called. Result?',
+        'False — no overdraft, ledger untouched',
+        [
+          'False — no overdraft, ledger untouched',
+          'True with balance -20',
+          'Ledger deleted',
+          'Withdraw 30, forget the rest',
+        ],
+        'Guard first, then mutate.'
+      ),
+      MCQ(
+        'Why does the method use self.ledger?',
+        'self is the instance — its own list, its own balance',
+        [
+          'self is the instance — its own list, its own balance',
+          'Globals are faster',
+          'Methods cannot see instance data',
+          'Files must be re-read each time',
+        ],
+        'self carries the instance state.'
+      ),
+    ],
+  },
+
+  'py-oop-workshop': {
+    id: 'py-oop-workshop',
+    title: 'Shape a square step by step',
+    theory: [
+      'Workshop: inherit everything, construct with one side.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — compute the area',
+        ['return', 'self.width', '*', 'self.height'],
+        ['return', 'self.width', '*', 'self.height', '+'],
+        'Width times height.'
+      ),
+      BUILD(
+        'Step 2 — construct via the parent',
+        ['super().__init__(side,', 'side)'],
+        ['super().__init__(side,', 'side)', 'self('],
+        'Square passes one side twice.'
+      ),
+      MCQ(
+        'Square(Rectangle) means?',
+        'Square inherits every Rectangle method',
+        [
+          'Square inherits every Rectangle method',
+          'Square deletes them',
+          'Rectangle becomes a Square',
+          'They cannot mix',
+        ],
+        'IS-A: reuse everything.'
+      ),
+      MCQ(
+        'Why refuse pictures wider than 50?',
+        'Displays are for humans — cap them, keep math exact',
+        [
+          'Displays are for humans — cap them, keep math exact',
+          'Strings cannot exceed 50 chars',
+          'Wide shapes have no area',
+          'Tests time out at 51',
+        ],
+        'Cap display, never the geometry.'
+      ),
+    ],
+  },
+
+  'py-pandas-workshop': {
+    id: 'py-pandas-workshop',
+    title: 'Summarize people step by step',
+    theory: [
+      'Workshop: load the frame, split rows, summarize.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — count people by race',
+        ['df["race"].value_counts()'],
+        ['df["race"].value_counts()', 'df.count', '.mean()'],
+        'Column, then count each value.'
+      ),
+      BUILD(
+        'Step 2 — average hours by occupation',
+        ['df.groupby("occupation")["hours-per-week"].mean()'],
+        ['df.groupby("occupation")["hours-per-week"].mean()', '.sum()', '.max()'],
+        'Split rows, summarize each split.'
+      ),
+      MCQ(
+        'Average age of men vs women needs?',
+        'Group by sex, mean the age',
+        [
+          'Group by sex, mean the age',
+          'Sort and read the middle',
+          'Delete under-18s first',
+          'Average the two oldest',
+        ],
+        'groupby, then mean.'
+      ),
+      MCQ(
+        'pd.read_csv returns what?',
+        'A DataFrame: rows of people, columns of attributes',
+        [
+          'A DataFrame: rows of people, columns of attributes',
+          'One average number',
+          'A saved chart image',
+          'Column names only',
+        ],
+        'Everything starts from the frame.'
+      ),
+    ],
+  },
+
+  'py-time-workshop': {
+    id: 'py-time-workshop',
+    title: 'Roll time forward step by step',
+    theory: [
+      'Workshop: declare, flip, roll over, name the day.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — declare add_time with optional weekday',
+        ['def', 'add_time(start,', 'duration,', 'day=None):'],
+        ['def', 'add_time(start,', 'duration,', 'day=None):', 'function'],
+        'def, params, optional default, colon.'
+      ),
+      BUILD(
+        'Step 2 — format time with zero-padded minutes',
+        ['f"{hour}:{minutes:02d}', '{period}"'],
+        ['f"{hour}:{minutes:02d}', '{period}"', 'str(hour)'],
+        'Pad minutes, then AM/PM.'
+      ),
+      MCQ(
+        '11:59 PM + 0:02 gives?',
+        '12:01 AM next day — flip flag, roll the date',
+        [
+          '12:01 AM next day — flip flag, roll the date',
+          '11:61 PM',
+          '12:01 PM same day',
+          'An error — times cannot cross midnight',
+        ],
+        'Crossing 12 flips; crossing midnight adds a day.'
+      ),
+      MCQ(
+        'Start Monday, +3 days lands on?',
+        'Thursday, wrapping past Sunday with modulo 7',
+        [
+          'Thursday, wrapping past Sunday with modulo 7',
+          'Monday — weekdays freeze',
+          'Day 4 as a number',
+          'The duration weekday',
+        ],
+        'Index the 7-day list, modulo 7.'
+      ),
+    ],
+  },
+
+  'py-format-workshop': {
+    id: 'py-format-workshop',
+    title: 'Stack problems step by step',
+    theory: [
+      'Workshop: validate first, right-align second, join last.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — right-align the first operand',
+        ['first.rjust(width)'],
+        ['first.rjust(width)', '.ljust(', 'first +'],
+        'Pad left so units line up.'
+      ),
+      BUILD(
+        'Step 2 — stack the four lines',
+        ['"\n".join([line1,', 'line2,', 'line3,', 'line4])'],
+        ['"\n".join([line1,', 'line2,', 'line3,', 'line4])', '" ".join'],
+        'Newlines between rows, one string out.'
+      ),
+      MCQ(
+        'Six problems arrive. First move?',
+        'Return "Error: Too many problems." with no arrangement',
+        [
+          'Return "Error: Too many problems." with no arrangement',
+          'Arrange 5, drop one silently',
+          'Squeeze all 6 narrower',
+          'Ask the user to delete one',
+        ],
+        'Validate first, format never on bad input.'
+      ),
+      MCQ(
+        'When does the fourth answer line appear?',
+        'Only when show_answers is True',
+        [
+          'Only when show_answers is True',
+          'Always, answers are mandatory',
+          'Never — answers are forbidden',
+          'When problems exceed 4 digits',
+        ],
+        'Opt-in answers, aligned beneath.'
+      ),
+    ],
+  },
+
+  'py-checkpoint': {
+    id: 'py-checkpoint',
+    title: 'Python checkpoint',
+    theory: [
+      'Final check across all five levels: ledgers, classes, frames, time, and formatting.',
+    ],
+    questions: [
+      MCQ(
+        'Balance 30, withdraw(50). Result?',
+        'False — no overdraft',
+        ['False — no overdraft', 'True, balance -20', 'Ledger deleted', 'Withdraw 30'],
+        'Guard first.'
+      ),
+      MCQ(
+        'Square(Rectangle) means?',
+        'Inherits every method',
+        ['Inherits every method', 'Deletes them', 'Reverses the relation', 'Isolation'],
+        'IS-A reuse.'
+      ),
+      BUILD(
+        'Count people by race',
+        ['df["race"].value_counts()'],
+        ['df["race"].value_counts()', 'df.count'],
+        'Column, count values.'
+      ),
+      BUILD(
+        'Right-align the operand',
+        ['first.rjust(width)'],
+        ['first.rjust(width)', '.ljust('],
+        'Pad left, align units.'
+      ),
+      MCQ(
+        '11:59 PM + 0:02 gives?',
+        '12:01 AM next day',
+        ['12:01 AM next day', '11:61 PM', '12:01 PM', 'An error'],
+        'Flip and roll.'
+      ),
+      MCQ(
+        'Six problems arrive. First move?',
+        'Return the too-many error, arrange nothing',
+        ['Return the too-many error, arrange nothing', 'Arrange 5 silently', 'Squeeze narrower', 'Ask the user'],
+        'Validate first.'
+      ),
+    ],
+  },
 };

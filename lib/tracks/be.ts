@@ -287,4 +287,265 @@ export const TRACK_BE: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'be-routes-workshop': {
+    id: 'be-routes-workshop',
+    title: 'Answer dates step by step',
+    theory: [
+      'Workshop: assemble the timestamp route exactly as instructed.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — register the optional-date route',
+        ['app.get("/api/:date?",', 'handler);'],
+        ['app.get("/api/:date?",', 'handler);', 'post', 'listen'],
+        'Method, optional param, handler.'
+      ),
+      BUILD(
+        'Step 2 — send the result as JSON',
+        ['res.json({', 'unix,', 'utc', '});'],
+        ['res.json({', 'unix,', 'utc', '});', 'send'],
+        'One response per request.'
+      ),
+      MCQ(
+        'Empty input arrives. What is the correct answer?',
+        'Now — new Date() with no arguments',
+        [
+          'Now — new Date() with no arguments',
+          'An empty page',
+          'The server source',
+          'A random date',
+        ],
+        'No date means the current moment.'
+      ),
+      MCQ(
+        'Garbage input arrives. What is the correct answer?',
+        '{ error: "Invalid Date" } — predictable JSON, no crash',
+        [
+          '{ error: "Invalid Date" } — predictable JSON, no crash',
+          'A stack trace in HTML',
+          'Silence and a hanging request',
+          'Deletion of the route',
+        ],
+        'Every input gets a shaped answer.'
+      ),
+    ],
+  },
+
+  'be-validation-workshop': {
+    id: 'be-validation-workshop',
+    title: 'Guard inputs step by step',
+    theory: [
+      'Workshop: validate URLs, parse uploads, redirect cleanly.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — accept one file from upfile',
+        ['upload.single("upfile")'],
+        ['upload.single("upfile")', 'upload.many', '.array('],
+        'One file, known field.'
+      ),
+      BUILD(
+        'Step 2 — redirect to the stored original',
+        ['res.redirect(original_url);'],
+        ['res.redirect(original_url);', 'res.json', 'render'],
+        'Look up, then redirect — never render.'
+      ),
+      MCQ(
+        'A posted URL fails parsing. Next step?',
+        'Reject with an error — store nothing',
+        [
+          'Reject with an error — store nothing',
+          'Store it and hope browsers cope',
+          'Guess what the user meant and save that',
+          'Redirect to the homepage silently',
+        ],
+        'Validate first, store second.'
+      ),
+      MCQ(
+        'The file response needs name, type, size. Source?',
+        'The parsed upload: originalname, mimetype, size',
+        [
+          'The parsed upload: originalname, mimetype, size',
+          'The form title tag',
+          'The server hostname',
+          'The user password hash',
+        ],
+        'Multer exposes all three on req.file.'
+      ),
+    ],
+  },
+
+  'be-models-workshop': {
+    id: 'be-models-workshop',
+    title: 'Shape data step by step',
+    theory: [
+      'Workshop: declare schemas, then persist through models.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — declare the original_url string field',
+        ['original_url:', '{', 'type:', 'String,', 'required:', 'true', '}'],
+        ['original_url:', '{', 'type:', 'String,', 'required:', 'true', '}', 'Number'],
+        'Field, type wrapper, String, required.'
+      ),
+      BUILD(
+        'Step 2 — persist the posted user',
+        ['await', 'User.create({', 'username', '}));'],
+        ['await', 'User.create({', 'username', '}));', 'find'],
+        'Create persists; await lands the write.'
+      ),
+      MCQ(
+        'Exercise date is missing. What breaks?',
+        'Range filters go blind — default it to the exercise day',
+        [
+          'Range filters go blind — default it to the exercise day',
+          'Calories stop counting',
+          'MongoDB deletes the user',
+          'Nothing — dates are decorative',
+        ],
+        'Timelines need every point dated.'
+      ),
+      MCQ(
+        'Why short integer ids for short URLs?',
+        'Tiny, typable, and cheap to look up',
+        [
+          'Tiny, typable, and cheap to look up',
+          'Integers are encrypted',
+          'Strings over ten chars are banned',
+          'Full URLs expire hourly',
+        ],
+        'The id IS the short URL.'
+      ),
+    ],
+  },
+
+  'be-crud-workshop': {
+    id: 'be-crud-workshop',
+    title: 'Filter and stamp step by step',
+    theory: [
+      'Workshop: narrow reads with queries, audit writes with timestamps.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — cap the log to the limit',
+        ['log.slice(0,', 'Number(limit));'],
+        ['log.slice(0,', 'Number(limit));', 'splice'],
+        'slice copies the first N; the log never shrinks.'
+      ),
+      BUILD(
+        'Step 2 — filter issues by the query',
+        ['Issue.find({', 'project,', '...req.query', '})'],
+        ['Issue.find({', 'project,', '...req.query', '})', '.all()'],
+        'Spread the query into the finder.'
+      ),
+      BUILD(
+        'Step 3 — stamp the update time',
+        ['doc.updated_on', '=', 'new', 'Date();'],
+        ['doc.updated_on', '=', 'new', 'Date();', 'created_on'],
+        'PUT refreshes updated_on; created_on never moves.'
+      ),
+      MCQ(
+        '?open=true&assigned=ana returns what?',
+        'Issues matching ALL filters at once',
+        [
+          'Issues matching ALL filters at once',
+          'Issues matching ANY filter',
+          'Every issue unfiltered',
+          'Only the filter names',
+        ],
+        'Filters combine with AND.'
+      ),
+    ],
+  },
+
+  'be-headers-workshop': {
+    id: 'be-headers-workshop',
+    title: 'Read requests step by step',
+    theory: [
+      'Workshop: extract the three whoami facts from headers.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — read the language header',
+        ['req.headers["accept-language"]'],
+        ['req.headers["accept-language"]', 'req.body', 'req.query'],
+        'Lowercase names on req.headers.'
+      ),
+      BUILD(
+        'Step 2 — answer with all three fields',
+        ['res.json({', 'ipaddress,', 'language,', 'software', '});'],
+        ['res.json({', 'ipaddress,', 'language,', 'software', '});', 'req'],
+        'Three facts, one object.'
+      ),
+      MCQ(
+        'Why can req.ip lie behind proxies?',
+        'Proxies may append or forge forwarding headers',
+        [
+          'Proxies may append or forge forwarding headers',
+          'IPs expire per request',
+          'Express randomizes req.ip',
+          'Proxies convert IPs to hostnames',
+        ],
+        'Trust, but verify.'
+      ),
+      MCQ(
+        'A 500MB "profile picture" arrives. First move?',
+        'Reject at the size limit before parsing',
+        [
+          'Reject at the size limit before parsing',
+          'Store it, then compress',
+          'Split across 500 rows',
+          'Render it full-size',
+        ],
+        'Limits belong at the door.'
+      ),
+    ],
+  },
+
+  'be-checkpoint': {
+    id: 'be-checkpoint',
+    title: 'Back End checkpoint',
+    theory: [
+      'Final check across all five levels: routes, validation, models, filters, and headers.',
+    ],
+    questions: [
+      MCQ(
+        'What does the ? in "/api/:date?" mean?',
+        'Optional — matches with or without the date',
+        ['Optional — matches with or without the date', 'Literal question mark', 'Uncertain response', 'A quiz for the user'],
+        'One route serves both shapes.'
+      ),
+      MCQ(
+        'Posted URL fails parsing. Action?',
+        'Reject — store nothing',
+        ['Reject — store nothing', 'Store and hope', 'Guess and save', 'Redirect silently'],
+        'Validate first.'
+      ),
+      BUILD(
+        'Persist the posted user',
+        ['await', 'User.create({', 'username', '}));'],
+        ['await', 'User.create({', 'username', '}));', 'find'],
+        'Create and await.'
+      ),
+      MCQ(
+        '?from=2024-01-01&limit=2 means?',
+        'That log from January 1st, at most 2 entries',
+        ['That log from January 1st, at most 2 entries', 'Delete 2 entries', 'Create user "from"', 'Only the 2nd of January'],
+        'Range plus cap.'
+      ),
+      BUILD(
+        'Read the language header',
+        ['req.headers["accept-language"]'],
+        ['req.headers["accept-language"]', 'req.body'],
+        'Lowercase on req.headers.'
+      ),
+      MCQ(
+        'PUT arrives changing status. Which timestamp moves?',
+        'updated_on — created_on is write-once',
+        ['updated_on — created_on is write-once', 'created_on', 'Both always', 'Neither'],
+        'Refresh updated, keep birth.'
+      ),
+    ],
+  },
 };

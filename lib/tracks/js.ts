@@ -257,4 +257,245 @@ export const TRACK_JS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'js-variables-workshop': {
+    id: 'js-variables-workshop',
+    title: 'Build a counter step by step',
+    theory: [
+      'Workshop: assemble the counting loop exactly as instructed. Every token already appeared in the lesson.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — declare a changeable total starting at 0',
+        ['let', 'total', '=', '0;'],
+        ['let', 'total', '=', '0;', 'const', '1;'],
+        'let, name, assignment, starting value.'
+      ),
+      BUILD(
+        'Step 2 — open a loop running 3 times',
+        ['for', '(let', 'i', '=', '0;', 'i', '<', '3;', 'i++)', '{'],
+        ['for', '(let', 'i', '=', '0;', 'i', '<', '3;', 'i++)', '{', 'while', '}'],
+        'Initializer, condition, update, then the opening brace.'
+      ),
+      BUILD(
+        'Step 3 — add 1 to the total each pass',
+        ['total', '+=', '1;', '}'],
+        ['total', '+=', '1;', '}', '=', 'total;'],
+        'Grow the total, then close the loop body.'
+      ),
+      MCQ(
+        'After the loop, total equals 3. Why not 4?',
+        'i takes 0, 1, 2 — three passes, then the condition fails',
+        [
+          'i takes 0, 1, 2 — three passes, then the condition fails',
+          'The last pass is skipped automatically',
+          'total resets to zero after every loop',
+          'for loops always run one fewer time than written',
+        ],
+        'Count the values of i: three values, three passes.'
+      ),
+    ],
+  },
+
+  'js-functions-workshop': {
+    id: 'js-functions-workshop',
+    title: 'Build a converter step by step',
+    theory: [
+      'Workshop: assemble the value-map converter exactly as instructed.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — open a values object with M at 1000',
+        ['const', 'values', '=', '{', 'M:', '1000', '};'],
+        ['const', 'values', '=', '{', 'M:', '1000', '};', 'map', '[]'],
+        'Lookup table first: symbol keys, numeric values.'
+      ),
+      BUILD(
+        'Step 2 — declare the converter function',
+        ['function', 'toRoman(num)', '{'],
+        ['function', 'toRoman(num)', '{', '=>', 'function()', '}'],
+        'Keyword, name with parameter, opening brace.'
+      ),
+      BUILD(
+        'Step 3 — start with an empty answer string',
+        ['let', 'result', '=', '"";'],
+        ['let', 'result', '=', '"";', 'const', 'null;'],
+        'Empty string, grown symbol by symbol.'
+      ),
+      MCQ(
+        'With values { M: 1000, CM: 900 } and num 1900, what happens first?',
+        'M fits, so append M and subtract 1000, leaving 900',
+        [
+          'M fits, so append M and subtract 1000, leaving 900',
+          'CM fits immediately because letters come first',
+          'Both symbols append at once for MCM',
+          'The function returns empty since 1900 is not a key',
+        ],
+        'Greedy order eats the largest fitting value first.'
+      ),
+    ],
+  },
+
+  'js-array-workshop': {
+    id: 'js-array-workshop',
+    title: 'Fold a drawer step by step',
+    theory: [
+      'Workshop: assemble the functional pipeline exactly as instructed.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — total the drawer with reduce',
+        ['drawer.reduce((sum,', 'bill)', '=>', 'sum', '+', 'bill,', '0)'],
+        ['drawer.reduce((sum,', 'bill)', '=>', 'sum', '+', 'bill,', '0)', 'map'],
+        'Accumulator plus current bill, starting from zero.'
+      ),
+      BUILD(
+        'Step 2 — double every price with map',
+        ['prices.map(p', '=>', 'p', '*', '2)'],
+        ['prices.map(p', '=>', 'p', '*', '2)', 'filter', 'for'],
+        'map builds a new array; the original is untouched.'
+      ),
+      BUILD(
+        'Step 3 — keep affordable items with filter',
+        ['items.filter(item', '=>', 'item.price', '<', '10)'],
+        ['items.filter(item', '=>', 'item.price', '<', '10)', 'map', 'reduce'],
+        'Keep the matches, drop the rest — one predicate.'
+      ),
+      MCQ(
+        'Drawer sums to 4.50 but change owed is 5.00. Status?',
+        'INSUFFICIENT_FUNDS — the drawer cannot cover the change',
+        [
+          'INSUFFICIENT_FUNDS — the drawer cannot cover the change',
+          'OPEN — partial change is fine',
+          'CLOSED — the drawer is exactly right',
+          'PENDING — wait for more customers',
+        ],
+        'Compare totals first; status follows the arithmetic.'
+      ),
+    ],
+  },
+
+  'js-regex-workshop': {
+    id: 'js-regex-workshop',
+    title: 'Clean and shift text step by step',
+    theory: [
+      'Workshop: assemble the normalizer and decoder exactly as instructed.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — strip non-alphanumerics from s',
+        ['s.replace(/[^a-z0-9]/gi,', '"\'")'],
+        ['s.replace(/[^a-z0-9]/gi,', '"\'")', '.test', '/[a-z]/'],
+        'Negated set, global, case-insensitive — replaced with nothing.'
+      ),
+      BUILD(
+        'Step 2 — test for a capital letter before shifting',
+        ['if', '(/[A-Z]/.test(ch))', '{'],
+        ['if', '(/[A-Z]/.test(ch))', '{', 'while', '}'],
+        'Guard letters; symbols skip the shift.'
+      ),
+      BUILD(
+        'Step 3 — read the code of a letter',
+        ['ch.charCodeAt(0)'],
+        ['ch.charCodeAt(0)', '.length', 'fromCharCode', '(1)'],
+        'charCodeAt turns the letter into a number you can add 13 to.'
+      ),
+      MCQ(
+        'After shifting, how do numbers become letters again?',
+        'String.fromCharCode converts the shifted code back to a letter',
+        [
+          'String.fromCharCode converts the shifted code back to a letter',
+          'Numbers render as letters automatically',
+          'toString(13) decodes ROT13 natively',
+          'parseInt reverses the shift',
+        ],
+        'Codes in, letters out — the mirror of charCodeAt.'
+      ),
+    ],
+  },
+
+  'js-dom-workshop': {
+    id: 'js-dom-workshop',
+    title: 'Wire a verdict display step by step',
+    theory: [
+      'Workshop: assemble the grab-compute-show pattern exactly as instructed.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — grab the result element',
+        ['const', 'el', '=', 'document.getElementById("result");'],
+        ['const', 'el', '=', 'document.getElementById("result");', 'querySelectorAll'],
+        'Grab once, reuse the reference — never query twice.'
+      ),
+      BUILD(
+        'Step 2 — show the verdict text',
+        ['el.textContent', '=', '"Valid";'],
+        ['el.textContent', '=', '"Valid";', '.value', '.innerHTML ='],
+        'textContent is the safe slot for computed verdicts.'
+      ),
+      BUILD(
+        'Step 3 — read what the user typed',
+        ['const', 'input', '=', 'document.getElementById("check").value;'],
+        ['const', 'input', '=', 'document.getElementById("check").value;', '.text'],
+        'Inputs expose .value; everything else uses textContent.'
+      ),
+      MCQ(
+        'The verdict element must start empty. Why not pre-fill it?',
+        'Stale text would show before any computation runs',
+        [
+          'Stale text would show before any computation runs',
+          'Empty elements load measurably faster',
+          'JavaScript cannot overwrite pre-filled text',
+          'Graders reject any visible placeholder',
+        ],
+        'Empty with an id: JavaScript fills it after computing.'
+      ),
+    ],
+  },
+
+  'js-checkpoint': {
+    id: 'js-checkpoint',
+    title: 'JavaScript checkpoint',
+    theory: [
+      'Final check across all five levels: loops, functions, array methods, regex, and DOM verdicts.',
+    ],
+    questions: [
+      MCQ(
+        'for (let i = 0; i < 3; i++) runs its body…',
+        '3 times',
+        ['3 times', '4 times', '2 times', 'Forever'],
+        'i takes 0, 1, 2.'
+      ),
+      MCQ(
+        'Why does a converter use an object like { M: 1000, CM: 900 }?',
+        'Symbols map directly to values for greedy lookup',
+        ['Symbols map directly to values for greedy lookup', 'Objects sort themselves automatically', 'Functions cannot read arrays', 'Numerals must be stored as strings'],
+        'Lookup tables beat long if-chains.'
+      ),
+      BUILD(
+        'Double every price functionally',
+        ['prices.map(p', '=>', 'p', '*', '2)'],
+        ['prices.map(p', '=>', 'p', '*', '2)', 'filter', 'for'],
+        'map builds new; originals survive.'
+      ),
+      BUILD(
+        'Strip non-alphanumerics before comparing',
+        ['s.replace(/[^a-z0-9]/gi,', '"\'")'],
+        ['s.replace(/[^a-z0-9]/gi,', '"\'")', '.test'],
+        'Normalize first, compare second.'
+      ),
+      MCQ(
+        'Where does a computed verdict go?',
+        'Into textContent of the result element',
+        ['Into textContent of the result element', 'Into the page title tag', 'Into a brand-new HTML file', 'Into the browser address bar'],
+        'Grab by id, assign textContent.'
+      ),
+      MCQ(
+        'Drawer totals 4.50, change owed is 5.00. Status?',
+        'INSUFFICIENT_FUNDS',
+        ['INSUFFICIENT_FUNDS', 'OPEN', 'CLOSED', 'PENDING'],
+        'Drawer smaller than change: insufficient.'
+      ),
+    ],
+  },
 };
