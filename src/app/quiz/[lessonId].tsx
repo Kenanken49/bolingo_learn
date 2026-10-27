@@ -11,6 +11,7 @@ import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
 import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
+import { gradeCard, getDueItems } from '../../../lib/srs';
 import { hasSeenQuizIntro, markQuizIntroSeen, markOnboarded, savePendingGuestResult } from '../../../lib/onboarding';
 
 const DEMO_QUESTIONS: CodeQuizData[] = [
@@ -50,21 +51,49 @@ export default function QuizPlayer() {
   // Micro-onboarding: coach overlay appears the very first time a user meets
   // the quiz player, then never again.
   const [showCoach, setShowCoach] = useState(false);
+  // SRS keys parallel `questions` so every graded answer updates memory.
+  const [qKeys, setQKeys] = useState<string[]>([]);
+  // Daily Review with nothing due renders a celebration, not an error.
+  const [reviewEmpty, setReviewEmpty] = useState(false);
 
   const load = useCallback(async () => {
+    // Spaced Repetition: the Daily Review assembles due memory cards into a
+    // bite-sized (~5 Q) session instead of loading a static bank.
+    if (lessonId === 'srs-review') {
+      const rp = await getProfile();
+      setUserId(rp?.id ?? null);
+      setHearts(rp?.hearts ?? MAX_HEARTS);
+      if (!rp) {
+        setQuestions([]);
+        setReviewEmpty(true);
+        return;
+      }
+      const items = await getDueItems(rp.id).catch(() => []);
+      if (items.length === 0) {
+        setQuestions([]);
+        setReviewEmpty(true);
+        return;
+      }
+      setQuestions(items.map((i) => i.question));
+      setQKeys(items.map((i) => i.key));
+      return;
+    }
     // Real course banks first — demo placeholders and DB lessons after.
+    // Bite-sized cap: every session stays 2–5 min (3–6 questions max).
+    let baseQuestions: CodeQuizData[] = [];
+    let baseKeys: string[] = [];
     const course = getCourseLesson(lessonId);
     if (course) {
-      setQuestions(
-        course.questions.map((q) => ({
-          prompt: q.prompt,
-          correctChain: q.correctChain,
-          scrambledTokens: [...q.scrambledTokens].sort(() => Math.random() - 0.5),
-          explain: q.explain,
-        }))
-      );
+      baseQuestions = course.questions.map((q) => ({
+        prompt: q.prompt,
+        correctChain: q.correctChain,
+        scrambledTokens: [...q.scrambledTokens].sort(() => Math.random() - 0.5),
+        explain: q.explain,
+      }));
+      baseKeys = course.questions.map((_, i) => `${lessonId}:${i}`);
     } else if (lessonId.startsWith('demo-')) {
-      setQuestions(DEMO_QUESTIONS);
+      baseQuestions = DEMO_QUESTIONS;
+      baseKeys = DEMO_QUESTIONS.map((_, i) => `${lessonId}:${i}`);
     } else {
       const dbId = toDbLessonId(lessonId); // "45" -> 45 for the integer FK
       const { data, error } = await supabase.from('questions').select('*').eq('lesson_id', dbId).order('created_at');
@@ -91,11 +120,40 @@ export default function QuizPlayer() {
           }
         }
       }
-      setQuestions(mapped);
+      baseQuestions = mapped;
+      baseKeys = mapped.map((_, i) => `${lessonId}:${i}`);
     }
     const p = await getProfile();
     setUserId(p?.id ?? null);
     setHearts(p?.hearts ?? MAX_HEARTS);
+    // SRS injection: subtly weave up to 2 due memory cards from OTHER lessons
+    // into this session so slipping rules resurface right when they're fading.
+    // Injected cards keep their original keys so grading reschedules them,
+    // and get a 🔁 prefix so learners know why old content reappeared.
+    // Total stays bite-sized: never exceed 6 questions per session.
+    if (p && baseQuestions.length > 0 && baseQuestions.length < 6) {
+      try {
+        const room = Math.min(2, 6 - baseQuestions.length);
+        const due = (await getDueItems(p.id, 10).catch(() => []))
+          .filter((d) => !baseKeys.includes(d.key) && !d.key.startsWith(`${lessonId}:`))
+          .slice(0, room);
+        if (due.length > 0) {
+          const injectedQ = due.map((d) => ({
+            ...d.question,
+            prompt: `🔁 Review · ${d.lessonTitle}: ${d.question.prompt}`,
+          }));
+          const injectedK = due.map((d) => d.key);
+          // Weave after the 2nd question so the session starts familiar, then recalls.
+          const at = Math.min(2, baseQuestions.length);
+          baseQuestions = [...baseQuestions.slice(0, at), ...injectedQ, ...baseQuestions.slice(at)];
+          baseKeys = [...baseKeys.slice(0, at), ...injectedK, ...baseKeys.slice(at)];
+        }
+      } catch {
+        // injection is best-effort — lesson plays on without it
+      }
+    }
+    setQuestions(baseQuestions);
+    setQKeys(baseKeys);
     if (!(await hasSeenQuizIntro())) setShowCoach(true);
   }, [lessonId]);
 
@@ -119,6 +177,21 @@ export default function QuizPlayer() {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <Text className="text-slate-500">Loading questions…</Text>
+      </View>
+    );
+  }
+  if (reviewEmpty) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white px-6">
+        <DuoOwl mood="happy" size={110} />
+        <Text className="mt-3 font-duo text-2xl font-extrabold text-slate-900">All caught up!</Text>
+        <Text className="mt-1 text-center text-base text-slate-500">
+          Nothing is due — your memory is fresh. Come back tomorrow to keep it that way.
+        </Text>
+        <View className="mt-5 w-full max-w-sm">
+          <DuoButton onPress={() => router.replace('/')} label="Back to learning path" title="Path 🗺️" />
+        </View>
+        <StatusBar style="auto" />
       </View>
     );
   }
@@ -186,7 +259,18 @@ export default function QuizPlayer() {
           onHeartsChange={setHearts}
           onOutOfHearts={() => router.push('/refill')}
           onCorrect={() => setCorrectCount((c) => c + 1)}
-          onAnswer={(r) => setAnswers((a) => [...a, r])}
+          onAnswer={(r) => {
+            setAnswers((a) => [...a, r]);
+            // SRS: every graded answer reschedules that memory card.
+            if (userId && q) {
+              void gradeCard(userId, qKeys[index] ?? `${lessonId}:${index}`, r.correct, {
+                prompt: q.prompt,
+                correctChain: q.correctChain,
+                options: q.scrambledTokens,
+                lessonTitle: String(title ?? 'Lesson'),
+              });
+            }
+          }}
           onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
         />
       </ScrollView>

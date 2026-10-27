@@ -30,6 +30,12 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+// Browser (web export) invocations are cross-origin — answer preflights.
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
 const LLM_BASE_URL = Deno.env.get('LLM_BASE_URL') ?? 'https://api.deepseek.com/chat/completions';
 const LLM_MODEL = Deno.env.get('LLM_MODEL') ?? 'deepseek-chat';
 const TTS_PROVIDER = Deno.env.get('TTS_PROVIDER') ?? 'elevenlabs';
@@ -37,7 +43,7 @@ const TTS_MODEL_ID = Deno.env.get('TTS_MODEL_ID') ?? 'eleven_multilingual_v2';
 const TTS_VOICE = Deno.env.get('TTS_VOICE') ?? 'alloy';
 const OPENAI_BASE_URL = Deno.env.get('OPENAI_BASE_URL') ?? 'https://api.openai.com/v1';
 
-const CURRICULUM_PROMPT = `You are an elite educational structuralist. Analyze this uploaded text. Extract the top 5 core programming concepts or language vocabulary terms. For each concept, generate exactly 3 interactive quiz elements using the following JSON schema: [{ "type": "multiple-choice" | "drag-and-drop", "prompt": "...", "options": ["...", "..."], "answer": "..." }]. Return nothing but valid JSON.`;
+const CURRICULUM_PROMPT = `You are an elite educational structuralist designing bite-sized mobile lessons (2-5 minutes each, dead-time friendly). Analyze this uploaded text. Extract the top 2-3 core concepts only. Generate a TOTAL of 4-5 interactive quiz elements (mix multiple-choice and drag-and-drop) using this JSON schema: [{ "type": "multiple-choice" | "drag-and-drop", "prompt": "...", "options": ["...", "..."], "answer": "..." }]. Keep prompts short and mobile-friendly. Return nothing but valid JSON.`;
 
 interface QuizItem {
   type: 'multiple-choice' | 'drag-and-drop';
@@ -143,6 +149,7 @@ async function synthesizeAudio(narration: string): Promise<Uint8Array> {
 }
 
 serve(async (req: Request) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
   if (!supabaseUrl || !serviceKey) {
@@ -213,7 +220,8 @@ serve(async (req: Request) => {
     // lessons.id is INTEGER (pre-existing table) — lesson.id flows through
     // as a number into questions.lesson_id, storage paths, and responses.
     const title = upload.file_name.replace(/\.[^.]+$/, '');
-    const lessonContent = { title, question_count: quiz.length, questions: quiz };
+    // Bite-sized: 4–5 questions ≈ 2–5 min dead-time session (matches curriculum minutes).
+    const lessonContent = { title, question_count: quiz.length, questions: quiz, estimated_minutes: Math.max(2, Math.min(5, Math.ceil(quiz.length * 0.8))) };
     const { data: lesson, error: lessonError } = await supabase
       .from('lessons')
       .insert({
@@ -283,7 +291,7 @@ serve(async (req: Request) => {
     await supabase.from('user_uploads').update({ status: 'ready' }).eq('id', upload.id);
     return new Response(
       JSON.stringify({ ok: true, lesson_id: lesson.id, question_count: quiz.length, segment_count: segments.length }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (e) {
     console.error('process-upload failed:', e);
@@ -292,7 +300,7 @@ serve(async (req: Request) => {
     }
     return new Response(JSON.stringify({ error: String(e) }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });

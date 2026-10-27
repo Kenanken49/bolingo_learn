@@ -14,6 +14,7 @@ import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
 import { GOALS, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
 import { levelForXp } from '../../lib/levels';
+import { getDueCount } from '../../lib/srs';
 
 /** Variable reward: one-shot bonus for finishing every block in a unit. */
 const CHEST_XP = 50;
@@ -129,7 +130,7 @@ function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: Go
           {block.title}
         </Text>
         <Text className="text-xs font-bold text-slate-500">
-          {KIND_META[block.kind].label} · {block.minutes} min · +{block.xp} XP
+          {KIND_META[block.kind].label} · ⚡ {block.minutes} min bite-sized · +{block.xp} XP
         </Text>
       </View>
       <Text className="text-2xl font-extrabold text-green-500">›</Text>
@@ -244,6 +245,8 @@ export default function PathMap() {
   // Inverted onboarding: guests play before they ever see a signup form.
   const [onboarded, setOnboardedState] = useState(true); // true until proven first-run (avoids card flash)
   const [goal, setGoalState] = useState<GoalId | null>(null);
+  // SRS: how many memory cards are due (drives the Daily Review nudge).
+  const [dueCount, setDueCount] = useState(0);
 
   const refresh = useCallback(async () => {
     try {
@@ -271,6 +274,7 @@ export default function PathMap() {
       // play-first card even before any account exists.
       setOnboardedState(await hasOnboarded());
       setGoalState(await getGoal());
+      if (p) setDueCount(await getDueCount(p.id).catch(() => 0));
     } catch (e) {
       console.warn('Path refresh failed:', e);
     }
@@ -604,6 +608,52 @@ export default function PathMap() {
               </View>
             </View>
           ) : null}
+          {/* SRS injection: due memory cards surface as a 2-minute review. */}
+          {profile && dueCount > 0 ? (
+            <Pressable
+              onPress={() =>
+                router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: 'srs-review', title: 'Daily Review' } })
+              }
+              accessibilityRole="button"
+              accessibilityLabel={`Daily review, ${dueCount} cards due`}
+              className="mb-4 w-full max-w-sm flex-row items-center rounded-3xl border-2 border-sky-200 bg-sky-50 p-4"
+            >
+              <View className="h-12 w-12 items-center justify-center rounded-full bg-sky-500">
+                <Text className="text-2xl">🔁</Text>
+              </View>
+              <View className="ml-3 flex-1">
+                <Text className="text-xs font-extrabold uppercase tracking-widest text-sky-600">
+                  🧠 Daily Review · ~2 min
+                </Text>
+                <Text className="font-duo text-base font-extrabold text-slate-900" numberOfLines={1}>
+                  {dueCount} card{dueCount === 1 ? '' : 's'} slipping — lock {dueCount === 1 ? 'it' : 'them'} in
+                </Text>
+                <Text className="text-xs font-bold text-slate-500">Spaced repetition · +10 XP per recall</Text>
+              </View>
+              <Text className="text-2xl font-extrabold text-sky-500">›</Text>
+            </Pressable>
+          ) : null}
+          {/* AI tutors (Duolingo Max style): Roleplay chats live here; Explain My Answer appears inside every wrong answer. */}
+          <Pressable
+            onPress={() => router.push('/roleplay')}
+            accessibilityRole="button"
+            accessibilityLabel="AI tutors: roleplay and explain my answer"
+            className="mb-4 w-full max-w-sm flex-row items-center rounded-3xl border-2 border-violet-200 bg-violet-50 p-4"
+          >
+            <View className="h-12 w-12 items-center justify-center rounded-full bg-violet-600">
+              <Text className="text-2xl">🎭</Text>
+            </View>
+            <View className="ml-3 flex-1">
+              <Text className="text-xs font-extrabold uppercase tracking-widest text-violet-600">
+                ✨ AI tutors {isPremium ? '' : '· Premium'} 
+              </Text>
+              <Text className="font-duo text-base font-extrabold text-slate-900" numberOfLines={1}>
+                Roleplay scenarios + Explain My Answer
+              </Text>
+              <Text className="text-xs font-bold text-slate-500">Wrong answer? Tap ✨ in-lesson · Chat in Roleplay</Text>
+            </View>
+            <Text className="text-2xl font-extrabold text-violet-400">›</Text>
+          </Pressable>
           {/* Inverted onboarding: play first, profile second. First-run guests
               pick a goal and drop straight into a 2-minute lesson — signup
               comes only after they've won XP (see results upsell). */}
@@ -671,7 +721,7 @@ export default function PathMap() {
                       state={unitState(unit, i)}
                       icon={isBlockDone(b) ? '🏆' : KIND_ICON[b.kind] ?? '⭐'}
                       label={b.title}
-                      sub={KIND_META[b.kind].label}
+                      sub={`${KIND_META[b.kind].label} · ${b.minutes} min`}
                       color={unit.color}
                       offset={nextOffset()}
                       onPress={() => openBlock(b)}
@@ -841,6 +891,11 @@ export default function PathMap() {
             <Link href="/uploads" asChild>
               <Pressable>
                 <Text className="text-sm text-slate-400">My uploads →</Text>
+              </Pressable>
+            </Link>
+            <Link href="/roleplay" asChild>
+              <Pressable>
+                <Text className="text-sm text-slate-400">🎭 AI Roleplay →</Text>
               </Pressable>
             </Link>
             <Link href="/settings" asChild>
