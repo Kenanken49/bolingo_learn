@@ -618,6 +618,169 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  /* ---------------- Full course: English Mastery (Duolingo style) ---------------- */
+
+  'english-basics': {
+    id: 'english-basics',
+    title: 'English Basics',
+    theory: [
+      'Start with the building blocks: 26 letters, numbers, and the two little words that confuse everyone — a and an. Use an before vowel sounds (an apple), a everywhere else (a ball).',
+      'Plurals usually add -s (books), but watch the rebels: box → boxes, child → children.',
+    ],
+    questions: [
+      MCQ(
+        'How many letters are in the English alphabet?',
+        '26',
+        ['26', '24', '28', '30'],
+        '26 letters: A to Z. Master their sounds and spelling follows.'
+      ),
+      BUILD(
+        'Say the first three letters:',
+        ['A', 'B', 'C'],
+        ['C', 'A', 'D', 'B'],
+        'A, B, C — the start of every spelling bee.'
+      ),
+      MCQ(
+        'Fill the gap: "___ apple".',
+        'an',
+        ['an', 'a', 'the', 'no word needed'],
+        'An before vowel SOUNDS: an apple, an hour. A ball, a cat.'
+      ),
+      MCQ(
+        'The plural of "child" is…',
+        'children',
+        ['children', 'childs', 'childes', 'child'],
+        'Irregular rebel: one child, two children. Box → boxes is regular.'
+      ),
+      BUILD(
+        'Say "I am a student":',
+        ['I', 'am', 'a', 'student'],
+        ['student', 'I', 'am', 'a', 'teacher'],
+        'I + am + a + who you are — your first English sentence.'
+      ),
+    ],
+  },
+
+  'english-everyday': {
+    id: 'english-everyday',
+    title: 'Everyday English',
+    theory: [
+      'Sound natural: introduce yourself (My name is…), ask back (Where are you from?), mind the moment (Excuse me to pass by, Sorry to apologise).',
+      'Time runs the day: What time is it? See you tomorrow. Small phrases, huge confidence.',
+    ],
+    questions: [
+      BUILD(
+        'Ask "Where are you from?":',
+        ['Where', 'are', 'you', 'from'],
+        ['from', 'Where', 'you', 'are', 'what'],
+        'The friendliest question in English — memorise the order.'
+      ),
+      MCQ(
+        '"What time is it?" asks for…',
+        'The current time',
+        ['The current time', 'The day of the week', 'Your age', 'The date'],
+        'Time = clock reading. Day = Monday. Date = 1st of June.'
+      ),
+      MCQ(
+        'You step on someone\'s foot. Say…',
+        'Sorry',
+        ['Sorry', 'Excuse me', 'Thank you', 'Welcome'],
+        'Sorry = apologise. Excuse me = pass by or get attention.'
+      ),
+      BUILD(
+        'Say "See you tomorrow":',
+        ['See', 'you', 'tomorrow'],
+        ['tomorrow', 'See', 'later', 'you'],
+        'See you + when: tomorrow, later, soon, on Monday.'
+      ),
+      MCQ(
+        '"Nice to meet you" is said…',
+        'When meeting someone for the first time',
+        ['When meeting someone for the first time', 'When leaving a party', 'When answering the phone', 'When saying thank you'],
+        'First meeting only — then switch to "Good to see you".'
+      ),
+    ],
+  },
+
+  'english-tenses': {
+    id: 'english-tenses',
+    title: 'English Tenses Lab',
+    theory: [
+      'Three tenses carry 90% of conversation: present simple for habits (She goes), present continuous for right now (I am eating), past simple for finished time (I went).',
+      'Spot the -s: he/she/it verbs add -s (go → goes). Spot the clock: now/right now → am/is/are + -ing. Spot yesterday → past form.',
+    ],
+    questions: [
+      MCQ(
+        '"She ___ to school every day."',
+        'goes',
+        ['goes', 'go', 'going', 'gone'],
+        'He/she/it + habit → add -s: she goes, he eats.'
+      ),
+      BUILD(
+        'Say "I am eating now":',
+        ['I', 'am', 'eating'],
+        ['eating', 'I', 'am', 'was'],
+        'am + verb-ing = happening right now.'
+      ),
+      MCQ(
+        '"Yesterday I ___ to the market."',
+        'went',
+        ['went', 'go', 'goes', 'going'],
+        'Yesterday = finished past → went (not goed!).'
+      ),
+      BUILD(
+        'Say "They will come tomorrow":',
+        ['They', 'will', 'come'],
+        ['come', 'They', 'will', 'came'],
+        'will + base verb = future. No -s, no -ed.'
+      ),
+      MCQ(
+        '"Right now" signals which tense?',
+        'Present continuous',
+        ['Present continuous', 'Present simple', 'Past simple', 'Future'],
+        'Right now / at the moment → am/is/are + -ing.'
+      ),
+    ],
+  },
+
+  'english-quiz': {
+    id: 'english-quiz',
+    title: 'English Checkpoint',
+    theory: ['Checkpoint: alphabet, articles, everyday phrases, and tenses from the full English course.'],
+    questions: [
+      MCQ(
+        'Fill the gap: "___ hour".',
+        'an',
+        ['an', 'a', 'the', 'no word needed'],
+        'Hour starts with a vowel SOUND (silent h) → an hour.'
+      ),
+      BUILD(
+        'Say "I am a student":',
+        ['I', 'am', 'a', 'student'],
+        ['student', 'am', 'I', 'a'],
+        'I + am + a + who you are.'
+      ),
+      MCQ(
+        '"She ___ TV every evening."',
+        'watches',
+        ['watches', 'watch', 'watching', 'watched'],
+        'She + habit → -es after -ch: she watches.'
+      ),
+      BUILD(
+        'Ask "Where are you from?":',
+        ['Where', 'are', 'you', 'from'],
+        ['from', 'are', 'Where', 'you'],
+        'Word order matters: Where + are + you + from.'
+      ),
+      MCQ(
+        'The plural of "box" is…',
+        'boxes',
+        ['boxes', 'boxs', 'boxies', 'box'],
+        'After -x, add -es: box → boxes, bus → buses.'
+      ),
+    ],
+  },
 };
 
 // Fail loudly at import time — a bad seed breaks the bundle, not a session.
