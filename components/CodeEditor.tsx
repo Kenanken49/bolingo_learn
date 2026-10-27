@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View, Text, Pressable, TextInput, ScrollView } from 'react-native';
 
 export type CodeLang = 'html' | 'css' | 'js';
@@ -18,13 +18,15 @@ const TABS: Array<{ id: CodeLang; label: string; color: string }> = [
 /** Tiny regex highlighter — colors for tags/attrs/strings/comments + CSS/JS keywords. */
 function highlight(lang: CodeLang, code: string, keyPrefix: string) {
   if (code.length > 8000) {
-    return [<Text key={`${keyPrefix}-plain`} className="font-mono text-sm leading-5 text-slate-200">{code}</Text>];
+    return [<Text key={`${keyPrefix}-plain`} className="text-slate-200">{code}</Text>];
   }
   const out: React.ReactNode[] = [];
   let key = 0;
+  // No font classes here: spans inherit the parent's monospace 14/20 metrics
+  // so highlight and input glyphs align pixel-for-pixel.
   const push = (text: string, cls: string) => {
     out.push(
-      <Text key={`${keyPrefix}-${key++}`} className={`font-mono text-sm leading-5 ${cls}`}>
+      <Text key={`${keyPrefix}-${key++}`} className={cls}>
         {text}
       </Text>
     );
@@ -60,7 +62,13 @@ export function combineDoc(doc: CodeDoc): string {
   return `${doc.html}\n<style>${doc.css}</style>\n<script>${doc.js}</script>`;
 }
 
-/** Line-number gutter + highlight layer synced to the input's scroll. */
+/**
+ * Pixel-locked gutter + highlight + input: ONE outer scroller drives the
+ * gutter column and the code column together, while the highlight layer and
+ * the transparent input share identical font/padding/width inside a single
+ * growing container — they cannot drift at any zoom level. Line numbers
+ * track logical lines (VS Code with word-wrap behaves the same way).
+ */
 function GutteredInput({
   tab,
   value,
@@ -72,46 +80,53 @@ function GutteredInput({
   lines: number;
   onChange: (t: string) => void;
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const gutterRef = useRef<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const highlightRef = useRef<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const syncScroll = (e: any) => {
-    const y = e?.nativeEvent?.contentOffset?.y ?? 0;
-    gutterRef.current?.scrollTo?.({ y, animated: false });
-    highlightRef.current?.scrollTo?.({ y, animated: false });
-  };
   return (
-    <View className="flex-row">
-      <ScrollView ref={gutterRef} scrollEnabled={false} className="h-64 w-10 bg-slate-900 py-4">
-        {Array.from({ length: lines }, (_, i) => (
-          <Text key={i} className="text-right font-mono text-sm leading-5 text-slate-600" style={{ paddingRight: 8 }}>
-            {i + 1}
+    <ScrollView className="h-64" nestedScrollEnabled>
+      <View className="flex-row" style={{ minHeight: 256 }}>
+        <View className="w-10 bg-slate-900 py-4">
+          {Array.from({ length: lines }, (_, i) => (
+            <Text key={i} className="text-right font-mono text-sm leading-5 text-slate-600" style={{ paddingRight: 8 }}>
+              {i + 1}
+            </Text>
+          ))}
+        </View>
+        <View className="flex-1" style={{ position: 'relative' }}>
+          {/* Identical string in both layers (same font/metrics/width) keeps
+              heights — and therefore scroll — locked at any zoom level. */}
+          <Text style={{ padding: 16, fontFamily: 'monospace', fontSize: 14, lineHeight: 20 }}>
+            {highlight(tab, value || ' ', tab)}
           </Text>
-        ))}
-      </ScrollView>
-      <View className="relative h-64 flex-1">
-        <ScrollView ref={highlightRef} scrollEnabled={false} className="absolute inset-0 p-4" pointerEvents="none">
-          <Text className="font-mono text-sm leading-5">{highlight(tab, value, tab)}</Text>
-        </ScrollView>
-        <TextInput
-          value={value}
-          onChangeText={onChange}
-          multiline
-          onScroll={syncScroll}
-          autoCapitalize="none"
-          autoCorrect={false}
-          spellCheck={false}
-          textAlignVertical="top"
-          selectionColor="#22c55e"
-          placeholder={tab === 'html' ? '<h1>Start here…' : tab === 'css' ? '/* style here… */' : '// script here…'}
-          placeholderTextColor="#475569"
-          className="absolute inset-0 p-4 font-mono text-sm leading-5"
-          style={{ color: 'transparent', backgroundColor: 'transparent' }}
-        />
+          <TextInput
+            value={value}
+            onChangeText={onChange}
+            multiline
+            scrollEnabled={false}
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+            textAlignVertical="top"
+            selectionColor="#22c55e"
+            placeholder={tab === 'html' ? '<h1>Start here…' : tab === 'css' ? '/* style here… */' : '// script here…'}
+            placeholderTextColor="#475569"
+            style={{
+              position: 'absolute',
+              top: 16,
+              left: 16,
+              right: 16,
+              bottom: 16,
+              color: 'transparent',
+              backgroundColor: 'transparent',
+              fontFamily: 'monospace',
+              fontSize: 14,
+              lineHeight: 20,
+              padding: 0,
+              margin: 0,
+              borderWidth: 0,
+            }}
+          />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
