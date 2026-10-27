@@ -654,6 +654,27 @@ export default function PathMap() {
             </View>
             <Text className="text-2xl font-extrabold text-violet-400">›</Text>
           </Pressable>
+          {/* Core Curriculum: 7 certification tracks × 5 mandatory projects. */}
+          <Pressable
+            onPress={() => router.push('/certifications')}
+            accessibilityRole="button"
+            accessibilityLabel="Core certifications: 7 tracks, 5 projects each"
+            className="mb-4 w-full max-w-sm flex-row items-center rounded-3xl border-2 border-slate-900 bg-slate-900 p-4"
+          >
+            <View className="h-12 w-12 items-center justify-center rounded-full bg-amber-400">
+              <Text className="text-2xl">🎓</Text>
+            </View>
+            <View className="ml-3 flex-1">
+              <Text className="text-xs font-extrabold uppercase tracking-widest text-amber-400">
+                🎓 Core certifications
+              </Text>
+              <Text className="font-duo text-base font-extrabold text-white" numberOfLines={1}>
+                7 tracks · 5 projects each
+              </Text>
+              <Text className="text-xs font-bold text-slate-400">Pass all 5 to earn the certificate</Text>
+            </View>
+            <Text className="text-2xl font-extrabold text-amber-400">›</Text>
+          </Pressable>
           {/* Inverted onboarding: play first, profile second. First-run guests
               pick a goal and drop straight into a 2-minute lesson — signup
               comes only after they've won XP (see results upsell). */}

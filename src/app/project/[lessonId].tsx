@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import CodeEditor, { combineDoc, type CodeDoc } from '../../../components/CodeEditor';
 import { getCourseProject } from '../../../lib/courses';
+import { getCertProject } from '../../../lib/certifications';
 import { completeLesson, getProfile } from '../../../lib/progress';
 import { setLessonResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
@@ -25,7 +26,8 @@ function previewDoc(doc: CodeDoc): string {
 
 export default function CertificationProject() {
   const { lessonId, title } = useLocalSearchParams<{ lessonId: string; title?: string }>();
-  const project = useMemo(() => getCourseProject(lessonId), [lessonId]);
+  // Core Curriculum: certification projects resolve here too (same runner + tests).
+  const project = useMemo(() => getCourseProject(lessonId) ?? getCertProject(lessonId), [lessonId]);
   const starter: CodeDoc = useMemo(
     () => ({
       html: project?.starterCode ?? '',
