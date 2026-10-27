@@ -49,11 +49,11 @@ export const KIND_META: Record<BlockKind, { label: string; icon: string; color: 
 
 export const CURRICULUM: CurriculumUnit[] = [
   {
-    id: 'html-foundations',
+    id: 'html-course',
     course: 'html',
     section: 'Section 1 · HTML',
-    title: 'HTML Foundations',
-    goal: 'Describe pages with semantic tags',
+    title: 'Complete HTML',
+    goal: 'Tags, links, images & lists — one complete course',
     color: 'bg-green-500',
     icon: '\u{1F310}',
     blocks: [
@@ -97,17 +97,6 @@ export const CURRICULUM: CurriculumUnit[] = [
         lessonId: 'html-quiz-1',
         lessonTitle: 'HTML quiz',
       },
-    ],
-  },
-  {
-    id: 'html-elements',
-    course: 'html',
-    section: 'Section 2 · HTML',
-    title: 'Links, Images & Lists',
-    goal: 'Connect pages and structure content',
-    color: 'bg-blue-500',
-    icon: '\u{1F517}',
-    blocks: [
       {
         id: 'he-lesson-links',
         kind: 'lesson',

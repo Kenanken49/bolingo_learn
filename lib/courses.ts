@@ -47,6 +47,12 @@ export const COURSES: Record<string, CourseLesson> = {
         ['<h6>', '<h1>', 'Welcome', '</h1>', '<p>'],
         'Headings follow the same sandwich: <h1> text </h1>.'
       ),
+      MCQ(
+        'Which tag wraps a paragraph of text?',
+        '<p>',
+        ['<p>', '<div>', '<span>', '<a>'],
+        '<p> = paragraph. <div> groups blocks, <span> styles inline runs.'
+      ),
     ],
   },
 
@@ -75,6 +81,18 @@ export const COURSES: Record<string, CourseLesson> = {
         ['</p>', '<p>', 'Hello world', '<span>'],
         'Tags wrap any text — words, spaces and all stay inside.'
       ),
+      BUILD(
+        'Step 4 — build a level-3 heading: Tips',
+        ['<h3>', 'Tips', '</h3>'],
+        ['<h2>', '<h3>', 'Tips', '</h3>'],
+        '<h3> sits one level under <h2> — deeper section, smaller text.'
+      ),
+      BUILD(
+        'Step 5 — a paragraph reminding readers: Practice daily',
+        ['<p>', 'Practice daily', '</p>'],
+        ['<p>', 'Practice daily', '</p>', '<h3>'],
+        'Same sandwich again — fluency comes from repetition.'
+      ),
     ],
   },
 
@@ -100,6 +118,18 @@ export const COURSES: Record<string, CourseLesson> = {
         ['<p>', 'Welcome here', '</p>'],
         ['<p>', 'Welcome here', '</p>', '<div>', '</div>'],
         'Body copy lives in <p> elements.'
+      ),
+      BUILD(
+        'Story: the sidebar needs a heading reading: Tips',
+        ['<h3>', 'Tips', '</h3>'],
+        ['<h3>', 'Tips', '</h3>', '<h1>', '<p>'],
+        'Side content steps down to <h3> under the main sections.'
+      ),
+      BUILD(
+        'Story: add a second paragraph reading: Come back soon',
+        ['<p>', 'Come back soon', '</p>'],
+        ['<p>', 'Come back soon', '</p>', '<h2>', '</h2>'],
+        'Pages stack as many <p> blocks as the story needs.'
       ),
     ],
   },
@@ -174,6 +204,12 @@ export const COURSES: Record<string, CourseLesson> = {
         ['<img>', '<p>', '<a>', '<h1>'],
         '<img> is void — it carries attributes, not content, so nothing closes.'
       ),
+      MCQ(
+        'In <a href="#">Go</a>, what is the “#”?',
+        'The destination (the href value)',
+        ['The destination (the href value)', 'The clickable label', 'The tag name', 'A comment'],
+        'href holds where; the text between the tags is what readers click.'
+      ),
     ],
   },
 
@@ -199,6 +235,18 @@ export const COURSES: Record<string, CourseLesson> = {
         ['<a>', 'Docs', '</a>'],
         ['<a>', 'Docs', '</a>', '<link>'],
         '<a> wraps clickable text; <link> is a head-only element — don\'t mix them.'
+      ),
+      BUILD(
+        'Step 4 — image element with source logo.png (use tokens as-is)',
+        ['<img>', 'logo.png'],
+        ['<img>', 'logo.png', '</img>', '<p>'],
+        'Same src pattern, new file — images never take a closing tag.'
+      ),
+      BUILD(
+        'Step 5 — level-2 heading with an id anchor: Menu',
+        ['<h2>', 'Menu', '</h2>'],
+        ['<h2>', 'Menu', '</h2>', '<h1>'],
+        'ids turn any heading into a link target.'
       ),
     ],
   },
@@ -227,6 +275,18 @@ export const COURSES: Record<string, CourseLesson> = {
         ['<ol>', '<li>', 'Step one', '</li>', '</ol>'],
         ['<ol>', '<li>', 'Step one', '</li>', '</ol>', '<ul>'],
         '<ol> numbers its <li> children automatically.'
+      ),
+      BUILD(
+        'Story: full bullet list with one item reading: Bread',
+        ['<ul>', '<li>', 'Bread', '</li>', '</ul>'],
+        ['<ul>', '<li>', 'Bread', '</li>', '</ul>', '<ol>'],
+        'Real shopping lists nest <li> inside <ul>, fully closed.'
+      ),
+      BUILD(
+        'Story: numbered list with two steps: One, then Two',
+        ['<ol>', '<li>', 'One', '</li>', '<li>', 'Two', '</li>', '</ol>'],
+        ['<ol>', '<li>', 'One', '</li>', '<li>', 'Two', '</li>', '</ol>'],
+        'Siblings stack: open <li>, text, close — once per item.'
       ),
     ],
   },
