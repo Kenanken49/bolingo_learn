@@ -7,7 +7,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { readAsStringAsync, EncodingType } from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../lib/supabase';
-import { getProfile, getCompletedLessonIds, completeLesson, MAX_HEARTS, type Profile } from '../../lib/progress';
+import { getProfile, getCompletedLessonIds, getTodayCompletionCount, completeLesson, MAX_HEARTS, type Profile } from '../../lib/progress';
 import { uploadRawFile, waitForUploadReady } from '../../lib/uploads';
 import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
@@ -248,6 +248,8 @@ export default function PathMap() {
   const [goal, setGoalState] = useState<GoalId | null>(null);
   // SRS: how many memory cards are due (drives the Daily Review nudge).
   const [dueCount, setDueCount] = useState(0);
+  // Daily Quest: lessons finished today (drives the quest progress bar).
+  const [todayCount, setTodayCount] = useState(0);
 
   const refresh = useCallback(async () => {
     try {
@@ -276,6 +278,7 @@ export default function PathMap() {
       setOnboardedState(await hasOnboarded());
       setGoalState(await getGoal());
       if (p) setDueCount(await getDueCount(p.id).catch(() => 0));
+      if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
     } catch (e) {
       console.warn('Path refresh failed:', e);
     }
@@ -496,8 +499,22 @@ export default function PathMap() {
         </Link>
       ))}
       <View className="mt-4 rounded-2xl border-2 border-slate-200 p-4">
-        <Text className="text-sm font-extrabold text-slate-800">Daily Quest</Text>
-        <Text className="mt-1 text-sm text-slate-500">Complete 1 lesson to keep your streak alive.</Text>
+        <Text className="text-sm font-extrabold text-slate-800">Daily Quest {todayCount >= 1 ? '✅' : ''}</Text>
+        <Text className="mt-1 text-sm text-slate-500">
+          {profile
+            ? todayCount >= 1
+              ? 'Quest complete! Streak protected. 🎉'
+              : 'Complete 1 lesson to keep your streak alive.'
+            : 'Sign in to track your daily quest.'}
+        </Text>
+        {profile ? (
+          <View className="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-100">
+            <View
+              className={`h-full rounded-full ${todayCount >= 1 ? 'bg-green-500' : 'bg-sky-500'}`}
+              style={{ width: `${Math.min(100, todayCount * 100)}%` }}
+            />
+          </View>
+        ) : null}
       </View>
     </View>
   );

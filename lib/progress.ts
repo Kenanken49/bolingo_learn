@@ -73,6 +73,23 @@ export async function getProfile(): Promise<Profile | null> {
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
+/** Lessons finished since local-midnight UTC (drives the Daily Quest progress). Best-effort: 0 on error. */
+export async function getTodayCompletionCount(userId: string): Promise<number> {
+  try {
+    const start = new Date();
+    start.setUTCHours(0, 0, 0, 0);
+    const { data, error } = await supabase
+      .from('lesson_completions')
+      .select('lesson_id')
+      .eq('user_id', userId)
+      .gte('completed_at', start.toISOString());
+    if (error) return 0;
+    return ((data as Array<{ lesson_id: string }> | null) ?? []).length;
+  } catch {
+    return 0;
+  }
+}
+
 /** Lesson ids the user has finished (drives node states on the Path). */
 export async function getCompletedLessonIds(userId: string): Promise<Set<string>> {
   const { data, error } = await supabase.from('lesson_completions').select('lesson_id').eq('user_id', userId);

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { View, Text, Pressable, ScrollView, Switch, Alert } from 'react-native';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { getProfile, grantHearts, MAX_HEARTS, type Profile } from '../../lib/progress';
+import { getProfile, getTodayCompletionCount, grantHearts, MAX_HEARTS, type Profile } from '../../lib/progress';
 import { PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { areRemindersOn, configureReminderHandler, setRemindersOn } from '../../lib/reminders';
 import {
@@ -17,10 +17,13 @@ export default function Settings() {
   const [soundOn, setSoundOn] = useState(true);
   const [hapticsOn, setHapticsOn] = useState(true);
   const [remindersOn, setReminders] = useState(false);
+  const [todayCount, setTodayCount] = useState(0);
 
   const refresh = useCallback(async () => {
     try {
-      setProfile(await getProfile());
+      const p = await getProfile();
+      setProfile(p);
+      if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
       setReminders(await areRemindersOn());
       setSoundOn(await getSoundOn());
       setHapticsOn(await getHapticsOn());
@@ -87,6 +90,25 @@ export default function Settings() {
       <Text className="text-base text-slate-500">
         {profile ? (profile.is_premium ? 'Premium' : 'Free tier') : 'Playing as guest'}
       </Text>
+
+      <View className="mt-6 w-full max-w-sm rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
+        <Text className="text-base font-extrabold text-slate-800">🎯 Daily Quest</Text>
+        <Text className="mt-1 text-sm text-slate-500">
+          {profile
+            ? todayCount >= 1
+              ? 'Quest complete! Streak protected. 🎉'
+              : 'Complete 1 lesson today to keep your streak alive.'
+            : 'Sign in to track your daily quest.'}
+        </Text>
+        {profile ? (
+          <View className="mt-2 h-2.5 overflow-hidden rounded-full bg-white">
+            <View
+              className={`h-full rounded-full ${todayCount >= 1 ? 'bg-green-500' : 'bg-amber-400'}`}
+              style={{ width: `${Math.min(100, todayCount * 100)}%` }}
+            />
+          </View>
+        ) : null}
+      </View>
 
       <View className="mt-6 w-full max-w-sm gap-3">
         {row('\u{1F464}', 'Account', profile ? 'Manage sign-in & session' : 'Sign in to sync progress', () => router.push('/auth'))}

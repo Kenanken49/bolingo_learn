@@ -265,10 +265,51 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
     ],
   },
 
+  'spanish-tenses': {
+    id: 'spanish-tenses',
+    title: 'Spanish Tenses Lab',
+    theory: [
+      'Present tense runs on endings: -o = I (hablo), -as = you (hablas), -a = he/she (habla), -amos = we (hablamos), -an = they (hablan).',
+      'Ser vs estar: ser for identity, events and time (la fiesta es hoy); estar for location and mood (estoy cansado).',
+    ],
+    questions: [
+      MCQ(
+        '"___ hablo español." (I speak Spanish.)',
+        'Yo',
+        ['Yo', 'Tú', 'Él', 'Ellos'],
+        'The verb ends in -o → the speaker is “I”: Yo hablo.'
+      ),
+      BUILD(
+        'Say "We speak English":',
+        ['Nosotros', 'hablamos', 'inglés'],
+        ['inglés', 'Nosotros', 'hablamos', 'hablas'],
+        '-amos = we: hablamos. Spanish often drops the pronoun!'
+      ),
+      MCQ(
+        '"La fiesta ___ hoy." (The party is today.)',
+        'es',
+        ['es', 'está', 'son', 'están'],
+        'Ser for events and time: la fiesta es hoy.'
+      ),
+      BUILD(
+        'Ask "Where is the bathroom?":',
+        ['Dónde', 'está', 'el', 'baño'],
+        ['baño', 'Dónde', 'el', 'está', 'es'],
+        'Location of things uses estar: ¿dónde está…?'
+      ),
+      MCQ(
+        '"Ellos ___ tacos." (They eat tacos.)',
+        'comen',
+        ['como', 'comes', 'come', 'comen'],
+        '-er verbs: ellos take -en → comen.'
+      ),
+    ],
+  },
+
   'spanish-quiz': {
     id: 'spanish-quiz',
     title: 'Spanish Checkpoint',
-    theory: ['Checkpoint: greetings, phrases, and gender from the full Spanish course.'],
+    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full Spanish course.'],
     questions: [
       MCQ(
         'How do you say "Hello" in Spanish?',
@@ -299,6 +340,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'How are you?',
         ['How are you?', 'What is your name?', 'Where are you?', 'How old are you?'],
         'Ask it after Hola to start a real conversation.'
+      ),
+      MCQ(
+        '"Ellos ___ tacos." (They eat tacos.)',
+        'comen',
+        ['como', 'comes', 'come', 'comen'],
+        'Tenses check: ellos take -en → comen.'
       ),
     ],
   },
@@ -344,10 +391,51 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
     ],
   },
 
+  'french-tenses': {
+    id: 'french-tenses',
+    title: 'French Tenses Lab',
+    theory: [
+      'Present tense runs on endings: -e = I/he (parle), -es = you (parles), -ons = we (parlons), -ez = you all (parlez), -ent = they (parlent, silent -nt!).',
+      'Être is the king verb — memorise it whole: je suis, tu es, il est, nous sommes, vous êtes, ils sont.',
+    ],
+    questions: [
+      MCQ(
+        '"___ parle français." (I speak French.)',
+        'Je',
+        ['Je', 'Tu', 'Il', 'Nous'],
+        '-e ending with no -s → Je parle.'
+      ),
+      BUILD(
+        'Say "We love bread":',
+        ['Nous', 'aimons', 'le', 'pain'],
+        ['pain', 'Nous', 'le', 'aimons', 'aimez'],
+        '-ons = we: nous aimons.'
+      ),
+      MCQ(
+        '"Tu ___ à Paris." (You live in Paris.)',
+        'habites',
+        ['habite', 'habites', 'habitent', 'habiter'],
+        'Tu verbs take -s: tu habites.'
+      ),
+      BUILD(
+        'Say "She is tired":',
+        ['Elle', 'est', 'fatiguée'],
+        ['fatiguée', 'Elle', 'est', 'sont'],
+        'Elle est — she is. Est also pairs with il and on.'
+      ),
+      MCQ(
+        '"Ils ___ contents." (They are happy.)',
+        'sont',
+        ['est', 'sommes', 'sont', 'êtes'],
+        'Ils + être → sont.'
+      ),
+    ],
+  },
+
   'french-quiz': {
     id: 'french-quiz',
     title: 'French Checkpoint',
-    theory: ['Checkpoint: greetings, phrases, and gender from the full French course.'],
+    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full French course.'],
     questions: [
       MCQ(
         '"Bonjour" means…',
@@ -378,6 +466,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Thank you',
         ['Thank you', 'Sorry', 'Welcome', 'Good night'],
         'Merci carries you through every café in Paris.'
+      ),
+      MCQ(
+        '"Ils ___ contents." (They are happy.)',
+        'sont',
+        ['est', 'sommes', 'sont', 'êtes'],
+        'Tenses check: ils + être → sont.'
       ),
     ],
   },
@@ -423,10 +517,51 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
     ],
   },
 
+  'german-tenses': {
+    id: 'german-tenses',
+    title: 'German Tenses Lab',
+    theory: [
+      'Present tense: ich takes -e (spreche), du takes -st (sprichst), er takes -t (spricht); wir/sie take the bare infinitive (lernen).',
+      'Questions flip the verb first: Bist du müde? Haben memorises as: ich habe, du hast, er hat.',
+    ],
+    questions: [
+      MCQ(
+        '"___ spreche Deutsch." (I speak German.)',
+        'Ich',
+        ['Ich', 'Du', 'Er', 'Wir'],
+        '-e ending → ich: ich spreche.'
+      ),
+      BUILD(
+        'Say "We are learning German":',
+        ['Wir', 'lernen', 'Deutsch'],
+        ['Deutsch', 'Wir', 'lernen', 'lernt'],
+        'Wir + bare verb: wir lernen. No ending added!'
+      ),
+      MCQ(
+        '"Er ___ ein Auto." (He has a car.)',
+        'hat',
+        ['habe', 'hast', 'hat', 'haben'],
+        'Haben: ich habe, du hast, er/sie/es hat.'
+      ),
+      BUILD(
+        'Ask "Are you tired?":',
+        ['Bist', 'du', 'müde'],
+        ['müde', 'du', 'Bist', 'Bin'],
+        'Bist du = are you (informal). Verb first in questions!'
+      ),
+      MCQ(
+        '"Sie (they) ___ müde." (They are tired.)',
+        'sind',
+        ['bin', 'bist', 'ist', 'sind'],
+        'Sein: ich bin, du bist, er ist, wir/sie sind.'
+      ),
+    ],
+  },
+
   'german-quiz': {
     id: 'german-quiz',
     title: 'German Checkpoint',
-    theory: ['Checkpoint: greetings, phrases, and gender from the full German course.'],
+    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full German course.'],
     questions: [
       MCQ(
         '"Hallo" means…',
@@ -457,6 +592,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Thank you',
         ['Thank you', 'Please', 'Sorry', 'Welcome'],
         'Danke schön = thank you very much.'
+      ),
+      MCQ(
+        '"Sie (they) ___ müde." (They are tired.)',
+        'sind',
+        ['bin', 'bist', 'ist', 'sind'],
+        'Tenses check: wir/sie + sein → sind.'
       ),
     ],
   },
@@ -502,10 +643,51 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
     ],
   },
 
+  'swahili-tenses': {
+    id: 'swahili-tenses',
+    title: 'Swahili Tenses Lab',
+    theory: [
+      'Swahili verbs wear their tense in the middle: ni-na-soma (I am reading), ni-li-soma (I read), ni-ta-soma (I will read). -na- now, -li- past, -ta- future.',
+      'The subject prefix opens every verb: ni- (I), u- (you), a- (he/she), tu- (we), wa- (they).',
+    ],
+    questions: [
+      MCQ(
+        'Pick the present tense: “I am reading”.',
+        'Ninasoma',
+        ['Ninasoma', 'Nilisoma', 'Nitasoma', 'Soma'],
+        'ni-na-soma: I + present -na- + read.'
+      ),
+      BUILD(
+        'Say "They read books every day":',
+        ['Wanasoma', 'vitabu', 'kila', 'siku'],
+        ['siku', 'Wanasoma', 'kila', 'vitabu', 'jioni'],
+        'wa-na-soma: they + present -na- + read. Kila siku = every day.'
+      ),
+      MCQ(
+        '“Alipika” means he cooked — the past marker is…',
+        '-li-',
+        ['-na-', '-li-', '-ta-', '-me-'],
+        '-li- = past: a-li-pika. -na- is present, -ta- is future.'
+      ),
+      BUILD(
+        'Say "I will come tomorrow":',
+        ['Nitakuja', 'kesho'],
+        ['kesho', 'Nitakuja', 'Ninakuja', 'Nilikuja'],
+        'ni-ta-kuja: I + future -ta- + come. Kesho = tomorrow.'
+      ),
+      MCQ(
+        '“Tutakula” breaks down to…',
+        'We will eat',
+        ['We will eat', 'We are eating', 'We ate', 'Let us eat'],
+        'tu-ta-kula: we + future -ta- + eat.'
+      ),
+    ],
+  },
+
   'swahili-quiz': {
     id: 'swahili-quiz',
     title: 'Swahili Checkpoint',
-    theory: ['Checkpoint: greetings, phrases, and verbs from the full Swahili course.'],
+    theory: ['Checkpoint: greetings, phrases, verbs, and tenses from the full Swahili course.'],
     questions: [
       MCQ(
         '"Habari" means…',
@@ -536,6 +718,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Thank you',
         ['Thank you', 'Please', 'Sorry', 'Welcome'],
         'Asante sana = thank you very much.'
+      ),
+      MCQ(
+        '"Tutakula" breaks down to…',
+        'We will eat',
+        ['We will eat', 'We are eating', 'We ate', 'Let us eat'],
+        'Tenses check: tu-ta-kula = we + future -ta- + eat.'
       ),
     ],
   },
