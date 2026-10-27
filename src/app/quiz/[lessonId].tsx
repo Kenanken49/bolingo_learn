@@ -57,9 +57,11 @@ export default function QuizPlayer() {
   const [reviewEmpty, setReviewEmpty] = useState(false);
 
   const load = useCallback(async () => {
-    // Spaced Repetition: the Daily Review assembles due memory cards into a
-    // bite-sized (~5 Q) session instead of loading a static bank.
-    if (lessonId === 'srs-review') {
+    // Spaced Repetition: per-unit Daily Review nodes (lessonId srs-review:<unit>)
+    // assemble due memory cards into a bite-sized (~5 Q) session instead of
+    // loading a static bank. Distinct ids keep each unit's review node
+    // completing independently while sharing one review engine.
+    if (lessonId === 'srs-review' || lessonId.startsWith('srs-review:')) {
       const rp = await getProfile();
       setUserId(rp?.id ?? null);
       setHearts(rp?.hearts ?? MAX_HEARTS);
@@ -70,6 +72,9 @@ export default function QuizPlayer() {
       }
       const items = await getDueItems(rp.id).catch(() => []);
       if (items.length === 0) {
+        // Nothing due still counts as practiced (0 XP): without this the
+        // Path review node could never complete and would lock its quiz.
+        void completeLesson(rp.id, 0, lessonId).catch(() => {});
         setQuestions([]);
         setReviewEmpty(true);
         return;
