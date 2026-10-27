@@ -10,6 +10,10 @@ import {
   setSoundOn as persistSoundOn,
   getHapticsOn,
   setHapticsOn as persistHapticsOn,
+  getDailyMinutes,
+  setDailyMinutes,
+  DAILY_MINUTES_OPTIONS,
+  outcomeForMinutes,
 } from '../../lib/preferences';
 
 export default function Settings() {
@@ -18,12 +22,14 @@ export default function Settings() {
   const [hapticsOn, setHapticsOn] = useState(true);
   const [remindersOn, setReminders] = useState(false);
   const [todayCount, setTodayCount] = useState(0);
+  const [minutes, setMinutes] = useState(10);
 
   const refresh = useCallback(async () => {
     try {
       const p = await getProfile();
       setProfile(p);
       if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
+      setMinutes(await getDailyMinutes().catch(() => 10));
       setReminders(await areRemindersOn());
       setSoundOn(await getSoundOn());
       setHapticsOn(await getHapticsOn());
@@ -99,15 +105,32 @@ export default function Settings() {
               ? 'Quest complete! Streak protected. 🎉'
               : 'Complete 1 lesson today to keep your streak alive.'
             : 'Sign in to track your daily quest.'}
-        </Text>
-        {profile ? (
-          <View className="mt-2 h-2.5 overflow-hidden rounded-full bg-white">
-            <View
-              className={`h-full rounded-full ${todayCount >= 1 ? 'bg-green-500' : 'bg-amber-400'}`}
-              style={{ width: `${Math.min(100, todayCount * 100)}%` }}
-            />
+        </Text>          {profile ? (
+            <View className="mt-2 h-2.5 overflow-hidden rounded-full bg-white">
+              <View
+                className={`h-full rounded-full ${todayCount >= 1 ? 'bg-green-500' : 'bg-amber-400'}`}
+                style={{ width: `${Math.min(100, todayCount * 100)}%` }}
+              />
+            </View>
+          ) : null}
+          <Text className="mt-3 text-xs font-bold uppercase tracking-widest text-amber-600">Daily commitment</Text>
+          <View className="mt-1 flex-row gap-2">
+            {DAILY_MINUTES_OPTIONS.map((m) => (
+              <Pressable
+                key={m}
+                onPress={() => {
+                  setMinutes(m);
+                  void setDailyMinutes(m);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`${m} minutes per day`}
+                className={`flex-1 items-center rounded-xl border-2 py-1.5 ${minutes === m ? 'border-amber-500 bg-amber-100' : 'border-slate-200 bg-white'}`}
+              >
+                <Text className={`text-xs font-extrabold ${minutes === m ? 'text-amber-700' : 'text-slate-500'}`}>{m}m</Text>
+              </Pressable>
+            ))}
           </View>
-        ) : null}
+          <Text className="mt-1 text-xs text-amber-700">🎯 {outcomeForMinutes(minutes)}</Text>
       </View>
 
       <View className="mt-6 w-full max-w-sm gap-3">

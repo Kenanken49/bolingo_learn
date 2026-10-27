@@ -1,15 +1,23 @@
 import { useCallback, useState } from 'react';
-import { View, Text, Pressable, ScrollView, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, Pressable, ScrollView, RefreshControl, ActivityIndicator, Alert } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { getProfile } from '../../lib/progress';
 import { getWeeklyBoard, leagueMates, leagueName, type BoardRow } from '../../lib/leagues';
+import { searchUsers, addFriend, removeFriend, sendKudos, getFriendsBoard, type FriendRow, type UserSearchHit } from '../../lib/friends';
 
 export default function Leaderboard() {
   const [rows, setRows] = useState<BoardRow[] | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  // Community (Duolingo social pattern): league competition + friends board.
+  const [tab, setTab] = useState<'leagues' | 'friends'>('leagues');
+  const [query, setQuery] = useState('');
+  const [hits, setHits] = useState<UserSearchHit[]>([]);
+  const [friends, setFriends] = useState<FriendRow[] | null>(null);
+  const [friendsError, setFriendsError] = useState<string | null>(null);
+  const [busyFriend, setBusyFriend] = useState<string | null>(null);
 
   const load = useCallback(async (force = false) => {
     try {
@@ -35,16 +43,86 @@ export default function Leaderboard() {
     }
   }, []);
 
+  const loadFriends = useCallback(async () => {
+    try {
+      const p = await getProfile().catch(() => null);
+      if (!p) {
+        setFriends(null);
+        return;
+      }
+      setFriends(await getFriendsBoard(p.id));
+      setFriendsError(null);
+    } catch (e) {
+      setFriendsError(e instanceof Error ? e.message : 'Friends unavailable.');
+    }
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+      loadFriends();
+    }, [load, loadFriends])
   );
 
   const onRefresh = async () => {
     setRefreshing(true);
     await load(true);
+    await loadFriends();
     setRefreshing(false);
+  };
+
+  const doSearch = async (text: string) => {
+    setQuery(text);
+    if (text.trim().length < 2) {
+      setHits([]);
+      return;
+    }
+    setHits(await searchUsers(text));
+  };
+
+  const doAdd = async (username: string) => {
+    try {
+      const p = await getProfile();
+      if (!p) {
+        router.push('/auth');
+        return;
+      }
+      setBusyFriend(username);
+      await addFriend(p.id, username);
+      setQuery('');
+      setHits([]);
+      await loadFriends();
+    } catch (e) {
+      Alert.alert('Add friend', e instanceof Error ? e.message : 'Failed.');
+    } finally {
+      setBusyFriend(null);
+    }
+  };
+
+  const doRemove = async (friendId: string, username: string) => {
+    try {
+      const p = await getProfile();
+      if (!p) return;
+      await removeFriend(p.id, friendId);
+      await loadFriends();
+    } catch {
+      Alert.alert('Remove friend', `Could not remove ${username}.`);
+    }
+  };
+
+  const doKudos = async (friendId: string) => {
+    try {
+      const p = await getProfile();
+      if (!p) {
+        router.push('/auth');
+        return;
+      }
+      setBusyFriend(friendId);
+      await sendKudos(p.id, friendId);
+      await loadFriends();
+    } finally {
+      setBusyFriend(null);
+    }
   };
 
   const mates = leagueMates(rows ?? [], userId);
@@ -58,7 +136,91 @@ export default function Leaderboard() {
       <Text className="text-2xl font-extrabold text-slate-900">Weekly Leagues</Text>
       <Text className="text-base text-slate-500">Top 30 per league — resets Monday</Text>
 
-      {!rows && !error ? (
+      {/* Leagues | Friends tabs — Duolingo social pattern. */}
+      <View className="mt-4 w-full max-w-sm flex-row gap-2">
+        {(['leagues', 'friends'] as const).map((t) => (
+          <Pressable
+            key={t}
+            onPress={() => {
+              setTab(t);
+              if (t === 'friends') void loadFriends();
+            }}
+            accessibilityRole="button"
+            className={`flex-1 items-center rounded-2xl border-2 py-2 ${tab === t ? 'border-green-500 bg-green-50' : 'border-slate-200 bg-white'}`}
+          >
+            <Text className={`text-sm font-extrabold ${tab === t ? 'text-green-700' : 'text-slate-400'}`}>
+              {t === 'leagues' ? '🏆 LEAGUES' : '👥 FRIENDS'}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {tab === 'friends' ? (
+        <View className="mt-6 w-full max-w-sm">
+          {!userId ? (
+            <View className="items-center rounded-2xl border-2 border-slate-200 bg-slate-50 p-5">
+              <Text className="text-4xl">👥</Text>
+              <Text className="mt-2 text-center text-base text-slate-600">Sign in to follow friends and trade high-fives.</Text>
+              <Pressable onPress={() => router.replace('/auth')} className="mt-3 rounded-2xl bg-green-500 px-6 py-3">
+                <Text className="font-extrabold text-white">Sign in</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <>
+              <TextInput
+                value={query}
+                onChangeText={(t) => void doSearch(t)}
+                placeholder="Search username…"
+                autoCapitalize="none"
+                className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-800"
+              />
+              {hits.map((h) => (
+                <View key={h.user_id} className="mt-2 flex-row items-center rounded-2xl border-2 border-slate-200 bg-white p-3">
+                  <Text className="flex-1 text-base font-bold text-slate-800">{h.username}</Text>
+                  <Pressable
+                    onPress={() => void doAdd(h.username)}
+                    disabled={busyFriend === h.username}
+                    className="rounded-xl bg-green-500 px-4 py-2"
+                  >
+                    <Text className="font-extrabold text-white">{busyFriend === h.username ? '…' : '+ Add'}</Text>
+                  </Pressable>
+                </View>
+              ))}
+              {friends === null ? (
+                <ActivityIndicator color="#10b981" size="large" style={{ marginTop: 24 }} />
+              ) : friends.length === 0 ? (
+                <View className="mt-4 items-center rounded-2xl border-2 border-dashed border-slate-300 p-5">
+                  <Text className="text-center text-base text-slate-500">No friends yet — search a username above to compete on weekly XP.</Text>
+                </View>
+              ) : (
+                friends.map((f) => (
+                  <View key={f.user_id} className="mt-2 rounded-2xl border-2 border-slate-200 bg-white p-3">
+                    <View className="flex-row items-center">
+                      <View className="ml-1 flex-1">
+                        <Text className="text-base font-bold text-slate-800">{f.username}</Text>
+                        <Text className="text-sm font-bold text-emerald-600">+{f.weekly_xp} XP this week · 🙌 {f.kudos_count}</Text>
+                      </View>
+                      <Pressable
+                        onPress={() => void doKudos(f.user_id)}
+                        disabled={busyFriend === f.user_id}
+                        accessibilityLabel={`High-five ${f.username}`}
+                        className="rounded-xl bg-amber-400 px-4 py-2"
+                      >
+                        <Text className="font-extrabold text-white">{busyFriend === f.user_id ? '…' : '🙌'}</Text>
+                      </Pressable>
+                      <Pressable onPress={() => void doRemove(f.user_id, f.username)} accessibilityLabel={`Remove ${f.username}`} className="ml-2 px-2 py-2">
+                        <Text className="text-lg text-slate-300">✕</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                ))
+              )}
+              {friendsError ? <Text className="mt-2 text-center text-sm text-red-500">{friendsError}</Text> : null}
+              <Text className="mt-3 text-center text-xs text-slate-400">Weekly XP resets Monday · pull to refresh</Text>
+            </>
+          )}
+        </View>
+      ) : !rows && !error ? (
         <ActivityIndicator color="#10b981" size="large" style={{ marginTop: 32 }} />
       ) : error && !rows ? (
         <View className="mt-8 w-full max-w-sm items-center rounded-2xl border-2 border-red-200 bg-red-50 p-5">

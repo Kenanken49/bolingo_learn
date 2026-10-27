@@ -13,6 +13,7 @@ import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
 import { GOALS, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
+import { getDailyMinutes, setDailyMinutes, DAILY_MINUTES_OPTIONS, outcomeForMinutes } from '../../lib/preferences';
 import { levelForXp } from '../../lib/levels';
 import { getDueCount } from '../../lib/srs';
 
@@ -246,6 +247,8 @@ export default function PathMap() {
   // Inverted onboarding: guests play before they ever see a signup form.
   const [onboarded, setOnboardedState] = useState(true); // true until proven first-run (avoids card flash)
   const [goal, setGoalState] = useState<GoalId | null>(null);
+  // Duolingo onboarding: daily commitment (minutes/day) + projected outcome.
+  const [minutes, setMinutesState] = useState(10);
   // SRS: how many memory cards are due (drives the Daily Review nudge).
   const [dueCount, setDueCount] = useState(0);
   // Daily Quest: lessons finished today (drives the quest progress bar).
@@ -277,6 +280,7 @@ export default function PathMap() {
       // play-first card even before any account exists.
       setOnboardedState(await hasOnboarded());
       setGoalState(await getGoal());
+      setMinutesState(await getDailyMinutes().catch(() => 10));
       if (p) setDueCount(await getDueCount(p.id).catch(() => 0));
       if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
     } catch (e) {
@@ -499,7 +503,7 @@ export default function PathMap() {
         </Link>
       ))}
       <View className="mt-4 rounded-2xl border-2 border-slate-200 p-4">
-        <Text className="text-sm font-extrabold text-slate-800">Daily Quest {todayCount >= 1 ? '✅' : ''}</Text>
+        <Text className="text-sm font-extrabold text-slate-800">Daily Quest · {minutes} min/day {todayCount >= 1 ? '✅' : ''}</Text>
         <Text className="mt-1 text-sm text-slate-500">
           {profile
             ? todayCount >= 1
@@ -744,6 +748,24 @@ export default function PathMap() {
                   </Pressable>
                 ))}
               </View>
+              <Text className="mt-3 text-xs font-bold uppercase tracking-widest text-slate-400">How much per day?</Text>
+              <View className="mt-1 flex-row gap-2">
+                {DAILY_MINUTES_OPTIONS.map((m) => (
+                  <Pressable
+                    key={m}
+                    onPress={() => {
+                      setMinutesState(m);
+                      void setDailyMinutes(m);
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${m} minutes per day`}
+                    className={`flex-1 items-center rounded-2xl border-2 py-2 ${minutes === m ? 'border-green-400 bg-green-500/20' : 'border-slate-700 bg-slate-800'}`}
+                  >
+                    <Text className={`text-sm font-extrabold ${minutes === m ? 'text-green-300' : 'text-slate-300'}`}>{m} min</Text>
+                  </Pressable>
+                ))}
+              </View>
+              <Text className="mt-2 text-sm text-green-300">🎯 {outcomeForMinutes(minutes)}</Text>
               <View className="mt-3">
                 <DuoButton
                   onPress={() => void startFirstLesson()}

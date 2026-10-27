@@ -222,3 +222,113 @@ as $$
 $$;
 
 grant execute on function public.get_weekly_leaderboard(int) to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Spaced Repetition System (SRS): per-user memory state per quiz item.
+-- ---------------------------------------------------------------------------
+-- Every graded answer upserts one row keyed by `<lessonId>:<index>` with a
+-- question snapshot (so Daily Review needs no bank lookups) plus SM-2
+-- scheduling fields. getDueItems() pulls whatever is due for a 5-card,
+-- ~2-minute review session; correct answers stretch the interval, wrong
+-- answers send the card back to relearning (due tomorrow).
+create table if not exists public.srs_cards (
+  user_id uuid not null references public.profiles (id) on delete cascade,
+  item_key text not null,
+  prompt text not null default '',
+  correct_chain jsonb not null default '[]'::jsonb,
+  options jsonb not null default '[]'::jsonb,
+  lesson_title text not null default '',
+  ease numeric not null default 2.5,
+  interval_days integer not null default 0,
+  reps integer not null default 0,
+  lapses integer not null default 0,
+  due_at timestamptz not null default now(),
+  last_seen_at timestamptz,
+  created_at timestamptz not null default now(),
+  primary key (user_id, item_key)
+);
+
+create index if not exists srs_cards_due on public.srs_cards (user_id, due_at);
+
+alter table public.srs_cards enable row level security;
+
+drop policy if exists "Users manage own srs cards" on public.srs_cards;
+create policy "Users manage own srs cards"
+  on public.srs_cards for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+-- ---------------------------------------------------------------------------
+-- Community: follow-model friendships + high-five kudos.
+-- Applied live 2026-10-27 (tables, policies, grants, helpers below).
+-- ---------------------------------------------------------------------------
+create table if not exists public.friendships (
+  user_id uuid not null references public.profiles (id) on delete cascade,
+  friend_id uuid not null references public.profiles (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (user_id, friend_id),
+  check (user_id <> friend_id)
+);
+
+alter table public.friendships enable row level security;
+
+drop policy if exists "Users manage own friendships" on public.friendships;
+create policy "Users manage own friendships"
+  on public.friendships for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create table if not exists public.kudos (
+  id bigint generated always as identity primary key,
+  from_user uuid not null references public.profiles (id) on delete cascade,
+  to_user uuid not null references public.profiles (id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
+alter table public.kudos enable row level security;
+
+drop policy if exists "Users send kudos" on public.kudos;
+create policy "Users send kudos"
+  on public.kudos for insert
+  with check (auth.uid() = from_user);
+
+drop policy if exists "Users see involved kudos" on public.kudos;
+create policy "Users see involved kudos"
+  on public.kudos for select
+  using (auth.uid() = from_user or auth.uid() = to_user);
+
+-- Friends can read each other's weekly XP for the Friends board.
+drop policy if exists "Users read friends xp events" on public.xp_events;
+create policy "Users read friends xp events"
+  on public.xp_events for select
+  using (
+    auth.uid() = user_id
+    or exists (
+      select 1 from public.friendships f
+      where f.user_id = auth.uid() and f.friend_id = xp_events.user_id
+    )
+  );
+
+-- Least-privilege username search (returns id + username only, no xp/premium).
+create or replace function public.search_users_by_name(prefix text)
+returns table (user_id uuid, username text)
+language sql security definer set search_path = public
+as $$ select id, username from public.profiles where username ilike prefix || '%' and username is not null limit 10 $$;
+grant execute on function public.search_users_by_name(text) to authenticated;
+
+-- One-round-trip Friends board (friends + kudos received).
+create or replace function public.get_friends()
+returns table (user_id uuid, username text, kudos_count bigint)
+language sql security definer set search_path = public
+as $$
+  select p.id, p.username, count(k.id)
+  from public.friendships f
+  join public.profiles p on p.id = f.friend_id
+  left join public.kudos k on k.to_user = f.friend_id
+  where f.user_id = auth.uid()
+  group by p.id, p.username
+$$;
+grant execute on function public.get_friends() to authenticated;
+
+grant all on public.friendships, public.kudos to anon, authenticated;
+grant usage, select on sequence public.kudos_id_seq to anon, authenticated;

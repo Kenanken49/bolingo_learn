@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, ScrollView, Alert, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, Pressable, ScrollView, Alert, ActivityIndicator, Platform, Linking } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Purchases, { type PurchasesPackage } from 'react-native-purchases';
@@ -124,10 +124,47 @@ export default function Paywall() {
         PDF & audio uploads, ultra-smart AI lessons, soothing human-like audiobooks.
       </Text>
 
+      {/* Free vs Premium — the Duolingo Super-comparison pattern. */}
+      <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-slate-200 bg-white p-4">
+        <View className="flex-row">
+          <Text className="flex-1" />
+          <Text className="w-16 text-center text-xs font-extrabold text-slate-400">FREE</Text>
+          <Text className="w-16 text-center text-xs font-extrabold text-amber-600">👑 PRO</Text>
+        </View>
+        {[
+          ['❤️ Hearts', '5 / day', 'Unlimited'],
+          ['📄 Uploads', 'Text files', 'PDF + audio'],
+          ['🔊 Voices', 'Device voice', 'Elite voices'],
+          ['🤖 AI words', '1k / day', '100k / month'],
+          ['🧠 Roleplay', 'Locked', 'Included'],
+        ].map(([label, free, pro]) => (
+          <View key={label} className="mt-1.5 flex-row items-center border-t border-slate-100 pt-1.5">
+            <Text className="flex-1 text-sm font-bold text-slate-700">{label}</Text>
+            <Text className="w-16 text-center text-xs text-slate-400">{free}</Text>
+            <Text className="w-16 text-center text-xs font-extrabold text-slate-800">{pro}</Text>
+          </View>
+        ))}
+      </View>
+
       {isPremium ? (
         <View className="mt-6 w-full max-w-sm items-center rounded-3xl bg-amber-100 p-5">
           <Text className="text-lg font-extrabold text-amber-700">✅ Premium active</Text>
-          <Pressable onPress={() => router.replace('/')} className="mt-3 w-full items-center rounded-2xl bg-slate-900 py-3">
+          <Text className="mt-1 text-center text-sm text-amber-800/80">
+            Cancel anytime in your store subscriptions — you keep Premium until the period ends.
+          </Text>
+          <Pressable
+            onPress={() =>
+              Linking.openURL(
+                Platform.OS === 'ios'
+                  ? 'https://apps.apple.com/account/subscriptions'
+                  : 'https://play.google.com/store/account/subscriptions'
+              ).catch(() => Alert.alert('Open your store', 'App Store → Account → Subscriptions (iOS) or Play Store → Payments → Subscriptions (Android).'))
+            }
+            className="mt-3 w-full items-center rounded-2xl bg-white py-3"
+          >
+            <Text className="font-bold text-slate-800">Manage subscription</Text>
+          </Pressable>
+          <Pressable onPress={() => router.replace('/')} className="mt-2 w-full items-center rounded-2xl bg-slate-900 py-3">
             <Text className="font-bold text-white">Back to learning</Text>
           </Pressable>
         </View>
