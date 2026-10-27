@@ -363,6 +363,12 @@ export const COURSES: Record<string, CourseLesson> = {
         ['A semicolon', 'A comma', 'A period', 'A slash'],
         'Declarations stack inside braces, each closed by a semicolon.'
       ),
+      MCQ(
+        'Which selector targets id="top"?',
+        '#top',
+        ['#top', '.top', 'top', '*top'],
+        'Hash picks ids, dot picks classes, bare words pick tags.'
+      ),
     ],
   },
 
@@ -397,6 +403,12 @@ export const COURSES: Record<string, CourseLesson> = {
         ['A 2px outline around the padding', 'Space outside the element', 'Red text', 'A page break'],
         'Border wraps padding; margin then separates neighbors.'
       ),
+      BUILD(
+        'Step 4 — breathing room inside a paragraph: 16px padding',
+        ['p', '{', 'padding', ':', '16px', ';', '}'],
+        ['p', '{', 'padding', ':', '16px', ';', '}', 'margin'],
+        'Pad first: space inside the border, then margin pushes neighbors.'
+      ),
     ],
   },
 
@@ -422,6 +434,18 @@ export const COURSES: Record<string, CourseLesson> = {
         'Both .note and #top rules',
         ['Both .note and #top rules', 'Only .note', 'Only #top', 'Neither — they conflict'],
         'Classes and ids stack; both rules apply, most specific wins ties.'
+      ),
+      BUILD(
+        'Story: headings get blue text',
+        ['h1', '{', 'color', ':', 'blue', ';', '}'],
+        ['h1', '{', 'color', ':', 'blue', ';', '}', 'p'],
+        'Type selector h1 recolors every top heading at once.'
+      ),
+      BUILD(
+        'Story: id hero gets centered text',
+        ['#hero', '{', 'text-align', ':', 'center', ';', '}'],
+        ['#hero', '{', 'text-align', ':', 'center', ';', '}', '.hero'],
+        'Hash hooks the one hero; centered text frames it.'
       ),
     ],
   },
@@ -495,6 +519,12 @@ export const COURSES: Record<string, CourseLesson> = {
         'flex-direction: column;',
         ['flex-direction: column;', 'flex-stack: vertical;', 'direction: down;', 'display: block;'],
         'Column flips the main axis vertical; justify-content then centers vertically.'
+      ),
+      BUILD(
+        'Stack a column of cards (tokens as-is)',
+        ['.col', '{', 'flex-direction', ':', 'column', ';', '}'],
+        ['.col', '{', 'flex-direction', ':', 'column', ';', '}', 'row'],
+        'Column stacks; pair it with display: flex on the parent.'
       ),
     ],
   },
@@ -599,6 +629,12 @@ export const COURSES: Record<string, CourseLesson> = {
         ['p', '{', 'color', ':', '#1e293b', ';', '}', '#f1f5f9'],
         '#1e293b on white ≈ 15:1 — crisp and readable. #f1f5f9 on white would vanish.'
       ),
+      MCQ(
+        'How many <h1> elements should a page normally have?',
+        'Exactly one — the page topic',
+        ['Exactly one — the page topic', 'One per paragraph', 'As many as fit', 'Zero — h1 is decorative'],
+        'One dominant headline anchors the hierarchy; everything else steps down.'
+      ),
     ],
   },
 
@@ -627,6 +663,18 @@ export const COURSES: Record<string, CourseLesson> = {
         ['Alignment creates invisible lines that make layouts feel ordered', 'It makes pages load faster', 'Browsers require it to render', 'It replaces the need for color'],
         'The eye follows edges — ragged alignment reads as chaos, shared edges as calm.'
       ),
+      BUILD(
+        'Step 3 — separate page sections: 32px top margin',
+        ['.section', '{', 'margin-top', ':', '32px', ';', '}'],
+        ['.section', '{', 'margin-top', ':', '32px', ';', '}', '3px'],
+        'Spacing between groups runs large — 32px sections vs 16px insides.'
+      ),
+      MCQ(
+        'Whitespace between unrelated sections should be…',
+        'Larger than whitespace inside a group',
+        ['Larger than whitespace inside a group', 'Equal everywhere on the page', 'Zero to save space', 'Random for visual interest'],
+        'Proximity groups meaning: tight inside, airy between. That contrast IS the grouping.'
+      ),
     ],
   },
 
@@ -654,6 +702,18 @@ export const COURSES: Record<string, CourseLesson> = {
         ['.btn', '{', 'min-height', ':', '44px', ';', '}'],
         ['.btn', '{', 'min-height', ':', '44px', ';', '}', '12px'],
         '44px minimum touch height — reachable, tappable, forgiving.'
+      ),
+      MCQ(
+        "Hick's law says…",
+        'Fewer choices mean faster decisions',
+        ['Fewer choices mean faster decisions', 'More choices delight every user', 'Menus should list everything at once', 'Decisions ignore the number of options'],
+        'Trim options, stage complexity: three clear paths beat thirty links.'
+      ),
+      BUILD(
+        'Make links obviously clickable: underlined',
+        ['a', '{', 'text-decoration', ':', 'underline', ';', '}'],
+        ['a', '{', 'text-decoration', ':', 'underline', ';', '}', 'none'],
+        "Jakob's law: links should look like the links users already know."
       ),
     ],
   },
