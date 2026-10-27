@@ -6,6 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri } from 'expo-auth-session';
 import { supabase } from '../../lib/supabase';
 import { getProfile, type Profile } from '../../lib/progress';
+import { claimPendingGuestResult } from '../../lib/onboarding';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -21,7 +22,15 @@ export default function Auth() {
 
   const refresh = useCallback(async () => {
     try {
-      setProfile(await getProfile());
+      const p = await getProfile();
+      setProfile(p);
+      // Profile-second payoff: rescue any guest XP earned before signup.
+      // Runs on every auth resume (email, Google web/native) — the claim is
+      // one-shot (cleared after success) so repeats are harmless.
+      if (p) {
+        const claimed = await claimPendingGuestResult(p.id);
+        if (claimed) setMsg(`🎁 Welcome! Your +${claimed.xpEarned} guest XP was saved to this account.`);
+      }
     } catch {
       setProfile(null);
     }

@@ -12,6 +12,7 @@ import { uploadRawFile, waitForUploadReady } from '../../lib/uploads';
 import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
+import { GOALS, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
 import AudiobookPlayer from '../../components/AudiobookPlayer';
 
 type NodeState = 'completed' | 'active' | 'locked' | 'processing' | 'failed';
@@ -98,6 +99,34 @@ function PathNode({
         </Text>
       ) : null}
     </View>
+  );
+}
+
+/** Snake-UI guidance card: the single next block, so users never choose from a menu. */
+function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: GoalId | null; onStart: () => void }) {
+  return (
+    <Pressable
+      onPress={onStart}
+      accessibilityRole="button"
+      accessibilityLabel={`Up next: ${block.title}`}
+      className="mb-4 w-full max-w-sm flex-row items-center rounded-3xl border-2 border-green-200 bg-green-50 p-4"
+    >
+      <View className="h-12 w-12 items-center justify-center rounded-full bg-green-500">
+        <Text className="text-2xl">{block.kind === 'project' ? '🏗️' : KIND_ICON[block.kind] ?? '⭐'}</Text>
+      </View>
+      <View className="ml-3 flex-1">
+        <Text className="text-xs font-extrabold uppercase tracking-widest text-green-600">
+          ⬆️ Up next{goal ? ` · ${goalLabel(goal)}` : ''}
+        </Text>
+        <Text className="text-base font-extrabold text-slate-900" numberOfLines={1}>
+          {block.title}
+        </Text>
+        <Text className="text-xs font-bold text-slate-500">
+          {KIND_META[block.kind].label} · {block.minutes} min · +{block.xp} XP
+        </Text>
+      </View>
+      <Text className="text-2xl font-extrabold text-green-500">›</Text>
+    </Pressable>
   );
 }
 
@@ -205,6 +234,9 @@ export default function PathMap() {
   const [audioMsg, setAudioMsg] = useState<string | null>(null);
   const [freeListen, setFreeListen] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  // Inverted onboarding: guests play before they ever see a signup form.
+  const [onboarded, setOnboardedState] = useState(true); // true until proven first-run (avoids card flash)
+  const [goal, setGoalState] = useState<GoalId | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -228,6 +260,10 @@ export default function PathMap() {
           .limit(10);
         setUserLessons((lessons as UserLesson[] | null) ?? []);
       }
+      // Onboarding state is device-local so first-run guests get the
+      // play-first card even before any account exists.
+      setOnboardedState(await hasOnboarded());
+      setGoalState(await getGoal());
     } catch (e) {
       console.warn('Path refresh failed:', e);
     }
@@ -390,6 +426,19 @@ export default function PathMap() {
       ? router.push({ pathname: '/project/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } })
       : router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } });
 
+  // Play-first entry: goal defaults to exploring; the funnel starts the
+  // moment they tap through — the account prompt waits until results.
+  const startFirstLesson = async () => {
+    if (!goal) {
+      setGoalState('explore');
+      await setGoal('explore');
+    }
+    await markOnboarded();
+    setOnboardedState(true);
+    const first = nextUpBlock(completed);
+    if (first) openBlock(first);
+  };
+
   const sideNav = (
     <View className="w-56 gap-1 pr-4">
       {[
@@ -491,6 +540,45 @@ export default function PathMap() {
         {Platform.OS === 'web' ? <View className="hidden pt-6 md:flex">{sideNav}</View> : null}
 
         <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-4 md:max-w-xl md:flex-1">
+          {/* Inverted onboarding: play first, profile second. First-run guests
+              pick a goal and drop straight into a 2-minute lesson — signup
+              comes only after they've won XP (see results upsell). */}
+          {!profile && !onboarded ? (
+            <View className="mb-4 w-full max-w-sm rounded-3xl bg-slate-900 p-5 shadow-lg">
+              <Text className="text-xl font-extrabold text-white">👋 Learn by doing</Text>
+              <Text className="mt-1 text-sm leading-5 text-slate-300">
+                Try a 2-minute lesson now — no account needed. Save your XP after you win it.
+              </Text>
+              <View className="mt-3 flex-row gap-2">
+                {GOALS.map((g) => (
+                  <Pressable
+                    key={g.id}
+                    onPress={() => {
+                      setGoalState(g.id);
+                      void setGoal(g.id);
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Goal: ${g.label}`}
+                    className={`flex-1 items-center rounded-2xl border-2 py-2 ${goal === g.id ? 'border-green-400 bg-green-500/20' : 'border-slate-700 bg-slate-800'}`}
+                  >
+                    <Text className="text-lg">{g.icon}</Text>
+                    <Text className={`text-xs font-bold ${goal === g.id ? 'text-green-300' : 'text-slate-300'}`}>{g.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+              <Pressable
+                onPress={() => void startFirstLesson()}
+                accessibilityRole="button"
+                accessibilityLabel="Start my first lesson"
+                className="mt-3 items-center rounded-2xl bg-green-500 py-3.5"
+              >
+                <Text className="text-lg font-extrabold text-white">▶ Start my first lesson</Text>
+              </Pressable>
+            </View>
+          ) : nextUpBlock(completed) ? (
+            /* Snake-UI guidance: one unambiguous next action, no menu decisions. */
+            <UpNextCard block={nextUpBlock(completed)!} goal={goal} onStart={() => openBlock(nextUpBlock(completed)!)} />
+          ) : null}
           {/* Curriculum units: Duo banner + winding FCC-mapped nodes + chest milestone */}
           {CURRICULUM.map((unit, ui) => {
             const done = unit.blocks.filter(isBlockDone).length;

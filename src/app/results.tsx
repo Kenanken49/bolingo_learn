@@ -1,7 +1,10 @@
+import { useCallback, useState } from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { getLessonResult } from '../../lib/quizResults';
+import { getProfile, type Profile } from '../../lib/progress';
+import { getPendingGuestResult, type PendingGuestResult } from '../../lib/onboarding';
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
 import { isProjectLesson } from '../../lib/courses';
 
@@ -10,6 +13,19 @@ const PASS_PCT = 80;
 
 export default function Results() {
   const result = getLessonResult();
+  // Profile-second upsell: guests see a save-progress card after winning XP.
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [pending, setPending] = useState<PendingGuestResult | null>(null);
+  useFocusEffect(
+    useCallback(() => {
+      getProfile()
+        .then(async (p) => {
+          setProfile(p);
+          if (!p) setPending(await getPendingGuestResult());
+        })
+        .catch(() => {});
+    }, [])
+  );
 
   if (!result) {
     return (
@@ -96,6 +112,24 @@ export default function Results() {
           {!r.correct && <Text className="mt-1 font-mono text-sm text-slate-700">Answer: {r.correctAnswer}</Text>}
         </View>
       ))}
+
+      {/* Inverted onboarding payoff: value first, account second. */}
+      {!profile && pending && pending.xpEarned > 0 ? (
+        <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-green-300 bg-green-50 p-4">
+          <Text className="text-lg font-extrabold text-green-800">🎁 Save your +{pending.xpEarned} XP</Text>
+          <Text className="mt-1 text-sm leading-5 text-slate-600">
+            Nice work! Create a free account to keep this XP, protect your streak, and sync across devices.
+          </Text>
+          <Pressable
+            onPress={() => router.push('/auth')}
+            accessibilityRole="button"
+            accessibilityLabel="Save progress by creating an account"
+            className="mt-3 items-center rounded-2xl bg-green-500 py-3"
+          >
+            <Text className="font-extrabold text-white">Save my progress</Text>
+          </Pressable>
+        </View>
+      ) : null}
 
       <View className="mt-6 w-full max-w-sm flex-row gap-2">
         <Pressable

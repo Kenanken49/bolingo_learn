@@ -8,6 +8,7 @@ import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
 import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
+import { hasSeenQuizIntro, markQuizIntroSeen, markOnboarded, savePendingGuestResult } from '../../../lib/onboarding';
 
 const DEMO_QUESTIONS: CodeQuizData[] = [
   {
@@ -43,6 +44,9 @@ export default function QuizPlayer() {
   const [userId, setUserId] = useState<string | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
   const [answers, setAnswers] = useState<QuestionResult[]>([]);
+  // Micro-onboarding: coach overlay appears the very first time a user meets
+  // the quiz player, then never again.
+  const [showCoach, setShowCoach] = useState(false);
 
   const load = useCallback(async () => {
     // Real course banks first — demo placeholders and DB lessons after.
@@ -89,6 +93,7 @@ export default function QuizPlayer() {
     const p = await getProfile();
     setUserId(p?.id ?? null);
     setHearts(p?.hearts ?? MAX_HEARTS);
+    if (!(await hasSeenQuizIntro())) setShowCoach(true);
   }, [lessonId]);
 
   useEffect(() => {
@@ -144,6 +149,14 @@ export default function QuizPlayer() {
         .then((p) => goResults(p.streak_count))
         .catch(() => goResults(0));
     } else {
+      // Guest played first: stash the winnings so signup can rescue them.
+      void markOnboarded();
+      void savePendingGuestResult({
+        lessonId,
+        title: String(title ?? 'Lesson'),
+        xpEarned,
+        at: Date.now(),
+      });
       goResults(0);
     }
   };
@@ -166,6 +179,38 @@ export default function QuizPlayer() {
           onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
         />
       </ScrollView>
+      {/* First-visit coach marks: contextual, dismissible, shown exactly once. */}
+      {showCoach ? (
+        <View className="absolute inset-0 z-10 items-center justify-center bg-slate-900/70 px-6">
+          <View className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-xl">
+            <Text className="text-xl font-extrabold text-slate-900">🎮 How a lesson works</Text>
+            {[
+              ['👆', 'Tap tokens', 'Build your answer in the drop zone. Tap again to remove one.'],
+              ['▶️', 'Run tests', 'Check your code like a real dev — free, no hearts lost.'],
+              ['✅', 'Check answer', 'Correct earns +10 XP. Wrong costs one ❤️.'],
+            ].map(([icon, title, body]) => (
+              <View key={title} className="mt-3 flex-row items-start">
+                <Text className="text-2xl">{icon}</Text>
+                <View className="ml-2 flex-1">
+                  <Text className="font-extrabold text-slate-900">{title}</Text>
+                  <Text className="text-sm text-slate-600">{body}</Text>
+                </View>
+              </View>
+            ))}
+            <Pressable
+              onPress={() => {
+                void markQuizIntroSeen();
+                setShowCoach(false);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Start playing"
+              className="mt-4 items-center rounded-2xl bg-green-500 py-3.5"
+            >
+              <Text className="text-lg font-extrabold text-white">Got it — let's play</Text>
+            </Pressable>
+          </View>
+        </View>
+      ) : null}
       <StatusBar style="auto" />
     </View>
   );

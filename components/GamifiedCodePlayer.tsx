@@ -11,6 +11,7 @@ import { useAudioPlayer } from 'expo-audio';
 import * as Speech from 'expo-speech';
 import * as Haptics from 'expo-haptics';
 import { loseHeart } from '../lib/progress';
+import { hasSeenHeartsIntro, markHeartsIntroSeen } from '../lib/onboarding';
 import { getSoundOn, getHapticsOn } from '../lib/preferences';
 import { CORRECT_CHIME, WRONG_BUZZ } from '../assets/sounds';
 
@@ -73,6 +74,8 @@ export default function GamifiedCodePlayer({
   // prompt through the phone's built-in robot voice ($0).
   const eliteLocked = !questionData.audioUrl;
   const [hint, setHint] = useState<string | null>(null);
+  // Micro-onboarding: hearts explainer appears on the first-ever mistake.
+  const [showHeartsInfo, setShowHeartsInfo] = useState(false);
 
   // freeCodeCamp-style test checklist derived from the expected chain.
   // Single-token answers (multiple-choice) collapse to one test.
@@ -185,6 +188,11 @@ export default function GamifiedCodePlayer({
         h = Math.max(0, hearts - 1);
       }
       onHeartsChange(h);
+      // First mistake ever: pause for a contextual hearts explainer.
+      if (!(await hasSeenHeartsIntro())) {
+        await markHeartsIntroSeen();
+        setShowHeartsInfo(true);
+      }
       if (h <= 0) onOutOfHearts();
     }
   };
@@ -308,6 +316,26 @@ export default function GamifiedCodePlayer({
           </Pressable>
         </Reanimated.View>
       )}
+      {/* First-mistake explainer: hearts introduced exactly when they matter. */}
+      {showHeartsInfo ? (
+        <View className="absolute inset-0 z-10 items-center justify-center bg-slate-900/70 px-6">
+          <View className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-xl">
+            <Text className="text-4xl">💔</Text>
+            <Text className="mt-2 text-xl font-extrabold text-slate-900">Wrong answers cost a heart</Text>
+            <Text className="mt-1 text-sm leading-5 text-slate-600">
+              You have {hearts} {hearts === 1 ? 'heart' : 'hearts'} left. Hearts refill over time — or watch a short ad for +1. Tip: hit Run first to test your code for free!
+            </Text>
+            <Pressable
+              onPress={() => setShowHeartsInfo(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Dismiss hearts explanation"
+              className="mt-4 items-center rounded-2xl bg-red-500 py-3"
+            >
+              <Text className="font-extrabold text-white">Got it — I'll be careful</Text>
+            </Pressable>
+          </View>
+        </View>
+      ) : null}
     </View>
   );
 }
