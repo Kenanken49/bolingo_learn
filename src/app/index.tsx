@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text, Pressable, ScrollView, Animated, Modal, ActivityIndicator, AccessibilityRole } from 'react-native';
+import { View, Text, Pressable, ScrollView, Animated, Modal, ActivityIndicator, AccessibilityRole, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -11,17 +11,13 @@ import { getProfile, getCompletedLessonIds, MAX_HEARTS, type Profile } from '../
 import { uploadRawFile, waitForUploadReady } from '../../lib/uploads';
 import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
+import { CURRICULUM, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
 import AudiobookPlayer from '../../components/AudiobookPlayer';
 
 type NodeState = 'completed' | 'active' | 'locked' | 'processing' | 'failed';
 
-const STARTER_NODES = [
-  { id: 'demo-html', title: 'HTML Basics', icon: '🌐' },
-  { id: 'demo-code', title: 'Code Basics', icon: '💻' },
-];
-
-/** Alternating offsets give the track its signature winding feel. */
-const WIND = [0, -56, 56, -28, 28, 0];
+/** Clamped offsets — the old ±56px clipped labels on wide tablets. */
+const WIND = [0, -24, 24, -12, 12, 0];
 
 function PathNode({
   state,
@@ -89,7 +85,7 @@ function PathNode({
           {state === 'processing' ? (
             <ActivityIndicator color="#64748b" />
           ) : (
-            <Text className="text-3xl">{locked ? '🔒' : state === 'failed' ? '⚠️' : icon}</Text>
+            <Text className="text-3xl">{locked ? '\u{1F512}' : state === 'failed' ? '⚠️' : icon}</Text>
           )}
         </Animated.View>
       </Pressable>
@@ -105,6 +101,75 @@ function PathNode({
   );
 }
 
+/** Duolingo-style unit banner: colored header, section eyebrow, goal, guidebook entry. */
+function UnitHeader({ unit, doneCount, totalCount }: { unit: CurriculumUnit; doneCount: number; totalCount: number }) {
+  return (
+    <View className={`w-full max-w-sm overflow-hidden rounded-3xl ${unit.color}`}>
+      <View className="px-5 pb-4 pt-4">
+        <Text className="text-xs font-extrabold uppercase tracking-widest text-white/80">{unit.section}</Text>
+        <View className="mt-1 flex-row items-center justify-between">
+          <View className="flex-1">
+            <Text className="text-xl font-extrabold text-white">
+              {unit.icon} {unit.title}
+            </Text>
+            <Text className="mt-0.5 text-sm font-semibold text-white/85">{unit.goal}</Text>
+          </View>
+          <Pressable
+            onPress={() => router.push({ pathname: '/curriculum/[unitId]', params: { unitId: unit.id } })}
+            accessibilityRole="button"
+            accessibilityLabel={`${unit.title} guidebook`}
+            className="ml-3 items-center rounded-2xl border-2 border-white/40 px-3 py-2"
+          >
+            <Text className="text-lg">📖</Text>
+            <Text className="text-[10px] font-extrabold text-white">GUIDE</Text>
+          </Pressable>
+        </View>
+        <View className="mt-3 h-2.5 overflow-hidden rounded-full bg-black/20">
+          <View className="h-full rounded-full bg-white" style={{ width: `${totalCount ? Math.round((doneCount / totalCount) * 100) : 0}%` }} />
+        </View>
+        <Text className="mt-1 text-xs font-bold text-white/80">
+          {doneCount}/{totalCount} complete
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+/** freeCodeCamp-style syllabus row: kind tag, title, minutes, status, chevron. */
+function SyllabusRow({
+  block,
+  state,
+  onOpen,
+}: {
+  block: CurriculumBlock;
+  state: NodeState;
+  onOpen: () => void;
+}) {
+  const meta = KIND_META[block.kind];
+  const statusIcon = state === 'completed' ? '✅' : state === 'locked' ? '🔒' : state === 'processing' ? '⏳' : '⭕';
+  return (
+    <Pressable
+      onPress={onOpen}
+      disabled={state === 'locked' || state === 'processing'}
+      accessibilityRole="button"
+      accessibilityLabel={`${block.title}, ${block.kind}, ${state}`}
+      className="flex-row items-center rounded-2xl border border-slate-200 bg-white p-3"
+    >
+      <Text className="text-2xl">{meta.icon}</Text>
+      <View className="ml-3 flex-1">
+        <View className="flex-row items-center">
+          <Text className={`mr-2 rounded-full px-2 py-0.5 text-[10px] font-extrabold ${meta.color}`}>{meta.label}</Text>
+          <Text className="text-xs font-bold text-slate-400">{block.minutes} min · +{block.xp} XP</Text>
+        </View>
+        <Text className={`mt-0.5 text-base font-bold ${state === 'locked' ? 'text-slate-400' : 'text-slate-800'}`}>
+          {block.title}
+        </Text>
+      </View>
+      <Text className="text-lg">{statusIcon}</Text>
+    </Pressable>
+  );
+}
+
 interface UploadRow {
   id: string;
   file_name: string;
@@ -116,6 +181,15 @@ interface UserLesson {
   title: string;
   upload_source_id: string | null;
 }
+
+const KIND_ICON: Record<string, string> = {
+  lesson: '⭐',
+  workshop: '\u{1F6E0}\uFE0F',
+  lab: '\u{1F9EA}',
+  review: '\u{1F4DD}',
+  quiz: '\u{1F3C6}',
+  project: '\u{1F3D7}\uFE0F',
+};
 
 export default function PathMap() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -130,6 +204,7 @@ export default function PathMap() {
   const [listening, setListening] = useState(false);
   const [audioMsg, setAudioMsg] = useState<string | null>(null);
   const [freeListen, setFreeListen] = useState(false);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const refresh = useCallback(async () => {
     try {
@@ -198,8 +273,16 @@ export default function PathMap() {
     setUploading(true);
     setSandboxMsg(null);
     try {
-      const b64 = await readAsStringAsync(picked.uri, { encoding: EncodingType.Base64 });
-      const upload = await uploadRawFile(new Uint8Array(decode(b64)), picked.name, picked.mime);
+      // expo-file-system has no web implementation — read blob: URIs with fetch instead.
+      let bytes: Uint8Array;
+      if (Platform.OS === 'web') {
+        const buf = await (await fetch(picked.uri)).arrayBuffer();
+        bytes = new Uint8Array(buf);
+      } else {
+        const b64 = await readAsStringAsync(picked.uri, { encoding: EncodingType.Base64 });
+        bytes = new Uint8Array(decode(b64));
+      }
+      const upload = await uploadRawFile(bytes, picked.name, picked.mime);
       setPicked(null);
       setSandboxMsg('Uploaded! The AI is generating your custom path node…');
       refresh();
@@ -230,7 +313,7 @@ export default function PathMap() {
           .limit(1)
           .maybeSingle();
         if (!lesson) {
-          setAudioMsg('No lesson yet — open the 🧠 AI Sandbox and paste text first.');
+          setAudioMsg('No lesson yet — open the AI Sandbox and paste text first.');
           return;
         }
         const { data: qs } = await supabase.from('questions').select('id,prompt').eq('lesson_id', (lesson as { id: number }).id).order('created_at');
@@ -253,7 +336,7 @@ export default function PathMap() {
       setAudioMsg('Loading your audiobook…');
       const book = await loadLatestAudiobook();
       if (!book) {
-        setAudioMsg('No audiobook yet — open the 🧠 AI Sandbox and upload material first.');
+        setAudioMsg('No audiobook yet — open the AI Sandbox and upload material first.');
         return;
       }
       setAudiobook(book);
@@ -283,16 +366,110 @@ export default function PathMap() {
 
   const lowHearts = hearts <= 1;
 
+  // Per-unit progress across curriculum blocks + demo parity.
+  const isBlockDone = (b: CurriculumBlock) => completed.has(b.lessonId) || completed.has(b.id);
+  const unitState = (unit: CurriculumUnit, blockIdx: number): NodeState => {
+    const b = unit.blocks[blockIdx];
+    if (isBlockDone(b)) return 'completed';
+    if (blockIdx === 0) return 'active';
+    const prev = unit.blocks[blockIdx - 1];
+    if (isBlockDone(prev)) return 'active';
+    // Guests get the Duo treatment too: only the next uncompleted block is
+    // tappable, everything past it stays locked until something is done.
+    if (!profile) return 'locked';
+    const prevUnitIdx = CURRICULUM.findIndex((u) => u.id === unit.id) - 1;
+    if (blockIdx === 0 && prevUnitIdx >= 0) {
+      const prevUnit = CURRICULUM[prevUnitIdx];
+      if (prevUnit.blocks.every(isBlockDone)) return 'active';
+    }
+    return 'locked';
+  };
+  const openBlock = (b: CurriculumBlock) =>
+    router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } });
+
+  const sideNav = (
+    <View className="w-56 gap-1 pr-4">
+      {[
+        { label: 'Learn', icon: '🏠', href: '/', active: true },
+        { label: 'Leaderboard', icon: '🏆', href: '/leaderboard', active: false },
+        { label: 'Quests', icon: '🎯', href: '/settings', active: false },
+        { label: 'Shop', icon: '🛍️', href: '/paywall', active: false },
+        { label: 'Profile', icon: '👤', href: '/auth', active: false },
+      ].map((n) => (
+        <Link key={n.label} href={n.href as never} asChild>
+          <Pressable className={`flex-row items-center rounded-2xl px-4 py-3 ${n.active ? 'border-2 border-sky-200 bg-sky-50' : ''}`}>
+            <Text className="text-xl">{n.icon}</Text>
+            <Text className={`ml-3 text-sm font-extrabold tracking-wide ${n.active ? 'text-sky-600' : 'text-slate-500'}`}>
+              {n.label.toUpperCase()}
+            </Text>
+          </Pressable>
+        </Link>
+      ))}
+      <View className="mt-4 rounded-2xl border-2 border-slate-200 p-4">
+        <Text className="text-sm font-extrabold text-slate-800">Daily Quest</Text>
+        <Text className="mt-1 text-sm text-slate-500">Complete 1 lesson to keep your streak alive.</Text>
+      </View>
+    </View>
+  );
+
+  const rightPanel = (
+    <View className="w-72 gap-4 pl-4">
+      <View className="rounded-2xl border-2 border-slate-200 p-4">
+        <Text className="text-sm font-extrabold text-slate-800">Stats</Text>
+        <Text className="mt-2 text-base font-bold text-orange-500">🔥 Streak {streak}</Text>
+        <Text className="text-base font-bold text-amber-500">⭐ {xp.toLocaleString()} XP</Text>
+        <Text className="text-base font-bold text-red-500">❤️ {hearts}/{MAX_HEARTS}</Text>
+      </View>
+      <View className="rounded-2xl border-2 border-purple-200 bg-purple-50 p-4">
+        <Text className="text-sm font-extrabold text-purple-800">🧠 AI Sandbox</Text>
+        <Text className="mt-1 text-sm text-purple-900/70">Turn your own material into path nodes.</Text>
+        <Pressable
+          onPress={() => {
+            setSandboxOpen(true);
+            setSandboxMsg(null);
+          }}
+          className="mt-3 items-center rounded-2xl bg-purple-600 py-2.5"
+        >
+          <Text className="font-extrabold text-white">Open Sandbox</Text>
+        </Pressable>
+      </View>
+      {!isPremium ? (
+        <Link href="/paywall" asChild>
+          <Pressable className="items-center rounded-2xl bg-amber-500 px-4 py-3">
+            <Text className="font-extrabold text-white">👑 Go Premium ({PREMIUM_PRICE_LABEL})</Text>
+          </Pressable>
+        </Link>
+      ) : null}
+    </View>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
-      {/* Sticky HUD — streak / XP / hearts stay visible while the path scrolls */}
-      <View className="border-b-2 border-slate-100 bg-white px-6 pb-3 pt-2">
-        <View className="w-full max-w-sm flex-row items-center justify-between self-center">
+      {/* Duo-style HUD: course flag · streak · gems/XP · hearts · trophy · avatar */}
+      <View className="border-b-2 border-slate-100 bg-white px-4 pb-3 pt-2">
+        <View className="w-full max-w-5xl flex-row items-center justify-between self-center">
+          <Pressable
+            onPress={() => router.push('/curriculum/html-foundations')}
+            accessibilityRole="button"
+            accessibilityLabel="Current course: Web Basics"
+            className="flex-row items-center rounded-full bg-slate-100 px-3 py-1.5"
+          >
+            <Text className="text-lg">🌐</Text>
+            <Text className="ml-1 text-sm font-extrabold text-slate-600">WEB ▼</Text>
+          </Pressable>
           <Text accessibilityLabel={`Streak ${streak} days`} className="text-lg font-extrabold text-orange-500">🔥 {streak}</Text>
-          <Text accessibilityLabel={`${xp} experience points`} className="text-lg font-extrabold text-amber-500">⭐ {xp.toLocaleString()}</Text>
+          <Text accessibilityLabel={`${xp} experience points`} className="text-lg font-extrabold text-sky-500">💎 {xp.toLocaleString()}</Text>
           <Text accessibilityLabel={`${hearts} hearts remaining`} className={`text-lg font-extrabold ${lowHearts ? 'text-red-600' : 'text-red-500'}`}>
             ❤️ {hearts}{lowHearts ? '!' : ''}
           </Text>
+          <Pressable
+            onPress={() => router.push('/leaderboard')}
+            accessibilityRole="button"
+            accessibilityLabel="Weekly leagues leaderboard"
+            className="hidden rounded-full bg-amber-100 px-3 py-1.5 md:flex"
+          >
+            <Text className="text-sm font-extrabold text-amber-700">{'🏆'}</Text>
+          </Pressable>
           <Pressable
             onPress={() => router.push('/auth')}
             accessibilityRole="button"
@@ -306,159 +483,225 @@ export default function PathMap() {
         </View>
       </View>
 
-      <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-4">
-        <Text className="mt-2 text-2xl font-extrabold text-slate-900">Your Path</Text>
-        <Text className="text-base text-slate-500">Finish nodes to earn XP and keep the streak.</Text>
+      <View className="flex-1 flex-row justify-center">
+        {/* Desktop left rail (web, md+) */}
+        {Platform.OS === 'web' ? <View className="hidden pt-6 md:flex">{sideNav}</View> : null}
 
-        {/* Starter track — winding rail sits behind the nodes */}
-        <View className="relative mt-6 w-full max-w-sm items-center gap-5">
-          <View pointerEvents="none" className="absolute bottom-6 top-6 w-1.5 rounded-full bg-slate-100" />
-          {STARTER_NODES.map((n, i) => {
-            const isDone = completed.has(n.id);
-            const prevDone = i === 0 || completed.has(STARTER_NODES[i - 1].id);
-            const state: NodeState = isDone ? 'completed' : prevDone || !profile ? 'active' : 'locked';
+        <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-4 md:max-w-xl md:flex-1">
+          {/* Curriculum units: Duo banner + winding FCC-mapped nodes + chest milestone */}
+          {CURRICULUM.map((unit) => {
+            const done = unit.blocks.filter(isBlockDone).length;
+            const open = expanded[unit.id] ?? false;
             return (
-              <PathNode
-                key={n.id}
-                state={state}
-                icon={isDone ? '🏆' : n.icon}
-                label={n.title}
-                sub={state === 'completed' ? 'Completed' : state === 'locked' ? 'Finish previous node' : undefined}
-                color="bg-green-500"
-                offset={nextOffset()}
-                onPress={() =>
-                  router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: n.id, title: n.title } })
-                }
-              />
+              <View key={unit.id} className="mb-8 w-full max-w-sm items-center">
+                <UnitHeader unit={unit} doneCount={done} totalCount={unit.blocks.length} />
+
+                <View className="relative mt-4 w-full items-center gap-5">
+                  <View pointerEvents="none" className="absolute bottom-6 top-6 w-1.5 rounded-full bg-slate-100" />
+                  {unit.blocks.map((b, i) => (
+                    <PathNode
+                      key={b.id}
+                      state={unitState(unit, i)}
+                      icon={isBlockDone(b) ? '🏆' : KIND_ICON[b.kind] ?? '⭐'}
+                      label={b.title}
+                      sub={KIND_META[b.kind].label}
+                      color={unit.color}
+                      offset={nextOffset()}
+                      onPress={() => openBlock(b)}
+                    />
+                  ))}
+                  {/* Duo-style reward chest at the end of each unit */}
+                  <PathNode
+                    state={unit.blocks.every(isBlockDone) ? 'active' : 'locked'}
+                    icon="🎁"
+                    label="Unit chest"
+                    sub={unit.blocks.every(isBlockDone) ? 'Tap to claim +50 XP' : 'Finish the unit'}
+                    color="bg-amber-400"
+                    offset={nextOffset()}
+                    onPress={() => router.push('/results')}
+                  />
+                </View>
+
+                {/* FCC-style expandable syllabus (sibling buttons — no nested pressables) */}
+                <View className="mt-4 w-full flex-row gap-2">
+                  <Pressable
+                    onPress={() => setExpanded((e) => ({ ...e, [unit.id]: !open }))}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${open ? 'Hide' : 'View'} ${unit.title} syllabus`}
+                    className="flex-1 items-center rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3"
+                  >
+                    <Text className="font-extrabold text-slate-700">{open ? 'Hide syllabus ▲' : 'View syllabus ▼'}</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => router.push({ pathname: '/curriculum/[unitId]', params: { unitId: unit.id } })}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Open ${unit.title} full syllabus page`}
+                    className="items-center justify-center rounded-2xl bg-slate-900 px-4 py-3"
+                  >
+                    <Text className="text-xs font-extrabold text-white">FULL PAGE →</Text>
+                  </Pressable>
+                </View>
+                {open ? (
+                  <View className="mt-2 w-full gap-2">
+                    {unit.blocks.map((b, i) => (
+                      <SyllabusRow key={b.id} block={b} state={unitState(unit, i)} onOpen={() => openBlock(b)} />
+                    ))}
+                  </View>
+                ) : null}
+              </View>
             );
           })}
-        </View>
 
-        {/* Special node: newest custom revision */}
-        {newestReady && (
-          <View className="mt-8 w-full max-w-sm items-center">
-            <Text className="mb-3 text-sm font-bold uppercase tracking-widest text-purple-500">
-              🧠 My Custom Revision
-            </Text>
-            <PathNode
-              state={completed.has(newestReady.id) ? 'completed' : 'active'}
-              icon="🧠"
-              label="My Custom Revision"
-              sub={newestReady.title}
-              color="bg-purple-500"
-              offset={nextOffset()}
-              onPress={() =>
-                router.push({
-                  pathname: '/quiz/[lessonId]',
-                  params: { lessonId: newestReady.id, title: newestReady.title },
-                })
-              }
-            />
-          </View>
-        )}
-
-        {/* Older custom nodes */}
-        {olderLessons.length > 0 && (
-          <View className="mt-6 w-full max-w-sm items-center gap-5">
-            {olderLessons.map((l) => (
+          {/* Special node: newest custom revision */}
+          {newestReady && (
+            <View className="mb-8 w-full max-w-sm items-center">
+              <Text className="mb-3 text-sm font-bold uppercase tracking-widest text-purple-500">
+                🧠 My Custom Revision
+              </Text>
               <PathNode
-                key={l.id}
-                state={completed.has(l.id) ? 'completed' : 'active'}
-                icon={completed.has(l.id) ? '🏆' : '📄'}
-                label={l.title}
+                state={completed.has(newestReady.id) ? 'completed' : 'active'}
+                icon="🧠"
+                label="My Custom Revision"
+                sub={newestReady.title}
                 color="bg-purple-500"
                 offset={nextOffset()}
                 onPress={() =>
-                  router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: l.id, title: l.title } })
+                  router.push({
+                    pathname: '/quiz/[lessonId]',
+                    params: { lessonId: newestReady.id, title: newestReady.title },
+                  })
                 }
               />
-            ))}
-          </View>
-        )}
+            </View>
+          )}
 
-        {/* Still-generating uploads */}
-        {pendingUploads.length > 0 && (
-          <View className="mt-6 w-full max-w-sm items-center gap-5">
-            {pendingUploads.map((u) => (
-              <PathNode
-                key={u.id}
-                state="processing"
-                icon="⏳"
-                label={u.file_name}
-                sub="AI is generating…"
-                color="bg-slate-200"
-                offset={nextOffset()}
+          {/* Older custom nodes */}
+          {olderLessons.length > 0 && (
+            <View className="mb-8 w-full max-w-sm items-center gap-5">
+              {olderLessons.map((l) => (
+                <PathNode
+                  key={l.id}
+                  state={completed.has(l.id) ? 'completed' : 'active'}
+                  icon={completed.has(l.id) ? '🏆' : '📄'}
+                  label={l.title}
+                  color="bg-purple-500"
+                  offset={nextOffset()}
+                  onPress={() =>
+                    router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: l.id, title: l.title } })
+                  }
+                />
+              ))}
+            </View>
+          )}
+
+          {/* Still-generating uploads */}
+          {pendingUploads.length > 0 && (
+            <View className="mb-8 w-full max-w-sm items-center gap-5">
+              {pendingUploads.map((u) => (
+                <PathNode
+                  key={u.id}
+                  state="processing"
+                  icon="⏳"
+                  label={u.file_name}
+                  sub="AI is generating…"
+                  color="bg-slate-200"
+                  offset={nextOffset()}
+                />
+              ))}
+            </View>
+          )}
+          {failedLessons.length > 0 && (
+            <Pressable
+              onPress={() => {
+                setSandboxOpen(true);
+                setSandboxMsg(null);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Re-upload failed lessons"
+              className="mb-8 rounded-2xl border-2 border-red-200 bg-red-50 px-4 py-3"
+            >
+              <Text className="text-center text-sm font-bold text-red-600">
+                {failedLessons.length} upload{failedLessons.length > 1 ? 's' : ''} failed to generate — tap to try again.
+              </Text>
+            </Pressable>
+          )}
+
+          {!listening ? (
+            <Pressable onPress={openAudiobookMode} className="mt-2 items-center rounded-2xl bg-purple-600 px-6 py-3">
+              <Text className="text-lg font-extrabold text-white">🎧 Listen to Audiobook Mode</Text>
+            </Pressable>
+          ) : (
+            audiobook && (
+              <AudiobookPlayer
+                title={audiobook.title}
+                segments={audiobook.segments}
+                fullUrl={audiobook.full_audio_url}
+                freeMode={freeListen}
+                onClose={() => setListening(false)}
               />
-            ))}
-          </View>
-        )}
-        {failedLessons.length > 0 && (
-          <Pressable
-            onPress={() => {
-              setSandboxOpen(true);
-              setSandboxMsg(null);
-            }}
-            accessibilityRole="button"
-            accessibilityLabel="Re-upload failed lessons"
-            className="mt-4 rounded-2xl border-2 border-red-200 bg-red-50 px-4 py-3"
-          >
-            <Text className="text-center text-sm font-bold text-red-600">
-              {failedLessons.length} upload{failedLessons.length > 1 ? 's' : ''} failed to generate — tap to try again.
+            )
+          )}
+          {audioMsg && !listening ? <Text className="mt-2 text-sm text-slate-500">{audioMsg}</Text> : null}
+
+          {/* Tier badge */}
+          <View className={`mt-4 rounded-full px-4 py-1.5 ${isPremium ? 'bg-amber-100' : 'bg-slate-100'}`}>
+            <Text className={`text-sm font-bold ${isPremium ? 'text-amber-700' : 'text-slate-500'}`}>
+              {isPremium
+                ? `👑 Premium • ${(PREMIUM_MONTHLY_WORD_CAP - used).toLocaleString()} AI words left`
+                : `Free tier • text ≤${FREE_WORD_LIMIT} words • device voice`}
             </Text>
-          </Pressable>
-        )}
+          </View>
+          {!isPremium && (
+            <Link href="/paywall" asChild>
+              <Pressable className="mt-2 items-center rounded-2xl bg-amber-500 px-6 py-3">
+                <Text className="font-extrabold text-white">👑 Go Premium ({PREMIUM_PRICE_LABEL}) — PDF, audio, elite voices</Text>
+              </Pressable>
+            </Link>
+          )}
 
-        {!listening ? (
-          <Pressable onPress={openAudiobookMode} className="mt-8 items-center rounded-2xl bg-purple-600 px-6 py-3">
-            <Text className="text-lg font-extrabold text-white">🎧 Listen to Audiobook Mode</Text>
-          </Pressable>
-        ) : (
-          audiobook && (
-            <AudiobookPlayer
-              title={audiobook.title}
-              segments={audiobook.segments}
-              fullUrl={audiobook.full_audio_url}
-              freeMode={freeListen}
-              onClose={() => setListening(false)}
-            />
-          )
-        )}
-        {audioMsg && !listening ? <Text className="mt-2 text-sm text-slate-500">{audioMsg}</Text> : null}
+          <View className="mt-4 flex-row items-center gap-4">
+            <Link href="/refill" asChild>
+              <Pressable>
+                <Text className="text-sm text-slate-400">Hearts refill options →</Text>
+              </Pressable>
+            </Link>
+            <Link href="/uploads" asChild>
+              <Pressable>
+                <Text className="text-sm text-slate-400">My uploads →</Text>
+              </Pressable>
+            </Link>
+            <Link href="/settings" asChild>
+              <Pressable>
+                <Text className="text-sm text-slate-400">⚙️ Settings</Text>
+              </Pressable>
+            </Link>
+          </View>
+          {/* spacer for mobile bottom nav */}
+          <View className="h-16 md:hidden" />
+        </ScrollView>
 
-        {/* Tier badge */}
-        <View className={`mt-4 rounded-full px-4 py-1.5 ${isPremium ? 'bg-amber-100' : 'bg-slate-100'}`}>
-          <Text className={`text-sm font-bold ${isPremium ? 'text-amber-700' : 'text-slate-500'}`}>
-            {isPremium
-              ? `👑 Premium • ${(PREMIUM_MONTHLY_WORD_CAP - used).toLocaleString()} AI words left`
-              : `Free tier • text ≤${FREE_WORD_LIMIT} words • device voice`}
-          </Text>
+        {/* Desktop right panel (web, lg+) */}
+        {Platform.OS === 'web' ? <View className="hidden pt-6 lg:flex">{rightPanel}</View> : null}
+      </View>
+
+      {/* Mobile bottom nav — Duo style (native + narrow web) */}
+      <View className="border-t-2 border-slate-100 bg-white px-6 py-2 md:hidden">
+        <View className="flex-row items-center justify-around">
+          {[
+            { label: 'LEARN', icon: '🏠', href: '/', active: true },
+            { label: 'LEAGUES', icon: '🏆', href: '/leaderboard', active: false },
+            { label: 'QUESTS', icon: '🎯', href: '/settings', active: false },
+            { label: 'SHOP', icon: '🛍️', href: '/paywall', active: false },
+          ].map((n) => (
+            <Link key={n.label} href={n.href as never} asChild>
+              <Pressable className={`items-center rounded-2xl px-3 py-1.5 ${n.active ? 'border-2 border-sky-200 bg-sky-50' : ''}`}>
+                <Text className="text-xl">{n.icon}</Text>
+                <Text className={`text-[10px] font-extrabold ${n.active ? 'text-sky-600' : 'text-slate-400'}`}>{n.label}</Text>
+              </Pressable>
+            </Link>
+          ))}
         </View>
-        {!isPremium && (
-          <Link href="/paywall" asChild>
-            <Pressable className="mt-2 items-center rounded-2xl bg-amber-500 px-6 py-3">
-              <Text className="font-extrabold text-white">👑 Go Premium ({PREMIUM_PRICE_LABEL}) — PDF, audio, elite voices</Text>
-            </Pressable>
-          </Link>
-        )}
-
-        <View className="mt-4 flex-row items-center gap-4">
-          <Link href="/refill" asChild>
-            <Pressable>
-              <Text className="text-sm text-slate-400">Hearts refill options →</Text>
-            </Pressable>
-          </Link>
-          <Link href="/uploads" asChild>
-            <Pressable>
-              <Text className="text-sm text-slate-400">My uploads →</Text>
-            </Pressable>
-          </Link>
-          <Link href="/settings" asChild>
-            <Pressable>
-              <Text className="text-sm text-slate-400">⚙️ Settings</Text>
-            </Pressable>
-          </Link>
-        </View>
-      </ScrollView>
+      </View>
 
       {/* AI Sandbox FAB */}
       <Pressable
@@ -468,7 +711,7 @@ export default function PathMap() {
         }}
         accessibilityRole="button"
         accessibilityLabel="Open AI Sandbox"
-        className="absolute bottom-8 self-center rounded-full bg-slate-900 px-8 py-4 shadow-lg active:scale-95"
+        className="absolute bottom-24 self-center rounded-full bg-slate-900 px-8 py-4 shadow-lg active:scale-95 md:bottom-8"
       >
         <Text className="text-lg font-extrabold text-white">🧠 AI Sandbox</Text>
       </Pressable>

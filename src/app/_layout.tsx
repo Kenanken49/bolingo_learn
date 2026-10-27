@@ -11,6 +11,8 @@ export default function RootLayout() {
       <Stack.Screen name="uploads" />
       <Stack.Screen name="settings" />
       <Stack.Screen name="results" />
+      <Stack.Screen name="leaderboard" />
+      <Stack.Screen name="curriculum/[unitId]" />
     </Stack>
   );
 }
