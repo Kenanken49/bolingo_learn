@@ -10,7 +10,7 @@ import DuoButton from '../../components/DuoButton';
 import DuoOwl from '../../components/DuoOwl';
 import Mascot from '../../components/AfricanMascots';
 import { getCompletedLessonIds, getProfile, type Profile } from '../../lib/progress';
-import { SKILLS, facetValue, predict, skillOfLesson } from '../../lib/kiki';
+import { SKILLS, facetValue, predictObserved, skillOfLesson } from '../../lib/kiki';
 import { getKikiState } from '../../lib/kikiStore';
 import { getPendingGuestResult, type PendingGuestResult } from '../../lib/onboarding';
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
@@ -78,7 +78,7 @@ export default function Results() {
         const next = unit.blocks.slice(idx + 1).find((b) => !done.has(b.lessonId) && !done.has(b.id)) ?? null;
         if (!next) return;
         const sk = st.skills[skillOfLesson(next.lessonId)] ?? 0;
-        setKikiPick({ lessonId: next.lessonId, title: next.title, kind: next.kind, p: predict(sk, 0) });
+        setKikiPick({ lessonId: next.lessonId, title: next.title, kind: next.kind, p: predictObserved(sk, 0) });
       };
       if (profile?.id) getCompletedLessonIds(profile.id).then(choose).catch(() => choose(new Set()));
       else choose(new Set());
