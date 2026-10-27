@@ -54,11 +54,20 @@ export async function uploadRawFile(
     .single();
   if (rowError || !upload) throw rowError ?? new Error('Failed to create upload record.');
 
-  // Fire-and-forget: the Edge Function flips status to ready/failed.
+  // Kick the Edge Function; it flips status to ready/failed when done.
+  // If the function itself is unreachable (not deployed, network error),
+  // fail the row immediately so the UI shows Retry instead of hanging in
+  // `processing` until the 120s poll times out.
   const { error: fnError } = await supabase.functions.invoke('process-upload', {
     body: { upload_id: upload.id },
   });
-  if (fnError) console.warn('process-upload invocation failed:', fnError.message);
+  if (fnError) {
+    console.warn('process-upload invocation failed:', fnError.message);
+    await supabase.from('user_uploads').update({ status: 'failed' }).eq('id', upload.id);
+    throw new Error(
+      `AI pipeline did not start (${fnError.message}). The process-upload Edge Function may not be deployed — see supabase/functions/process-upload/index.ts header for deploy steps.`
+    );
+  }
 
   return upload as UserUpload;
 }
