@@ -85,7 +85,11 @@ export default function CurriculumUnit() {
                   return (
                     <View key={b.id} className={last ? '' : 'border-b border-slate-100'}>
                     <Pressable
-                      onPress={() => router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } })}
+                      onPress={() =>
+                        b.kind === 'project'
+                          ? router.push({ pathname: '/project/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } })
+                          : router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } })
+                      }
                       accessibilityRole="button"
                       accessibilityLabel={`Start ${b.title}`}
                       className={`flex-row items-center px-5 py-4 ${last ? '' : 'border-b border-slate-100'}`}
@@ -125,7 +129,14 @@ export default function CurriculumUnit() {
       })}
 
       <Pressable
-        onPress={() => router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: unit.blocks[0].lessonId, title: unit.blocks[0].lessonTitle } })}
+        onPress={() => {
+          const first = unit.blocks[0];
+          if (first.kind === 'project') {
+            router.push({ pathname: '/project/[lessonId]', params: { lessonId: first.lessonId, title: first.lessonTitle } });
+          } else {
+            router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: first.lessonId, title: first.lessonTitle } });
+          }
+        }}
         className="mt-6 items-center rounded-2xl bg-green-500 py-4"
       >
         <Text className="text-lg font-extrabold text-white">Start unit →</Text>

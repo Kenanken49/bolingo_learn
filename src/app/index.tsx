@@ -384,8 +384,11 @@ export default function PathMap() {
     }
     return 'locked';
   };
+  // Certification projects open the real code editor; everything else plays in the quiz engine.
   const openBlock = (b: CurriculumBlock) =>
-    router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } });
+    b.kind === 'project'
+      ? router.push({ pathname: '/project/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } })
+      : router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } });
 
   const sideNav = (
     <View className="w-56 gap-1 pr-4">

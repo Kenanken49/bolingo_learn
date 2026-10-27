@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { getLessonResult } from '../../lib/quizResults';
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
+import { isProjectLesson } from '../../lib/courses';
 
 /** freeCodeCamp-style pass threshold. */
 const PASS_PCT = 80;
@@ -98,7 +99,11 @@ export default function Results() {
 
       <View className="mt-6 w-full max-w-sm flex-row gap-2">
         <Pressable
-          onPress={() => router.replace({ pathname: '/quiz/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })}
+          onPress={() =>
+            isProjectLesson(result.lessonId)
+              ? router.replace({ pathname: '/project/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })
+              : router.replace({ pathname: '/quiz/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })
+          }
           className="flex-1 items-center rounded-2xl bg-slate-800 py-4"
         >
           <Text className="text-lg font-extrabold text-white">Retry 🔁</Text>

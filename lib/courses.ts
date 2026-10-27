@@ -532,3 +532,64 @@ export const COURSES: Record<string, CourseLesson> = {
 export function getCourseLesson(id: string): CourseLesson | undefined {
   return COURSES[id];
 }
+
+/* ---------------- Certification projects (real code editor) ---------------- */
+
+export interface ProjectStory {
+  label: string;
+  /** Tested against the raw code with new RegExp(pattern, 'i'). */
+  pattern: string;
+  hint: string;
+}
+
+export interface CourseProject {
+  id: string;
+  title: string;
+  brief: string[];
+  starterCode: string;
+  stories: ProjectStory[];
+  xp: number;
+}
+
+export const PROJECTS: Record<string, CourseProject> = {
+  'rwd-project': {
+    id: 'rwd-project',
+    title: 'Tribute Page Project',
+    brief: [
+      'Build a tribute page for someone you admire. Write real HTML and CSS in the editor — the preview updates live, exactly like the freeCodeCamp labs.',
+      'Pass every user story, then submit. This is the capstone of Course 2.',
+    ],
+    starterCode: '<h1>Tribute</h1>\n<p>Write something admirable here.</p>\n',
+    stories: [
+      {
+        label: 'A single <h1> names the subject',
+        pattern: '<h1>[^<]+</h1>',
+        hint: 'Add one <h1>Subject</h1> — exactly one top heading.',
+      },
+      {
+        label: 'At least one paragraph of text',
+        pattern: '<p>[^<]+</p>',
+        hint: 'Wrap a sentence in <p>…</p>.',
+      },
+      {
+        label: 'A list with at least one fact',
+        pattern: '<(ul|ol)>[\\s\\S]*<li>[^<]+</li>[\\s\\S]*</(ul|ol)>',
+        hint: 'Add <ul><li>One fact</li></ul> (or <ol> for numbered).',
+      },
+      {
+        label: 'CSS centers the heading',
+        pattern: 'h1\\s*\\{[^}]*text-align\\s*:\\s*center',
+        hint: 'Add a style block: h1 { text-align: center; }',
+      },
+    ],
+    xp: 50,
+  },
+};
+
+export function getCourseProject(id: string): CourseProject | undefined {
+  return PROJECTS[id];
+}
+
+export function isProjectLesson(id: string): boolean {
+  return id in PROJECTS;
+}
