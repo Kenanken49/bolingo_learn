@@ -527,6 +527,352 @@ export const COURSES: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  /* ---------------- Course 3 · UI/UX Design for Developers ---------------- */
+
+  'ux-hierarchy': {
+    id: 'ux-hierarchy',
+    title: 'Visual hierarchy & contrast',
+    theory: [
+      'Hierarchy tells the eye what matters first: one dominant headline, supporting subheads, body text last. Size, weight, and spacing create the order — not decoration.',
+      'Contrast guarantees readability: dark text on light backgrounds (or the reverse) with a ratio of at least 4.5:1 for body text. If gray text looks elegant but unreadable, it fails.',
+    ],
+    questions: [
+      MCQ(
+        'What is visual hierarchy?',
+        'Ordering elements so the most important is seen first',
+        ['Ordering elements so the most important is seen first', 'Making everything the same size for fairness', 'Adding as many colors as possible', 'Centering every element on the page'],
+        'Hierarchy = priority made visible: headline dominates, details recede.'
+      ),
+      BUILD(
+        'Make the headline dominant: h1, braces, large size',
+        ['h1', '{', 'font-size', ':', '2.5rem', ';', '}'],
+        ['h1', '{', 'font-size', ':', '2.5rem', ';', '}', '0.8rem'],
+        'Scale is the strongest hierarchy signal — headlines run 2–3× body size.'
+      ),
+      MCQ(
+        'Minimum contrast ratio for body text?',
+        '4.5:1',
+        ['4.5:1', '1.5:1', '2:1', '21:1 for everything'],
+        'WCAG AA: 4.5:1 for normal text, 3:1 for large text. Light gray on white fails.'
+      ),
+      BUILD(
+        'Give body text readable contrast: dark gray on white',
+        ['p', '{', 'color', ':', '#1e293b', ';', '}'],
+        ['p', '{', 'color', ':', '#1e293b', ';', '}', '#f1f5f9'],
+        '#1e293b on white ≈ 15:1 — crisp and readable. #f1f5f9 on white would vanish.'
+      ),
+    ],
+  },
+
+  'ux-scaling': {
+    id: 'ux-scaling',
+    title: 'Scaling & alignment workshop',
+    theory: [
+      'Clean layouts run on grids: consistent margins, one spacing scale (4/8/16/24/32px), and elements aligned to shared edges. Whitespace is strategic — it groups related items and separates the rest.',
+    ],
+    questions: [
+      BUILD(
+        'Step 1 — consistent page margins: body padding 24px',
+        ['body', '{', 'padding', ':', '24px', ';', '}'],
+        ['body', '{', 'padding', ':', '24px', ';', '}', '17px'],
+        'One spacing scale, reused everywhere: 4/8/16/24/32 — never 17px.'
+      ),
+      BUILD(
+        'Step 2 — group related items: card gap 16px',
+        ['.card', '{', 'gap', ':', '16px', ';', '}'],
+        ['.card', '{', 'gap', ':', '16px', ';', '}', '3px'],
+        'Gap replaces margin hacks and keeps rhythm inside the card.'
+      ),
+      MCQ(
+        'Why align elements to shared edges?',
+        'Alignment creates invisible lines that make layouts feel ordered',
+        ['Alignment creates invisible lines that make layouts feel ordered', 'It makes pages load faster', 'Browsers require it to render', 'It replaces the need for color'],
+        'The eye follows edges — ragged alignment reads as chaos, shared edges as calm.'
+      ),
+    ],
+  },
+
+  'ux-user-centered': {
+    id: 'ux-user-centered',
+    title: 'User-centered design lab',
+    theory: [
+      'Design from the human outward: real users scan in F-patterns, tap with thumbs, and quit when confused. Every layout choice should trace back to behavior — Fitts\'s law (big, close targets), Hick\'s law (fewer choices decide faster), and Jakob\'s law (users expect your site to work like the ones they already know).',
+    ],
+    questions: [
+      MCQ(
+        'Fitts\'s law says touch targets should be…',
+        'Large and close to where the finger already is',
+        ['Large and close to where the finger already is', 'Tiny so more fit on screen', 'Hidden until hovered', 'Placed at random for delight'],
+        'Big + near = fast + accurate. Minimum ~44×44px for touch targets.'
+      ),
+      MCQ(
+        'Jakob\'s law of UX states…',
+        'Users prefer your site to work like sites they already know',
+        ['Users prefer your site to work like sites they already know', 'Users read every word on the page', 'New layouts always beat familiar ones', 'Users never scroll'],
+        'Familiar patterns win: cart icon top-right, logo links home, blue underlined links.'
+      ),
+      BUILD(
+        'Make the primary button thumb-friendly: min 44px tall',
+        ['.btn', '{', 'min-height', ':', '44px', ';', '}'],
+        ['.btn', '{', 'min-height', ':', '44px', ';', '}', '12px'],
+        '44px minimum touch height — reachable, tappable, forgiving.'
+      ),
+    ],
+  },
+
+  'ux-quiz': {
+    id: 'ux-quiz',
+    title: 'Design fundamentals quiz',
+    theory: ['Checkpoint: hierarchy, contrast, grids, and human behavior.'],
+    questions: [
+      MCQ(
+        'A page where headline, subhead, and body are all 16px gray has what problem?',
+        'No visual hierarchy — everything competes equally',
+        ['No visual hierarchy — everything competes equally', 'Too much contrast', 'Too much whitespace', 'Broken HTML'],
+        'Equal styling = equal priority = the eye doesn\'t know where to start.'
+      ),
+      MCQ(
+        'Light-gray #cbd5e1 body text on white fails because…',
+        'Its contrast ratio is far below 4.5:1',
+        ['Its contrast ratio is far below 4.5:1', 'Gray is never allowed in design', 'Body text must always be black', 'Small text renders faster'],
+        'Elegant but unreadable is still unreadable — darken the text.'
+      ),
+      MCQ(
+        'A form with 12 equally-weighted options slows users down per…',
+        'Hick\'s law — decision time grows with choices',
+        ['Hick\'s law — decision time grows with choices', 'Fitts\'s law', 'Moore\'s law', 'Murphy\'s law'],
+        'Cut options, group them, or progressive-disclose: fewer visible choices decide faster.'
+      ),
+      MCQ(
+        'Putting the cart icon top-right follows…',
+        'Jakob\'s law — match patterns users already know',
+        ['Jakob\'s law — match patterns users already know', 'Hick\'s law', 'Fitts\'s law', 'Parkinson\'s law'],
+        'Conventions are free usability: don\'t reinvent the cart, the logo-home link, or the blue link.'
+      ),
+      MCQ(
+        'Strategic whitespace primarily…',
+        'Groups related items and separates unrelated ones',
+        ['Groups related items and separates unrelated ones', 'Fills empty areas with decoration', 'Shrinks the page to one screen', 'Replaces all borders and color'],
+        'Proximity is the strongest grouping cue — space intentionally.'
+      ),
+    ],
+  },
+
+  /* ---------------- Course 4 · World Languages (Duolingo style) ---------------- */
+
+  'spanish-basics': {
+    id: 'spanish-basics',
+    title: 'Spanish Basics',
+    theory: [
+      'Spanish is spoken by 500M+ people. Start the Duolingo way: greetings first — Hola (hello), Adiós (goodbye), Gracias (thank you), Por favor (please).',
+      'Every Spanish noun has gender: el for masculine, la for feminine. Niña (girl) is feminine → la niña.',
+    ],
+    questions: [
+      MCQ(
+        'How do you say "Hello" in Spanish?',
+        'Hola',
+        ['Hola', 'Adiós', 'Gracias', 'Por favor'],
+        'Hola opens every conversation — nail it first.'
+      ),
+      MCQ(
+        '"Gracias" means…',
+        'Thank you',
+        ['Thank you', 'Please', 'Goodbye', 'Welcome'],
+        'Gratitude unlocks kindness in every language.'
+      ),
+      BUILD(
+        'Say "I eat apples":',
+        ['Yo', 'como', 'manzanas'],
+        ['manzanas', 'Yo', 'el', 'como'],
+        'Yo = I, como = (I) eat from comer, manzanas = apples.'
+      ),
+      MCQ(
+        'Which article goes with "niña" (girl)?',
+        'la',
+        ['la', 'el', 'los', 'un'],
+        'Feminine nouns take la; masculine nouns take el.'
+      ),
+      BUILD(
+        'Say goodbye to a friend:',
+        ['Adiós', 'amigo'],
+        ['amigo', 'Hola', 'Adiós', 'gracias'],
+        'Adiós = goodbye, amigo = friend.'
+      ),
+    ],
+  },
+
+  'french-basics': {
+    id: 'french-basics',
+    title: 'French Basics',
+    theory: [
+      'French starts with music: Bonjour (hello), Merci (thank you), Au revoir (goodbye). Pronounce every syllable softly — the r rolls at the back.',
+      'Like Spanish, French nouns have gender: le for masculine, la for feminine. Fille (girl) is feminine → la fille.',
+    ],
+    questions: [
+      MCQ(
+        '"Bonjour" means…',
+        'Hello',
+        ['Hello', 'Goodbye', 'Thank you', 'Please'],
+        'Bonjour = good day — the all-purpose French hello.'
+      ),
+      MCQ(
+        '"Merci" means…',
+        'Thank you',
+        ['Thank you', 'Sorry', 'Welcome', 'Good night'],
+        'Merci carries you through every café in Paris.'
+      ),
+      BUILD(
+        'Say "I eat apples":',
+        ['Je', 'mange', 'des', 'pommes'],
+        ['pommes', 'Je', 'le', 'mange', 'des'],
+        'Je = I, mange = (I) eat, des pommes = (some) apples.'
+      ),
+      MCQ(
+        'Which article goes with "fille" (girl)?',
+        'la',
+        ['la', 'le', 'les', 'un'],
+        'Feminine nouns take la; masculine nouns take le.'
+      ),
+      BUILD(
+        'Say goodbye, friend:',
+        ['Au', 'revoir', 'mon', 'ami'],
+        ['ami', 'Bonjour', 'Au', 'revoir', 'mon'],
+        'Au revoir = until we meet again; mon ami = my friend.'
+      ),
+    ],
+  },
+
+  'german-basics': {
+    id: 'german-basics',
+    title: 'German Basics',
+    theory: [
+      'German starts crisp: Hallo (hello), Danke (thank you), Bitte (please/you are welcome). Every noun is capitalised — Morgen, Apfel, Frau.',
+      'German has three genders: der (masculine), die (feminine), das (neuter). Frau (woman) is feminine → die Frau.',
+    ],
+    questions: [
+      MCQ(
+        '"Hallo" means…',
+        'Hello',
+        ['Hello', 'Goodbye', 'Thank you', 'Please'],
+        'Hallo works everywhere — shops, streets, friends.'
+      ),
+      MCQ(
+        '"Danke" means…',
+        'Thank you',
+        ['Thank you', 'Please', 'Sorry', 'Welcome'],
+        'Danke schön = thank you very much.'
+      ),
+      BUILD(
+        'Say "I eat apples":',
+        ['Ich', 'esse', 'Äpfel'],
+        ['Äpfel', 'Ich', 'der', 'esse'],
+        'Ich = I, esse = (I) eat, Äpfel = apples. Note the capital Ä!'
+      ),
+      MCQ(
+        'Which article goes with "Frau" (woman)?',
+        'die',
+        ['die', 'der', 'das', 'den'],
+        'Frau is feminine → die. Der Mann, das Kind.'
+      ),
+      BUILD(
+        'Say "Good morning":',
+        ['Guten', 'Morgen'],
+        ['Morgen', 'Hallo', 'Guten', 'Abend'],
+        'Guten Morgen — capital M, always.'
+      ),
+    ],
+  },
+
+  'swahili-basics': {
+    id: 'swahili-basics',
+    title: 'Swahili Basics',
+    theory: [
+      'Kiswahili is spoken by 200M+ people across East Africa. Greetings carry respect: Habari (hello/how are you), Asante (thank you), Karibu (welcome), Tafadhali (please).',
+      'Swahili verbs build like blocks: Ni-na-kula = I-am-eating. One word can be a whole sentence!',
+    ],
+    questions: [
+      MCQ(
+        '"Habari" means…',
+        'Hello / How are you',
+        ['Hello / How are you', 'Thank you', 'Goodbye', 'Welcome'],
+        'Habari = news — you ask for their news to say hello.'
+      ),
+      MCQ(
+        '"Asante" means…',
+        'Thank you',
+        ['Thank you', 'Please', 'Sorry', 'Welcome'],
+        'Asante sana = thank you very much.'
+      ),
+      BUILD(
+        'Say "I am eating mangoes":',
+        ['Ninakula', 'maembe'],
+        ['maembe', 'Habari', 'Ninakula', 'asante'],
+        'Ni-na-kula = I-am-eating; maembe = mangoes.'
+      ),
+      MCQ(
+        '"Karibu" means…',
+        'Welcome',
+        ['Welcome', 'Goodbye', 'Hurry', 'Sorry'],
+        'Karibu welcomes every guest — hospitality in one word.'
+      ),
+      BUILD(
+        'Ask "How are you?":',
+        ['Habari', 'yako'],
+        ['yako', 'Asante', 'Habari', 'karibu'],
+        'Habari yako? = your news? — the everyday greeting.'
+      ),
+    ],
+  },
+
+  /* ---------------- Course 4 · Chess Basics (Duolingo Chess style) ---------------- */
+
+  'chess-basics': {
+    id: 'chess-basics',
+    title: 'Chess Basics',
+    theory: [
+      'Chess is played on an 8×8 board with 16 pieces each. Every piece moves differently — knights jump in an L, bishops glide diagonally, rooks run straight, the queen does both.',
+      'The goal is checkmate: attack the enemy king so it cannot escape. Moves are written in notation — Nf3 means knight to f3, O-O means kingside castle.',
+    ],
+    questions: [
+      MCQ(
+        'How does a knight move?',
+        'In an L-shape: two squares one way, one sideways',
+        ['In an L-shape: two squares one way, one sideways', 'Diagonally any distance', 'Straight any distance', 'One square in any direction'],
+        'Knights jump over pieces — the trickiest mover on the board.'
+      ),
+      MCQ(
+        'Which piece moves diagonally any number of squares?',
+        'Bishop',
+        ['Bishop', 'Rook', 'Knight', 'Pawn'],
+        'Bishop = diagonals; rook = straights; queen = both.'
+      ),
+      BUILD(
+        'Knight on g1 jumps to f3. Write the move:',
+        ['N', 'f3'],
+        ['N', 'f3', 'g1', 'B'],
+        'N = knight (K is the king). Then the destination square: f3.'
+      ),
+      MCQ(
+        'What does O-O mean in notation?',
+        'Kingside castle',
+        ['Kingside castle', 'Checkmate', 'Draw offer', 'Pawn promotion'],
+        'O-O castles kingside; O-O-O castles queenside.'
+      ),
+      MCQ(
+        'Checkmate means…',
+        'The king is attacked and cannot escape — game over',
+        ['The king is attacked and cannot escape — game over', 'The king is attacked but can move', 'Both sides agree a draw', 'A pawn reaches the far rank'],
+        'Check = attacked. Checkmate = no escape. Stalemate = draw.'
+      ),
+      BUILD(
+        'White pawn on e2 pushes two squares. Write it:',
+        ['e4'],
+        ['e4', 'e3', 'Nf3', 'e5'],
+        'Pawns move straight; from rank 2 they may jump two squares.'
+      ),
+    ],
+  },
 };
 
 export function getCourseLesson(id: string): CourseLesson | undefined {
@@ -580,6 +926,38 @@ export const PROJECTS: Record<string, CourseProject> = {
         label: 'CSS centers the heading',
         pattern: 'h1\\s*\\{[^}]*text-align\\s*:\\s*center',
         hint: 'Add a style block: h1 { text-align: center; }',
+      },
+    ],
+    xp: 50,
+  },
+  'ux-redesign': {
+    id: 'ux-redesign',
+    title: 'Accessible Redesign Project',
+    brief: [
+      'Redesign a flat, unreadable landing page: one dominant headline, readable contrast, consistent spacing, and a thumb-friendly button.',
+      'Pass every user story, then submit. This is the capstone of the UI/UX Design module.',
+    ],
+    starterCode: '<h1>Our Thing</h1>\n<p>It does stuff.</p>\n<button>Go</button>\n',
+    stories: [
+      {
+        label: 'A single dominant headline',
+        pattern: '<h1>[^<]+</h1>',
+        hint: 'Keep exactly one <h1> naming the product.',
+      },
+      {
+        label: 'Headline scaled above body text',
+        pattern: 'h1 *{[^}]*font-size *:',
+        hint: 'Style h1 { font-size: 2.5rem; } so it dominates.',
+      },
+      {
+        label: 'Readable body contrast (dark text)',
+        pattern: 'p *{[^}]*color *:',
+        hint: 'Style p { color: #1e293b; } — dark on light.',
+      },
+      {
+        label: 'Thumb-friendly button (44px+)',
+        pattern: 'min-height *: *(44|45|46|47|48|49|[5-9][0-9])px',
+        hint: 'Style the button { min-height: 44px; } per Fitts law.',
       },
     ],
     xp: 50,
