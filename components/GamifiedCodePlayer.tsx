@@ -18,6 +18,8 @@ export interface CodeQuizData {
   prompt: string;
   correctChain: string[];
   scrambledTokens: string[];
+  /** One-line teaching note shown in the feedback banner. */
+  explain?: string;
   /** Premium narration: signed playback URL for a generated audiobook segment. */
   audioUrl?: string;
   isPremium?: boolean;
@@ -295,9 +297,12 @@ export default function GamifiedCodePlayer({
           </Text>
           <Text className="mt-1 text-slate-600">
             {feedback === 'correct'
-              ? 'Review your block tags and keep going.'
+              ? (questionData.explain ?? 'Review your block tags and keep going.')
               : `Expected: ${questionData.correctChain.join(' ')}`}
           </Text>
+          {feedback === 'wrong' && questionData.explain ? (
+            <Text className="mt-1 text-sm text-slate-500">Why: {questionData.explain}</Text>
+          ) : null}
           <Pressable onPress={onContinue} className="mt-3 items-center rounded-2xl bg-green-500 py-3">
             <Text className="text-lg font-extrabold text-white">Continue</Text>
           </Pressable>

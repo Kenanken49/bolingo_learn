@@ -6,6 +6,7 @@ import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/Gamif
 import { supabase, toDbLessonId } from '../../../lib/supabase';
 import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
+import { getCourseLesson } from '../../../lib/courses';
 import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
 
 const DEMO_QUESTIONS: CodeQuizData[] = [
@@ -44,7 +45,18 @@ export default function QuizPlayer() {
   const [answers, setAnswers] = useState<QuestionResult[]>([]);
 
   const load = useCallback(async () => {
-    if (lessonId.startsWith('demo-')) {
+    // Real course banks first — demo placeholders and DB lessons after.
+    const course = getCourseLesson(lessonId);
+    if (course) {
+      setQuestions(
+        course.questions.map((q) => ({
+          prompt: q.prompt,
+          correctChain: q.correctChain,
+          scrambledTokens: [...q.scrambledTokens].sort(() => Math.random() - 0.5),
+          explain: q.explain,
+        }))
+      );
+    } else if (lessonId.startsWith('demo-')) {
       setQuestions(DEMO_QUESTIONS);
     } else {
       const dbId = toDbLessonId(lessonId); // "45" -> 45 for the integer FK

@@ -11,7 +11,7 @@ import { getProfile, getCompletedLessonIds, MAX_HEARTS, type Profile } from '../
 import { uploadRawFile, waitForUploadReady } from '../../lib/uploads';
 import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
-import { CURRICULUM, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
+import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
 import AudiobookPlayer from '../../components/AudiobookPlayer';
 
 type NodeState = 'completed' | 'active' | 'locked' | 'processing' | 'failed';
@@ -489,11 +489,21 @@ export default function PathMap() {
 
         <ScrollView contentContainerClassName="items-center bg-white px-6 pb-32 pt-4 md:max-w-xl md:flex-1">
           {/* Curriculum units: Duo banner + winding FCC-mapped nodes + chest milestone */}
-          {CURRICULUM.map((unit) => {
+          {CURRICULUM.map((unit, ui) => {
             const done = unit.blocks.filter(isBlockDone).length;
             const open = expanded[unit.id] ?? false;
+            const courseChanged = ui === 0 || CURRICULUM[ui - 1].course !== unit.course;
+            const courseMeta = COURSES_META.find((c) => c.id === unit.course);
             return (
               <View key={unit.id} className="mb-8 w-full max-w-sm items-center">
+                {courseChanged && courseMeta ? (
+                  <View className="mb-4 w-full rounded-3xl border-2 border-slate-900 bg-slate-900 p-4">
+                    <Text className="text-lg font-extrabold text-white">
+                      {courseMeta.icon} {courseMeta.name}
+                    </Text>
+                    <Text className="mt-0.5 text-sm text-slate-400">{courseMeta.blurb}</Text>
+                  </View>
+                ) : null}
                 <UnitHeader unit={unit} doneCount={done} totalCount={unit.blocks.length} />
 
                 <View className="relative mt-4 w-full items-center gap-5">

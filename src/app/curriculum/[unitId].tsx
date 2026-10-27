@@ -3,6 +3,7 @@ import { View, Text, Pressable, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CURRICULUM, KIND_META, type BlockKind } from '../../../lib/curriculum';
+import { getCourseLesson } from '../../../lib/courses';
 
 const GROUPS: Array<{ title: string; kinds: BlockKind[]; blurb: string }> = [
   { title: 'Learn the theory', kinds: ['lesson'], blurb: 'First exposure: core concepts with live examples.' },
@@ -79,9 +80,11 @@ export default function CurriculumUnit() {
               ? blocks.map((b, i) => {
                   const meta = KIND_META[b.kind];
                   const last = i === blocks.length - 1;
+                  const lesson = getCourseLesson(b.lessonId);
+                  const showTheory = (b.kind === 'lesson' || b.kind === 'review') && lesson && lesson.theory.length > 0;
                   return (
+                    <View key={b.id} className={last ? '' : 'border-b border-slate-100'}>
                     <Pressable
-                      key={b.id}
                       onPress={() => router.push({ pathname: '/quiz/[lessonId]', params: { lessonId: b.lessonId, title: b.lessonTitle } })}
                       accessibilityRole="button"
                       accessibilityLabel={`Start ${b.title}`}
@@ -104,6 +107,16 @@ export default function CurriculumUnit() {
                       </View>
                       <Text className="text-xl font-extrabold text-green-500">›</Text>
                     </Pressable>
+                    {showTheory ? (
+                      <View className="bg-slate-50 px-5 pb-4">
+                        {lesson!.theory.map((t, ti) => (
+                          <Text key={ti} className="mt-1 text-sm leading-5 text-slate-600">
+                            {t}
+                          </Text>
+                        ))}
+                      </View>
+                    ) : null}
+                    </View>
                   );
                 })
               : null}

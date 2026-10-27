@@ -1,8 +1,8 @@
 /**
  * Curriculum model — merges freeCodeCamp's Responsive Web Design v9 module
  * structure (lessons → workshops → labs → review → quiz → certification
- * project) onto Duolingo-style path units. Each block routes into the
- * existing quiz engine; unknown lessonIds fall back to demo questions.
+ * project) onto Duolingo-style path units. Every block points at a real
+ * lesson bank in lib/courses.ts — no demo placeholders.
  */
 
 export type BlockKind = 'lesson' | 'workshop' | 'lab' | 'review' | 'quiz' | 'project';
@@ -14,13 +14,15 @@ export interface CurriculumBlock {
   blurb: string;
   minutes: number;
   xp: number;
-  /** quiz route lessonId + title */
+  /** quiz route lessonId + title — must match a key in lib/courses.ts */
   lessonId: string;
   lessonTitle: string;
 }
 
 export interface CurriculumUnit {
   id: string;
+  /** Groups units under a Duo-style course header on the Path */
+  course: string;
   section: string;
   title: string;
   goal: string;
@@ -28,6 +30,11 @@ export interface CurriculumUnit {
   icon: string;
   blocks: CurriculumBlock[];
 }
+
+export const COURSES_META = [
+  { id: 'html', name: 'Course 1 · Complete HTML', icon: '\u{1F310}', blurb: 'Duolingo path style — nodes, streaks, chests.' },
+  { id: 'rwd', name: 'Course 2 · Responsive Web Design', icon: '\u{1F4D0}', blurb: 'freeCodeCamp style — lessons, workshops, labs, exam.' },
+];
 
 export const KIND_META: Record<BlockKind, { label: string; icon: string; color: string }> = {
   lesson: { label: 'Lesson', icon: '\u{1F4D6}', color: 'bg-sky-100 text-sky-700' },
@@ -41,6 +48,7 @@ export const KIND_META: Record<BlockKind, { label: string; icon: string; color: 
 export const CURRICULUM: CurriculumUnit[] = [
   {
     id: 'html-foundations',
+    course: 'html',
     section: 'Section 1 · HTML',
     title: 'HTML Foundations',
     goal: 'Describe pages with semantic tags',
@@ -54,8 +62,8 @@ export const CURRICULUM: CurriculumUnit[] = [
         blurb: 'Theory first: paragraphs, headings, and nesting — with live examples.',
         minutes: 10,
         xp: 10,
-        lessonId: 'demo-html',
-        lessonTitle: 'HTML Basics',
+        lessonId: 'html-tags',
+        lessonTitle: 'Basic HTML tags',
       },
       {
         id: 'hf-workshop-page',
@@ -64,8 +72,8 @@ export const CURRICULUM: CurriculumUnit[] = [
         blurb: 'Guided build: assemble a real paragraph element token by token.',
         minutes: 15,
         xp: 20,
-        lessonId: 'demo-html',
-        lessonTitle: 'HTML Basics',
+        lessonId: 'html-workshop-1',
+        lessonTitle: 'Paragraph workshop',
       },
       {
         id: 'hf-lab-tags',
@@ -74,8 +82,8 @@ export const CURRICULUM: CurriculumUnit[] = [
         blurb: 'Solo practice: satisfy the tag checklist without guidance.',
         minutes: 15,
         xp: 20,
-        lessonId: 'demo-html',
-        lessonTitle: 'HTML Basics',
+        lessonId: 'html-lab-1',
+        lessonTitle: 'Tag lab',
       },
       {
         id: 'hf-quiz',
@@ -84,107 +92,150 @@ export const CURRICULUM: CurriculumUnit[] = [
         blurb: 'Check understanding before moving on — 80% to pass.',
         minutes: 5,
         xp: 30,
-        lessonId: 'demo-html',
-        lessonTitle: 'HTML Basics',
+        lessonId: 'html-quiz-1',
+        lessonTitle: 'HTML quiz',
       },
     ],
   },
   {
-    id: 'code-foundations',
-    section: 'Section 1 · JavaScript',
-    title: 'Code Foundations',
-    goal: 'Declare data with const and let',
+    id: 'html-elements',
+    course: 'html',
+    section: 'Section 2 · HTML',
+    title: 'Links, Images & Lists',
+    goal: 'Connect pages and structure content',
     color: 'bg-blue-500',
-    icon: '\u{1F4BB}',
+    icon: '\u{1F517}',
     blocks: [
       {
-        id: 'cf-lesson-const',
+        id: 'he-lesson-links',
         kind: 'lesson',
-        title: 'Constants with const',
-        blurb: 'Theory: why constants beat loose variables.',
+        title: 'Links and images',
+        blurb: 'Anchors, attributes, and void elements — with accessibility built in.',
         minutes: 10,
         xp: 10,
-        lessonId: 'demo-code',
-        lessonTitle: 'Code Basics',
+        lessonId: 'html-links',
+        lessonTitle: 'Links and images',
       },
       {
-        id: 'cf-workshop-div',
+        id: 'he-workshop-attrs',
         kind: 'workshop',
-        title: 'Wrap content in containers',
-        blurb: 'Guided build: nest a paragraph inside a div.',
+        title: 'Attributes workshop',
+        blurb: 'Guided build: src, ids, and labels step by step.',
         minutes: 15,
         xp: 20,
-        lessonId: 'demo-code',
-        lessonTitle: 'Code Basics',
+        lessonId: 'html-workshop-2',
+        lessonTitle: 'Attributes workshop',
       },
       {
-        id: 'cf-lab-nesting',
+        id: 'he-lab-lists',
         kind: 'lab',
-        title: 'Lab: nesting user stories',
-        blurb: 'Solo practice: build the full div > p chain.',
+        title: 'Lab: lists',
+        blurb: 'User stories: bullets, numbers, and full list builds.',
         minutes: 15,
         xp: 20,
-        lessonId: 'demo-code',
-        lessonTitle: 'Code Basics',
+        lessonId: 'html-lab-2',
+        lessonTitle: 'Lists lab',
+      },
+      {
+        id: 'he-quiz',
+        kind: 'quiz',
+        title: 'Elements quiz',
+        blurb: 'Checkpoint: links, images, attributes, and lists.',
+        minutes: 5,
+        xp: 30,
+        lessonId: 'html-quiz-2',
+        lessonTitle: 'Elements quiz',
+      },
+    ],
+  },
+  {
+    id: 'css-foundations',
+    course: 'rwd',
+    section: 'Section 1 · CSS',
+    title: 'CSS Foundations',
+    goal: 'Style pages with rules and boxes',
+    color: 'bg-purple-500',
+    icon: '\u{1F3A8}',
+    blocks: [
+      {
+        id: 'cf-lesson-selectors',
+        kind: 'lesson',
+        title: 'CSS selectors',
+        blurb: 'Theory: rules, selectors, declarations — the styling skeleton.',
+        minutes: 10,
+        xp: 10,
+        lessonId: 'css-selectors',
+        lessonTitle: 'CSS selectors',
+      },
+      {
+        id: 'cf-workshop-box',
+        kind: 'workshop',
+        title: 'Box model workshop',
+        blurb: 'Guided build: content, padding, border, margin.',
+        minutes: 15,
+        xp: 20,
+        lessonId: 'css-workshop-1',
+        lessonTitle: 'Box model workshop',
+      },
+      {
+        id: 'cf-lab-style',
+        kind: 'lab',
+        title: 'Lab: style stories',
+        blurb: 'Solo styling: one rule per story, right selector each time.',
+        minutes: 15,
+        xp: 20,
+        lessonId: 'css-lab-1',
+        lessonTitle: 'Style lab',
       },
       {
         id: 'cf-quiz',
         kind: 'quiz',
-        title: 'Code quiz',
-        blurb: 'Mixed check: keywords plus full assembly.',
+        title: 'CSS quiz',
+        blurb: 'Checkpoint: selectors, declarations, and the box model.',
         minutes: 5,
         xp: 30,
-        lessonId: 'demo-code',
-        lessonTitle: 'Code Basics',
+        lessonId: 'css-quiz-1',
+        lessonTitle: 'CSS quiz',
       },
     ],
   },
   {
     id: 'responsive-layout',
+    course: 'rwd',
     section: 'Section 2 · CSS',
     title: 'Responsive Layout',
     goal: 'Make pages adapt to any screen',
-    color: 'bg-purple-500',
+    color: 'bg-orange-500',
     icon: '\u{1F4D0}',
     blocks: [
       {
         id: 'rl-lesson-flex',
         kind: 'lesson',
         title: 'Flexbox essentials',
-        blurb: 'Theory: rows, columns, and wrapping.',
+        blurb: 'Theory: rows, columns, axes, and gaps.',
         minutes: 10,
         xp: 10,
-        lessonId: 'demo-code',
-        lessonTitle: 'Code Basics',
-      },
-      {
-        id: 'rl-review',
-        kind: 'review',
-        title: 'Module review',
-        blurb: 'All concepts in one page — study sheet for the quiz.',
-        minutes: 5,
-        xp: 10,
-        lessonId: 'demo-html',
-        lessonTitle: 'HTML Basics',
+        lessonId: 'css-flexbox',
+        lessonTitle: 'Flexbox essentials',
       },
       {
         id: 'rl-quiz',
         kind: 'quiz',
         title: 'Layout quiz',
-        blurb: 'Final check for this unit.',
+        blurb: 'Final check: flexbox axes, direction, responsive thinking.',
         minutes: 5,
         xp: 30,
-        lessonId: 'demo-code',
-        lessonTitle: 'Code Basics',
+        lessonId: 'css-quiz-2',
+        lessonTitle: 'Layout quiz',
       },
       {
         id: 'rl-project',
         kind: 'project',
         title: 'Certification project: tribute page',
-        blurb: 'Capstone: assemble a full page from scratch.',
+        blurb: 'Capstone: heading, image list, and centered style from scratch.',
         minutes: 30,
         xp: 50,
-        lessonId: 'demo-html',
+        lessonId: 'rwd-project',
         lessonTitle: 'Tribute Page Project',
       },
     ],
