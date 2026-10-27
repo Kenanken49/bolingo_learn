@@ -733,6 +733,127 @@ export function getCertTrack(id: string): CertTrack | undefined {
   return CERTIFICATIONS.find((t) => t.id === id);
 }
 
+/* ------------------------------------------------------------------ */
+/* Remote catalog (Supabase) — new tracks ship without an app update.  */
+/* ------------------------------------------------------------------ */
+// The app runs off the bundled CERTIFICATIONS above when offline or when
+// the database is unreachable/invalid. When the remote catalog validates
+// cleanly it takes over, so a new track inserted into Supabase appears in
+// the app with zero client changes. Any validation failure fails CLOSED
+// back to the bundle — a malformed row can never blank the screen.
+import { supabase } from './supabase';
+
+function validStory(s: unknown): s is CertStory {
+  if (!s || typeof s !== 'object') return false;
+  const o = s as Record<string, unknown>;
+  if (typeof o.label !== 'string' || !o.label) return false;
+  if (typeof o.pattern !== 'string' || !o.pattern) return false;
+  if (typeof o.hint !== 'string' || !o.hint) return false;
+  try {
+    new RegExp(o.pattern, 'i');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function validCertProject(p: unknown): p is CertProject {
+  if (!p || typeof p !== 'object') return false;
+  const o = p as Record<string, unknown>;
+  return (
+    typeof o.id === 'string' && !!o.id &&
+    typeof o.title === 'string' &&
+    Array.isArray(o.skills) &&
+    Array.isArray(o.brief) && o.brief.length > 0 &&
+    typeof o.starterCode === 'string' &&
+    Array.isArray(o.stories) && o.stories.length > 0 &&
+    (o.stories as unknown[]).every(validStory) &&
+    typeof o.xp === 'number'
+  );
+}
+
+/** Map one DB row (snake_case) to a CertProject, or null if invalid. */
+function toProject(row: Record<string, unknown>): CertProject | null {
+  const p: CertProject = {
+    id: row.id as string,
+    title: (row.title as string) ?? '',
+    skills: (row.skills as string[]) ?? [],
+    brief: (row.brief as string[]) ?? [],
+    starterCode: (row.starter_code as string) ?? '',
+    stories: (row.stories as CertStory[]) ?? [],
+    xp: typeof row.xp === 'number' ? row.xp : 50,
+  };
+  return validCertProject(p) ? p : null;
+}
+
+/** Full remote catalog, or null when anything is missing/invalid. */
+export async function fetchRemoteCatalog(): Promise<CertTrack[] | null> {
+  try {
+    const { data: tracks, error } = await supabase
+      .from('certification_tracks')
+      .select('*')
+      .order('id');
+    if (error || !tracks?.length) return null;
+    const { data: projs, error: e2 } = await supabase
+      .from('certification_projects')
+      .select('*')
+      .order('position');
+    if (e2 || !projs?.length) return null;
+    const byTrack = new Map<string, CertProject[]>();
+    for (const row of projs as Record<string, unknown>[]) {
+      const p = toProject(row);
+      if (!p || typeof row.track_id !== 'string') return null;
+      if (!byTrack.has(row.track_id)) byTrack.set(row.track_id, []);
+      byTrack.get(row.track_id)!.push(p);
+    }
+    const out: CertTrack[] = [];
+    for (const t of tracks as Record<string, unknown>[]) {
+      const ps = typeof t.id === 'string' ? byTrack.get(t.id) ?? [] : [];
+      if (typeof t.id !== 'string' || typeof t.name !== 'string' || !Array.isArray(t.skills) || !ps.length)
+        return null;
+      out.push({
+        id: t.id,
+        name: t.name,
+        icon: typeof t.icon === 'string' ? t.icon : '',
+        blurb: typeof t.blurb === 'string' ? t.blurb : '',
+        skills: t.skills as string[],
+        projects: ps,
+      });
+    }
+    return out.length ? out : null;
+  } catch {
+    return null;
+  }
+}
+
+/** One remote project by id (covers tracks shipped after this build). */
+export async function fetchRemoteProject(id: string): Promise<CertProject | null> {
+  try {
+    const { data, error } = await supabase
+      .from('certification_projects')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (error || !data) return null;
+    return toProject(data as Record<string, unknown>);
+  } catch {
+    return null;
+  }
+}
+
+/** Grade learner code against a project's stories (shared by client + tests). */
+export function gradeProject(project: CertProject, code: string) {
+  return project.stories.map((s) => {
+    let pass = false;
+    try {
+      pass = new RegExp(s.pattern, 'i').test(code);
+    } catch {
+      pass = false;
+    }
+    return { ...s, pass };
+  });
+}
+
 /** Certification is earned when all 5 project ids are in the completed set. */
 export function isTrackCertified(track: CertTrack, completed: Set<string>): boolean {
   return track.projects.every((p) => completed.has(p.id));

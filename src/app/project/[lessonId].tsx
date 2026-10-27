@@ -1,12 +1,13 @@
-import { createElement, useMemo, useState } from 'react';
-import { View, Text, Pressable, ScrollView, Platform } from 'react-native';
+import { createElement, useEffect, useMemo, useState } from 'react';
+import { Alert, View, Text, Pressable, ScrollView, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import CodeEditor, { combineDoc, type CodeDoc } from '../../../components/CodeEditor';
 import { getCourseProject } from '../../../lib/courses';
-import { getCertProject } from '../../../lib/certifications';
+import { fetchRemoteProject, getCertProject, gradeProject } from '../../../lib/certifications';
 import { completeLesson, getProfile } from '../../../lib/progress';
+import { supabase } from '../../../lib/supabase';
 import { setLessonResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
 
@@ -27,7 +28,18 @@ function previewDoc(doc: CodeDoc): string {
 export default function CertificationProject() {
   const { lessonId, title } = useLocalSearchParams<{ lessonId: string; title?: string }>();
   // Core Curriculum: certification projects resolve here too (same runner + tests).
-  const project = useMemo(() => getCourseProject(lessonId) ?? getCertProject(lessonId), [lessonId]);
+  // Bundled catalog first; remote-only projects (shipped after this build) fill in async.
+  const [project, setProject] = useState(() => getCourseProject(lessonId) ?? getCertProject(lessonId));
+  const [remoteCert, setRemoteCert] = useState(false);
+  useEffect(() => {
+    if (project || typeof lessonId !== 'string') return;
+    fetchRemoteProject(lessonId).then((p) => {
+      if (p) {
+        setProject(p);
+        setRemoteCert(true);
+      }
+    });
+  }, [lessonId, project]);
   const starter: CodeDoc = useMemo(
     () => ({
       html: project?.starterCode ?? '',
@@ -41,18 +53,10 @@ export default function CertificationProject() {
   const [resetTick, setResetTick] = useState(0);
 
   const combined = useMemo(() => combineDoc(doc), [doc]);
-  const checks = useMemo(() => {
-    if (!project) return [];
-    return project.stories.map((s) => {
-      let pass = false;
-      try {
-        pass = new RegExp(s.pattern, 'i').test(combined);
-      } catch {
-        pass = false;
-      }
-      return { ...s, pass };
-    });
-  }, [combined, project]);
+  const checks = useMemo(() => (project ? gradeProject(project, combined) : []), [combined, project]);
+  // Server verdict display: when the server disagrees with local checks, show its checklist.
+  const [serverChecks, setServerChecks] = useState<typeof checks | null>(null);
+  const shown = serverChecks ?? checks;
   const passed = checks.filter((c) => c.pass).length;
   const allPass = passed >= checks.length && checks.length > 0;
 
@@ -76,7 +80,30 @@ export default function CertificationProject() {
   const submit = async () => {
     if (!allPass || submitted) return;
     setSubmitted(true);
-    const results = checks.map((c) => ({
+    // Server is the source of truth when reachable (same patterns, newer rows);
+    // offline or unknown ids fall back to the local verdict.
+    let final = checks;
+    if (typeof lessonId === 'string' && (remoteCert || getCertProject(lessonId))) {
+      try {
+        const { data, error } = await supabase.functions.invoke('grade-project', {
+          body: { projectId: lessonId, code: combined },
+        });
+        if (!error && data && Array.isArray(data.results) && data.results.length === checks.length) {
+          final = data.results;
+        }
+      } catch {
+        /* offline-first: local verdict stands */
+      }
+    }
+    const finalPassed = final.filter((c) => c.pass).length;
+    if (finalPassed < final.length) {
+      setServerChecks(final);
+      setSubmitted(false);
+      Alert.alert('Not quite yet', 'The server tests found a story still failing — see the updated checklist.');
+      return;
+    }
+    setServerChecks(null);
+    const results = final.map((c) => ({
       prompt: c.label,
       yourAnswer: c.pass ? 'satisfied' : '—',
       correctAnswer: c.hint,
@@ -139,12 +166,12 @@ export default function CertificationProject() {
             <Text className="text-base font-extrabold text-slate-900">✅ User stories</Text>
             <View className={`rounded-full px-3 py-1 ${allPass ? 'bg-green-100' : 'bg-slate-100'}`}>
               <Text className={`text-xs font-extrabold ${allPass ? 'text-green-700' : 'text-slate-500'}`}>
-                {passed}/{checks.length} passing
+                {shown.filter((c) => c.pass).length}/{shown.length} passing
               </Text>
             </View>
           </View>
           <View className="mt-2">
-            {checks.map((c, i) => (
+            {shown.map((c, i) => (
               <View
                 key={i}
                 className={`mt-2 flex-row items-start rounded-2xl border-2 p-3 ${c.pass ? 'border-green-200 bg-green-50' : 'border-slate-100 bg-slate-50'}`}
@@ -174,7 +201,7 @@ export default function CertificationProject() {
           </Pressable>
         </View>
         <View className="mt-2 shadow-lg">
-          <CodeEditor key={resetTick} initial={starter} onChange={(d) => { setDoc(d); setSubmitted(false); }} />
+          <CodeEditor key={resetTick} initial={starter} onChange={(d) => { setDoc(d); setSubmitted(false); setServerChecks(null); }} />
         </View>
 
         {/* Live preview */}

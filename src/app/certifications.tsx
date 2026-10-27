@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import DuoOwl from '../../components/DuoOwl';
-import { CERTIFICATIONS, isTrackCertified, trackProgress } from '../../lib/certifications';
+import { CERTIFICATIONS, fetchRemoteCatalog, isTrackCertified, trackProgress } from '../../lib/certifications';
+import type { CertTrack } from '../../lib/certifications';
 import { getCompletedLessonIds, getProfile } from '../../lib/progress';
 
 /**
@@ -14,6 +15,13 @@ import { getCompletedLessonIds, getProfile } from '../../lib/progress';
 export default function Certifications() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [open, setOpen] = useState<Record<string, boolean>>({ rwd: true });
+  // Remote catalog wins when it validates; the bundle is the offline fallback.
+  const [tracks, setTracks] = useState<CertTrack[]>(CERTIFICATIONS);
+  useEffect(() => {
+    fetchRemoteCatalog().then((remote) => {
+      if (remote) setTracks(remote);
+    });
+  }, []);
 
   const refresh = useCallback(async () => {
     try {
@@ -30,7 +38,7 @@ export default function Certifications() {
     }, [refresh])
   );
 
-  const earned = CERTIFICATIONS.filter((t) => isTrackCertified(t, completed)).length;
+  const earned = tracks.filter((t) => isTrackCertified(t, completed)).length;
 
   return (
     <ScrollView contentContainerClassName="bg-white px-6 pb-16 pt-12">
@@ -47,12 +55,12 @@ export default function Certifications() {
         </Text>
         <View className="mt-3 rounded-full bg-amber-400 px-4 py-1.5">
           <Text className="text-xs font-extrabold text-slate-900">
-            🏆 {earned}/{CERTIFICATIONS.length} certifications earned
+            🏆 {earned}/{tracks.length} certifications earned
           </Text>
         </View>
       </View>
 
-      {CERTIFICATIONS.map((t) => {
+      {tracks.map((t) => {
         const done = trackProgress(t, completed);
         const certified = isTrackCertified(t, completed);
         const expanded = open[t.id] ?? false;
