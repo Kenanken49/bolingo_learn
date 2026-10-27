@@ -332,3 +332,45 @@ grant execute on function public.get_friends() to authenticated;
 
 grant all on public.friendships, public.kudos to anon, authenticated;
 grant usage, select on sequence public.kudos_id_seq to anon, authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Core Curriculum catalog: 7 certification tracks × 5 projects.
+-- (Structure lives here so fresh installs get it; the same DDL is mirrored
+-- at the top of supabase/seed_certifications.sql, which additionally inserts
+-- the 35 rows. Both files are safe to re-run. The app ALSO bundles this
+-- catalog in lib/certifications.ts so the path, project runner, and offline
+-- play work without a round-trip — keep all three in sync.)
+-- ---------------------------------------------------------------------------
+create table if not exists public.certification_tracks (
+  id text primary key,
+  name text not null,
+  icon text not null default '',
+  blurb text not null default '',
+  skills jsonb not null default '[]'::jsonb
+);
+
+create table if not exists public.certification_projects (
+  id text primary key,
+  track_id text not null references public.certification_tracks (id) on delete cascade,
+  position integer not null default 0,
+  title text not null,
+  skills jsonb not null default '[]'::jsonb,
+  brief jsonb not null default '[]'::jsonb,
+  starter_code text not null default '',
+  stories jsonb not null default '[]'::jsonb,
+  xp integer not null default 50
+);
+
+alter table public.certification_tracks enable row level security;
+alter table public.certification_projects enable row level security;
+
+drop policy if exists "Anyone can read tracks" on public.certification_tracks;
+create policy "Anyone can read tracks"
+  on public.certification_tracks for select using (true);
+
+drop policy if exists "Anyone can read cert projects" on public.certification_projects;
+create policy "Anyone can read cert projects"
+  on public.certification_projects for select using (true);
+
+-- RLS policies alone are not enough: the API roles need table grants.
+grant select on public.certification_tracks, public.certification_projects to anon, authenticated;
