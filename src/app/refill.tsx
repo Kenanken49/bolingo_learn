@@ -1,4 +1,4 @@
-import { RefillView, useRefillState } from './refillContent';
+import { RefillView, useRefillState } from '../../components/RefillContent';
 import { useRewardedHeart } from '../../lib/rewarded';
 
 export default function Refill() {

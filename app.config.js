@@ -15,19 +15,20 @@ module.exports = ({ config }) => ({
   userInterfaceStyle: 'light',
   runtimeVersion: { policy: 'appVersion' },
   updates: {
-    url: 'https://u.expo.dev/your-eas-project-id', // replace after `eas init`
+    url: 'https://u.expo.dev/7ceeed84-5e6b-4157-b515-b7adfba83ddb',
   },
   extra: {
     ...(config.extra ?? {}),
     eas: {
       ...((config.extra ?? {}).eas ?? {}),
-      // projectId: 'your-eas-project-id', // uncomment after `eas init`
+      projectId: '7ceeed84-5e6b-4157-b515-b7adfba83ddb',
     },
   },
   ios: {
     supportsTablet: true,
   },
   android: {
+    package: 'com.bolingo.learn',
     adaptiveIcon: {
       backgroundColor: '#E6F4FE',
       foregroundImage: './assets/android-icon-foreground.png',

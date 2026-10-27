@@ -25,6 +25,33 @@ const DEFAULTS = {
   ai_words_used: 0,
 };
 
+/**
+ * Timed regen: 1 heart per REFILL_WAIT_MS elapsed since hearts_refilled_at,
+ * capped at MAX_HEARTS. Premium users skip hearts entirely (unlimited).
+ * Returns the updated profile, persisting only when hearts actually grew.
+ */
+async function applyHeartRegen(profile: Profile): Promise<Profile> {
+  if (profile.is_premium) return { ...profile, hearts: MAX_HEARTS };
+  if (profile.hearts >= MAX_HEARTS) return profile;
+  const elapsed = Date.now() - new Date(profile.hearts_refilled_at).getTime();
+  if (elapsed < REFILL_WAIT_MS) return profile;
+  const gain = Math.min(MAX_HEARTS - profile.hearts, Math.floor(elapsed / REFILL_WAIT_MS));
+  if (gain <= 0) return profile;
+  const hearts = profile.hearts + gain;
+  const patch: Partial<Profile> =
+    hearts >= MAX_HEARTS
+      ? { hearts, hearts_refilled_at: new Date().toISOString() }
+      : { hearts };
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(patch)
+    .eq('id', profile.id)
+    .select()
+    .single();
+  if (error || !data) return { ...profile, hearts };
+  return data as Profile;
+}
+
 /** Load the signed-in user's profile, creating it on first run. Null when guest. */
 export async function getProfile(): Promise<Profile | null> {
   const {
@@ -32,7 +59,7 @@ export async function getProfile(): Promise<Profile | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
   const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-  if (data) return data as Profile;
+  if (data) return applyHeartRegen(data as Profile);
   if (error && (error as { code?: string }).code !== 'PGRST116') throw error;
   const { data: created, error: insertError } = await supabase
     .from('profiles')
@@ -51,6 +78,16 @@ export async function getCompletedLessonIds(userId: string): Promise<Set<string>
   const { data, error } = await supabase.from('lesson_completions').select('lesson_id').eq('user_id', userId);
   if (error) throw error;
   return new Set(((data as Array<{ lesson_id: string }> | null) ?? []).map((r) => r.lesson_id));
+}
+
+/** Log XP into xp_events for the weekly leaderboard (best-effort, never blocks). */
+async function logXpEvent(userId: string, xp: number): Promise<void> {
+  if (xp <= 0) return;
+  try {
+    await supabase.from('xp_events').insert({ user_id: userId, xp });
+  } catch (e) {
+    console.warn('xp_events insert failed (run latest schema.sql):', e);
+  }
 }
 
 /** Award XP and tick the streak (same-day replays don't double-count). */
@@ -72,17 +109,25 @@ export async function completeLesson(userId: string, xpEarned: number, lessonId?
   if (lessonId) {
     await supabase.from('lesson_completions').upsert({ user_id: userId, lesson_id: lessonId });
   }
+  void logXpEvent(userId, xpEarned);
   return data as Profile;
 }
 
-/** Lose one heart; stamps hearts_refilled_at when hitting zero (starts the 4h wait). */
+/**
+ * Lose one heart; stamps hearts_refilled_at when dropping below max (starts
+ * the 4h per-heart regen clock). Premium users never lose hearts.
+ */
 export async function loseHeart(userId: string): Promise<Profile> {
   const { data: p, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
   if (error || !p) throw error ?? new Error('Profile not found.');
   const profile = p as Profile;
-  const hearts = Math.max(0, profile.hearts - 1);
+  if (profile.is_premium) return { ...profile, hearts: MAX_HEARTS };
+  const regen = await applyHeartRegen(profile);
+  const hearts = Math.max(0, regen.hearts - 1);
   const patch: Partial<Profile> =
-    hearts === 0 ? { hearts, hearts_refilled_at: new Date().toISOString() } : { hearts };
+    regen.hearts >= MAX_HEARTS && hearts < MAX_HEARTS
+      ? { hearts, hearts_refilled_at: new Date().toISOString() }
+      : { hearts };
   const { data, error: upError } = await supabase.from('profiles').update(patch).eq('id', userId).select().single();
   if (upError || !data) throw upError ?? new Error('Could not update hearts.');
   return data as Profile;
@@ -99,7 +144,15 @@ export async function grantHearts(userId: string, n: number): Promise<Profile> {
   return data as Profile;
 }
 
-/** ms remaining on the 4-hour wait (0 = refill available). */
-export function refillWaitRemaining(profile: Profile): number {
+/** ms until the NEXT single heart regenerates (0 = full or premium). */
+export function nextHeartIn(profile: Profile): number {
+  if (profile.is_premium || profile.hearts >= MAX_HEARTS) return 0;
   return Math.max(0, new Date(profile.hearts_refilled_at).getTime() + REFILL_WAIT_MS - Date.now());
+}
+
+/** ms until hearts are completely full (0 = full or premium). */
+export function refillWaitRemaining(profile: Profile): number {
+  if (profile.is_premium || profile.hearts >= MAX_HEARTS) return 0;
+  const missing = MAX_HEARTS - profile.hearts;
+  return Math.max(0, new Date(profile.hearts_refilled_at).getTime() + REFILL_WAIT_MS * missing - Date.now());
 }

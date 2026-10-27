@@ -5,6 +5,12 @@ import { StatusBar } from 'expo-status-bar';
 import { getProfile, grantHearts, MAX_HEARTS, type Profile } from '../../lib/progress';
 import { PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { areRemindersOn, configureReminderHandler, setRemindersOn } from '../../lib/reminders';
+import {
+  getSoundOn,
+  setSoundOn as persistSoundOn,
+  getHapticsOn,
+  setHapticsOn as persistHapticsOn,
+} from '../../lib/preferences';
 
 export default function Settings() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -16,6 +22,8 @@ export default function Settings() {
     try {
       setProfile(await getProfile());
       setReminders(await areRemindersOn());
+      setSoundOn(await getSoundOn());
+      setHapticsOn(await getHapticsOn());
     } catch {
       setProfile(null);
     }
@@ -34,6 +42,16 @@ export default function Settings() {
     if (v && !ok) {
       Alert.alert('Notifications blocked', 'Enable notifications for Bolingo Learn in system settings, then try again.');
     }
+  };
+
+  const toggleSound = async (v: boolean) => {
+    setSoundOn(v);
+    await persistSoundOn(v);
+  };
+
+  const toggleHaptics = async (v: boolean) => {
+    setHapticsOn(v);
+    await persistHapticsOn(v);
   };
 
   const refillHearts = async () => {
@@ -65,34 +83,35 @@ export default function Settings() {
 
   return (
     <ScrollView contentContainerClassName="flex-grow items-center bg-white px-6 py-12">
-      <Text className="text-2xl font-extrabold text-slate-900">⚙️ Settings</Text>
+      <Text className="text-2xl font-extrabold text-slate-900">Settings</Text>
       <Text className="text-base text-slate-500">
-        {profile ? (profile.is_premium ? '👑 Premium' : 'Free tier') : 'Playing as guest'}
+        {profile ? (profile.is_premium ? 'Premium' : 'Free tier') : 'Playing as guest'}
       </Text>
 
       <View className="mt-6 w-full max-w-sm gap-3">
-        {row('👤', 'Account', profile ? 'Manage sign-in & session' : 'Sign in to sync progress', () => router.push('/auth'))}
+        {row('\u{1F464}', 'Account', profile ? 'Manage sign-in & session' : 'Sign in to sync progress', () => router.push('/auth'))}
         {row(
-          '👑',
+          '\u{1F451}',
           'Go Premium',
           `PDF/audio uploads, elite voices (${PREMIUM_PRICE_LABEL})`,
           () => router.push('/paywall')
         )}
-        {row('📚', 'My uploads', 'History, statuses & retries', () => router.push('/uploads'))}
-        {row('❤️', 'Refill hearts', 'Ad, wait timer, or premium', () => router.push('/refill'))}
-        {row('🔔', 'Lesson reminders', 'Daily 7pm streak nudge', undefined, (
+        {row('\u{1F3C6}', 'Leaderboard', 'Weekly leagues of 30', () => router.push('/leaderboard'))}
+        {row('\u{1F4DA}', 'My uploads', 'History, statuses & retries', () => router.push('/uploads'))}
+        {row('\u2764\uFE0F', 'Refill hearts', 'Ad, 4-hour regen, or premium', () => router.push('/refill'))}
+        {row('\u{1F514}', 'Lesson reminders', 'Daily 7pm streak nudge', undefined, (
           <Switch value={remindersOn} onValueChange={toggleReminders} />
         ))}
-        {row('🎵', 'Sound effects', 'Quiz chimes on/off', undefined, (
-          <Switch value={soundOn} onValueChange={setSoundOn} />
+        {row('\u{1F3B5}', 'Sound effects', soundOn ? 'Chimes ON' : 'Chimes OFF', undefined, (
+          <Switch value={soundOn} onValueChange={toggleSound} />
         ))}
-        {row('📳', 'Haptics', 'Vibration on mistakes (coming soon)', undefined, (
-          <Switch value={hapticsOn} onValueChange={setHapticsOn} />
+        {row('\u{1F4F3}', 'Haptics', hapticsOn ? 'Vibration ON' : 'Vibration OFF', undefined, (
+          <Switch value={hapticsOn} onValueChange={toggleHaptics} />
         ))}
-        {__DEV__ && row('💔', 'Debug: refill hearts', 'Dev builds only — remove before release', refillHearts)}
+        {__DEV__ && row('\u{1F494}', 'Debug: refill', 'Dev builds only — remove before release', refillHearts)}
       </View>
 
-      <Text className="mt-6 text-xs text-slate-400">Bolingo Learn v1.0.0 • Made for learners</Text>
+      <Text className="mt-6 text-xs text-slate-400">Bolingo Learn v1.0.0 | Made for learners</Text>
       <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
         <Text className="font-bold text-slate-400">Back to Path</Text>
       </Pressable>

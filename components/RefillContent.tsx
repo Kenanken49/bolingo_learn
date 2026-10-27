@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { getProfile, grantHearts, refillWaitRemaining, MAX_HEARTS, type Profile } from '../../lib/progress';
-import { isTestAd } from '../../lib/ads';
+import { getProfile, grantHearts, nextHeartIn, refillWaitRemaining, MAX_HEARTS, type Profile } from '../lib/progress';
+import { isTestAd } from '../lib/ads';
 
 export interface RewardHook {
   loaded: boolean;
@@ -70,10 +70,17 @@ export function RefillView({
   };
 
   const hearts = profile?.hearts ?? 0;
+  const isPremium = profile?.is_premium ?? false;
+  // getProfile() auto-applies timed regen on each refresh tick, so these
+  // countdowns hit zero right as the +1 heart lands.
+  const nextMs = profile ? nextHeartIn(profile) : 0;
   const waitMs = profile ? refillWaitRemaining(profile) : 0;
-  const waitH = Math.floor(waitMs / 3600000);
-  const waitM = Math.floor((waitMs % 3600000) / 60000);
-  const waitS = Math.floor((waitMs % 60000) / 1000);
+  const fmt = (ms: number) => {
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    return `${h}h ${m}m ${s}s`;
+  };
 
   return (
     <ScrollView contentContainerClassName="flex-grow items-center bg-white px-6 py-12">
@@ -112,9 +119,13 @@ export function RefillView({
       <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-slate-200 bg-slate-50 p-5">
         <Text className="text-lg font-bold text-slate-800">⏳ Wait for free refill</Text>
         <Text className="mt-2 text-base text-slate-600">
-          {waitMs > 0
-            ? `Full hearts in ${waitH}h ${waitM}m ${waitS}s`
-            : 'Your wait is over — hearts refill on your next lesson.'}
+          {isPremium
+            ? 'Premium: your hearts never run out.'
+            : nextMs > 0
+              ? `Next heart in ${fmt(nextMs)} (1 heart every 4h${waitMs > nextMs ? ` — full in ${fmt(waitMs)}` : ''}).`
+              : hearts >= MAX_HEARTS
+                ? 'Hearts are full — back to the Path!'
+                : 'Your wait is over — a heart landed on the last refresh.'}
         </Text>
       </View>
 

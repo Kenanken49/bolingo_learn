@@ -87,6 +87,10 @@ export default function Paywall() {
   };
 
   const restore = async () => {
+    if (Platform.OS === 'web') {
+      Alert.alert('Native only', 'Purchases restore from the App Store / Play Store inside the mobile app.');
+      return;
+    }
     setBusy(true);
     try {
       await Purchases.restorePurchases();

@@ -193,8 +193,8 @@ export default function GamifiedCodePlayer({
     <View className="flex-1">
       {/* Top HUD Row */}
       <View className="mb-4 flex-row items-center justify-between">
-        <View className="h-4 w-2/3 overflow-hidden rounded-full bg-slate-700">
-          <Animated.View className="h-full rounded-full bg-emerald-500" style={{ width: bar.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) }} />
+        <View className="h-4 w-2/3 overflow-hidden rounded-full bg-slate-200">
+          <Animated.View className="h-full rounded-full bg-green-500" style={{ width: bar.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) }} />
         </View>
         <Text className="text-xl font-bold text-red-500">{'\u2764\uFE0F'} {hearts}</Text>
       </View>
