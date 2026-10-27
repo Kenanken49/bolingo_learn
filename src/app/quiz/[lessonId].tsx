@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Animated, View, Text, Pressable, ScrollView } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/GamifiedCodePlayer';
@@ -12,6 +12,8 @@ import { getCourseLesson } from '../../../lib/courses';
 import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
 import { gradeCard, getDueItems } from '../../../lib/srs';
+import { skillOfLesson } from '../../../lib/kiki';
+import { flushKiki, kikiAttempt, loadKiki } from '../../../lib/kikiStore';
 import { hasSeenQuizIntro, markQuizIntroSeen, markOnboarded, savePendingGuestResult } from '../../../lib/onboarding';
 
 const DEMO_QUESTIONS: CodeQuizData[] = [
@@ -55,6 +57,15 @@ export default function QuizPlayer() {
   const [qKeys, setQKeys] = useState<string[]>([]);
   // Daily Review with nothing due renders a celebration, not an error.
   const [reviewEmpty, setReviewEmpty] = useState(false);
+  // Addictive combo loop: consecutive correct answers build a visible streak.
+  const [combo, setCombo] = useState(0);
+  const [bestCombo, setBestCombo] = useState(0);
+  const pulse = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    if (combo < 2) return;
+    pulse.setValue(0.7);
+    Animated.spring(pulse, { toValue: 1, friction: 4, tension: 200, useNativeDriver: true }).start();
+  }, [combo, pulse]);
 
   const load = useCallback(async () => {
     // Spaced Repetition: per-unit Daily Review nodes (lessonId srs-review:<unit>)
@@ -131,6 +142,8 @@ export default function QuizPlayer() {
     const p = await getProfile();
     setUserId(p?.id ?? null);
     setHearts(p?.hearts ?? MAX_HEARTS);
+    // Kiki v3 loads its brain alongside the profile (best-effort, never blocks).
+    void loadKiki(p?.id ?? null);
     // SRS injection: subtly weave up to 2 due memory cards from OTHER lessons
     // into this session so slipping rules resurface right when they're fading.
     // Injected cards keep their original keys so grading reschedules them,
@@ -213,6 +226,7 @@ export default function QuizPlayer() {
   }
 
   const finish = () => {
+    void flushKiki();
     const xpEarned = correctCount * 10;
     const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0) => {
       setLessonResult({
@@ -223,6 +237,7 @@ export default function QuizPlayer() {
         correctCount,
         total: questions?.length ?? 0,
         results: answers,
+        bestCombo,
         leveledUp,
         newLevel,
         totalXp,
@@ -254,6 +269,17 @@ export default function QuizPlayer() {
   return (
     <View className="flex-1 bg-white">
       <ScrollView contentContainerClassName="bg-white px-6 pb-16 pt-12">
+        {/* Combo banner: pops every time the streak extends past 1. */}
+        {combo >= 2 ? (
+          <Animated.View
+            style={{ transform: [{ scale: pulse }] }}
+            className="mb-2 items-center rounded-2xl bg-orange-500 py-2"
+          >
+            <Text className="text-lg font-black text-white">
+              🔥 COMBO ×{combo}{combo >= 5 ? ' — UNSTOPPABLE' : combo >= 3 ? ' — ON FIRE' : ''}
+            </Text>
+          </Animated.View>
+        ) : null}
         <GamifiedCodePlayer
           key={`${lessonId}-${index}`}
           userId={userId}
@@ -267,6 +293,18 @@ export default function QuizPlayer() {
           onCorrect={() => setCorrectCount((c) => c + 1)}
           onAnswer={(r) => {
             setAnswers((a) => [...a, r]);
+            // Kiki v3: every graded answer tunes skill + difficulty + memory.
+            if (typeof lessonId === 'string') {
+              kikiAttempt(skillOfLesson(lessonId), qKeys[index] ?? `${lessonId}:${index}`, r.correct);
+            }
+            // Combo loop: correct extends it, a miss resets it to zero.
+            if (r.correct) {
+              const n = combo + 1;
+              setCombo(n);
+              if (n > bestCombo) setBestCombo(n);
+            } else {
+              setCombo(0);
+            }
             // SRS: every graded answer reschedules that memory card.
             if (userId && q) {
               void gradeCard(userId, qKeys[index] ?? `${lessonId}:${index}`, r.correct, {

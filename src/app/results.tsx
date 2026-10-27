@@ -9,7 +9,9 @@ import { playCorrect } from '../../lib/sfx';
 import DuoButton from '../../components/DuoButton';
 import DuoOwl from '../../components/DuoOwl';
 import Mascot from '../../components/AfricanMascots';
-import { getProfile, type Profile } from '../../lib/progress';
+import { getCompletedLessonIds, getProfile, type Profile } from '../../lib/progress';
+import { SKILLS, facetValue, predict, skillOfLesson } from '../../lib/kiki';
+import { getKikiState } from '../../lib/kikiStore';
 import { getPendingGuestResult, type PendingGuestResult } from '../../lib/onboarding';
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
 import { isProjectLesson } from '../../lib/courses';
@@ -61,6 +63,27 @@ export default function Results() {
   const passed = pct >= PASS_PCT;
   const missed = result.results.filter((r) => !r.correct);
   const block = blockByLessonId(result.lessonId);
+  // Kiki v3 card: next-best challenge + live 40-dim profile summary.
+  const [kikiPick, setKikiPick] = useState<{ lessonId: string; title: string; kind: string; p: number } | null>(null);
+  const [kikiBars, setKikiBars] = useState<{ skill: string; v: number }[]>([]);
+  useEffect(() => {
+    try {
+      const st = getKikiState();
+      setKikiBars(SKILLS.map((s) => ({ skill: s, v: facetValue(st, s, 'accuracy') })));
+      if (!block) return;
+      const unit = CURRICULUM.find((u) => u.blocks.some((b) => b.lessonId === block.lessonId));
+      if (!unit) return;
+      const choose = (done: Set<string>) => {
+        const idx = unit.blocks.findIndex((b) => b.lessonId === block.lessonId);
+        const next = unit.blocks.slice(idx + 1).find((b) => !done.has(b.lessonId) && !done.has(b.id)) ?? null;
+        if (!next) return;
+        const sk = st.skills[skillOfLesson(next.lessonId)] ?? 0;
+        setKikiPick({ lessonId: next.lessonId, title: next.title, kind: next.kind, p: predict(sk, 0) });
+      };
+      if (profile?.id) getCompletedLessonIds(profile.id).then(choose).catch(() => choose(new Set()));
+      else choose(new Set());
+    } catch {}
+  }, [block, profile?.id]);
 
   return (
     <View className="flex-1 bg-white">
@@ -94,7 +117,64 @@ export default function Results() {
           <Text className="text-2xl font-extrabold text-orange-400">🔥{result.streak}</Text>
           <Text className="text-xs font-bold text-slate-400">STREAK</Text>
         </View>
+        {result.bestCombo != null && result.bestCombo >= 2 ? (
+          <View className="items-center">
+            <Text className="text-2xl font-extrabold text-amber-300">×{result.bestCombo}</Text>
+            <Text className="text-xs font-bold text-slate-400">COMBO</Text>
+          </View>
+        ) : null}
       </View>
+
+      {/* Kiki v3: the Goldilocks next challenge, picked for YOUR brain. */}
+      {kikiPick ? (
+        <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-violet-200 bg-violet-50 p-4">
+          <Text className="text-xs font-extrabold uppercase tracking-widest text-violet-500">
+            🧠 Kiki v3 · your adaptive coach
+          </Text>
+          <Text className="mt-1 font-duo text-lg font-extrabold text-slate-900">{kikiPick.title}</Text>
+          <Text className="mt-1 text-sm leading-5 text-slate-600">
+            Win chance {Math.round(kikiPick.p * 100)}% —{' '}
+            {kikiPick.p >= 0.9
+              ? 'a quick win to bank XP'
+              : kikiPick.p >= 0.65
+                ? 'a Goldilocks sweet spot, right in your zone'
+                : kikiPick.p >= 0.45
+                  ? 'a healthy stretch goal'
+                  : 'a boss battle for big growth'}
+            .
+          </Text>
+          <View className="mt-3">
+            <DuoButton
+              color="violet"
+              onPress={() =>
+                kikiPick.kind === 'project'
+                  ? router.replace({ pathname: '/project/[lessonId]', params: { lessonId: kikiPick.lessonId, title: kikiPick.title } })
+                  : router.replace({ pathname: '/quiz/[lessonId]', params: { lessonId: kikiPick.lessonId, title: kikiPick.title } })
+              }
+              label={`Start ${kikiPick.title}`}
+              title="Take Kiki's pick 🧠"
+            />
+          </View>
+        </View>
+      ) : null}
+
+      {/* Kiki brain: the live 40-dimensional profile, one bar per skill. */}
+      {kikiBars.length > 0 ? (
+        <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-slate-200 bg-white p-4">
+          <Text className="text-xs font-extrabold uppercase tracking-widest text-slate-400">
+            🧠 Kiki brain · 10 skills × 4 facets
+          </Text>
+          {kikiBars.map((b) => (
+            <View key={b.skill} className="mt-1.5 flex-row items-center">
+              <Text className="w-14 text-xs font-extrabold uppercase text-slate-500">{b.skill}</Text>
+              <View className="ml-2 h-2 flex-1 overflow-hidden rounded-full bg-slate-200">
+                <View className="h-full rounded-full bg-violet-500" style={{ width: `${Math.round(b.v * 100)}%` }} />
+              </View>
+              <Text className="ml-2 w-9 text-right text-xs font-bold text-slate-400">{Math.round(b.v * 100)}%</Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
 
       <View className="mt-3 h-3 w-full max-w-sm overflow-hidden rounded-full bg-slate-200">
         <View className={`h-full rounded-full ${passed ? 'bg-green-500' : 'bg-amber-500'}`} style={{ width: `${pct}%` }} />

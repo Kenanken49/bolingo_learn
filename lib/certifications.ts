@@ -842,7 +842,10 @@ export async function fetchRemoteProject(id: string): Promise<CertProject | null
 }
 
 /** Grade learner code against a project's stories (shared by client + tests). */
-export function gradeProject(project: CertProject, code: string) {
+export function gradeProject(
+  project: { stories: Array<{ label: string; pattern: string; hint: string }> },
+  code: string,
+) {
   return project.stories.map((s) => {
     let pass = false;
     try {

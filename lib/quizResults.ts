@@ -19,6 +19,8 @@ export interface LessonResult {
   newLevel?: number;
   /** Lifetime XP after this lesson (drives the level-up progress bar). */
   totalXp?: number;
+  /** Best consecutive-correct streak this lesson (combo loop glory). */
+  bestCombo?: number;
 }
 
 let current: LessonResult | null = null;

@@ -374,3 +374,25 @@ create policy "Anyone can read cert projects"
 
 -- RLS policies alone are not enough: the API roles need table grants.
 grant select on public.certification_tracks, public.certification_projects to anon, authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Kiki v3 brain: per-learner adaptive profile (10 skills x 4 facets),
+-- exercise difficulties, and half-life memory state as one JSON vector.
+-- Owner-only: the anon probe correctly gets permission-denied; signed-in
+-- learners read/write their own row via the policy below.
+-- ---------------------------------------------------------------------------
+create table if not exists public.kiki_profiles (
+  user_id uuid primary key references public.profiles (id) on delete cascade,
+  vector jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.kiki_profiles enable row level security;
+
+drop policy if exists "Users manage own kiki profile" on public.kiki_profiles;
+create policy "Users manage own kiki profile"
+  on public.kiki_profiles for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+grant all on public.kiki_profiles to authenticated;
