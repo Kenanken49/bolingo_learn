@@ -9,6 +9,13 @@
 
 import { MCQ, BUILD, validateBank, type CourseLesson } from './quizBank';
 import { LANGUAGE_COURSES } from './languages';
+import { TRACK_RWD } from './tracks/rwd';
+import { TRACK_JS } from './tracks/js';
+import { TRACK_FED } from './tracks/fed';
+import { TRACK_DB } from './tracks/db';
+import { TRACK_BE } from './tracks/be';
+import { TRACK_PY } from './tracks/py';
+import { TRACK_SECML } from './tracks/secml';
 
 export type { CourseQuestion, CourseLesson } from './quizBank';
 
@@ -759,6 +766,16 @@ export const COURSES: Record<string, CourseLesson> = {
   // Course 4 (World Languages & Chess) lives in lib/languages.ts — merged here
   // so getCourseLesson() behavior is identical for quiz, SRS, and guidebook.
   ...LANGUAGE_COURSES,
+
+  // Course 5 (leveled certification tracks) lives in lib/tracks/*. Each bank
+  // is one bite-sized level lesson; capstones resolve via getCertProject.
+  ...TRACK_RWD,
+  ...TRACK_JS,
+  ...TRACK_FED,
+  ...TRACK_DB,
+  ...TRACK_BE,
+  ...TRACK_PY,
+  ...TRACK_SECML,
 };
 
 // Fail loudly at import time — a bad seed breaks the bundle, not a session.

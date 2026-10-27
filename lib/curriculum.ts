@@ -36,6 +36,7 @@ export const COURSES_META = [
   { id: 'rwd', name: 'Course 2 · Responsive Web Design', icon: '\u{1F4D0}', blurb: 'freeCodeCamp style — ⚡ bite-sized 2–5 min lessons, workshops, labs, exam.' },
   { id: 'design', name: 'Course 3 · UI/UX Design for Developers', icon: '\u{1F3A8}', blurb: 'Design ecosystem — ⚡ bite-sized theory, Figma masterclasses, guides hub.' },
   { id: 'lang', name: 'Course 4 · World Languages & Chess', icon: '\u{1F30D}', blurb: 'Duolingo style — basics, phrases, tenses, review, checkpoints.' },
+  { id: 'certs', name: 'Course 5 · Leveled Certifications', icon: '\u{1F393}', blurb: '7 tracks · 5 unlockable levels each — bite-sized lessons into real capstone projects.' },
 ];
 
 export const KIND_META: Record<BlockKind, { label: string; icon: string; color: string }> = {
@@ -700,6 +701,11 @@ export const CURRICULUM: CurriculumUnit[] = [
   },
 
 ];
+
+/* Course 5 (leveled certification tracks) lives in lib/trackUnits.ts — appended
+   here so the Path renders all 7 tracks with the same sequential unlock. */
+import { TRACK_UNITS } from './trackUnits';
+CURRICULUM.push(...TRACK_UNITS);
 
 /** Flatten all blocks for progress lookups. */
 export const ALL_BLOCKS: CurriculumBlock[] = CURRICULUM.flatMap((u) => u.blocks);
