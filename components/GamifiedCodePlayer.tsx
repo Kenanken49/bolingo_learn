@@ -182,7 +182,7 @@ export default function GamifiedCodePlayer({
         const p = await loseHeart(userId).catch(() => null);
         h = p?.hearts ?? Math.max(0, hearts - 1);
       } else {
-        h = hearts - 1;
+        h = Math.max(0, hearts - 1);
       }
       onHeartsChange(h);
       if (h <= 0) onOutOfHearts();

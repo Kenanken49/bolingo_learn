@@ -15,6 +15,13 @@ export default function Leaderboard() {
     try {
       const p = await getProfile().catch(() => null);
       setUserId(p?.id ?? null);
+      // Guests have no league: skip the (authenticated-only) RPC and show
+      // the friendly seed prompt instead of a "Board unavailable" error.
+      if (!p) {
+        setRows([]);
+        setError(null);
+        return;
+      }
       setRows(await getWeeklyBoard(force));
       setError(null);
     } catch (e) {
