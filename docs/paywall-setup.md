@@ -29,7 +29,16 @@ Code is wired to these exact ids — create them verbatim:
 6. The app matches the package by product id first, then falls back to any
    monthly package — mismatched ids degrade gracefully to the debug path.
 
-## 4. Test before release
+## 4. Web checkout (RevenueCat Web Billing, Stripe-backed)
+Native apps bill through the App Store / Play Store. The **website** needs its own setup:
+1. In the RevenueCat dashboard, enable **Web Billing** on the same project and connect **Stripe**
+   (test mode first). Attach the SAME `premium` entitlement and a monthly web product.
+2. Copy the **Web Billing public API key** (`rcb_...`) — it is NOT the same as the native SDK key.
+3. Set `EXPO_PUBLIC_REVENUECAT_WEB_KEY=rcb_...` in `.env` (add the same var in EAS for web builds).
+4. Without the key, the web paywall shows "Subscribe in the mobile app" and both
+   buttons stay inert instead of failing — that is the expected fallback, not a bug.
+
+## 5. Test before release
 
 - Android: internal testing track + license-test account → purchase with test card, verify `profiles.is_premium` flips.
 - iOS: sandbox tester (App Store Connect → Users) → subscribe, verify, cancel.

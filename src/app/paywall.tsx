@@ -14,8 +14,31 @@ import {
   PREMIUM_OFFERING_ID,
 } from '../../lib/purchases';
 
+const isWebBilling = Platform.OS === 'web';
+const WEB_BILLING_KEY = process.env.EXPO_PUBLIC_REVENUECAT_WEB_KEY ?? '';
+
+// RevenueCat *Web Billing* (Stripe) — website only, never loads on native.
+let webInstance: any = null;
+let webConfiguredFor: string | null = null;
+async function webPurchases(appUserId: string): Promise<any> {
+  const mod: any = await import('@revenuecat/purchases-js');
+  const P = mod.Purchases ?? mod.default?.Purchases ?? mod.default;
+  if (!webInstance) {
+    P.configure(WEB_BILLING_KEY, appUserId);
+    webInstance = typeof P.getSharedInstance === 'function' ? P.getSharedInstance() : P.getInstance();
+    webConfiguredFor = appUserId;
+  } else if (webConfiguredFor !== appUserId && typeof webInstance.changeUser === 'function') {
+    await webInstance.changeUser(appUserId);
+    webConfiguredFor = appUserId;
+  }
+  return webInstance;
+}
+function webEntitled(info: any): boolean {
+  return info?.entitlements?.active?.[PREMIUM_ENTITLEMENT] != null;
+}
+
 export default function Paywall() {
-  const [pkg, setPkg] = useState<PurchasesPackage | null>(null);
+  const [pkg, setPkg] = useState<any>(null);
   const [price, setPrice] = useState(PREMIUM_PRICE_LABEL);
   const [busy, setBusy] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
@@ -26,6 +49,38 @@ export default function Paywall() {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return;
+    if (isWebBilling && WEB_BILLING_KEY) {
+      try {
+        const inst = await webPurchases(user.id);
+        const offerings = await inst.getOfferings();
+        const offering = offerings.all?.[PREMIUM_OFFERING_ID] ?? offerings.current;
+        const pkgs: any[] = offering?.availablePackages ?? [];
+        const monthly =
+          pkgs.find((p) => String(p.identifier ?? '').toLowerCase().includes('monthly')) ??
+          pkgs[0] ??
+          null;
+        if (monthly) {
+          setPkg(monthly);
+          setPrice(
+            monthly?.product?.priceString ??
+              monthly?.product?.price?.formatted ??
+              PREMIUM_PRICE_LABEL
+          );
+        }
+        const info = await inst.getCustomerInfo();
+        const entitled = webEntitled(info);
+        if (entitled) {
+          await supabase.from('profiles').update({ is_premium: true }).eq('id', user.id);
+          setIsPremium(true);
+        } else {
+          setIsPremium(await refreshPremiumStatus(user.id).catch(() => false));
+        }
+      } catch (e) {
+        console.warn('Web offerings failed (Web Billing not configured?):', e);
+        setIsPremium(await refreshPremiumStatus(user.id).catch(() => false));
+      }
+      return;
+    }
     configurePurchases();
     try {
       const offerings = await Purchases.getOfferings();
@@ -66,6 +121,37 @@ export default function Paywall() {
   };
 
   const buy = async () => {
+    if (isWebBilling && WEB_BILLING_KEY) {
+      if (!pkg) {
+        Alert.alert('Store not ready', 'Connect RevenueCat Web Billing first (see README), or use the debug unlock below.');
+        return;
+      }
+      setBusy(true);
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+        const inst = await webPurchases(user.id);
+        const { customerInfo } = await inst.purchase({
+          rcPackage: pkg,
+          customerEmail: user.email ?? undefined,
+        });
+        if (webEntitled(customerInfo)) {
+          await supabase.from('profiles').update({ is_premium: true }).eq('id', user.id);
+          setIsPremium(true);
+          Alert.alert('Welcome to Premium 👑', 'PDF/audio uploads, elite voices, and unlimited hearts are yours.');
+          router.replace('/');
+        }
+      } catch (e: unknown) {
+        const msg = String((e as Error)?.message ?? e);
+        if (/cancel/i.test(msg)) return;
+        Alert.alert('Purchase failed', msg);
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
     if (!pkg) {
       Alert.alert('Store not ready', 'Connect RevenueCat + store products first (see README), or use the debug unlock below.');
       return;
@@ -87,6 +173,31 @@ export default function Paywall() {
   };
 
   const restore = async () => {
+    if (isWebBilling && WEB_BILLING_KEY) {
+      setBusy(true);
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+        const inst = await webPurchases(user.id);
+        const info = await inst.getCustomerInfo();
+        const entitled = webEntitled(info);
+        await supabase.from('profiles').update({ is_premium: entitled }).eq('id', user.id);
+        setIsPremium(entitled);
+        Alert.alert(
+          entitled ? 'Restored' : 'No subscription found',
+          entitled
+            ? 'Premium restored on this account.'
+            : 'No Premium subscription found for this account yet.'
+        );
+      } catch (e) {
+        Alert.alert('Restore failed', String((e as Error).message ?? e));
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
     if (Platform.OS === 'web') {
       Alert.alert('Native only', 'Purchases restore from the App Store / Play Store inside the mobile app.');
       return;
@@ -168,6 +279,14 @@ export default function Paywall() {
             <Text className="font-bold text-white">Back to learning</Text>
           </Pressable>
         </View>
+      ) : isWebBilling && !WEB_BILLING_KEY ? (
+        <View className="mt-6 w-full max-w-sm items-center rounded-3xl bg-slate-900 p-5">
+          <Text className="text-center text-lg font-extrabold text-white">📱 Subscribe in the mobile app</Text>
+          <Text className="mt-2 text-center text-sm text-slate-300">
+            Web checkout isn't enabled yet (no RevenueCat Web Billing key). The App Store / Play Store handle
+            billing — open Bolingo in the Android/iOS app or dev build to subscribe.
+          </Text>
+        </View>
       ) : (
         <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-amber-300 bg-amber-50 p-5">
           <Text className="text-lg font-bold text-slate-800">Premium Monthly</Text>
@@ -180,7 +299,7 @@ export default function Paywall() {
             disabled={busy}
             className={`mt-4 items-center rounded-2xl py-4 ${busy ? 'bg-slate-300' : 'bg-amber-500'}`}
           >
-            {busy ? <ActivityIndicator color="#fff" /> : <Text className="text-lg font-extrabold text-white">Subscribe</Text>}
+            {busy ? <ActivityIndicator color="#fff" /> : <Text className="text-lg font-extrabold text-white">{pkg ? `Subscribe — ${price}` : 'Subscribe'}</Text>}
           </Pressable>
           <Pressable onPress={restore} disabled={busy} className="mt-2 items-center">
             <Text className="font-bold text-slate-500">Restore purchases</Text>
