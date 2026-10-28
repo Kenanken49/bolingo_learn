@@ -22,14 +22,26 @@ export interface BingoContext {
 
 const cache = new Map<string, string>();
 
-export async function askBingo(question: string, context: BingoContext = {}): Promise<string> {
+export interface BingoMessage {
+  role: 'user' | 'bingo';
+  text: string;
+}
+
+export async function askBingo(
+  question: string,
+  context: BingoContext = {},
+  history: BingoMessage[] = []
+): Promise<string> {
   const q = question.trim();
   if (!q) throw new Error('Type your question first — Bingo is listening.');
-  const key = `${context.lessonTitle ?? ''}|||${context.prompt ?? ''}|||${q}`;
+  const thread = history
+    .filter((m) => m && typeof m.text === 'string' && m.text.trim())
+    .slice(-10);
+  const key = `${context.lessonTitle ?? ''}|||${context.prompt ?? ''}|||${thread.map((m) => `${m.role}:${m.text}`).join('|||')}`;
   const hit = cache.get(key);
   if (hit) return hit;
   const { data, error } = await supabase.functions.invoke('ask-bingo', {
-    body: { question: q, context },
+    body: { question: q, context, history: thread },
   });
   if (error) throw new Error(error.message || 'Bingo is unreachable right now.');
   const text = ((data as { answer?: unknown } | null)?.answer as string | undefined)?.trim();

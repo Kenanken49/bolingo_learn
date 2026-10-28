@@ -96,9 +96,10 @@ async function chatComplete(
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
-    const { question, context } = (await req.json()) as {
+    const { question, context, history } = (await req.json()) as {
       question?: string;
       context?: { lessonTitle?: string; prompt?: string; theory?: string; strongFirst?: boolean };
+      history?: Array<{ role?: string; text?: string }>;
     };
     if (!question || !question.trim()) return json({ error: 'Missing question.' }, 400);
 
@@ -110,16 +111,42 @@ serve(async (req: Request) => {
     const material = theory
       ? `Authoritative lesson material — base every factual claim on this, never contradict it:\n${theory}`
       : '';
+    // Multi-turn thread: the sheet sends the conversation so far (latest
+    // last), letting greetings and follow-ups behave like a real chat.
+    // Falls back to the single question when the client sends no history.
+    const thread = (Array.isArray(history) ? history : [])
+      .filter((m) => m && typeof m.text === 'string' && m.text.trim())
+      .slice(-10)
+      .map((m) => ({
+        role: m.role === 'bingo' ? 'assistant' : 'user',
+        content: (m.text as string).slice(0, 1000),
+      }));
+    const convo =
+      thread.length > 0 && thread[thread.length - 1].role === 'user'
+        ? thread
+        : [
+            ...thread,
+            {
+              role: 'user',
+              content: `Lesson context: ${where || 'general study'}\n${material}${material ? '\n' : ''}Student question: ${question.trim()}`,
+            },
+          ];
+    // Grounding rides along in both modes: the single question carries it
+    // inline, and a thread gets it prepended to its opening turn so the
+    // small model reads facts instead of recalling them on every follow-up.
+    const grounding = `Lesson context: ${where || 'general study'}\n${material}${material ? '\n' : ''}`;
+    if (thread.length === 0) {
+      convo[convo.length - 1].content = `${grounding}${convo[convo.length - 1].content}`;
+    } else if (convo[0].role === 'user') {
+      convo[0].content = `${grounding}${convo[0].content}`;
+    }
     const { text: answer, via } = await chatComplete(
       [
         {
           role: 'system',              content:
-                'You are Bingo, a warm, encouraging owl tutor inside the Bolingo learning app. The student is stuck on a lesson and asks for help. Answer their question directly in at most 4 short sentences: give a hint or the key idea, never just the bare answer — guide them to discover it. When lesson material is provided, treat it as authoritative: quote its facts and terms exactly. Plain language, no jargon, no condescension, one small encouragement at the end.',
+                'You are Bingo, a warm, encouraging owl tutor inside the Bolingo learning app. You are having a continuous conversation — remember what the student already said. If the latest message is a greeting, thanks, goodbye, or small talk with no lesson question in it, just respond warmly in one or two sentences and invite their question. Never answer chit-chat with a quiz question or a guiding exercise question. When they do ask for help, answer directly in at most 4 short sentences: give a hint or the key idea, never just the bare answer — guide them to discover it. When lesson material is provided, treat it as authoritative: quote its facts and terms exactly. Plain language, no jargon, no condescension, one small encouragement at the end.',
           },
-          {
-            role: 'user',
-            content: `Lesson context: ${where || 'general study'}\n${material}${material ? '\n' : ''}Student question: ${question.trim()}`,
-          },
+          ...convo,
       ],
       600,
       0.6,

@@ -3,7 +3,7 @@ import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-nativ
 import { router } from 'expo-router';
 import Mascot from './AfricanMascots';
 import HelpfulVote from './HelpfulVote';
-import { askBingo, type BingoContext } from '../lib/askBingo';
+import { askBingo, type BingoContext, type BingoMessage } from '../lib/askBingo';
 
 interface Props {
   /** Where the learner is stuck — shown to Bingo and in the sheet header. */
@@ -26,7 +26,9 @@ interface Props {
 export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, userId = null }: Props) {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState<string | null>(null);
+  // Real conversation: the thread persists while the sheet is open so
+  // greetings and follow-ups keep their context ("hello" gets a hello).
+  const [messages, setMessages] = useState<BingoMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,10 +36,15 @@ export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, use
 
   const send = async () => {
     if (loading || !question.trim()) return;
+    const mine: BingoMessage = { role: 'user', text: question.trim() };
+    const thread = [...messages, mine];
+    setMessages(thread);
+    setQuestion('');
     setLoading(true);
     setError(null);
     try {
-      setAnswer(await askBingo(question, context));
+      const reply = await askBingo(mine.text, context, thread);
+      setMessages([...thread, { role: 'bingo', text: reply }]);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Bingo is unreachable right now.');
     } finally {
@@ -84,20 +91,32 @@ export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, use
                   </Text>
                   <Text className="mt-0.5 text-sm font-semibold text-slate-700">{prompt}</Text>
                 </View>
-              ) : null}              {answer ? (
-              <View className="mt-3 rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
-                <Text className="text-sm font-bold uppercase tracking-widest text-amber-700">
-                  🦉 Bingo says
-                </Text>
-                <Text className="mt-1 text-base leading-6 text-slate-800">{answer}</Text>
+              ) : null}
+              {messages.map((m, i) =>
+                m.role === 'user' ? (
+                  <View key={i} className="mt-2 self-end rounded-2xl rounded-br-sm bg-sky-500 px-4 py-2.5" style={{ maxWidth: '85%' }}>
+                    <Text className="text-base text-white">{m.text}</Text>
+                  </View>
+                ) : (
+                  <View key={i} className="mt-2 rounded-2xl rounded-bl-sm border-2 border-amber-200 bg-amber-50 p-3" style={{ maxWidth: '90%' }}>
+                    <Text className="text-xs font-bold uppercase tracking-widest text-amber-700">🦉 Bingo</Text>
+                    <Text className="mt-0.5 text-base leading-6 text-slate-800">{m.text}</Text>
+                  </View>
+                )
+              )}
+              {loading ? (
+                <View className="mt-2 self-start rounded-2xl rounded-bl-sm bg-slate-100 px-4 py-2.5">
+                  <Text className="text-base text-slate-400">Bingo is thinking…</Text>
+                </View>
+              ) : null}
+              {messages.length > 0 && messages[messages.length - 1].role === 'bingo' && !loading ? (
                 <HelpfulVote
                   userId={userId}
                   lessonTitle={lessonTitle}
                   prompt={prompt ?? ''}
-                  question={question}
+                  question={messages.filter((m) => m.role === 'user').map((m) => m.text).join(' / ')}
                 />
-              </View>
-            ) : null}
+              ) : null}
 
               {error ? (
                 <View className="mt-3 rounded-2xl bg-red-50 p-4">
