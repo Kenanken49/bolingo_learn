@@ -38,9 +38,12 @@ export default function CurriculumUnit() {
   const totalMin = unit.blocks.reduce((s, b) => s + b.minutes, 0);
   const totalXp = unit.blocks.reduce((s, b) => s + b.xp, 0);
 
+  // Language courses read best centered; interactive blocks split into
+  // three columns on wide screens while theory stays full-width below.
+  const isLang = unit.course === 'lang';
   return (
     <View className="flex-1 bg-slate-50">
-    <ScrollView contentContainerClassName="bg-slate-50 px-6 pb-16 pt-12">
+    <ScrollView contentContainerClassName={`bg-slate-50 px-6 pb-16 pt-12 ${isLang ? 'items-center' : ''}`}>
       <Pressable onPress={() => router.replace('/')} accessibilityRole="button" accessibilityLabel="Back to learning path">
         <Text className="font-bold text-sky-600">‹ Back to Learn</Text>
       </Pressable>
@@ -69,8 +72,11 @@ export default function CurriculumUnit() {
         const blocks = unit.blocks.filter((b) => g.kinds.includes(b.kind));
         if (blocks.length === 0) return null;
         const isOpen = open[g.title] ?? false;
+        // Theory stays a full-width single column; every interactive group
+        // divides into three sections on md+ screens.
+        const isTheoryGroup = g.kinds.every((k) => k === 'lesson' || k === 'review');
         return (
-          <View key={g.title} className="mt-4 overflow-hidden rounded-3xl border-2 border-slate-200 bg-white">
+          <View key={g.title} className={`mt-4 w-full ${isLang ? 'max-w-3xl' : 'max-w-5xl'} self-center overflow-hidden rounded-3xl border-2 border-slate-200 bg-white`}>
             <Pressable
               onPress={() => setOpen((o) => ({ ...o, [g.title]: !isOpen }))}
               accessibilityRole="button"
@@ -83,14 +89,15 @@ export default function CurriculumUnit() {
               </View>
               <Text className="text-xl text-slate-400">{isOpen ? '▲' : '▼'}</Text>
             </Pressable>
-            {isOpen
-              ? blocks.map((b, i) => {
+            {isOpen ? (
+              <View className={isTheoryGroup ? '' : 'flex-row flex-wrap gap-2 p-3 md:grid md:grid-cols-3'}>
+              {blocks.map((b, i) => {
                   const meta = KIND_META[b.kind];
                   const last = i === blocks.length - 1;
                   const lesson = getCourseLesson(b.lessonId);
                   const showTheory = (b.kind === 'lesson' || b.kind === 'review') && lesson && lesson.theory.length > 0;
                   return (
-                    <View key={b.id} className={last ? '' : 'border-b border-slate-100'}>
+                    <View key={b.id} className={isTheoryGroup ? (last ? '' : 'border-b border-slate-100') : 'w-full md:w-[31%] md:min-w-[180px] md:flex-1 overflow-hidden rounded-2xl border border-slate-100'}>
                     <Pressable
                       onPress={() =>
                         b.kind === 'project'
@@ -99,10 +106,10 @@ export default function CurriculumUnit() {
                       }
                       accessibilityRole="button"
                       accessibilityLabel={`Start ${b.title}`}
-                      className={`flex-row items-center px-5 py-4 ${last ? '' : 'border-b border-slate-100'}`}
+                      className={isTheoryGroup ? `flex-row items-center px-5 py-4 ${last ? '' : 'border-b border-slate-100'}` : 'flex-col p-4'}
                     >
                       <Text className="text-2xl">{meta.icon}</Text>
-                      <View className="ml-3 flex-1">
+                      <View className={isTheoryGroup ? 'ml-3 flex-1' : 'mt-2 flex-1'}>
                         <View className="flex-row items-center">
                           <Text className={`mr-2 rounded-full px-2 py-0.5 text-[10px] font-extrabold ${meta.color}`}>
                             {meta.label.toUpperCase()}
@@ -112,11 +119,11 @@ export default function CurriculumUnit() {
                           </Text>
                         </View>
                         <Text className="mt-0.5 text-base font-bold text-slate-800">{b.title}</Text>
-                        <Text className="text-sm text-slate-500" numberOfLines={2}>
+                        <Text className="text-sm text-slate-500" numberOfLines={isTheoryGroup ? 2 : 3}>
                           {b.blurb}
                         </Text>
                       </View>
-                      <Text className="text-xl font-extrabold text-green-500">›</Text>
+                      <Text className="text-xl font-extrabold text-green-500">{isTheoryGroup ? '›' : 'Start ›'}</Text>
                     </Pressable>
                     {showTheory ? (
                       <View className="bg-slate-50 px-5 pb-4">
@@ -129,8 +136,9 @@ export default function CurriculumUnit() {
                     ) : null}
                     </View>
                   );
-                })
-              : null}
+                })}
+              </View>
+              ) : null}
           </View>
         );
       })}

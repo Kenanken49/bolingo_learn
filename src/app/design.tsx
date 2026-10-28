@@ -42,27 +42,29 @@ export default function DesignHub() {
         </Text>
       </View>
 
-      {/* A — native interactive module */}
+      {/* A — native interactive module: three sections on wide screens. */}
       <Text className="mt-6 font-duo text-lg font-extrabold text-slate-900">A · Interactive module</Text>
       <Text className="text-sm text-slate-500">
         Visual hierarchy & contrast · scaling & alignment · user-centered design — taught as code, tested like code.
       </Text>
+      <View className="flex-row flex-wrap gap-2 md:grid md:grid-cols-3">
       {NATIVE_BLOCKS.map((b) => (
         <Pressable
           key={b.lessonId}
           onPress={() => openLesson(b.lessonId, b.title)}
           accessibilityRole="button"
           accessibilityLabel={`Start ${b.title}`}
-          className="mt-2 flex-row items-center rounded-2xl border-2 border-pink-100 bg-pink-50 p-3"
+          className="mt-2 w-full flex-col rounded-2xl border-2 border-pink-100 bg-pink-50 p-4 md:w-[31%] md:min-w-[180px] md:flex-1"
         >
           <Text className="text-2xl">🎨</Text>
-          <View className="ml-3 flex-1">
+          <View className="mt-2 flex-1">
             <Text className="font-duo text-base font-extrabold text-slate-900">{b.title}</Text>
             <Text className="text-xs font-bold text-slate-500">{b.meta}</Text>
           </View>
-          <Text className="text-xl font-extrabold text-pink-500">›</Text>
+          <Text className="mt-2 text-base font-extrabold text-pink-500">Start ›</Text>
         </Pressable>
       ))}
+      </View>
 
       {/* B — video masterclasses */}
       <Text className="mt-6 font-duo text-lg font-extrabold text-slate-900">B · Video masterclasses</Text>
