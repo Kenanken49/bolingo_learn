@@ -55,6 +55,21 @@ tautologically). Acceptable for hints, not exam-grade. Upgrade path when
 budget allows: `ollama pull` a larger model on the VPS (e.g. qwen2.5:7b
 needs ~8 GB RAM — check `free -m` first) and swap only `LLM_MODEL`.
 
+## Failover (Nov 2026)
+
+All three functions now try the VPS first (50 s timeout) and, only on
+failure/timeout/empty answer, retry once against optional hosted secrets:
+
+```bash
+supabase secrets set LLM_FALLBACK_URL=https://api.groq.com/openai/v1/chat/completions \
+  LLM_FALLBACK_KEY=<groq-key> LLM_FALLBACK_MODEL=llama-3.3-70b-versatile
+```
+
+Fallback unset = primary-only (today's behavior). Every success carries a
+`via: "primary" | "fallback"` tag (clients ignore it). Error messages
+never include URLs — the VPS path embeds its token. Live-tested Oct 28:
+`via: primary`, 16 s, clean content.
+
 ## Costs
 
 - VPS: ~1 GB disk, ~2 GB RAM for the loaded model. No per-token billing.

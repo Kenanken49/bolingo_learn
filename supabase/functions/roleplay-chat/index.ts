@@ -2,13 +2,21 @@
 //
 // Conversational AI wrappers around the curriculum: pick a scenario, chat
 // turn-by-turn. Stateless — the client sends the recent history each turn.
+//
+// Primary brain = self-hosted VPS model (free, unlimited). Optional
+// LLM_FALLBACK_URL / LLM_FALLBACK_KEY / LLM_FALLBACK_MODEL secrets route
+// one retry to a hosted API (e.g. Groq free tier) when primary fails,
+// times out, or answers empty. Fallback unset = primary-only behavior.
 // Deploy with: supabase functions deploy roleplay-chat
-// Requires secret: LLM_API_KEY. Honors LLM_BASE_URL / LLM_MODEL overrides.
+// Requires: LLM_API_KEY. Honors LLM_BASE_URL / LLM_MODEL overrides.
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 
 const LLM_BASE_URL = Deno.env.get('LLM_BASE_URL') ?? 'https://api.deepseek.com/chat/completions';
 const LLM_MODEL = Deno.env.get('LLM_MODEL') ?? 'deepseek-chat';
+const FALLBACK_URL = Deno.env.get('LLM_FALLBACK_URL') ?? '';
+const FALLBACK_KEY = Deno.env.get('LLM_FALLBACK_KEY') ?? '';
+const FALLBACK_MODEL = Deno.env.get('LLM_FALLBACK_MODEL') ?? LLM_MODEL;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -46,6 +54,42 @@ function cleanModelText(data: {
   return raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
 }
 
+/**
+ * Primary-first completion with one fallback attempt. URLs never appear in
+ * errors — the VPS path embeds its token, so failures stay generic.
+ */
+async function chatComplete(
+  messages: Array<{ role: string; content: string }>,
+  maxTokens: number,
+  temperature: number
+): Promise<{ text: string; via: string }> {
+  const apiKey = Deno.env.get('LLM_API_KEY') ?? '';
+  if (!apiKey) throw new Error('Missing LLM_API_KEY secret.');
+  const attempts = [{ url: LLM_BASE_URL, key: apiKey, model: LLM_MODEL, via: 'primary' }];
+  if (FALLBACK_URL && FALLBACK_KEY) {
+    attempts.push({ url: FALLBACK_URL, key: FALLBACK_KEY, model: FALLBACK_MODEL, via: 'fallback' });
+  }
+  let lastErr: unknown = new Error('No LLM backend configured.');
+  for (const a of attempts) {
+    try {
+      const res = await fetch(a.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${a.key}` },
+        body: JSON.stringify({ model: a.model, messages, max_tokens: maxTokens, temperature }),
+        signal: AbortSignal.timeout(50_000),
+      });
+      if (!res.ok) throw new Error(`LLM request failed with status ${res.status}.`);
+      const data = await res.json();
+      const text = cleanModelText(data);
+      if (!text) throw new Error('LLM returned an empty reply.');
+      return { text, via: a.via };
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr;
+}
+
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
@@ -63,24 +107,12 @@ serve(async (req: Request) => {
       return json({ error: 'History must end with a user message.' }, 400);
     }
 
-    const apiKey = Deno.env.get('LLM_API_KEY') ?? '';
-    if (!apiKey) throw new Error('Missing LLM_API_KEY secret.');
-
-    const res = await fetch(LLM_BASE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: LLM_MODEL,
-        messages: [{ role: 'system', content: system }, ...turns],
-        max_tokens: 250,
-        temperature: 0.7,
-      }),
-    });
-    if (!res.ok) throw new Error(`LLM request failed: ${res.status} ${await res.text()}`);
-    const data = await res.json();
-    const reply: string = cleanModelText(data);
-    if (!reply) throw new Error('LLM returned an empty reply.');
-    return json({ reply });
+    const { text: reply, via } = await chatComplete(
+      [{ role: 'system', content: system }, ...turns],
+      250,
+      0.7
+    );
+    return json({ reply, via });
   } catch (e) {
     console.error('roleplay-chat failed:', e);
     return json({ error: String(e) }, 500);
