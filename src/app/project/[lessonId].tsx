@@ -1,6 +1,8 @@
 import { createElement, useEffect, useMemo, useState } from 'react';
 import { Alert, View, Text, Pressable, ScrollView, Platform } from 'react-native';
-import { WebView } from 'react-native-webview';
+// NOTE: no top-level react-native-webview import — Expo Go ships no
+// RNCWebViewModule and the static import crashed the whole route tree.
+// The native preview loads lazily below and degrades to a notice.
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import CodeEditor, { combineDoc, type CodeDoc } from '../../../components/CodeEditor';
@@ -56,6 +58,28 @@ export default function CertificationProject() {
   const [doc, setDoc] = useState<CodeDoc>(starter);
   const [submitted, setSubmitted] = useState(false);
   const [resetTick, setResetTick] = useState(0);
+  // Native live preview: loads only where the native module exists (dev
+  // build). Expo Go / missing module => null => friendly notice instead
+  // of a red screen. Must run before the `!project` early return.
+  const [NativeWebView, setNativeWebView] = useState<React.ComponentType<{
+    originWhitelist?: string[];
+    source?: { html: string };
+    style?: unknown;
+  }> | null>(null);
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    let live = true;
+    import('react-native-webview')
+      .then((m) => {
+        if (live) setNativeWebView(() => (m as { WebView: React.ComponentType<{ originWhitelist?: string[]; source?: { html: string }; style?: unknown }> }).WebView);
+      })
+      .catch(() => {
+        if (live) setNativeWebView(null);
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   const combined = useMemo(() => combineDoc(doc), [doc]);
   const checks = useMemo(() => (project ? gradeProject(project, combined) : []), [combined, project]);
@@ -215,8 +239,14 @@ export default function CertificationProject() {
         <View className="h-72 overflow-hidden rounded-2xl border-2 border-slate-200 bg-white shadow-sm">
           {Platform.OS === 'web' ? (
             <WebPreview html={previewDoc(doc)} />
+          ) : NativeWebView ? (
+            <NativeWebView originWhitelist={['*']} source={{ html: previewDoc(doc) }} style={{ flex: 1 }} />
           ) : (
-            <WebView originWhitelist={['*']} source={{ html: previewDoc(doc) }} style={{ flex: 1 }} />
+            <View className="flex-1 items-center justify-center bg-slate-50 p-4">
+              <Text className="text-center text-sm text-slate-500">
+                👀 Live preview needs the dev-build app — the editor and Run tests below work fully in Expo Go.
+              </Text>
+            </View>
           )}
         </View>
 
