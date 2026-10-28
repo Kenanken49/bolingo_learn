@@ -295,7 +295,8 @@ export default function QuizPlayer() {
             setAnswers((a) => [...a, r]);
             // Kiki v3: every graded answer tunes skill + difficulty + memory.
             if (typeof lessonId === 'string') {
-              kikiAttempt(skillOfLesson(lessonId), qKeys[index] ?? `${lessonId}:${index}`, r.correct);
+              const chainLen = Array.isArray(q?.correctChain) ? q.correctChain.length : 1;
+              kikiAttempt(skillOfLesson(lessonId), qKeys[index] ?? `${lessonId}:${index}`, r.correct, { chainLen, isBuild: chainLen > 1 });
             }
             // Combo loop: correct extends it, a miss resets it to zero.
             if (r.correct) {

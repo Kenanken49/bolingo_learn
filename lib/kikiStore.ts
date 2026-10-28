@@ -9,7 +9,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabase';
-import { blankState, recordAttempt, type KikiState, type SkillId } from './kiki';
+import { blankState, recordAttempt, type ItemFeatures, type KikiState, type SkillId } from './kiki';
 
 const KEY = 'kiki-v3';
 const REMOTE_THROTTLE_MS = 15_000;
@@ -90,8 +90,8 @@ export function getKikiState(): KikiState {
 }
 
 /** Grade one attempt through Kiki v3 (prediction + update + throttled sync). */
-export function kikiAttempt(skill: SkillId, key: string, correct: boolean): { p: number } {
-  const out = recordAttempt(state, skill, key, correct);
+export function kikiAttempt(skill: SkillId, key: string, correct: boolean, f?: ItemFeatures): { p: number } {
+  const out = recordAttempt(state, skill, key, correct, Date.now(), f);
   void writeLocal();
   if (userId && Date.now() - lastRemoteSave > REMOTE_THROTTLE_MS) void writeRemote(userId);
   return out;

@@ -172,16 +172,17 @@ export function recordAttempt(
   key: string,
   correct: boolean,
   now = Date.now(),
+  f?: ItemFeatures,
 ): { p: number } {
   try {
     applyDrift(s, now);
     const sk = s.skills[skill] ?? skillPrior(skill);
-    const d = s.diffs[key] ?? itemPrior();
+    const d = s.diffs[key] ?? (f ? priorDifficulty(f) : itemPrior());
     const pKnown = predict(sk, d);
-    const p = pKnown;
+    const p = predictObserved(sk, d, f);
     // Guess/slip-aware update: a miss on a near-certain item (slip) and a
     // hit on a near-impossible one (guess) carry little information.
-    const g = GUESS;
+    const g = f ? guessRate(f) : GUESS;
     const sl = SLIP;
     const w = correct
       ? (pKnown * (1 - sl)) / Math.max(1e-6, pKnown * (1 - sl) + (1 - pKnown) * g)
@@ -271,6 +272,8 @@ export interface Candidate {
   id: string;
   /** Current difficulty estimate (0 = unseen). */
   diff: number;
+  /** Per-item features (MCQ vs BUILD) for guess-aware Goldilocks. */
+  f?: ItemFeatures;
 }
 
 /**
@@ -288,15 +291,15 @@ export function recommendNext(
   // Goldilocks applies to the OBSERVED win chance (slips + lucky guesses
   // included) — that is the number the learner actually experiences.
   let best = candidates[0];
-  let bestScore = Math.abs(predictObserved(sk, best.diff) - GOLDILOCKS_P);
+  let bestScore = Math.abs(predictObserved(sk, best.diff, best.f) - GOLDILOCKS_P);
   for (const c of candidates.slice(1)) {
-    const score = Math.abs(predictObserved(sk, c.diff) - GOLDILOCKS_P);
+    const score = Math.abs(predictObserved(sk, c.diff, c.f) - GOLDILOCKS_P);
     if (score < bestScore - 1e-9 || (Math.abs(score - bestScore) <= 1e-9 && c.diff < best.diff)) {
       best = c;
       bestScore = score;
     }
   }
-  return { id: best.id, p: predictObserved(sk, best.diff) };
+  return { id: best.id, p: predictObserved(sk, best.diff, best.f) };
 }
 
 /** Least-recalled items first — the smart-review shortlist. */

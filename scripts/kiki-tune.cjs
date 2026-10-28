@@ -154,9 +154,8 @@ function main() {
   for (const cfg of grid) {
     const kiki = compilePatched([
       // Round-1 winner locked: itemPrior=0. skillScale=0.5 (near-neutral cold prior).
-      ['function itemPrior(): number {\n  return -0.2;\n}', 'function itemPrior(): number {\n  return 0;\n}'],
-      ['return skill === \'chess\' ? 0.3 : 0.2;', 'return (skill === \'chess\' ? 0.3 : 0.2) * 0.5;'],
-      ['const SKILL_K0 = 0.6;', `const SKILL_K0 = ${cfg.k0};`],
+      ['function itemPrior(): number {\n  return 0;\n}', 'function itemPrior(): number {\n  return 0;\n}'],
+      ['const SKILL_K0 = 0.9;', `const SKILL_K0 = ${cfg.k0};`],
       ['const PRIOR_N = 0;', `const PRIOR_N = ${cfg.priorN};`],
       ['const GUESS = 0.2;', `const GUESS = ${cfg.guess};`],
     ]);
