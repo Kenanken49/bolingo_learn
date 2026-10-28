@@ -16,6 +16,9 @@ import { TRACK_DB } from './tracks/db';
 import { TRACK_BE } from './tracks/be';
 import { TRACK_PY } from './tracks/py';
 import { TRACK_SECML } from './tracks/secml';
+import { TRACK_LINUX_GRASSHOPPER } from './tracks/linux-grasshopper';
+import { TRACK_LINUX_JOURNEYMAN } from './tracks/linux-journeyman';
+import { TRACK_LINUX_NETWORKING } from './tracks/linux-networking';
 
 export type { CourseQuestion, CourseLesson } from './quizBank';
 
@@ -776,6 +779,12 @@ export const COURSES: Record<string, CourseLesson> = {
   ...TRACK_BE,
   ...TRACK_PY,
   ...TRACK_SECML,
+
+  // Course 6 (Linux Journey, GPL-3.0) lives in lib/tracks/linux-*.ts —
+  // full theory verbatim (attributed), quiz generated from lesson text.
+  ...TRACK_LINUX_GRASSHOPPER,
+  ...TRACK_LINUX_JOURNEYMAN,
+  ...TRACK_LINUX_NETWORKING,
 };
 
 // Fail loudly at import time — a bad seed breaks the bundle, not a session.

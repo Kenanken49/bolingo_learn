@@ -37,6 +37,7 @@ export const COURSES_META = [
   { id: 'design', name: 'Course 3 · UI/UX Design for Developers', icon: '\u{1F3A8}', blurb: 'Design ecosystem — ⚡ bite-sized theory, Figma masterclasses, guides hub.' },
   { id: 'lang', name: 'Course 4 · World Languages & Chess', icon: '\u{1F30D}', blurb: 'Duolingo style — basics, phrases, tenses, review, checkpoints.' },
   { id: 'certs', name: 'Course 5 · Leveled Certifications', icon: '\u{1F393}', blurb: '7 tracks · 5 unlockable levels each — bite-sized lessons into real capstone projects.' },
+  { id: 'linux', name: 'Course 6 · Linux Journey', icon: '\u{1F427}', blurb: '22 courses · 185 bite-sized lessons — the full Linux Journey, no daily limit.' },
 ];
 
 export const KIND_META: Record<BlockKind, { label: string; icon: string; color: string }> = {
@@ -706,6 +707,11 @@ export const CURRICULUM: CurriculumUnit[] = [
    here so the Path renders all 7 tracks with the same sequential unlock. */
 import { TRACK_UNITS } from './trackUnits';
 CURRICULUM.push(...TRACK_UNITS);
+
+/* Course 6 (Linux Journey) lives in lib/linuxCurriculum.ts — generated from
+   the imported banks so ids/titles can never drift from the lessons. */
+import { LINUX_UNITS } from './linuxCurriculum';
+CURRICULUM.push(...LINUX_UNITS);
 
 /** Flatten all blocks for progress lookups. */
 export const ALL_BLOCKS: CurriculumBlock[] = CURRICULUM.flatMap((u) => u.blocks);

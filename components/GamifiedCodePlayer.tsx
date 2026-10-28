@@ -11,8 +11,9 @@ import Reanimated, {
 import { useAudioPlayer } from 'expo-audio';
 import * as Speech from 'expo-speech';
 import * as Haptics from 'expo-haptics';
-import { loseHeart } from '../lib/progress';
-import { hasSeenHeartsIntro, markHeartsIntroSeen } from '../lib/onboarding';
+// Hearts gate retired: wrong answers no longer consume hearts (unlimited learning).
+
+import { fetchExplanation } from '../lib/explain';
 import { getSoundOn, getHapticsOn } from '../lib/preferences';
 import { CORRECT_CHIME, WRONG_BUZZ } from '../assets/sounds';
 
@@ -77,6 +78,9 @@ export default function GamifiedCodePlayer({
   const [hint, setHint] = useState<string | null>(null);
   // Micro-onboarding: hearts explainer appears on the first-ever mistake.
   const [showHeartsInfo, setShowHeartsInfo] = useState(false);
+  // Duolingo Max: personalized tutor explanation for this exact mistake.
+  const [explain, setExplain] = useState<string | null>(null);
+  const [explainLoading, setExplainLoading] = useState(false);
 
   // freeCodeCamp-style test checklist derived from the expected chain.
   // Single-token answers (multiple-choice) collapse to one test.
@@ -98,11 +102,30 @@ export default function GamifiedCodePlayer({
     transform: [{ scale: pop.value }, { translateX: shakeX.value }],
   }));
 
+  const explainAnswer = async () => {
+    if (explainLoading || explain) return;
+    setExplainLoading(true);
+    try {
+      const text = await fetchExplanation(
+        questionData.prompt,
+        selectedTokens.join(' '),
+        questionData.correctChain.join(' ')
+      );
+      setExplain(text);
+    } catch {
+      setExplain('Hmm — I could not reach the tutor just now. Check your connection and try again.');
+    } finally {
+      setExplainLoading(false);
+    }
+  };
+
   useEffect(() => {
     setSelectedTokens([]);
     setAvailableTokens(shuffle(questionData.scrambledTokens));
     setFeedback(null);
     setRanTests(false);
+    setExplain(null);
+    setExplainLoading(false);
     pop.value = 1;
     shakeX.value = 0;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -181,20 +204,10 @@ export default function GamifiedCodePlayer({
           await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         } catch {}
       }
-      let h = hearts;
-      if (userId) {
-        const p = await loseHeart(userId).catch(() => null);
-        h = p?.hearts ?? Math.max(0, hearts - 1);
-      } else {
-        h = Math.max(0, hearts - 1);
-      }
-      onHeartsChange(h);
-      // First mistake ever: pause for a contextual hearts explainer.
-      if (!(await hasSeenHeartsIntro())) {
-        await markHeartsIntroSeen();
-        setShowHeartsInfo(true);
-      }
-      if (h <= 0) onOutOfHearts();
+      // Unlimited learning: mistakes never cost hearts and never end the
+      // lesson — learners can complete as much as they want. (The hearts
+      // HUD stays visible; the refill gate is retired.)
+      onHeartsChange(hearts);
     }
   };
 
@@ -310,6 +323,25 @@ export default function GamifiedCodePlayer({
           </Text>
           {feedback === 'wrong' && questionData.explain ? (
             <Text className="mt-1 text-sm text-slate-500">Why: {questionData.explain}</Text>
+          ) : null}
+          {feedback === 'wrong' ? (
+            explain ? (
+              <Text className="mt-2 rounded-xl bg-violet-50 p-3 text-sm leading-5 text-violet-900">
+                ✨ {explain}
+              </Text>
+            ) : (
+              <Pressable
+                onPress={() => void explainAnswer()}
+                disabled={explainLoading}
+                accessibilityRole="button"
+                accessibilityLabel="Explain my answer"
+                className="mt-2 items-center rounded-xl border-2 border-violet-200 bg-white py-2"
+              >
+                <Text className={`text-sm font-extrabold ${explainLoading ? 'text-slate-400' : 'text-violet-700'}`}>
+                  {explainLoading ? '✨ Asking the tutor…' : '✨ Explain my answer'}
+                </Text>
+              </Pressable>
+            )
           ) : null}
           <View className="mt-3">
             <DuoButton onPress={onContinue} label="Continue to next question" title="Continue" />
