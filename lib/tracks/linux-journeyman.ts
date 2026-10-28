@@ -41,6 +41,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Dev Directory', 'Device Types', 'Device Names', 'Sysfs'],
         'Those opening lines are from ‘Dev Directory’.'
       ),
+      MCQ(
+        'The lesson continues with: “"ls /dev"” — which lesson is this?',
+        'Dev Directory',
+        ['Dev Directory', 'Device Types', 'Device Names', 'Sysfs'],
+        'Those lines are from ‘Dev Directory’.'
+      ),
     ],
   },
   'linux-devices-2': {
@@ -76,6 +82,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Device Types', 'Dev Directory', 'Device Names', 'Sysfs'],
         'Those opening lines are from ‘Device Types’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: major device number',
+        ['major', 'device', 'number'],
+        ['major', 'device', 'number', 'sudo', '-la'],
+        'Type it exactly as shown: major device number.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Device Types’ lesson?',
+        'minor device number',
+        ['minor device number', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Device Types’ lesson mentions “minor device number” — find it in the theory above.'
+      ),
     ],
   },
   'linux-devices-3': {
@@ -101,6 +119,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Device Names',
         ['Device Names', 'Dev Directory', 'Device Types', 'Sysfs'],
         'Those opening lines are from ‘Device Names’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Device Names’ lesson?',
+        'scuzzy',
+        ['scuzzy', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Device Names’ lesson mentions “scuzzy” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “SCSI Devices: If you have any sort of mass storage on your machine, chances are it is using the SCSI (pronounced "scuzzy") protocol. SCSI stands for Small Comp…” — which lesson is this?',
+        'Device Names',
+        ['Device Names', 'Dev Directory', 'Device Types', 'Sysfs'],
+        'Those lines are from ‘Device Names’.'
       ),
     ],
   },
@@ -133,6 +163,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Sysfs',
         ['Sysfs', 'Dev Directory', 'Device Types', 'Device Names'],
         'Those opening lines are from ‘Sysfs’.'
+      ),
+      MCQ(
+        'The lesson continues with: “It gives us more detailed information than what we would be able to see in the /dev directory. Both directories "/sys" and "/dev" seem to be very similar and t…” — which lesson is this?',
+        'Sysfs',
+        ['Sysfs', 'Dev Directory', 'Device Types', 'Device Names'],
+        'Those lines are from ‘Sysfs’.'
       ),
     ],
   },
@@ -168,6 +204,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Udev ', 'Dev Directory', 'Device Types', 'Device Names'],
         'Those opening lines are from ‘Udev ’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: udevadm info --query=all --name=/dev/sda',
+        ['udevadm', 'info', '--query=all', '--name=/dev/sda'],
+        ['udevadm', 'info', '--query=all', '--name=/dev/sda', 'sudo', '-la'],
+        'Type it exactly as shown: udevadm info --query=all --name=/dev/sda.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Udev ’ lesson?',
+        'rm',
+        ['rm', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Udev ’ lesson mentions “rm” — find it in the theory above.'
+      ),
     ],
   },
   'linux-devices-6': {
@@ -191,6 +239,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Listing Devices',
         ['Listing Devices', 'Dev Directory', 'Device Types', 'Device Names'],
         'Those opening lines are from ‘Listing Devices’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Listing Devices’ lesson?',
+        'lsusb',
+        ['lsusb', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Listing Devices’ lesson mentions “lsusb” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “Listing USB Devices: "lsusb"” — which lesson is this?',
+        'Listing Devices',
+        ['Listing Devices', 'Dev Directory', 'Device Types', 'Device Names'],
+        'Those lines are from ‘Listing Devices’.'
       ),
     ],
   },
@@ -229,6 +289,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Command dd', 'Dev Directory', 'Device Types', 'Device Names'],
         'Those opening lines are from ‘Command dd’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: dd if=/home/pete/backup.img of=/dev/sdb bs=1M count=2',
+        ['dd', 'if=/home/pete/backup.img', 'of=/dev/sdb', 'bs=1M', 'count=2'],
+        ['dd', 'if=/home/pete/backup.img', 'of=/dev/sdb', 'bs=1M', 'count=2', 'sudo', '-la'],
+        'Type it exactly as shown: dd if=/home/pete/backup.img of=/dev/sdb bs=1M count=2.'
+      ),
+      MCQ(
+        'The lesson continues with: “Consider the following command: "dd if=/home/pete/backup.img of=/dev/sdb bs=1024"” — which lesson is this?',
+        'Command dd',
+        ['Command dd', 'Dev Directory', 'Device Types', 'Device Names'],
+        'Those lines are from ‘Command dd’.'
+      ),
     ],
   },
   'linux-the-filesystem-1': {
@@ -259,6 +331,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'FileSystem Hierarchy',
         ['FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk', 'Disk Partitioning'],
         'Those opening lines are from ‘FileSystem Hierarchy’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Go ahead and do an "ls -l" to see the directories listed under the root directory, yours may look different than mine, but the directories should for the most…” — which lesson is this?',
+        'FileSystem Hierarchy',
+        ['FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk', 'Disk Partitioning'],
+        'Those lines are from ‘FileSystem Hierarchy’.'
       ),
     ],
   },
@@ -299,6 +377,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['FileSystem Types', 'FileSystem Hierarchy', 'Anatomy Of A Disk', 'Disk Partitioning'],
         'Those opening lines are from ‘FileSystem Types’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘FileSystem Types’ lesson?',
+        'df',
+        ['df', 'core', 'echo Hello World', 'pwd'],
+        'The ‘FileSystem Types’ lesson mentions “df” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “So there is something called the Virtual File System (VFS) abstraction layer. It is a layer between applications and the different filesystem types, so no matt…” — which lesson is this?',
+        'FileSystem Types',
+        ['FileSystem Types', 'FileSystem Hierarchy', 'Anatomy Of A Disk', 'Disk Partitioning'],
+        'Those lines are from ‘FileSystem Types’.'
+      ),
     ],
   },
   'linux-the-filesystem-3': {
@@ -337,6 +427,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Anatomy Of A Disk', 'FileSystem Hierarchy', 'FileSystem Types', 'Disk Partitioning'],
         'Those opening lines are from ‘Anatomy Of A Disk’.'
       ),
+      MCQ(
+        'The lesson continues with: “Partition Table: Every disk will have a partition table, this table tells the system how the disk is partitioned. This table tells you where partitions begin a…” — which lesson is this?',
+        'Anatomy Of A Disk',
+        ['Anatomy Of A Disk', 'FileSystem Hierarchy', 'FileSystem Types', 'Disk Partitioning'],
+        'Those lines are from ‘Anatomy Of A Disk’.'
+      ),
     ],
   },
   'linux-the-filesystem-4': {
@@ -373,6 +469,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Disk Partitioning', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Disk Partitioning’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: select /dev/sdb2',
+        ['select', '/dev/sdb2'],
+        ['select', '/dev/sdb2', 'sudo', '-la'],
+        'Type it exactly as shown: select /dev/sdb2.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Disk Partitioning’ lesson?',
+        'mkpart primary 123 4567',
+        ['mkpart primary 123 4567', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Disk Partitioning’ lesson mentions “mkpart primary 123 4567” — find it in the theory above.'
+      ),
     ],
   },
   'linux-the-filesystem-5': {
@@ -401,6 +509,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Creating FileSystems',
         ['Creating FileSystems', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Creating FileSystems’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Creating FileSystems’ lesson?',
+        'mkfs',
+        ['mkfs', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Creating FileSystems’ lesson mentions “mkfs” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “Simple as that! The "mkfs" (make filesystem) tool allows us to specify the type of filesystem we want and where we want it.” — which lesson is this?',
+        'Creating FileSystems',
+        ['Creating FileSystems', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
+        'Those lines are from ‘Creating FileSystems’.'
       ),
     ],
   },
@@ -438,6 +558,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Mounting/Unmounting', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Mounting/Unmounting’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sudo umount /mydrive',
+        ['sudo', 'umount', '/mydrive'],
+        ['sudo', 'umount', '/mydrive', '-la', '-r'],
+        'Type it exactly as shown: sudo umount /mydrive.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Mounting/Unmounting’ lesson?',
+        'sudo mount -t ext4 /dev/sdb2 /mydrive',
+        ['sudo mount -t ext4 /dev/sdb2 /mydrive', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Mounting/Unmounting’ lesson mentions “sudo mount -t ext4 /dev/sdb2 /mydrive” — find it in the theory above.'
+      ),
     ],
   },
   'linux-the-filesystem-7': {
@@ -469,6 +601,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Etc/fstab', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Etc/fstab’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: eff stab',
+        ['eff', 'stab'],
+        ['eff', 'stab', 'sudo', '-la'],
+        'Type it exactly as shown: eff stab.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Etc/fstab’ lesson?',
+        'cat /etc/fstab',
+        ['cat /etc/fstab', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Etc/fstab’ lesson mentions “cat /etc/fstab” — find it in the theory above.'
+      ),
     ],
   },
   'linux-the-filesystem-8': {
@@ -493,6 +637,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Swap Space',
         ['Swap Space', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Swap Space’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Swap Space’ lesson?',
+        'swap',
+        ['swap', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Swap Space’ lesson mentions “swap” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “What is this swap partition? Well swap is what we used to allocate virtual memory to our system. If you are low on memory, the system uses this partition to "s…” — which lesson is this?',
+        'Swap Space',
+        ['Swap Space', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
+        'Those lines are from ‘Swap Space’.'
       ),
     ],
   },
@@ -526,6 +682,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Disk Usage', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Disk Usage’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: du -h',
+        ['du', '-h'],
+        ['du', '-h', 'sudo', '-la'],
+        'Type it exactly as shown: du -h.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Disk Usage’ lesson?',
+        'du -h /',
+        ['du -h /', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Disk Usage’ lesson mentions “du -h /” — find it in the theory above.'
+      ),
     ],
   },
   'linux-the-filesystem-10': {
@@ -555,6 +723,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'FileSystem Repair',
         ['FileSystem Repair', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘FileSystem Repair’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘FileSystem Repair’ lesson?',
+        'fsck',
+        ['fsck', 'core', 'echo Hello World', 'pwd'],
+        'The ‘FileSystem Repair’ lesson mentions “fsck” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “The "fsck" (filesystem check) command is used to check the consistency of a filesystem and can even try to repair it for us. Usually when you boot up a disk, f…” — which lesson is this?',
+        'FileSystem Repair',
+        ['FileSystem Repair', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
+        'Those lines are from ‘FileSystem Repair’.'
       ),
     ],
   },
@@ -593,6 +773,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Inodes', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Inodes’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: ls -li',
+        ['ls', '-li'],
+        ['ls', '-li', 'sudo', '-la'],
+        'Type it exactly as shown: ls -li.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Inodes’ lesson?',
+        'stat ~/Desktop/',
+        ['stat ~/Desktop/', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Inodes’ lesson mentions “stat ~/Desktop/” — find it in the theory above.'
+      ),
     ],
   },
   'linux-the-filesystem-12': {
@@ -629,6 +821,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Symlinks', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Symlinks’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: echo \'myfile\' > myfile',
+        ['echo', '\'myfile\'', '>', 'myfile'],
+        ['echo', '\'myfile\'', '>', 'myfile', 'sudo', '-la'],
+        'Type it exactly as shown: echo \'myfile\' > myfile.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Symlinks’ lesson?',
+        'echo \'myfile2\' > myfile2',
+        ['echo \'myfile2\' > myfile2', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Symlinks’ lesson mentions “echo \'myfile2\' > myfile2” — find it in the theory above.'
+      ),
     ],
   },
   'linux-the-filesystem-13': {
@@ -663,6 +867,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Hardlinks', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those opening lines are from ‘Hardlinks’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: ls -li',
+        ['ls', '-li'],
+        ['ls', '-li', 'sudo', '-la'],
+        'Type it exactly as shown: ls -li.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Hardlinks’ lesson?',
+        'ln somefile somelink',
+        ['ln somefile somelink', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Hardlinks’ lesson mentions “ln somefile somelink” — find it in the theory above.'
+      ),
     ],
   },
   'linux-boot-the-system-1': {
@@ -689,6 +905,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Boot Process Overview',
         ['Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader', 'Boot Process Kernel'],
         'Those opening lines are from ‘Boot Process Overview’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Well there is actually a ton of stuff happening between when you push the power button to when you login and we\'ll discuss those in this course.” — which lesson is this?',
+        'Boot Process Overview',
+        ['Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader', 'Boot Process Kernel'],
+        'Those lines are from ‘Boot Process Overview’.'
       ),
     ],
   },
@@ -725,6 +947,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Boot Process Bios', 'Boot Process Overview', 'Boot Process Bootloader', 'Boot Process Kernel'],
         'Those opening lines are from ‘Boot Process Bios’.'
       ),
+      MCQ(
+        'The lesson continues with: “You\'ve probably used the BIOS firmware to change the boot order of your harddisks, check system time, your machine\'s mac address, etc. The BIOS\'s main goal is…” — which lesson is this?',
+        'Boot Process Bios',
+        ['Boot Process Bios', 'Boot Process Overview', 'Boot Process Bootloader', 'Boot Process Kernel'],
+        'Those lines are from ‘Boot Process Bios’.'
+      ),
     ],
   },
   'linux-boot-the-system-3': {
@@ -753,6 +981,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Boot Process Bootloader', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Kernel'],
         'Those opening lines are from ‘Boot Process Bootloader’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Boot Process Bootloader’ lesson?',
+        'e',
+        ['e', 'echo Hello World', 'pwd', 'cd /home/pete/Pictures'],
+        'The ‘Boot Process Bootloader’ lesson mentions “e” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “1- Booting into an operating system, it can also be used to boot to non-Linux operating systems 2- Select a kernel to use 3- Specify kernel parameters” — which lesson is this?',
+        'Boot Process Bootloader',
+        ['Boot Process Bootloader', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Kernel'],
+        'Those lines are from ‘Boot Process Bootloader’.'
+      ),
     ],
   },
   'linux-boot-the-system-4': {
@@ -778,6 +1018,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Boot Process Kernel',
         ['Boot Process Kernel', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader'],
         'Those opening lines are from ‘Boot Process Kernel’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Initrd vs Initramfs: There is a bit of a chicken and egg problem when we talk about the kernel bootup. The kernel manages our systems hardware, however not all…” — which lesson is this?',
+        'Boot Process Kernel',
+        ['Boot Process Kernel', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader'],
+        'Those lines are from ‘Boot Process Kernel’.'
       ),
     ],
   },
@@ -805,6 +1051,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Boot Process Init', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader'],
         'Those opening lines are from ‘Boot Process Init’.'
       ),
+      MCQ(
+        'The lesson continues with: “There are actually three major implementations of init in Linux:” — which lesson is this?',
+        'Boot Process Init',
+        ['Boot Process Init', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader'],
+        'Those lines are from ‘Boot Process Init’.'
+      ),
     ],
   },
   'linux-kernel-1': {
@@ -829,6 +1081,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Kernel Overview',
         ['Kernel Overview', 'Kernel Privelege Levels', 'System Calls', 'Kernel Installation'],
         'Those opening lines are from ‘Kernel Overview’.'
+      ),
+      MCQ(
+        'The lesson continues with: “1- The most basic level is hardware, this includes our CPU, memory, hard disks, networking ports, etc. The physical layer that actually computes what our machi…” — which lesson is this?',
+        'Kernel Overview',
+        ['Kernel Overview', 'Kernel Privelege Levels', 'System Calls', 'Kernel Installation'],
+        'Those lines are from ‘Kernel Overview’.'
       ),
     ],
   },
@@ -866,6 +1124,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Kernel Privelege Levels', 'Kernel Overview', 'System Calls', 'Kernel Installation'],
         'Those opening lines are from ‘Kernel Privelege Levels’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: user mode',
+        ['user', 'mode'],
+        ['user', 'mode', 'sudo', '-la'],
+        'Type it exactly as shown: user mode.'
+      ),
+      MCQ(
+        'The lesson continues with: “Why do we have different abstraction layers for user space and kernel? Why can\'t you combine both powers into one layer? Well there is a very good reason why t…” — which lesson is this?',
+        'Kernel Privelege Levels',
+        ['Kernel Privelege Levels', 'Kernel Overview', 'System Calls', 'Kernel Installation'],
+        'Those lines are from ‘Kernel Privelege Levels’.'
+      ),
     ],
   },
   'linux-kernel-3': {
@@ -901,6 +1171,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['System Calls', 'Kernel Overview', 'Kernel Privelege Levels', 'Kernel Installation'],
         'Those opening lines are from ‘System Calls’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘System Calls’ lesson?',
+        'strace',
+        ['strace', 'core', 'echo Hello World', 'pwd'],
+        'The ‘System Calls’ lesson mentions “strace” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “System calls are like the VIP passes that get you to a secret side door that leads directly to Britney.” — which lesson is this?',
+        'System Calls',
+        ['System Calls', 'Kernel Overview', 'Kernel Privelege Levels', 'Kernel Installation'],
+        'Those lines are from ‘System Calls’.'
+      ),
     ],
   },
   'linux-kernel-4': {
@@ -934,6 +1216,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Kernel Installation', 'Kernel Overview', 'Kernel Privelege Levels', 'System Calls'],
         'Those opening lines are from ‘Kernel Installation’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sudo apt install linux-generic-lts-vivid',
+        ['sudo', 'apt', 'install', 'linux-generic-lts-vivid'],
+        ['sudo', 'apt', 'install', 'linux-generic-lts-vivid', '-la', '-r'],
+        'Type it exactly as shown: sudo apt install linux-generic-lts-vivid.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Kernel Installation’ lesson?',
+        'sudo apt install 3.19.0-43-generic',
+        ['sudo apt install 3.19.0-43-generic', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Kernel Installation’ lesson mentions “sudo apt install 3.19.0-43-generic” — find it in the theory above.'
+      ),
     ],
   },
   'linux-kernel-5': {
@@ -957,6 +1251,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Kernel Location',
         ['Kernel Location', 'Kernel Overview', 'Kernel Privelege Levels', 'System Calls'],
         'Those opening lines are from ‘Kernel Location’.'
+      ),
+      MCQ(
+        'The lesson continues with: “You will see multiple files for different kernel versions:” — which lesson is this?',
+        'Kernel Location',
+        ['Kernel Location', 'Kernel Overview', 'Kernel Privelege Levels', 'System Calls'],
+        'Those lines are from ‘Kernel Location’.'
       ),
     ],
   },
@@ -995,6 +1295,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Kernel Modules', 'Kernel Overview', 'Kernel Privelege Levels', 'System Calls'],
         'Those opening lines are from ‘Kernel Modules’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sudo modprobe -r bluetooth',
+        ['sudo', 'modprobe', '-r', 'bluetooth'],
+        ['sudo', 'modprobe', '-r', 'bluetooth', '-la', '|'],
+        'Type it exactly as shown: sudo modprobe -r bluetooth.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Kernel Modules’ lesson?',
+        'lsmod',
+        ['lsmod', 'echo Hello World', 'pwd', 'cd /home/pete/Pictures'],
+        'The ‘Kernel Modules’ lesson mentions “lsmod” — find it in the theory above.'
+      ),
     ],
   },
   'linux-init-1': {
@@ -1027,6 +1339,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Sysv Overview', 'Sysv Services', 'Upstart Overview', 'Upstart Jobs'],
         'Those opening lines are from ‘Sysv Overview’.'
       ),
+      MCQ(
+        'The lesson continues with: “In this lesson, we\'re going to go over the most traditional version of init, System V init or Sys V (pronounced as \'System Five\').” — which lesson is this?',
+        'Sysv Overview',
+        ['Sysv Overview', 'Sysv Services', 'Upstart Overview', 'Upstart Jobs'],
+        'Those lines are from ‘Sysv Overview’.'
+      ),
     ],
   },
   'linux-init-2': {
@@ -1058,6 +1376,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Sysv Services',
         ['Sysv Services', 'Sysv Overview', 'Upstart Overview', 'Upstart Jobs'],
         'Those opening lines are from ‘Sysv Services’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: sudo service networking start',
+        ['sudo', 'service', 'networking', 'start'],
+        ['sudo', 'service', 'networking', 'start', '-la', '-r'],
+        'Type it exactly as shown: sudo service networking start.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Sysv Services’ lesson?',
+        'sudo service networking stop',
+        ['sudo service networking stop', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Sysv Services’ lesson mentions “sudo service networking stop” — find it in the theory above.'
       ),
     ],
   },
@@ -1095,6 +1425,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Upstart Overview', 'Sysv Overview', 'Sysv Services', 'Upstart Jobs'],
         'Those opening lines are from ‘Upstart Overview’.'
       ),
+      MCQ(
+        'The lesson continues with: “However on modern Ubuntu installations systemd is now used. Upstart was created to improve upon the issues with Sys V, such as the strict startup processes, bl…” — which lesson is this?',
+        'Upstart Overview',
+        ['Upstart Overview', 'Sysv Overview', 'Sysv Services', 'Upstart Jobs'],
+        'Those lines are from ‘Upstart Overview’.'
+      ),
     ],
   },
   'linux-init-4': {
@@ -1126,6 +1462,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Upstart Jobs', 'Sysv Overview', 'Sysv Services', 'Upstart Overview'],
         'Those opening lines are from ‘Upstart Jobs’.'
       ),
+      MCQ(
+        'The lesson continues with: “Most of the time, you won\'t ever need to look at the Upstart job configuration files, but you will want to control some specific jobs more easily. There are a…” — which lesson is this?',
+        'Upstart Jobs',
+        ['Upstart Jobs', 'Sysv Overview', 'Sysv Services', 'Upstart Overview'],
+        'Those lines are from ‘Upstart Jobs’.'
+      ),
     ],
   },
   'linux-init-5': {
@@ -1154,6 +1496,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'SystemD Overview',
         ['SystemD Overview', 'Sysv Overview', 'Sysv Services', 'Upstart Overview'],
         'Those opening lines are from ‘SystemD Overview’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Systemd uses goals to get your system up and running. Basically you have a target that you want to achieve and this target also has dependencies that we need t…” — which lesson is this?',
+        'SystemD Overview',
+        ['SystemD Overview', 'Sysv Overview', 'Sysv Services', 'Upstart Overview'],
+        'Those lines are from ‘SystemD Overview’.'
       ),
     ],
   },
@@ -1197,6 +1545,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['SystemD Goals', 'Sysv Overview', 'Sysv Services', 'Upstart Overview'],
         'Those opening lines are from ‘SystemD Goals’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: systemctl status networking.service',
+        ['systemctl', 'status', 'networking.service'],
+        ['systemctl', 'status', 'networking.service', 'sudo', '-la'],
+        'Type it exactly as shown: systemctl status networking.service.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘SystemD Goals’ lesson?',
+        'sudo systemctl start networking.service',
+        ['sudo systemctl start networking.service', 'core', 'echo Hello World', 'pwd'],
+        'The ‘SystemD Goals’ lesson mentions “sudo systemctl start networking.service” — find it in the theory above.'
+      ),
     ],
   },
   'linux-init-7': {
@@ -1227,6 +1587,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Power States',
         ['Power States', 'Sysv Overview', 'Sysv Services', 'Upstart Overview'],
         'Those opening lines are from ‘Power States’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: sudo shutdown -h +2',
+        ['sudo', 'shutdown', '-h', '+2'],
+        ['sudo', 'shutdown', '-h', '+2', '-la', '-r'],
+        'Type it exactly as shown: sudo shutdown -h +2.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Power States’ lesson?',
+        'sudo shutdown -r now',
+        ['sudo shutdown -r now', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Power States’ lesson mentions “sudo shutdown -r now” — find it in the theory above.'
       ),
     ],
   },
@@ -1268,6 +1640,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Top', 'Lsof/Fuser', 'Threads', 'Cpu Monitoring'],
         'Those opening lines are from ‘Top’.'
       ),
+      MCQ(
+        'The lesson continues with: “top: We\'ve discussed top before, but we\'re going to dig into the specifics of what it\'s actually displaying. Remember top is the tool we used to get a real tim…” — which lesson is this?',
+        'Top',
+        ['Top', 'Lsof/Fuser', 'Threads', 'Cpu Monitoring'],
+        'Those lines are from ‘Top’.'
+      ),
     ],
   },
   'linux-process-utilization-2': {
@@ -1301,6 +1679,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Lsof/Fuser', 'Top', 'Threads', 'Cpu Monitoring'],
         'Those opening lines are from ‘Lsof/Fuser’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: file user',
+        ['file', 'user'],
+        ['file', 'user', 'sudo', '-la'],
+        'Type it exactly as shown: file user.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Lsof/Fuser’ lesson?',
+        'fuser -v',
+        ['fuser -v', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Lsof/Fuser’ lesson mentions “fuser -v” — find it in the theory above.'
+      ),
     ],
   },
   'linux-process-utilization-3': {
@@ -1332,6 +1722,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Threads',
         ['Threads', 'Top', 'Lsof/Fuser', 'Cpu Monitoring'],
         'Those opening lines are from ‘Threads’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: ps m',
+        ['ps', 'm'],
+        ['ps', 'm', 'sudo', '-la'],
+        'Type it exactly as shown: ps m.'
+      ),
+      MCQ(
+        'The lesson continues with: “Processes operate with their own isolated system resources, however threads can share these resources among each other easily, making it easier for them to com…” — which lesson is this?',
+        'Threads',
+        ['Threads', 'Top', 'Lsof/Fuser', 'Cpu Monitoring'],
+        'Those lines are from ‘Threads’.'
       ),
     ],
   },
@@ -1367,6 +1769,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Cpu Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
         'Those opening lines are from ‘Cpu Monitoring’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Cpu Monitoring’ lesson?',
+        'uptime',
+        ['uptime', 'echo Hello World', 'pwd', 'cd /home/pete/Pictures'],
+        'The ‘Cpu Monitoring’ lesson mentions “uptime” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"uptime" 17:23:35 up 1 day, 5:59, 2 users, load average: 0.00, 0.02, 0.05” — which lesson is this?',
+        'Cpu Monitoring',
+        ['Cpu Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
+        'Those lines are from ‘Cpu Monitoring’.'
+      ),
     ],
   },
   'linux-process-utilization-5': {
@@ -1396,6 +1810,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['IO Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
         'Those opening lines are from ‘IO Monitoring’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘IO Monitoring’ lesson?',
+        'iostat',
+        ['iostat', 'core', 'echo Hello World', 'pwd'],
+        'The ‘IO Monitoring’ lesson mentions “iostat” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"iostat" Linux 3.13.0-39-lowlatency (icebox) 01/28/2016 _i686_ (1 CPU)” — which lesson is this?',
+        'IO Monitoring',
+        ['IO Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
+        'Those lines are from ‘IO Monitoring’.'
+      ),
     ],
   },
   'linux-process-utilization-6': {
@@ -1423,6 +1849,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Memory Monitoring',
         ['Memory Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
         'Those opening lines are from ‘Memory Monitoring’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Memory Monitoring’ lesson?',
+        'vmstat',
+        ['vmstat', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Memory Monitoring’ lesson mentions “vmstat” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"vmstat" procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu----- r b swpd free buff cache si so bi bo in cs us sy id wa st 1 0 0 39652…” — which lesson is this?',
+        'Memory Monitoring',
+        ['Memory Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
+        'Those lines are from ‘Memory Monitoring’.'
       ),
     ],
   },
@@ -1458,6 +1896,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Continous Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
         'Those opening lines are from ‘Continous Monitoring’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sudo sar -q',
+        ['sudo', 'sar', '-q'],
+        ['sudo', 'sar', '-q', '-la', '-r'],
+        'Type it exactly as shown: sudo sar -q.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Continous Monitoring’ lesson?',
+        'sudo sar -r',
+        ['sudo sar -r', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Continous Monitoring’ lesson mentions “sudo sar -r” — find it in the theory above.'
+      ),
     ],
   },
   'linux-process-utilization-8': {
@@ -1489,6 +1939,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Cron Jobs',
         ['Cron Jobs', 'Top', 'Lsof/Fuser', 'Threads'],
         'Those opening lines are from ‘Cron Jobs’.'
+      ),
+      MCQ(
+        'The lesson continues with: “For example, let\'s say I have a script located in /home/pete/scripts/change_wallpaper. I use this script every morning to change the picture I use for my wallp…” — which lesson is this?',
+        'Cron Jobs',
+        ['Cron Jobs', 'Top', 'Lsof/Fuser', 'Threads'],
+        'Those lines are from ‘Cron Jobs’.'
       ),
     ],
   },
@@ -1523,6 +1979,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['System Logging', 'Syslog', 'General Logging', 'Kernel Logging'],
         'Those opening lines are from ‘System Logging’.'
       ),
+      MCQ(
+        'The lesson continues with: “This allows us to have a human readable journal of the events that are happening on our system. This data is usually kept in the /var directory, the /var direc…” — which lesson is this?',
+        'System Logging',
+        ['System Logging', 'Syslog', 'General Logging', 'Kernel Logging'],
+        'Those lines are from ‘System Logging’.'
+      ),
     ],
   },
   'linux-logging-2': {
@@ -1555,6 +2017,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Syslog', 'System Logging', 'General Logging', 'Kernel Logging'],
         'Those opening lines are from ‘Syslog’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: logger -s Hello',
+        ['logger', '-s', 'Hello'],
+        ['logger', '-s', 'Hello', 'sudo', '-la'],
+        'Type it exactly as shown: logger -s Hello.'
+      ),
+      MCQ(
+        'The lesson continues with: “To find out what files are maintained by our system logger, look at the configuration files in /etc/rsyslog.d: "less /etc/rsyslog.d/50-default.conf" # First so…” — which lesson is this?',
+        'Syslog',
+        ['Syslog', 'System Logging', 'General Logging', 'Kernel Logging'],
+        'Those lines are from ‘Syslog’.'
+      ),
     ],
   },
   'linux-logging-3': {
@@ -1581,6 +2055,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['General Logging', 'System Logging', 'Syslog', 'Kernel Logging'],
         'Those opening lines are from ‘General Logging’.'
       ),
+      MCQ(
+        'The lesson continues with: “There are two general log files you can view to get a glimpse of what your system is doing: "/var/log/messages"” — which lesson is this?',
+        'General Logging',
+        ['General Logging', 'System Logging', 'Syslog', 'Kernel Logging'],
+        'Those lines are from ‘General Logging’.'
+      ),
     ],
   },
   'linux-logging-4': {
@@ -1603,6 +2083,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Kernel Logging',
         ['Kernel Logging', 'System Logging', 'Syslog', 'General Logging'],
         'Those opening lines are from ‘Kernel Logging’.'
+      ),
+      MCQ(
+        'The lesson continues with: “This log file can be found at /var/log/dmesg and gets reset on every boot, you may not actually see any use in it now, but if you were to ever have issues with…” — which lesson is this?',
+        'Kernel Logging',
+        ['Kernel Logging', 'System Logging', 'Syslog', 'General Logging'],
+        'Those lines are from ‘Kernel Logging’.'
       ),
     ],
   },
@@ -1627,6 +2113,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Authentication Logging', 'System Logging', 'Syslog', 'General Logging'],
         'Those opening lines are from ‘Authentication Logging’.'
       ),
+      MCQ(
+        'The lesson continues with: “"/var/log/auth.log" This contains system authorization logs, such as user login and the authentication method used.” — which lesson is this?',
+        'Authentication Logging',
+        ['Authentication Logging', 'System Logging', 'Syslog', 'General Logging'],
+        'Those lines are from ‘Authentication Logging’.'
+      ),
     ],
   },
   'linux-logging-6': {
@@ -1649,6 +2141,12 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Managing Log Files',
         ['Managing Log Files', 'System Logging', 'Syslog', 'General Logging'],
         'Those opening lines are from ‘Managing Log Files’.'
+      ),
+      MCQ(
+        'The lesson continues with: “The logrotate utility does log management for us. It has a configuration file that allows us to specify how many and what logs to keep, how to compress our log…” — which lesson is this?',
+        'Managing Log Files',
+        ['Managing Log Files', 'System Logging', 'Syslog', 'General Logging'],
+        'Those lines are from ‘Managing Log Files’.'
       ),
     ],
   },

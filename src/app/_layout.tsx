@@ -27,6 +27,7 @@ export default function RootLayout() {
       <Stack.Screen name="curriculum/[unitId]" />
       <Stack.Screen name="project/[lessonId]" />
       <Stack.Screen name="certifications" />
+      <Stack.Screen name="design" />
       <Stack.Screen name="roleplay" />
     </Stack>
   );

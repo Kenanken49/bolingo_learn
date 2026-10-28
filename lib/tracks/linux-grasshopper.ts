@@ -34,6 +34,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Linux History', 'Choosing A Distro', 'Debian', 'Red Hat EnterPrise'],
         'Those opening lines are from ‘Linux History’.'
       ),
+      MCQ(
+        'The lesson continues with: “To learn about how Linux came to be, let’s go back to the beginning to 1969 where Ken Thompson and Dennis Ritchie of Bell Laboratories developed the UNIX opera…” — which lesson is this?',
+        'Linux History',
+        ['Linux History', 'Choosing A Distro', 'Debian', 'Red Hat EnterPrise'],
+        'Those lines are from ‘Linux History’.'
+      ),
     ],
   },
   'linux-getting-started-2': {
@@ -58,6 +64,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Choosing A Distro',
         ['Choosing A Distro', 'Linux History', 'Debian', 'Red Hat EnterPrise'],
         'Those opening lines are from ‘Choosing A Distro’.'
+      ),
+      MCQ(
+        'The lesson continues with: “A Linux system is divided into three main parts:” — which lesson is this?',
+        'Choosing A Distro',
+        ['Choosing A Distro', 'Linux History', 'Debian', 'Red Hat EnterPrise'],
+        'Those lines are from ‘Choosing A Distro’.'
       ),
     ],
   },
@@ -84,6 +96,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Debian', 'Linux History', 'Choosing A Distro', 'Red Hat EnterPrise'],
         'Those opening lines are from ‘Debian’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Debian’ lesson?',
+        'core',
+        ['core', 'echo Hello World', 'pwd', 'cd /home/pete/Pictures'],
+        'The ‘Debian’ lesson mentions “core” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “Stable is an overall good branch to be on. Testing and Unstable are rolling releases. This means that any incremental changes in those branches will eventually…” — which lesson is this?',
+        'Debian',
+        ['Debian', 'Linux History', 'Choosing A Distro', 'Red Hat EnterPrise'],
+        'Those lines are from ‘Debian’.'
+      ),
     ],
   },
   'linux-getting-started-4': {
@@ -107,6 +131,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Red Hat EnterPrise',
         ['Red Hat EnterPrise', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those opening lines are from ‘Red Hat EnterPrise’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Package Management: RHEL uses a different package manager than Debian, RPM package manager, which we will eventually learn about as well.” — which lesson is this?',
+        'Red Hat EnterPrise',
+        ['Red Hat EnterPrise', 'Linux History', 'Choosing A Distro', 'Debian'],
+        'Those lines are from ‘Red Hat EnterPrise’.'
       ),
     ],
   },
@@ -132,6 +162,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Ubuntu', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those opening lines are from ‘Ubuntu’.'
       ),
+      MCQ(
+        'The lesson continues with: “Package Management: Ubuntu is a Debian-based operating system developed by Canonical. So it uses a core Debian package management system.” — which lesson is this?',
+        'Ubuntu',
+        ['Ubuntu', 'Linux History', 'Choosing A Distro', 'Debian'],
+        'Those lines are from ‘Ubuntu’.'
+      ),
     ],
   },
   'linux-getting-started-6': {
@@ -155,6 +191,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Fedora',
         ['Fedora', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those opening lines are from ‘Fedora’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Package Management: Uses Red Hat package manager.” — which lesson is this?',
+        'Fedora',
+        ['Fedora', 'Linux History', 'Choosing A Distro', 'Debian'],
+        'Those lines are from ‘Fedora’.'
       ),
     ],
   },
@@ -180,6 +222,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Linux Mint', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those opening lines are from ‘Linux Mint’.'
       ),
+      MCQ(
+        'The lesson continues with: “Package Management: Since Linux Mint is Ubuntu based, it uses the Debian package manager.” — which lesson is this?',
+        'Linux Mint',
+        ['Linux Mint', 'Linux History', 'Choosing A Distro', 'Debian'],
+        'Those lines are from ‘Linux Mint’.'
+      ),
     ],
   },
   'linux-getting-started-8': {
@@ -203,6 +251,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Gentoo',
         ['Gentoo', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those opening lines are from ‘Gentoo’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Package Management: Gentoo uses its own package management, Portage. The Portage package management is very modular and easy to maintain, which plays a big par…” — which lesson is this?',
+        'Gentoo',
+        ['Gentoo', 'Linux History', 'Choosing A Distro', 'Debian'],
+        'Those lines are from ‘Gentoo’.'
       ),
     ],
   },
@@ -228,6 +282,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Arch Linux', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those opening lines are from ‘Arch Linux’.'
       ),
+      MCQ(
+        'The lesson continues with: “Package Management: It uses its own package manager, Pacman, to install, update and manage packages.” — which lesson is this?',
+        'Arch Linux',
+        ['Arch Linux', 'Linux History', 'Choosing A Distro', 'Debian'],
+        'Those lines are from ‘Arch Linux’.'
+      ),
     ],
   },
   'linux-getting-started-10': {
@@ -251,6 +311,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'OpenSuse',
         ['OpenSuse', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those opening lines are from ‘OpenSuse’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Package Management: Uses RPM package manager.” — which lesson is this?',
+        'OpenSuse',
+        ['OpenSuse', 'Linux History', 'Choosing A Distro', 'Debian'],
+        'Those lines are from ‘OpenSuse’.'
       ),
     ],
   },
@@ -284,6 +350,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['The Shell', 'Pwd Command', 'Cd Command', 'Ls Command'],
         'Those opening lines are from ‘The Shell’.'
       ),
+      MCQ(
+        'The lesson continues with: “In this course we will use the shell program bash (Bourne Again shell). Almost all Linux distributions will default to the bash shell. There are other shells a…” — which lesson is this?',
+        'The Shell',
+        ['The Shell', 'Pwd Command', 'Cd Command', 'Ls Command'],
+        'Those lines are from ‘The Shell’.'
+      ),
     ],
   },
   'linux-command-line-2': {
@@ -315,6 +387,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'pwd',
         ['pwd', 'cd', 'ls', 'touch'],
         'The quoted sentence describes pwd.'
+      ),
+      MCQ(
+        'The lesson continues with: “|-- bin | |-- file1 | |-- file2 |-- etc | |-- file3 | `-- directory1 | |-- file4 | `-- file5 |-- home |-- var” — which lesson is this?',
+        'Pwd Command',
+        ['Pwd Command', 'The Shell', 'Cd Command', 'Ls Command'],
+        'Those lines are from ‘Pwd Command’.'
       ),
     ],
   },
@@ -354,6 +432,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['cd', 'pwd', 'ls', 'touch'],
         'The quoted sentence describes cd.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: cd Hawaii',
+        ['cd', 'Hawaii'],
+        ['cd', 'Hawaii', 'sudo', '-la'],
+        'Type it exactly as shown: cd Hawaii.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Cd Command’ lesson?',
+        'cd .',
+        ['cd .', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Cd Command’ lesson mentions “cd .” — find it in the theory above.'
+      ),
     ],
   },
   'linux-command-line-4': {
@@ -389,6 +479,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['ls', 'pwd', 'cd', 'touch'],
         'The quoted sentence describes ls.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: ls -a',
+        ['ls', '-a'],
+        ['ls', '-a', 'sudo', '-la'],
+        'Type it exactly as shown: ls -a.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Ls Command’ lesson?',
+        'ls -l',
+        ['ls -l', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Ls Command’ lesson mentions “ls -l” — find it in the theory above.'
+      ),
     ],
   },
   'linux-command-line-5': {
@@ -420,6 +522,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['touch', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes touch.'
       ),
+      MCQ(
+        'The lesson continues with: “"touch mysuperduperfile"” — which lesson is this?',
+        'Touch Command',
+        ['Touch Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Touch Command’.'
+      ),
+      BUILD(
+        'Type the command taught in ‘Touch Command’',
+        ['touch'],
+        ['touch', 'pwd', 'cd', 'ls'],
+        'Just touch — the whole command is its name.'
+      ),
     ],
   },
   'linux-command-line-6': {
@@ -450,6 +564,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['file', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes file.'
       ),
+      MCQ(
+        'The lesson continues with: “In Linux, filenames aren’t required to represent the contents of the file. You can create a file called funny.gif that isn’t actually a GIF.” — which lesson is this?',
+        'File Command',
+        ['File Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘File Command’.'
+      ),
+      BUILD(
+        'Type the command taught in ‘File Command’',
+        ['file'],
+        ['file', 'pwd', 'cd', 'ls'],
+        'Just file — the whole command is its name.'
+      ),
     ],
   },
   'linux-command-line-7': {
@@ -478,6 +604,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'cat',
         ['cat', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes cat.'
+      ),
+      MCQ(
+        'The lesson continues with: “"cat dogfile birdfile"” — which lesson is this?',
+        'Cat Command',
+        ['Cat Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Cat Command’.'
+      ),
+      BUILD(
+        'Type the command taught in ‘Cat Command’',
+        ['cat'],
+        ['cat', 'pwd', 'cd', 'ls'],
+        'Just cat — the whole command is its name.'
       ),
     ],
   },
@@ -509,6 +647,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'less',
         ['less', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes less.'
+      ),
+      MCQ(
+        'The lesson continues with: “Go ahead and look at the contents of a file with less. Once you’re in the less command, you can actually use other keyboard commands to navigate in the file.” — which lesson is this?',
+        'Less Command',
+        ['Less Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Less Command’.'
+      ),
+      BUILD(
+        'Type the command taught in ‘Less Command’',
+        ['less'],
+        ['less', 'pwd', 'cd', 'ls'],
+        'Just less — the whole command is its name.'
       ),
     ],
   },
@@ -543,6 +693,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'history',
         ['history', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes history.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘History Command’ lesson?',
+        'clear',
+        ['clear', 'core', 'echo Hello World', 'pwd'],
+        'The ‘History Command’ lesson mentions “clear” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"history"” — which lesson is this?',
+        'History Command',
+        ['History Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘History Command’.'
       ),
     ],
   },
@@ -581,6 +743,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'cp',
         ['cp', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes cp.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: cp *.jpg /home/pete/Pictures',
+        ['cp', '*.jpg', '/home/pete/Pictures'],
+        ['cp', '*.jpg', '/home/pete/Pictures', 'sudo', '-la'],
+        'Type it exactly as shown: cp *.jpg /home/pete/Pictures.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Cp Command’ lesson?',
+        'cp -r Pumpkin/ /home/pete/Documents',
+        ['cp -r Pumpkin/ /home/pete/Documents', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Cp Command’ lesson mentions “cp -r Pumpkin/ /home/pete/Documents” — find it in the theory above.'
       ),
     ],
   },
@@ -621,6 +795,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['mv', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes mv.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: mv file2 /home/pete/Documents',
+        ['mv', 'file2', '/home/pete/Documents'],
+        ['mv', 'file2', '/home/pete/Documents', 'sudo', '-la'],
+        'Type it exactly as shown: mv file2 /home/pete/Documents.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Mv Command’ lesson?',
+        'mv file_1 file_2 /somedirectory',
+        ['mv file_1 file_2 /somedirectory', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Mv Command’ lesson mentions “mv file_1 file_2 /somedirectory” — find it in the theory above.'
+      ),
     ],
   },
   'linux-command-line-12': {
@@ -650,6 +836,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'mkdir',
         ['mkdir', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes mkdir.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: mkdir -p books/hemmingway/favorites',
+        ['mkdir', '-p', 'books/hemmingway/favorites'],
+        ['mkdir', '-p', 'books/hemmingway/favorites', 'sudo', '-la'],
+        'Type it exactly as shown: mkdir -p books/hemmingway/favorites.'
+      ),
+      MCQ(
+        'The lesson continues with: “"mkdir books paintings"” — which lesson is this?',
+        'Mkdir Command',
+        ['Mkdir Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Mkdir Command’.'
       ),
     ],
   },
@@ -686,6 +884,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['rm', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes rm.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: rm -f file1',
+        ['rm', '-f', 'file1'],
+        ['rm', '-f', 'file1', 'sudo', '-la'],
+        'Type it exactly as shown: rm -f file1.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Rm Command’ lesson?',
+        'rm -i file',
+        ['rm -i file', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Rm Command’ lesson mentions “rm -i file” — find it in the theory above.'
+      ),
     ],
   },
   'linux-command-line-14': {
@@ -719,6 +929,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['find', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes find.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Find Command’ lesson?',
+        'find /home -type d -name MyFolder',
+        ['find /home -type d -name MyFolder', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Find Command’ lesson mentions “find /home -type d -name MyFolder” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"find /home -name puppies.jpg"” — which lesson is this?',
+        'Find Command',
+        ['Find Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Find Command’.'
+      ),
     ],
   },
   'linux-command-line-15': {
@@ -750,6 +972,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['help', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes help.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: echo --help',
+        ['echo', '--help'],
+        ['echo', '--help', 'sudo', '-la'],
+        'Type it exactly as shown: echo --help.'
+      ),
+      MCQ(
+        'The lesson continues with: “"help echo"” — which lesson is this?',
+        'Help Command',
+        ['Help Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Help Command’.'
+      ),
     ],
   },
   'linux-command-line-16': {
@@ -780,6 +1014,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['man', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes man.'
       ),
+      MCQ(
+        'The lesson continues with: “"man ls"” — which lesson is this?',
+        'Man Command',
+        ['Man Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Man Command’.'
+      ),
+      BUILD(
+        'Type the command taught in ‘Man Command’',
+        ['man'],
+        ['man', 'pwd', 'cd', 'ls'],
+        'Just man — the whole command is its name.'
+      ),
     ],
   },
   'linux-command-line-17': {
@@ -808,6 +1054,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'whatis',
         ['whatis', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes whatis.'
+      ),
+      MCQ(
+        'The lesson continues with: “"whatis cat"” — which lesson is this?',
+        'Whatis Command',
+        ['Whatis Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Whatis Command’.'
+      ),
+      BUILD(
+        'Type the command taught in ‘Whatis Command’',
+        ['whatis'],
+        ['whatis', 'pwd', 'cd', 'ls'],
+        'Just whatis — the whole command is its name.'
       ),
     ],
   },
@@ -842,6 +1100,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['alias', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes alias.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: unalias foobar',
+        ['unalias', 'foobar'],
+        ['unalias', 'foobar', 'sudo', '-la'],
+        'Type it exactly as shown: unalias foobar.'
+      ),
+      MCQ(
+        'The lesson continues with: “"alias foobar=\'ls -la\'"” — which lesson is this?',
+        'Alias Command',
+        ['Alias Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Alias Command’.'
+      ),
     ],
   },
   'linux-command-line-19': {
@@ -873,6 +1143,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'exit',
         ['exit', 'pwd', 'cd', 'ls'],
         'The quoted sentence describes exit.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Exit Command’ lesson?',
+        'logout',
+        ['logout', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Exit Command’ lesson mentions “logout” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “For now, you can pat yourself on the back and take a break. To exit from the shell, you can use the exit command” — which lesson is this?',
+        'Exit Command',
+        ['Exit Command', 'The Shell', 'Pwd Command', 'Cd Command'],
+        'Those lines are from ‘Exit Command’.'
       ),
     ],
   },
@@ -913,6 +1195,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Stdout', 'Stdin', 'Stderr', 'Pipe/Tee'],
         'Those opening lines are from ‘Stdout’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: echo Hello World',
+        ['echo', 'Hello', 'World'],
+        ['echo', 'Hello', 'World', 'sudo', '-la'],
+        'Type it exactly as shown: echo Hello World.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Stdout’ lesson?',
+        'echo Hello World >> peanuts.txt',
+        ['echo Hello World >> peanuts.txt', 'core', 'pwd', 'cd /home/pete/Pictures'],
+        'The ‘Stdout’ lesson mentions “echo Hello World >> peanuts.txt” — find it in the theory above.'
+      ),
     ],
   },
   'linux-text-fu-2': {
@@ -943,6 +1237,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Stdin',
         ['Stdin', 'Stdout', 'Stderr', 'Pipe/Tee'],
         'Those opening lines are from ‘Stdin’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Let\'s use the peanuts.txt file in the previous lesson for this example, remember it had the text Hello World in it.” — which lesson is this?',
+        'Stdin',
+        ['Stdin', 'Stdout', 'Stderr', 'Pipe/Tee'],
+        'Those lines are from ‘Stdin’.'
       ),
     ],
   },
@@ -984,6 +1284,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Stderr', 'Stdout', 'Stdin', 'Pipe/Tee'],
         'Those opening lines are from ‘Stderr’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: ls /fake/directory 2> peanuts.txt',
+        ['ls', '/fake/directory', '2>', 'peanuts.txt'],
+        ['ls', '/fake/directory', '2>', 'peanuts.txt', 'sudo', '-la'],
+        'Type it exactly as shown: ls /fake/directory 2> peanuts.txt.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Stderr’ lesson?',
+        'ls /fake/directory > peanuts.txt 2>&1',
+        ['ls /fake/directory > peanuts.txt 2>&1', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Stderr’ lesson mentions “ls /fake/directory > peanuts.txt 2>&1” — find it in the theory above.'
+      ),
     ],
   },
   'linux-text-fu-4': {
@@ -1017,6 +1329,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Pipe/Tee',
         ['Pipe/Tee', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Pipe/Tee’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: ls -la /etc | less',
+        ['ls', '-la', '/etc', '|', 'less'],
+        ['ls', '-la', '/etc', '|', 'less', 'sudo', '-r'],
+        'Type it exactly as shown: ls -la /etc | less.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Pipe/Tee’ lesson?',
+        'ls | tee peanuts.txt',
+        ['ls | tee peanuts.txt', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Pipe/Tee’ lesson mentions “ls | tee peanuts.txt” — find it in the theory above.'
       ),
     ],
   },
@@ -1059,6 +1383,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Env', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Env’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: echo $USER',
+        ['echo', '$USER'],
+        ['echo', '$USER', 'sudo', '-la'],
+        'Type it exactly as shown: echo $USER.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Env’ lesson?',
+        'env',
+        ['env', 'core', 'echo Hello World', 'cd /home/pete/Pictures'],
+        'The ‘Env’ lesson mentions “env” — find it in the theory above.'
+      ),
     ],
   },
   'linux-text-fu-6': {
@@ -1096,6 +1432,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Cut', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Cut’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: cut -f 2 sample.txt',
+        ['cut', '-f', '2', 'sample.txt'],
+        ['cut', '-f', '2', 'sample.txt', 'sudo', '-la'],
+        'Type it exactly as shown: cut -f 2 sample.txt.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Cut’ lesson?',
+        'cut -f 1 -d',
+        ['cut -f 1 -d', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Cut’ lesson mentions “cut -f 1 -d” — find it in the theory above.'
+      ),
     ],
   },
   'linux-text-fu-7': {
@@ -1130,6 +1478,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Paste', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Paste’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Paste’ lesson?',
+        'paste -d \' \' -s sample2.txt',
+        ['paste -d \' \' -s sample2.txt', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Paste’ lesson mentions “paste -d \' \' -s sample2.txt” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “sample2.txt The quick brown fox” — which lesson is this?',
+        'Paste',
+        ['Paste', 'Stdout', 'Stdin', 'Stderr'],
+        'Those lines are from ‘Paste’.'
+      ),
     ],
   },
   'linux-text-fu-8': {
@@ -1160,6 +1520,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Head',
         ['Head', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Head’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: head -n 15 /var/log/syslog',
+        ['head', '-n', '15', '/var/log/syslog'],
+        ['head', '-n', '15', '/var/log/syslog', 'sudo', '-la'],
+        'Type it exactly as shown: head -n 15 /var/log/syslog.'
+      ),
+      MCQ(
+        'The lesson continues with: “"head /var/log/syslog"” — which lesson is this?',
+        'Head',
+        ['Head', 'Stdout', 'Stdin', 'Stderr'],
+        'Those lines are from ‘Head’.'
       ),
     ],
   },
@@ -1194,6 +1566,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Tail', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Tail’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: tail -n 10 /var/log/syslog',
+        ['tail', '-n', '10', '/var/log/syslog'],
+        ['tail', '-n', '10', '/var/log/syslog', 'sudo', '-la'],
+        'Type it exactly as shown: tail -n 10 /var/log/syslog.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Tail’ lesson?',
+        'tail -f /var/log/syslog',
+        ['tail -f /var/log/syslog', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Tail’ lesson mentions “tail -f /var/log/syslog” — find it in the theory above.'
+      ),
     ],
   },
   'linux-text-fu-10': {
@@ -1225,6 +1609,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Expand/Unexpand',
         ['Expand/Unexpand', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Expand/Unexpand’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: expand sample.txt > result.txt',
+        ['expand', 'sample.txt', '>', 'result.txt'],
+        ['expand', 'sample.txt', '>', 'result.txt', 'sudo', '-la'],
+        'Type it exactly as shown: expand sample.txt > result.txt.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Expand/Unexpand’ lesson?',
+        'unexpand -a result.txt',
+        ['unexpand -a result.txt', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Expand/Unexpand’ lesson mentions “unexpand -a result.txt” — find it in the theory above.'
       ),
     ],
   },
@@ -1264,6 +1660,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Join/Split', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Join/Split’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: split somefile',
+        ['split', 'somefile'],
+        ['split', 'somefile', 'sudo', '-la'],
+        'Type it exactly as shown: split somefile.'
+      ),
+      MCQ(
+        'The lesson continues with: “Let\'s say I had two files that I wanted to join together: file1.txt = 1 Jhon 2 Jane 3 Mary file2.txt = 1 Doe 2 Doe 3 Sue” — which lesson is this?',
+        'Join/Split',
+        ['Join/Split', 'Stdout', 'Stdin', 'Stderr'],
+        'Those lines are from ‘Join/Split’.'
+      ),
     ],
   },
   'linux-text-fu-12': {
@@ -1297,6 +1705,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Sort', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Sort’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sort -r file1.txt',
+        ['sort', '-r', 'file1.txt'],
+        ['sort', '-r', 'file1.txt', 'sudo', '-la'],
+        'Type it exactly as shown: sort -r file1.txt.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Sort’ lesson?',
+        'sort -n file1.txt',
+        ['sort -n file1.txt', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Sort’ lesson mentions “sort -n file1.txt” — find it in the theory above.'
+      ),
     ],
   },
   'linux-text-fu-13': {
@@ -1325,6 +1745,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Tr',
         ['Tr', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Tr’.'
+      ),
+      MCQ(
+        'The lesson continues with: “"tr a-z A-Z" hello HELLO” — which lesson is this?',
+        'Tr',
+        ['Tr', 'Stdout', 'Stdin', 'Stderr'],
+        'Those lines are from ‘Tr’.'
       ),
     ],
   },
@@ -1367,6 +1793,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Uniq', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Uniq’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: uniq -c reading.txt',
+        ['uniq', '-c', 'reading.txt'],
+        ['uniq', '-c', 'reading.txt', 'sudo', '-la'],
+        'Type it exactly as shown: uniq -c reading.txt.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Uniq’ lesson?',
+        'uniq -u reading.txt',
+        ['uniq -u reading.txt', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Uniq’ lesson mentions “uniq -u reading.txt” — find it in the theory above.'
+      ),
     ],
   },
   'linux-text-fu-15': {
@@ -1401,6 +1839,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Wc', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Wc’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: wc -l /etc/passwd',
+        ['wc', '-l', '/etc/passwd'],
+        ['wc', '-l', '/etc/passwd', 'sudo', '-la'],
+        'Type it exactly as shown: wc -l /etc/passwd.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Wc’ lesson?',
+        'nl file1.txt',
+        ['nl file1.txt', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Wc’ lesson mentions “nl file1.txt” — find it in the theory above.'
+      ),
     ],
   },
   'linux-text-fu-16': {
@@ -1434,6 +1884,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Grep',
         ['Grep', 'Stdout', 'Stdin', 'Stderr'],
         'Those opening lines are from ‘Grep’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: grep -i somepattern somefile',
+        ['grep', '-i', 'somepattern', 'somefile'],
+        ['grep', '-i', 'somepattern', 'somefile', 'sudo', '-la'],
+        'Type it exactly as shown: grep -i somepattern somefile.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Grep’ lesson?',
+        'env | grep -i User',
+        ['env | grep -i User', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Grep’ lesson mentions “env | grep -i User” — find it in the theory above.'
       ),
     ],
   },
@@ -1478,6 +1940,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Regex', 'Vim Or Emacs', 'Vim', 'Vim Search'],
         'Those opening lines are from ‘Regex’.'
       ),
+      MCQ(
+        'The lesson continues with: “We\'ll go through a couple of the most common regular expressions, these are almost universal with any programming language.” — which lesson is this?',
+        'Regex',
+        ['Regex', 'Vim Or Emacs', 'Vim', 'Vim Search'],
+        'Those lines are from ‘Regex’.'
+      ),
     ],
   },
   'linux-advanced-text-fu-2': {
@@ -1499,6 +1967,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Vim Or Emacs',
         ['Vim Or Emacs', 'Regex', 'Vim', 'Vim Search'],
         'Those opening lines are from ‘Vim Or Emacs’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Vim and emacs are popular text editors that are installed by default on most Linux distributions and they both have their pros and cons. If you want to get aro…” — which lesson is this?',
+        'Vim Or Emacs',
+        ['Vim Or Emacs', 'Regex', 'Vim', 'Vim Search'],
+        'Those lines are from ‘Vim Or Emacs’.'
       ),
     ],
   },
@@ -1522,6 +1996,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Vim',
         ['Vim', 'Regex', 'Vim Or Emacs', 'Vim Search'],
         'Those opening lines are from ‘Vim’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Vim’ lesson?',
+        'vim',
+        ['vim', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Vim’ lesson mentions “vim” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “It\'s super lightweight, opening and editing a file with vim is quick and easy. It\'s also almost always available, if you booted up a random Linux distribution,…” — which lesson is this?',
+        'Vim',
+        ['Vim', 'Regex', 'Vim Or Emacs', 'Vim Search'],
+        'Those lines are from ‘Vim’.'
       ),
     ],
   },
@@ -1550,6 +2036,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Vim Search', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Vim Search’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Vim Search’ lesson?',
+        'n',
+        ['n', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Vim Search’ lesson mentions “n” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “My pretty file is very pretty.” — which lesson is this?',
+        'Vim Search',
+        ['Vim Search', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Vim Search’.'
+      ),
     ],
   },
   'linux-advanced-text-fu-5': {
@@ -1571,6 +2069,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Vim Navigation',
         ['Vim Navigation', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Vim Navigation’.'
+      ),
+      MCQ(
+        'The lesson continues with: “h or the left arrow - will move you left one character j or the up arrow - will move you up one line k or the down arrow - will move you down one line l or the…” — which lesson is this?',
+        'Vim Navigation',
+        ['Vim Navigation', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Vim Navigation’.'
       ),
     ],
   },
@@ -1595,6 +2099,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Vim Editing',
         ['Vim Editing', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Vim Editing’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Vim Editing’ lesson?',
+        'i',
+        ['i', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Vim Editing’ lesson mentions “i” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “The difference between "i" and "a" is that with "i", your cursor is behind the current position, and with "a" your cursor is ahead the current position.” — which lesson is this?',
+        'Vim Editing',
+        ['Vim Editing', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Vim Editing’.'
       ),
     ],
   },
@@ -1621,6 +2137,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Vim Save/Exit', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Vim Save/Exit’.'
       ),
+      MCQ(
+        'The lesson continues with: “:w - writes or saves the file :q - quit out of vim :wq - write and then quit :q! - quit out of vim without saving the file ZZ - equivalent of :wq, but one char…” — which lesson is this?',
+        'Vim Save/Exit',
+        ['Vim Save/Exit', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Vim Save/Exit’.'
+      ),
     ],
   },
   'linux-advanced-text-fu-9': {
@@ -1646,6 +2168,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Emacs', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Emacs’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Emacs’ lesson?',
+        'emacs',
+        ['emacs', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Emacs’ lesson mentions “emacs” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “To start emacs just use:” — which lesson is this?',
+        'Emacs',
+        ['Emacs', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Emacs’.'
+      ),
     ],
   },
   'linux-advanced-text-fu-10': {
@@ -1670,6 +2204,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Emacs Files',
         ['Emacs Files', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Emacs Files’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Saving files: C-x C-s - Save a file C-x C-w - Save file as C-x s - Save all” — which lesson is this?',
+        'Emacs Files',
+        ['Emacs Files', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Emacs Files’.'
       ),
     ],
   },
@@ -1698,6 +2238,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Emacs Buffer', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Emacs Buffer’.'
       ),
+      MCQ(
+        'The lesson continues with: “Switch buffers: C-x b - switch buffer C-x right arrow - right-cycle through buffer C-x left arrow - left-cycle through buffer” — which lesson is this?',
+        'Emacs Buffer',
+        ['Emacs Buffer', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Emacs Buffer’.'
+      ),
     ],
   },
   'linux-advanced-text-fu-12': {
@@ -1721,6 +2267,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Emacs Editing',
         ['Emacs Editing', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Emacs Editing’.'
+      ),
+      MCQ(
+        'The lesson continues with: “With text navigation, your regular text buttons work as they should, home, end, page up, page down and the arrow keys, etc.” — which lesson is this?',
+        'Emacs Editing',
+        ['Emacs Editing', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Emacs Editing’.'
       ),
     ],
   },
@@ -1746,6 +2298,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Emacs Exiting',
         ['Emacs Exiting', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those opening lines are from ‘Emacs Exiting’.'
+      ),
+      MCQ(
+        'The lesson continues with: “If you have any open buffers, it will ask you to save it before closing out of emacs.” — which lesson is this?',
+        'Emacs Exiting',
+        ['Emacs Exiting', 'Regex', 'Vim Or Emacs', 'Vim'],
+        'Those lines are from ‘Emacs Exiting’.'
       ),
     ],
   },
@@ -1782,6 +2340,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Users/Groups', 'Root User', 'Etc/passwd file', 'Etc/shadow file'],
         'Those opening lines are from ‘Users/Groups’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: ls -la /etc/shadow',
+        ['ls', '-la', '/etc/shadow'],
+        ['ls', '-la', '/etc/shadow', 'sudo', '-r'],
+        'Type it exactly as shown: ls -la /etc/shadow.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Users/Groups’ lesson?',
+        'sudo cat /etc/shadow',
+        ['sudo cat /etc/shadow', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Users/Groups’ lesson mentions “sudo cat /etc/shadow” — find it in the theory above.'
+      ),
     ],
   },
   'linux-user-management-2': {
@@ -1811,6 +2381,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Root User',
         ['Root User', 'Users/Groups', 'Etc/passwd file', 'Etc/shadow file'],
         'Those opening lines are from ‘Root User’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Root User’ lesson?',
+        'su',
+        ['su', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Root User’ lesson mentions “su” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"su"” — which lesson is this?',
+        'Root User',
+        ['Root User', 'Users/Groups', 'Etc/passwd file', 'Etc/shadow file'],
+        'Those lines are from ‘Root User’.'
       ),
     ],
   },
@@ -1851,6 +2433,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Etc/passwd file', 'Users/Groups', 'Root User', 'Etc/shadow file'],
         'Those opening lines are from ‘Etc/passwd file’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Etc/passwd file’ lesson?',
+        'x',
+        ['x', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Etc/passwd file’ lesson mentions “x” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"cat /etc/passwd"” — which lesson is this?',
+        'Etc/passwd file',
+        ['Etc/passwd file', 'Users/Groups', 'Root User', 'Etc/shadow file'],
+        'Those lines are from ‘Etc/passwd file’.'
+      ),
     ],
   },
   'linux-user-management-4': {
@@ -1888,6 +2482,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Etc/shadow file', 'Users/Groups', 'Root User', 'Etc/passwd file'],
         'Those opening lines are from ‘Etc/shadow file’.'
       ),
+      MCQ(
+        'The lesson continues with: “You\'ll notice that it looks very similar to the contents of /etc/passwd, however in the password field you\'ll see an encrypted password. The fields are separat…” — which lesson is this?',
+        'Etc/shadow file',
+        ['Etc/shadow file', 'Users/Groups', 'Root User', 'Etc/passwd file'],
+        'Those lines are from ‘Etc/shadow file’.'
+      ),
     ],
   },
   'linux-user-management-5': {
@@ -1919,6 +2519,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Etc/group file',
         ['Etc/group file', 'Users/Groups', 'Root User', 'Etc/passwd file'],
         'Those opening lines are from ‘Etc/group file’.'
+      ),
+      MCQ(
+        'The lesson continues with: “"cat /etc/group" root:*:0:pete” — which lesson is this?',
+        'Etc/group file',
+        ['Etc/group file', 'Users/Groups', 'Root User', 'Etc/passwd file'],
+        'Those lines are from ‘Etc/group file’.'
       ),
     ],
   },
@@ -1955,6 +2561,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['User Management Tools', 'Users/Groups', 'Root User', 'Etc/passwd file'],
         'Those opening lines are from ‘User Management Tools’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sudo userdel bob',
+        ['sudo', 'userdel', 'bob'],
+        ['sudo', 'userdel', 'bob', '-la', '-r'],
+        'Type it exactly as shown: sudo userdel bob.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘User Management Tools’ lesson?',
+        'passwd bob',
+        ['passwd bob', 'core', 'echo Hello World', 'pwd'],
+        'The ‘User Management Tools’ lesson mentions “passwd bob” — find it in the theory above.'
+      ),
     ],
   },
   'linux-permissions-1': {
@@ -1987,6 +2605,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'File Permissions',
         ['File Permissions', 'Modifying Permissions', 'Ownership Permissions', 'Umask'],
         'Those opening lines are from ‘File Permissions’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘File Permissions’ lesson?',
+        'd',
+        ['d', 'core', 'echo Hello World', 'pwd'],
+        'The ‘File Permissions’ lesson mentions “d” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"ls -l Desktop/" drwxr-xr-x 2 pete penguins 4096 Dec 1 11:45 .” — which lesson is this?',
+        'File Permissions',
+        ['File Permissions', 'Modifying Permissions', 'Ownership Permissions', 'Umask'],
+        'Those lines are from ‘File Permissions’.'
       ),
     ],
   },
@@ -2027,6 +2657,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Modifying Permissions', 'File Permissions', 'Ownership Permissions', 'Umask'],
         'Those opening lines are from ‘Modifying Permissions’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: chmod u-x myfile',
+        ['chmod', 'u-x', 'myfile'],
+        ['chmod', 'u-x', 'myfile', 'sudo', '-la'],
+        'Type it exactly as shown: chmod u-x myfile.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Modifying Permissions’ lesson?',
+        'chmod ug+w',
+        ['chmod ug+w', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Modifying Permissions’ lesson mentions “chmod ug+w” — find it in the theory above.'
+      ),
     ],
   },
   'linux-permissions-3': {
@@ -2060,6 +2702,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Ownership Permissions', 'File Permissions', 'Modifying Permissions', 'Umask'],
         'Those opening lines are from ‘Ownership Permissions’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sudo chgrp whales myfile',
+        ['sudo', 'chgrp', 'whales', 'myfile'],
+        ['sudo', 'chgrp', 'whales', 'myfile', '-la', '-r'],
+        'Type it exactly as shown: sudo chgrp whales myfile.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Ownership Permissions’ lesson?',
+        'sudo chown patty:whales myfile',
+        ['sudo chown patty:whales myfile', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Ownership Permissions’ lesson mentions “sudo chown patty:whales myfile” — find it in the theory above.'
+      ),
     ],
   },
   'linux-permissions-4': {
@@ -2090,6 +2744,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Umask',
         ['Umask', 'File Permissions', 'Modifying Permissions', 'Ownership Permissions'],
         'Those opening lines are from ‘Umask’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Instead of adding these permissions though, umask TAKES AWAY these permissions.” — which lesson is this?',
+        'Umask',
+        ['Umask', 'File Permissions', 'Modifying Permissions', 'Ownership Permissions'],
+        'Those lines are from ‘Umask’.'
       ),
     ],
   },
@@ -2129,6 +2789,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Setuid', 'File Permissions', 'Modifying Permissions', 'Ownership Permissions'],
         'Those opening lines are from ‘Setuid’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: ls -l /usr/bin/passwd',
+        ['ls', '-l', '/usr/bin/passwd'],
+        ['ls', '-l', '/usr/bin/passwd', 'sudo', '-la'],
+        'Type it exactly as shown: ls -l /usr/bin/passwd.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Setuid’ lesson?',
+        'sudo chmod u+s myfile',
+        ['sudo chmod u+s myfile', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Setuid’ lesson mentions “sudo chmod u+s myfile” — find it in the theory above.'
+      ),
     ],
   },
   'linux-permissions-6': {
@@ -2159,6 +2831,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Setgid',
         ['Setgid', 'File Permissions', 'Modifying Permissions', 'Ownership Permissions'],
         'Those opening lines are from ‘Setgid’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: sudo chmod g+s myfile',
+        ['sudo', 'chmod', 'g+s', 'myfile'],
+        ['sudo', 'chmod', 'g+s', 'myfile', '-la', '-r'],
+        'Type it exactly as shown: sudo chmod g+s myfile.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Setgid’ lesson?',
+        'sudo chmod 2555 myfile',
+        ['sudo chmod 2555 myfile', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Setgid’ lesson mentions “sudo chmod 2555 myfile” — find it in the theory above.'
       ),
     ],
   },
@@ -2195,6 +2879,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Process Permissions', 'File Permissions', 'Modifying Permissions', 'Ownership Permissions'],
         'Those opening lines are from ‘Process Permissions’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: real user ID',
+        ['real', 'user', 'ID'],
+        ['real', 'user', 'ID', 'sudo', '-la'],
+        'Type it exactly as shown: real user ID.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Process Permissions’ lesson?',
+        'saved user ID',
+        ['saved user ID', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Process Permissions’ lesson mentions “saved user ID” — find it in the theory above.'
+      ),
     ],
   },
   'linux-permissions-8': {
@@ -2226,6 +2922,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Sticky Bit',
         ['Sticky Bit', 'File Permissions', 'Modifying Permissions', 'Ownership Permissions'],
         'Those opening lines are from ‘Sticky Bit’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: ls -ld /tmp',
+        ['ls', '-ld', '/tmp'],
+        ['ls', '-ld', '/tmp', 'sudo', '-la'],
+        'Type it exactly as shown: ls -ld /tmp.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Sticky Bit’ lesson?',
+        'sudo chmod +t mydir',
+        ['sudo chmod +t mydir', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Sticky Bit’ lesson mentions “sudo chmod +t mydir” — find it in the theory above.'
       ),
     ],
   },
@@ -2264,6 +2972,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Monitor Process', 'Controlling Terminal', 'Process Details', 'Process Creation'],
         'Those opening lines are from ‘Monitor Process’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: ps aux',
+        ['ps', 'aux'],
+        ['ps', 'aux', 'sudo', '-la'],
+        'Type it exactly as shown: ps aux.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Monitor Process’ lesson?',
+        'ps',
+        ['ps', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Monitor Process’ lesson mentions “ps” — find it in the theory above.'
+      ),
     ],
   },
   'linux-process-2': {
@@ -2296,6 +3016,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Controlling Terminal', 'Monitor Process', 'Process Details', 'Process Creation'],
         'Those opening lines are from ‘Controlling Terminal’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: pseudoterminal devices',
+        ['pseudoterminal', 'devices'],
+        ['pseudoterminal', 'devices', 'sudo', '-la'],
+        'Type it exactly as shown: pseudoterminal devices.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Controlling Terminal’ lesson?',
+        'regular terminal device',
+        ['regular terminal device', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Controlling Terminal’ lesson mentions “regular terminal device” — find it in the theory above.'
+      ),
     ],
   },
   'linux-process-3': {
@@ -2326,6 +3058,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Process Details',
         ['Process Details', 'Monitor Process', 'Controlling Terminal', 'Process Creation'],
         'Those opening lines are from ‘Process Details’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Process Details’ lesson?',
+        'cat',
+        ['cat', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Process Details’ lesson mentions “cat” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “A process like we said before is a running program on the system, more precisely it\'s the system allocating memory, CPU, I/O to make the program run. A process…” — which lesson is this?',
+        'Process Details',
+        ['Process Details', 'Monitor Process', 'Controlling Terminal', 'Process Creation'],
+        'Those lines are from ‘Process Details’.'
       ),
     ],
   },
@@ -2360,6 +3104,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Process Creation', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those opening lines are from ‘Process Creation’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: long format',
+        ['long', 'format'],
+        ['long', 'format', 'sudo', '-la'],
+        'Type it exactly as shown: long format.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Process Creation’ lesson?',
+        'init',
+        ['init', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Process Creation’ lesson mentions “init” — find it in the theory above.'
+      ),
     ],
   },
   'linux-process-5': {
@@ -2387,6 +3143,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Process Termination',
         ['Process Termination', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those opening lines are from ‘Process Termination’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Process Termination’ lesson?',
+        'orphans',
+        ['orphans', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Process Termination’ lesson mentions “orphans” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “A process can exit using the _exit system call, this will free up the resources that process was using for reallocation. So when a process is ready to terminat…” — which lesson is this?',
+        'Process Termination',
+        ['Process Termination', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
+        'Those lines are from ‘Process Termination’.'
       ),
     ],
   },
@@ -2417,6 +3185,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Process Signals',
         ['Process Signals', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those opening lines are from ‘Process Signals’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Why we have signals: They are software interrupts and they have lots of uses:” — which lesson is this?',
+        'Process Signals',
+        ['Process Signals', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
+        'Those lines are from ‘Process Signals’.'
       ),
     ],
   },
@@ -2455,6 +3229,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Killing Processes', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those opening lines are from ‘Killing Processes’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: kill -9 12445',
+        ['kill', '-9', '12445'],
+        ['kill', '-9', '12445', 'sudo', '-la'],
+        'Type it exactly as shown: kill -9 12445.'
+      ),
+      MCQ(
+        'The lesson continues with: “The "12445" is the PID of the process you want to kill. By default it sends a TERM signal. The SIGTERM signal is sent to a process to request its termination b…” — which lesson is this?',
+        'Killing Processes',
+        ['Killing Processes', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
+        'Those lines are from ‘Killing Processes’.'
+      ),
     ],
   },
   'linux-process-8': {
@@ -2489,6 +3275,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Process Niceness', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those opening lines are from ‘Process Niceness’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: renice 10 -p 3245',
+        ['renice', '10', '-p', '3245'],
+        ['renice', '10', '-p', '3245', 'sudo', '-la'],
+        'Type it exactly as shown: renice 10 -p 3245.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Process Niceness’ lesson?',
+        'top',
+        ['top', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Process Niceness’ lesson mentions “top” — find it in the theory above.'
+      ),
     ],
   },
   'linux-process-9': {
@@ -2522,6 +3320,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Process States', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those opening lines are from ‘Process States’.'
       ),
+      MCQ(
+        'The lesson continues with: “In the STAT column, you\'ll see lots of values. A linux process can be in a number of different states. The most common state codes you\'ll see are described bel…” — which lesson is this?',
+        'Process States',
+        ['Process States', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
+        'Those lines are from ‘Process States’.'
+      ),
     ],
   },
   'linux-process-10': {
@@ -2554,6 +3358,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Proc Filesystem',
         ['Proc Filesystem', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those opening lines are from ‘Proc Filesystem’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: cat /proc/12345/status',
+        ['cat', '/proc/12345/status'],
+        ['cat', '/proc/12345/status', 'sudo', '-la'],
+        'Type it exactly as shown: cat /proc/12345/status.'
+      ),
+      MCQ(
+        'The lesson continues with: “"ls /proc"” — which lesson is this?',
+        'Proc Filesystem',
+        ['Proc Filesystem', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
+        'Those lines are from ‘Proc Filesystem’.'
       ),
     ],
   },
@@ -2593,6 +3409,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Job Control', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those opening lines are from ‘Job Control’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sleep 1001 &',
+        ['sleep', '1001', '&'],
+        ['sleep', '1001', '&', 'sudo', '-la'],
+        'Type it exactly as shown: sleep 1001 &.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Job Control’ lesson?',
+        'sleep 1002 &',
+        ['sleep 1002 &', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Job Control’ lesson mentions “sleep 1002 &” — find it in the theory above.'
+      ),
     ],
   },
   'linux-packages-1': {
@@ -2623,6 +3451,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Software Distribution', 'Packages Repositories', 'Compressed Archives Tar', 'Package Dependencies'],
         'Those opening lines are from ‘Software Distribution’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: package maintainers',
+        ['package', 'maintainers'],
+        ['package', 'maintainers', 'sudo', '-la'],
+        'Type it exactly as shown: package maintainers.'
+      ),
+      MCQ(
+        'The lesson continues with: “However the majority of the time you will use a package manager to install software, the most common variety of packages are Debian (.deb) and Red Hat (.rpm).…” — which lesson is this?',
+        'Software Distribution',
+        ['Software Distribution', 'Packages Repositories', 'Compressed Archives Tar', 'Package Dependencies'],
+        'Those lines are from ‘Software Distribution’.'
+      ),
     ],
   },
   'linux-packages-2': {
@@ -2647,6 +3487,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Packages Repositories',
         ['Packages Repositories', 'Software Distribution', 'Compressed Archives Tar', 'Package Dependencies'],
         'Those opening lines are from ‘Packages Repositories’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Repositories are just a central storage location for packages. There are tons of repositories that hold lots of packages and best of all they are all found on…” — which lesson is this?',
+        'Packages Repositories',
+        ['Packages Repositories', 'Software Distribution', 'Compressed Archives Tar', 'Package Dependencies'],
+        'Those lines are from ‘Packages Repositories’.'
       ),
     ],
   },
@@ -2689,6 +3535,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Compressed Archives Tar', 'Software Distribution', 'Packages Repositories', 'Package Dependencies'],
         'Those opening lines are from ‘Compressed Archives Tar’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: gunzip mycoolfile.gz',
+        ['gunzip', 'mycoolfile.gz'],
+        ['gunzip', 'mycoolfile.gz', 'sudo', '-la'],
+        'Type it exactly as shown: gunzip mycoolfile.gz.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Compressed Archives Tar’ lesson?',
+        'tar xvf mytarfile.tar',
+        ['tar xvf mytarfile.tar', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Compressed Archives Tar’ lesson mentions “tar xvf mytarfile.tar” — find it in the theory above.'
+      ),
     ],
   },
   'linux-packages-4': {
@@ -2711,6 +3569,12 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Package Dependencies',
         ['Package Dependencies', 'Software Distribution', 'Packages Repositories', 'Compressed Archives Tar'],
         'Those opening lines are from ‘Package Dependencies’.'
+      ),
+      MCQ(
+        'The lesson continues with: “In Linux, these dependencies are often other packages or shared libraries. Shared libraries are libraries of code that other programs want to use and don\'t wan…” — which lesson is this?',
+        'Package Dependencies',
+        ['Package Dependencies', 'Software Distribution', 'Packages Repositories', 'Compressed Archives Tar'],
+        'Those lines are from ‘Package Dependencies’.'
       ),
     ],
   },
@@ -2749,6 +3613,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Package Install Tools', 'Software Distribution', 'Packages Repositories', 'Compressed Archives Tar'],
         'Those opening lines are from ‘Package Install Tools’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: rpm -i some_rpm_package.rpm',
+        ['rpm', '-i', 'some_rpm_package.rpm'],
+        ['rpm', '-i', 'some_rpm_package.rpm', 'sudo', '-la'],
+        'Type it exactly as shown: rpm -i some_rpm_package.rpm.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Package Install Tools’ lesson?',
+        'dpkg -r some_deb_package.deb',
+        ['dpkg -r some_deb_package.deb', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Package Install Tools’ lesson mentions “dpkg -r some_deb_package.deb” — find it in the theory above.'
+      ),
     ],
   },
   'linux-packages-6': {
@@ -2780,6 +3656,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Package Management System',
         ['Package Management System', 'Software Distribution', 'Packages Repositories', 'Compressed Archives Tar'],
         'Those opening lines are from ‘Package Management System’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: yum install package_name',
+        ['yum', 'install', 'package_name'],
+        ['yum', 'install', 'package_name', 'sudo', '-la'],
+        'Type it exactly as shown: yum install package_name.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Package Management System’ lesson?',
+        'apt remove package_name',
+        ['apt remove package_name', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Package Management System’ lesson mentions “apt remove package_name” — find it in the theory above.'
       ),
     ],
   },
@@ -2819,6 +3707,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Compile Source Code',
         ['Compile Source Code', 'Software Distribution', 'Packages Repositories', 'Compressed Archives Tar'],
         'Those opening lines are from ‘Compile Source Code’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: tar -xzvf package.tar.gz',
+        ['tar', '-xzvf', 'package.tar.gz'],
+        ['tar', '-xzvf', 'package.tar.gz', 'sudo', '-la'],
+        'Type it exactly as shown: tar -xzvf package.tar.gz.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Compile Source Code’ lesson?',
+        'sudo make install',
+        ['sudo make install', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Compile Source Code’ lesson mentions “sudo make install” — find it in the theory above.'
       ),
     ],
   },

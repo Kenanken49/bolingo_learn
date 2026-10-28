@@ -41,6 +41,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['File Sharing', 'Rsync', 'Simple Http Server', 'Nfs Network File Share'],
         'Those opening lines are from ‘File Sharing’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: scp -r mydir username@remotehost.com:/remote/directory',
+        ['scp', '-r', 'mydir', 'username@remotehost.com:/remote/directory'],
+        ['scp', '-r', 'mydir', 'username@remotehost.com:/remote/directory', 'sudo', '-la'],
+        'Type it exactly as shown: scp -r mydir username@remotehost.com:/remote/directory.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘File Sharing’ lesson?',
+        'scp',
+        ['scp', 'core', 'echo Hello World', 'pwd'],
+        'The ‘File Sharing’ lesson mentions “scp” — find it in the theory above.'
+      ),
     ],
   },
   'linux-network-sharing-2': {
@@ -75,6 +87,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Rsync', 'File Sharing', 'Simple Http Server', 'Nfs Network File Share'],
         'Those opening lines are from ‘Rsync’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: rsync /local/directory username@remotehost.com:/remote/directory',
+        ['rsync', '/local/directory', 'username@remotehost.com:/remote/directory'],
+        ['rsync', '/local/directory', 'username@remotehost.com:/remote/directory', 'sudo', '-la'],
+        'Type it exactly as shown: rsync /local/directory username@remotehost.com:/remote/directory.'
+      ),
+      MCQ(
+        'The lesson continues with: “For example, let\'s say that you were copying over a file and your network got interrupted, therefore your copy stopped midway. Instead of re-copying everything…” — which lesson is this?',
+        'Rsync',
+        ['Rsync', 'File Sharing', 'Simple Http Server', 'Nfs Network File Share'],
+        'Those lines are from ‘Rsync’.'
+      ),
     ],
   },
   'linux-network-sharing-3': {
@@ -104,6 +128,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Simple Http Server',
         ['Simple Http Server', 'File Sharing', 'Rsync', 'Nfs Network File Share'],
         'Those opening lines are from ‘Simple Http Server’.'
+      ),
+      MCQ(
+        'The lesson continues with: “"python -m SimpleHTTPServer"” — which lesson is this?',
+        'Simple Http Server',
+        ['Simple Http Server', 'File Sharing', 'Rsync', 'Nfs Network File Share'],
+        'Those lines are from ‘Simple Http Server’.'
       ),
     ],
   },
@@ -135,6 +165,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Nfs Network File Share',
         ['Nfs Network File Share', 'File Sharing', 'Rsync', 'Simple Http Server'],
         'Those opening lines are from ‘Nfs Network File Share’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: sudo mount server:/directory /mount_directory',
+        ['sudo', 'mount', 'server:/directory', '/mount_directory'],
+        ['sudo', 'mount', 'server:/directory', '/mount_directory', '-la', '-r'],
+        'Type it exactly as shown: sudo mount server:/directory /mount_directory.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Nfs Network File Share’ lesson?',
+        'amd',
+        ['amd', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Nfs Network File Share’ lesson mentions “amd” — find it in the theory above.'
       ),
     ],
   },
@@ -176,6 +218,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Samba', 'File Sharing', 'Rsync', 'Simple Http Server'],
         'Those opening lines are from ‘Samba’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sudo apt install samba',
+        ['sudo', 'apt', 'install', 'samba'],
+        ['sudo', 'apt', 'install', 'samba', '-la', '-r'],
+        'Type it exactly as shown: sudo apt install samba.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Samba’ lesson?',
+        'sudo vi /etc/samba/smb.conf',
+        ['sudo vi /etc/samba/smb.conf', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Samba’ lesson mentions “sudo vi /etc/samba/smb.conf” — find it in the theory above.'
+      ),
     ],
   },
   'linux-network-basics-1': {
@@ -204,6 +258,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Network Basics', 'Osi Model', 'Tcp/Ip Model', 'Network Addressing'],
         'Those opening lines are from ‘Network Basics’.'
       ),
+      MCQ(
+        'The lesson continues with: “1- ISP - Your internet service provider, the company you pay to get Internet at your house.” — which lesson is this?',
+        'Network Basics',
+        ['Network Basics', 'Osi Model', 'Tcp/Ip Model', 'Network Addressing'],
+        'Those lines are from ‘Network Basics’.'
+      ),
     ],
   },
   'linux-network-basics-2': {
@@ -225,6 +285,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Osi Model',
         ['Osi Model', 'Network Basics', 'Tcp/Ip Model', 'Network Addressing'],
         'Those opening lines are from ‘Osi Model’.'
+      ),
+      MCQ(
+        'The lesson continues with: “I won\'t get into specifics of this model, since most of these networking courses will be focused on the TCP/IP model, but it should be mentioned that such a th…” — which lesson is this?',
+        'Osi Model',
+        ['Osi Model', 'Network Basics', 'Tcp/Ip Model', 'Network Addressing'],
+        'Those lines are from ‘Osi Model’.'
       ),
     ],
   },
@@ -256,6 +322,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Tcp/Ip Model', 'Network Basics', 'Osi Model', 'Network Addressing'],
         'Those opening lines are from ‘Tcp/Ip Model’.'
       ),
+      MCQ(
+        'The lesson continues with: “Application Layer: The top layer of the TCP/IP model. It determines how your computer\'s programs (such as your web browser) interface with the transport layer…” — which lesson is this?',
+        'Tcp/Ip Model',
+        ['Tcp/Ip Model', 'Network Basics', 'Osi Model', 'Network Addressing'],
+        'Those lines are from ‘Tcp/Ip Model’.'
+      ),
     ],
   },
   'linux-network-basics-4': {
@@ -283,6 +355,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Network Addressing', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those opening lines are from ‘Network Addressing’.'
       ),
+      MCQ(
+        'The lesson continues with: “MAC Addresses: A MAC address is a unique identifier used as a hardware address. This address will never change.” — which lesson is this?',
+        'Network Addressing',
+        ['Network Addressing', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
+        'Those lines are from ‘Network Addressing’.'
+      ),
     ],
   },
   'linux-network-basics-5': {
@@ -305,6 +383,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Application Layer',
         ['Application Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those opening lines are from ‘Application Layer’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Application Layer’ lesson?',
+        'packet',
+        ['packet', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Application Layer’ lesson mentions “packet” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “Remember that packets are used to transmit data across networks, a packet consists of a header and payload. The header contains information about where the pac…” — which lesson is this?',
+        'Application Layer',
+        ['Application Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
+        'Those lines are from ‘Application Layer’.'
       ),
     ],
   },
@@ -333,6 +423,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Transport Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those opening lines are from ‘Transport Layer’.'
       ),
+      MCQ(
+        'The lesson continues with: “Ports: Even though we know where we are sending our data via IP addresses, they aren\'t specific enough to send our data to a certain processes or services. Ser…” — which lesson is this?',
+        'Transport Layer',
+        ['Transport Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
+        'Those lines are from ‘Transport Layer’.'
+      ),
     ],
   },
   'linux-network-basics-7': {
@@ -354,6 +450,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Network Layer',
         ['Network Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those opening lines are from ‘Network Layer’.'
+      ),
+      MCQ(
+        'The lesson continues with: “In the network layer, it receives the segment coming from the transport layer and encapsulates this segment in an IP packet then attaches the IP address of the…” — which lesson is this?',
+        'Network Layer',
+        ['Network Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
+        'Those lines are from ‘Network Layer’.'
       ),
     ],
   },
@@ -392,6 +494,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Link Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those opening lines are from ‘Link Layer’.'
       ),
+      MCQ(
+        'The lesson continues with: “In the link layer, our packet is encapsulated once more into something called a frame. The frame header attaches the source and destination MAC addresses of ou…” — which lesson is this?',
+        'Link Layer',
+        ['Link Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
+        'Those lines are from ‘Link Layer’.'
+      ),
     ],
   },
   'linux-network-basics-9': {
@@ -417,6 +525,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Dhcp Overview',
         ['Dhcp Overview', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those opening lines are from ‘Dhcp Overview’.'
+      ),
+      MCQ(
+        'The lesson continues with: “DHCP assigns IP addresses, subnet masks and gateways to our machines. For example, let\'s say you have a cell phone and you want to get a cell phone number to s…” — which lesson is this?',
+        'Dhcp Overview',
+        ['Dhcp Overview', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
+        'Those lines are from ‘Dhcp Overview’.'
       ),
     ],
   },
@@ -449,6 +563,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Ipv4',
         ['Ipv4', 'Subnets', 'Subnet Math', 'Subnetting Cheats'],
         'Those opening lines are from ‘Ipv4’.'
+      ),
+      MCQ(
+        'The lesson continues with: “This address actually contains two parts, the network portion that tells us know network it\'s on and the host portion that tells us which host on that network…” — which lesson is this?',
+        'Ipv4',
+        ['Ipv4', 'Subnets', 'Subnet Math', 'Subnetting Cheats'],
+        'Those lines are from ‘Ipv4’.'
       ),
     ],
   },
@@ -486,6 +606,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Subnets', 'Ipv4', 'Subnet Math', 'Subnetting Cheats'],
         'Those opening lines are from ‘Subnets’.'
       ),
+      MCQ(
+        'The lesson continues with: “For example, all hosts with an IP address that starts with 123.45.67 would be on the same subnet. My host has an IP of 123.45.67.8 and Patty\'s has an IP of 123…” — which lesson is this?',
+        'Subnets',
+        ['Subnets', 'Ipv4', 'Subnet Math', 'Subnetting Cheats'],
+        'Those lines are from ‘Subnets’.'
+      ),
     ],
   },
   'linux-subnetting-3': {
@@ -509,6 +635,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Subnet Math',
         ['Subnet Math', 'Ipv4', 'Subnets', 'Subnetting Cheats'],
         'Those opening lines are from ‘Subnet Math’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Let\'s say I have an IP address of "192.168.1.0" and a subnet mask of "255.255.255.0", now let\'s line up these numbers in binary form. For now use an online cal…” — which lesson is this?',
+        'Subnet Math',
+        ['Subnet Math', 'Ipv4', 'Subnets', 'Subnetting Cheats'],
+        'Those lines are from ‘Subnet Math’.'
       ),
     ],
   },
@@ -541,6 +673,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Subnetting Cheats', 'Ipv4', 'Subnets', 'Subnet Math'],
         'Those opening lines are from ‘Subnetting Cheats’.'
       ),
+      MCQ(
+        'The lesson continues with: “Luckily there are some arithmetic cheats you can memorize.” — which lesson is this?',
+        'Subnetting Cheats',
+        ['Subnetting Cheats', 'Ipv4', 'Subnets', 'Subnet Math'],
+        'Those lines are from ‘Subnetting Cheats’.'
+      ),
     ],
   },
   'linux-subnetting-5': {
@@ -563,6 +701,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Classless Interdomain Routing (CIDR)',
         ['Classless Interdomain Routing (CIDR)', 'Ipv4', 'Subnets', 'Subnet Math'],
         'Those opening lines are from ‘Classless Interdomain Routing (CIDR)’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Remember an IP address consists of 4 bytes or 32 bits, CIDR indicates the amount of bits used as the network prefix. So 123.12.24.0/23 means that the first 23…” — which lesson is this?',
+        'Classless Interdomain Routing (CIDR)',
+        ['Classless Interdomain Routing (CIDR)', 'Ipv4', 'Subnets', 'Subnet Math'],
+        'Those lines are from ‘Classless Interdomain Routing (CIDR)’.'
       ),
     ],
   },
@@ -591,6 +735,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Network Adress Translation (NAT)', 'Ipv4', 'Subnets', 'Subnet Math'],
         'Those opening lines are from ‘Network Adress Translation (NAT)’.'
       ),
+      MCQ(
+        'The lesson continues with: “NAT makes a device like our router act as an intermediary between the Internet and private network. So only a single, unique IP address is required to represen…” — which lesson is this?',
+        'Network Adress Translation (NAT)',
+        ['Network Adress Translation (NAT)', 'Ipv4', 'Subnets', 'Subnet Math'],
+        'Those lines are from ‘Network Adress Translation (NAT)’.'
+      ),
     ],
   },
   'linux-subnetting-7': {
@@ -613,6 +763,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Ipv6',
         ['Ipv6', 'Ipv4', 'Subnets', 'Subnet Math'],
         'Those opening lines are from ‘Ipv6’.'
+      ),
+      MCQ(
+        'The lesson continues with: “IPv6 was created to allow us to connect more hosts to the Internet, it comes with more IP improvements however, it\'s adoption is quite slow. It isn\'t meant to…” — which lesson is this?',
+        'Ipv6',
+        ['Ipv6', 'Ipv4', 'Subnets', 'Subnet Math'],
+        'Those lines are from ‘Ipv6’.'
       ),
     ],
   },
@@ -641,6 +797,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'What Is A Router?',
         ['What Is A Router?', 'Routing Table', 'Path Of A Packet', 'Routing Protocols'],
         'Those opening lines are from ‘What Is A Router?’.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘What Is A Router?’ lesson?',
+        'routes',
+        ['routes', 'core', 'echo Hello World', 'pwd'],
+        'The ‘What Is A Router?’ lesson mentions “routes” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “On a typical router, you will have LAN ports, that allow your machines to connect to the same local area network and you will also have an Internet uplink port…” — which lesson is this?',
+        'What Is A Router?',
+        ['What Is A Router?', 'Routing Table', 'Path Of A Packet', 'Routing Protocols'],
+        'Those lines are from ‘What Is A Router?’.'
       ),
     ],
   },
@@ -676,6 +844,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Routing Table', 'What Is A Router?', 'Path Of A Packet', 'Routing Protocols'],
         'Those opening lines are from ‘Routing Table’.'
       ),
+      MCQ(
+        'The lesson continues with: “"sudo route -n" Kernel IP routing table Destination Gateway Genmask Flags Metric Ref Use Iface 0.0.0.0 192.168.224.2 0.0.0.0 UG 0 0 0 eth0 192.168.224.0 0.0.0.…” — which lesson is this?',
+        'Routing Table',
+        ['Routing Table', 'What Is A Router?', 'Path Of A Packet', 'Routing Protocols'],
+        'Those lines are from ‘Routing Table’.'
+      ),
     ],
   },
   'linux-routing-3': {
@@ -707,6 +881,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Path Of A Packet', 'What Is A Router?', 'Routing Table', 'Routing Protocols'],
         'Those opening lines are from ‘Path Of A Packet’.'
       ),
+      MCQ(
+        'The lesson continues with: “1- First the local machine will compare the destination IP address to see if it\'s in the same subnet by looking at its subnet mask.” — which lesson is this?',
+        'Path Of A Packet',
+        ['Path Of A Packet', 'What Is A Router?', 'Routing Table', 'Routing Protocols'],
+        'Those lines are from ‘Path Of A Packet’.'
+      ),
     ],
   },
   'linux-routing-4': {
@@ -732,6 +912,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Routing Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
         'Those opening lines are from ‘Routing Protocols’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Routing Protocols’ lesson?',
+        'converging',
+        ['converging', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Routing Protocols’ lesson mentions “converging” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “There are two primary routing protocol types, distance vector protocols and link state protocols.” — which lesson is this?',
+        'Routing Protocols',
+        ['Routing Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
+        'Those lines are from ‘Routing Protocols’.'
+      ),
     ],
   },
   'linux-routing-5': {
@@ -756,6 +948,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Distance Vector Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
         'Those opening lines are from ‘Distance Vector Protocols’.'
       ),
+      MCQ(
+        'The lesson continues with: “Distance vector protocols are great for small networks, when networks start to scale it takes longer for the routers to converge because it periodically sends…” — which lesson is this?',
+        'Distance Vector Protocols',
+        ['Distance Vector Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
+        'Those lines are from ‘Distance Vector Protocols’.'
+      ),
     ],
   },
   'linux-routing-6': {
@@ -778,6 +976,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Link State Protocols',
         ['Link State Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
         'Those opening lines are from ‘Link State Protocols’.'
+      ),
+      MCQ(
+        'The lesson continues with: “They use a different algorithm to calculate the shortest path first and construct their network topology in the form of a graph to show which routers are conne…” — which lesson is this?',
+        'Link State Protocols',
+        ['Link State Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
+        'Those lines are from ‘Link State Protocols’.'
       ),
     ],
   },
@@ -802,6 +1006,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Border Gateway Protocol (BGP)',
         ['Border Gateway Protocol (BGP)', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
         'Those opening lines are from ‘Border Gateway Protocol (BGP)’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Without BGP, these systems would not know how to talk to each other, they would just be siloed off. Instead of routing inside these autonomous systems, BGP rou…” — which lesson is this?',
+        'Border Gateway Protocol (BGP)',
+        ['Border Gateway Protocol (BGP)', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
+        'Those lines are from ‘Border Gateway Protocol (BGP)’.'
       ),
     ],
   },
@@ -845,6 +1055,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Network Interfaces', 'Route', 'Dhclient', 'Network Manager'],
         'Those opening lines are from ‘Network Interfaces’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: turn off',
+        ['turn', 'off'],
+        ['turn', 'off', 'sudo', '-la'],
+        'Type it exactly as shown: turn off.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Network Interfaces’ lesson?',
+        'ifup eth0',
+        ['ifup eth0', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Network Interfaces’ lesson mentions “ifup eth0” — find it in the theory above.'
+      ),
     ],
   },
   'linux-network-config-2': {
@@ -877,6 +1099,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Route', 'Network Interfaces', 'Dhclient', 'Network Manager'],
         'Those opening lines are from ‘Route’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: ip route delete 192.168.2.1/23',
+        ['ip', 'route', 'delete', '192.168.2.1/23'],
+        ['ip', 'route', 'delete', '192.168.2.1/23', 'sudo', '-la'],
+        'Type it exactly as shown: ip route delete 192.168.2.1/23.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Route’ lesson?',
+        'ip',
+        ['ip', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Route’ lesson mentions “ip” — find it in the theory above.'
+      ),
     ],
   },
   'linux-network-config-3': {
@@ -905,6 +1139,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Dhclient',
         ['Dhclient', 'Network Interfaces', 'Route', 'Network Manager'],
         'Those opening lines are from ‘Dhclient’.'
+      ),
+      MCQ(
+        'The lesson continues with: “In the dhclient.leases file, dhclient keeps track of a list of leases across system reboots, after reading dhclient.conf, the dhclient.leases file is read to l…” — which lesson is this?',
+        'Dhclient',
+        ['Dhclient', 'Network Interfaces', 'Route', 'Network Manager'],
+        'Those lines are from ‘Dhclient’.'
       ),
     ],
   },
@@ -938,6 +1178,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Network Manager', 'Network Interfaces', 'Route', 'Dhclient'],
         'Those opening lines are from ‘Network Manager’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Network Manager’ lesson?',
+        'nm-tool',
+        ['nm-tool', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Network Manager’ lesson mentions “nm-tool” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “You\'ll notice NetworkManager in the form of an applet somewhere on your desktop taskbar if you are using a GUI. As you can see it manages your network\'s hardwa…” — which lesson is this?',
+        'Network Manager',
+        ['Network Manager', 'Network Interfaces', 'Route', 'Dhclient'],
+        'Those lines are from ‘Network Manager’.'
+      ),
     ],
   },
   'linux-network-config-5': {
@@ -970,6 +1222,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Command arp', 'Network Interfaces', 'Route', 'Dhclient'],
         'Those opening lines are from ‘Command arp’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Command arp’ lesson?',
+        'arp',
+        ['arp', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Command arp’ lesson mentions “arp” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “"arp" Address HWtype HWaddress Flags Mask Iface 192.168.22.1 ether 00:12:24:fc:12:cc C eth0 192.168.22.254 ether 00:12:45:f2:84:64 C eth0” — which lesson is this?',
+        'Command arp',
+        ['Command arp', 'Network Interfaces', 'Route', 'Dhclient'],
+        'Those lines are from ‘Command arp’.'
+      ),
     ],
   },
   'linux-troubleshooting-1': {
@@ -996,6 +1260,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Icmp',
         ['Icmp', 'Ping', 'Traceroute', 'Netstat'],
         'Those opening lines are from ‘Icmp’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Each ICMP message contains a type, code and checksum field. The type field is the type of ICMP message, the code is a sub-type and describes more information a…” — which lesson is this?',
+        'Icmp',
+        ['Icmp', 'Ping', 'Traceroute', 'Netstat'],
+        'Those lines are from ‘Icmp’.'
       ),
     ],
   },
@@ -1032,6 +1302,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Ping', 'Icmp', 'Traceroute', 'Netstat'],
         'Those opening lines are from ‘Ping’.'
       ),
+      MCQ(
+        'The lesson continues with: “Let\'s look at an example:” — which lesson is this?',
+        'Ping',
+        ['Ping', 'Icmp', 'Traceroute', 'Netstat'],
+        'Those lines are from ‘Ping’.'
+      ),
     ],
   },
   'linux-troubleshooting-3': {
@@ -1063,6 +1339,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Traceroute',
         ['Traceroute', 'Icmp', 'Ping', 'Netstat'],
         'Those opening lines are from ‘Traceroute’.'
+      ),
+      MCQ(
+        'The lesson continues with: “The router sends back an ICMP Time Exceeded message back to us. And then the next packet gets a TTL of 2, so it makes it past the first router, but when it get…” — which lesson is this?',
+        'Traceroute',
+        ['Traceroute', 'Icmp', 'Ping', 'Netstat'],
+        'Those lines are from ‘Traceroute’.'
       ),
     ],
   },
@@ -1102,6 +1384,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Netstat', 'Icmp', 'Ping', 'Traceroute'],
         'Those opening lines are from ‘Netstat’.'
       ),
+      MCQ(
+        'Which of these is mentioned in the ‘Netstat’ lesson?',
+        'netstat',
+        ['netstat', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Netstat’ lesson mentions “netstat” — find it in the theory above.'
+      ),
+      MCQ(
+        'The lesson continues with: “You can get a list of well-known ports by looking at the file /etc/services:” — which lesson is this?',
+        'Netstat',
+        ['Netstat', 'Icmp', 'Ping', 'Traceroute'],
+        'Those lines are from ‘Netstat’.'
+      ),
     ],
   },
   'linux-troubleshooting-5': {
@@ -1140,6 +1434,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Packet Analysis', 'Icmp', 'Ping', 'Traceroute'],
         'Those opening lines are from ‘Packet Analysis’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: sudo tcpdump -i wlan0',
+        ['sudo', 'tcpdump', '-i', 'wlan0'],
+        ['sudo', 'tcpdump', '-i', 'wlan0', '-la', '-r'],
+        'Type it exactly as shown: sudo tcpdump -i wlan0.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘Packet Analysis’ lesson?',
+        'sudo tcpdump -w /some/file',
+        ['sudo tcpdump -w /some/file', 'core', 'echo Hello World', 'pwd'],
+        'The ‘Packet Analysis’ lesson mentions “sudo tcpdump -w /some/file” — find it in the theory above.'
+      ),
     ],
   },
   'linux-dns-1': {
@@ -1163,6 +1469,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'What is DNS?',
         ['What is DNS?', 'DNS Components', 'DNS Process', 'Etc hosts'],
         'Those opening lines are from ‘What is DNS?’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Low level networking only understands the raw IP address to identify a host. DNS allows us humans to keep track of websites and hosts by name instead of an IP…” — which lesson is this?',
+        'What is DNS?',
+        ['What is DNS?', 'DNS Components', 'DNS Process', 'Etc hosts'],
+        'Those lines are from ‘What is DNS?’.'
       ),
     ],
   },
@@ -1201,6 +1513,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['DNS Components', 'What is DNS?', 'DNS Process', 'Etc hosts'],
         'Those opening lines are from ‘DNS Components’.'
       ),
+      BUILD(
+        'Assemble another command from this lesson: patty    IN  A      192.168.0.4',
+        ['patty', 'IN', 'A', '192.168.0.4'],
+        ['patty', 'IN', 'A', '192.168.0.4', 'sudo', '-la'],
+        'Type it exactly as shown: patty    IN  A      192.168.0.4.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘DNS Components’ lesson?',
+        'authoritative',
+        ['authoritative', 'core', 'echo Hello World', 'pwd'],
+        'The ‘DNS Components’ lesson mentions “authoritative” — find it in the theory above.'
+      ),
     ],
   },
   'linux-dns-3': {
@@ -1226,6 +1550,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'DNS Process',
         ['DNS Process', 'What is DNS?', 'DNS Components', 'Etc hosts'],
         'Those opening lines are from ‘DNS Process’.'
+      ),
+      MCQ(
+        'The lesson continues with: “Local DNS Server: First our host asks, "Where is catzontheinterwebz.com?", our local DNS server doesn\'t know so it goes and starts from the top of the funnel t…” — which lesson is this?',
+        'DNS Process',
+        ['DNS Process', 'What is DNS?', 'DNS Components', 'Etc hosts'],
+        'Those lines are from ‘DNS Process’.'
       ),
     ],
   },
@@ -1261,6 +1591,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Etc hosts', 'What is DNS?', 'DNS Components', 'DNS Process'],
         'Those opening lines are from ‘Etc hosts’.'
       ),
+      MCQ(
+        'The lesson continues with: “/etc/hosts: The /etc/hosts file contains mappings of some hostnames to IP addresses. The fields are pretty self explanatory, there is one for the IP address, t…” — which lesson is this?',
+        'Etc hosts',
+        ['Etc hosts', 'What is DNS?', 'DNS Components', 'DNS Process'],
+        'Those lines are from ‘Etc hosts’.'
+      ),
     ],
   },
   'linux-dns-5': {
@@ -1285,6 +1621,12 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'DNS Setup',
         ['DNS Setup', 'What is DNS?', 'DNS Components', 'DNS Process'],
         'Those opening lines are from ‘DNS Setup’.'
+      ),
+      MCQ(
+        'The lesson continues with: “BIND: The most popular DNS server on the Internet, it\'s the standard that is used with Linux distributions. It was originally developed at the University of Ca…” — which lesson is this?',
+        'DNS Setup',
+        ['DNS Setup', 'What is DNS?', 'DNS Components', 'DNS Process'],
+        'Those lines are from ‘DNS Setup’.'
       ),
     ],
   },
@@ -1321,6 +1663,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'DNS Tools',
         ['DNS Tools', 'What is DNS?', 'DNS Components', 'DNS Process'],
         'Those opening lines are from ‘DNS Tools’.'
+      ),
+      BUILD(
+        'Assemble another command from this lesson: nslookup www.google.com',
+        ['nslookup', 'www.google.com'],
+        ['nslookup', 'www.google.com', 'sudo', '-la'],
+        'Type it exactly as shown: nslookup www.google.com.'
+      ),
+      MCQ(
+        'Which of these is mentioned in the ‘DNS Tools’ lesson?',
+        'dig www.google.com',
+        ['dig www.google.com', 'core', 'echo Hello World', 'pwd'],
+        'The ‘DNS Tools’ lesson mentions “dig www.google.com” — find it in the theory above.'
       ),
     ],
   },
