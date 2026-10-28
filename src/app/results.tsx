@@ -27,6 +27,15 @@ export default function Results() {
   // Instant gratification: level-up celebration pops over the breakdown.
   const [showLevelUp, setShowLevelUp] = useState(!!result?.leveledUp);
   const pop = useRef(new Animated.Value(0.5)).current;
+  // XP pop: the earned XP floats up and fades like Duolingo's reward burst.
+  const xpRise = useRef(new Animated.Value(0)).current;
+  const xpFade = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(xpRise, { toValue: -46, duration: 1100, useNativeDriver: true }),
+      Animated.timing(xpFade, { toValue: 0, duration: 1100, useNativeDriver: true }),
+    ]).start();
+  }, [xpRise, xpFade]);
   useEffect(() => {
     if (!showLevelUp) return;
     void playCorrect();
@@ -101,8 +110,14 @@ export default function Results() {
       <Text className="mt-2 font-duo text-2xl font-extrabold text-slate-900">Lesson complete!</Text>
       <Text className="text-base text-slate-500">{result.title}</Text>
 
+      {/* XP burst: floats up off the stat bar, then fades. */}
+      <Animated.View style={{ transform: [{ translateY: xpRise }], opacity: xpFade }} className="items-center">
+        <View className="rounded-full bg-green-500 px-5 py-2 shadow-lg">
+          <Text className="font-duo text-xl font-black text-white">+{result.xpEarned} XP 🎉</Text>
+        </View>
+      </Animated.View>
       {/* Duo-style XP / accuracy / streak stat bar */}
-      <View className="mt-4 w-full max-w-sm flex-row justify-between rounded-3xl bg-slate-900 px-5 py-4">
+      <View className="mt-1 w-full max-w-sm flex-row justify-between rounded-3xl bg-slate-900 px-5 py-4">
         <View className="items-center">
           <Text className="text-2xl font-extrabold text-white">+{result.xpEarned}</Text>
           <Text className="text-xs font-bold text-slate-400">XP</Text>

@@ -886,10 +886,16 @@ export default function PathMap() {
 
                 <View className="relative mt-4 w-full items-center gap-5">
                   <View pointerEvents="none" className="absolute bottom-6 top-6 w-1.5 rounded-full bg-slate-100" />
-                  {unit.blocks.map((b, i) => (
+                  {unit.blocks.map((b, i) => {
+                    const st = unitState(unit, i);
+                    // Grey-out cascade: nodes two or more steps past the
+                    // frontier fade harder, so the unlock path reads ahead.
+                    const prevLocked = i > 0 ? unitState(unit, i - 1) === 'locked' : false;
+                    const deepLocked = st === 'locked' && prevLocked;
+                    return (
+                    <View key={b.id} className={deepLocked ? 'opacity-50' : ''}>
                     <PathNode
-                      key={b.id}
-                      state={unitState(unit, i)}
+                      state={st}
                       icon={isBlockDone(b) ? '🏆' : KIND_ICON[b.kind] ?? '⭐'}
                       label={b.title}
                       sub={`${KIND_META[b.kind].label} · ${b.minutes} min`}
@@ -897,7 +903,9 @@ export default function PathMap() {
                       offset={nextOffset()}
                       onPress={() => openBlock(b)}
                     />
-                  ))}
+                    </View>
+                    );
+                  })}
                   {/* Variable-reward chest: one-shot +50 XP claim per finished unit. */}
                   {(() => {
                     const unitDone = unit.blocks.every(isBlockDone);

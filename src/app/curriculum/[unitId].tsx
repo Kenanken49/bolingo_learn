@@ -96,14 +96,15 @@ export default function CurriculumUnit() {
               <Text className="text-xl text-slate-400">{isOpen ? '▲' : '▼'}</Text>
             </Pressable>
             {isOpen ? (
-              <View className={isTheoryGroup ? '' : 'flex-row flex-wrap gap-2 p-3 md:grid md:grid-cols-3'}>
+              <View className={isTheoryGroup ? 'relative' : 'flex-row flex-wrap gap-2 p-3 md:grid md:grid-cols-3'}>
+              {isTheoryGroup ? <View pointerEvents="none" className="absolute bottom-4 left-[27px] top-4 w-0 border-l-2 border-dashed border-slate-300" /> : null}
               {blocks.map((b, i) => {
                   const meta = KIND_META[b.kind];
                   const last = i === blocks.length - 1;
                   const lesson = getCourseLesson(b.lessonId);
                   const showTheory = (b.kind === 'lesson' || b.kind === 'review') && lesson && lesson.theory.length > 0;
                   return (
-                    <View key={b.id} className={isTheoryGroup ? (last ? '' : 'border-b border-slate-100') : 'w-full md:w-[31%] md:min-w-[180px] md:flex-1 overflow-hidden rounded-2xl border border-slate-100'}>
+                    <View key={b.id} className={isTheoryGroup ? '' : 'w-full md:w-[31%] md:min-w-[180px] md:flex-1 overflow-hidden rounded-2xl border border-slate-100'}>
                     <Pressable
                       onPress={() =>
                         b.kind === 'project'
@@ -114,7 +115,13 @@ export default function CurriculumUnit() {
                       accessibilityLabel={`Start ${b.title}`}
                       className={isTheoryGroup ? `flex-row items-center px-5 py-4 ${last ? '' : 'border-b border-slate-100'}` : 'flex-col p-4'}
                     >
-                      <Text className="text-2xl">{meta.icon}</Text>
+                      {isTheoryGroup ? (
+                        <View className="h-9 w-9 items-center justify-center rounded-full bg-green-500">
+                          <Text className="text-base font-black text-white">✓</Text>
+                        </View>
+                      ) : (
+                        <Text className="text-2xl">{meta.icon}</Text>
+                      )}
                       <View className={isTheoryGroup ? 'ml-3 flex-1' : 'mt-2 flex-1'}>
                         <View className="flex-row items-center">
                           <Text className={`mr-2 rounded-full px-2 py-0.5 text-[10px] font-extrabold ${meta.color}`}>
