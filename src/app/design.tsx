@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { View, Text, Pressable, ScrollView, Linking } from 'react-native';
+import { View, Text, Pressable, ScrollView } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Mascot from '../../components/AfricanMascots';
@@ -65,7 +66,7 @@ export default function DesignHub() {
 
       {/* B — video masterclasses */}
       <Text className="mt-6 font-duo text-lg font-extrabold text-slate-900">B · Video masterclasses</Text>
-      <Text className="text-sm text-slate-500">Multi-hour Figma courses from freeCodeCamp YouTube — opens in your browser.</Text>
+      <Text className="text-sm text-slate-500">Multi-hour Figma courses from freeCodeCamp YouTube — plays in-app, back returns you here.</Text>
       {DESIGN_VIDEOS.map((v) => (
         <View key={v.id} className="mt-2 rounded-3xl border-2 border-slate-200 bg-white p-4">
           <View className="flex-row items-center">
@@ -84,7 +85,7 @@ export default function DesignHub() {
           <Text className="mt-1 text-xs font-extrabold uppercase tracking-widest text-slate-400">You will build</Text>
           <Text className="text-sm text-slate-600">{v.builds.join(' · ')}</Text>
           <Pressable
-            onPress={() => void Linking.openURL(v.url)}
+            onPress={() => void WebBrowser.openBrowserAsync(v.url, { dismissButtonStyle: 'close' })}
             accessibilityRole="button"
             accessibilityLabel={`Watch ${v.title} on YouTube`}
             className="mt-3 items-center rounded-2xl bg-red-500 py-3"

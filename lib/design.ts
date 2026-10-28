@@ -21,7 +21,10 @@ export const DESIGN_VIDEOS: DesignVideo[] = [
     title: 'Learn Figma for UI/UX Design',
     author: 'Wish Naik · freeCodeCamp',
     hours: 6,
-    url: 'https://www.youtube.com/results?search_query=freecodecamp+figma+Wish+Naik+UI+UX+course',
+    // Verified via YouTube oEmbed: freeCodeCamp.org, "Learn Figma in 6
+    // Hours – Full Course for 2026" (Wish Naik's course per freeCodeCamp
+    // News, May 2026). Never a search URL — those land on random videos.
+    url: 'https://www.youtube.com/watch?v=mT_Jjn8RJdo',
     topics: ['Auto-layout', 'Components', 'Constraints', 'Dynamic design assets', 'High-fidelity prototyping'],
     builds: ['Travel app', 'Food delivery layout', 'Car dealership website'],
   },
@@ -30,7 +33,10 @@ export const DESIGN_VIDEOS: DesignVideo[] = [
     title: 'UI Design with Figma',
     author: 'Joseph Brendan · freeCodeCamp',
     hours: 10,
-    url: 'https://www.youtube.com/results?search_query=freecodecamp+UI+design+Figma+Joseph+Brendan+course',
+    // Verified via YouTube oEmbed: freeCodeCamp.org, "Figma Tutorial for
+    // UI Design - Course for Beginners" (Joseph Brendan's 10-hour course
+    // per freeCodeCamp News, Jan 2022).
+    url: 'https://www.youtube.com/watch?v=jwCmIBJ8Jtc',
     topics: ['Design trees', 'Color styling systems', 'Typography scaling', "Jakob's Law of User UX"],
     builds: ['Design system from scratch', 'Styled component library', 'Full app mockup'],
   },
