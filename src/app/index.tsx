@@ -13,7 +13,7 @@ import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
 import { GOALS, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
-import { getDailyMinutes, setDailyMinutes, DAILY_MINUTES_OPTIONS, outcomeForMinutes } from '../../lib/preferences';
+import { getDailyMinutes, setDailyMinutes, DAILY_MINUTES_OPTIONS, outcomeForMinutes, getSelectedCourse, setSelectedCourse } from '../../lib/preferences';
 import { levelForXp } from '../../lib/levels';
 import { getDueCount } from '../../lib/srs';
 
@@ -253,6 +253,8 @@ export default function PathMap() {
   const [dueCount, setDueCount] = useState(0);
   // Daily Quest: lessons finished today (drives the quest progress bar).
   const [todayCount, setTodayCount] = useState(0);
+  // Course picker (Duolingo style): null = all-courses grid, else one course path.
+  const [courseId, setCourseIdState] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -283,6 +285,8 @@ export default function PathMap() {
       setMinutesState(await getDailyMinutes().catch(() => 10));
       if (p) setDueCount(await getDueCount(p.id).catch(() => 0));
       if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
+      const saved = await getSelectedCourse().catch(() => null);
+      setCourseIdState(saved && COURSES_META.some((c) => c.id === saved) ? saved : null);
     } catch (e) {
       console.warn('Path refresh failed:', e);
     }
@@ -430,6 +434,12 @@ export default function PathMap() {
 
   // Per-unit progress across curriculum blocks + demo parity.
   const isBlockDone = (b: CurriculumBlock) => completed.has(b.lessonId) || completed.has(b.id);
+  // Units visible right now: everything, or just the picked course.
+  const visibleUnits = () => (courseId ? CURRICULUM.filter((u) => u.course === courseId) : CURRICULUM);
+  const selectCourse = async (id: string | null) => {
+    setCourseIdState(id);
+    await setSelectedCourse(id);
+  };
   const unitState = (unit: CurriculumUnit, blockIdx: number): NodeState => {
     const b = unit.blocks[blockIdx];
     if (isBlockDone(b)) return 'completed';
@@ -778,11 +788,60 @@ export default function PathMap() {
             /* Snake-UI guidance: one unambiguous next action, no menu decisions. */
             <UpNextCard block={nextUpBlock(completed)!} goal={goal} onStart={() => openBlock(nextUpBlock(completed)!)} />
           ) : null}
+          {/* Course picker (Duolingo style): every course on one screen —
+              open the one you care about and follow its path to completion. */}
+          {courseId ? (
+            <View className="mb-2 w-full max-w-sm flex-row items-center">
+              <Pressable
+                onPress={() => void selectCourse(null)}
+                accessibilityRole="button"
+                accessibilityLabel="Back to all courses"
+                className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-2"
+              >
+                <Text className="text-base font-extrabold text-sky-600">‹ All courses</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <View className="mb-8 w-full max-w-sm">
+              <Text className="font-duo text-xl font-extrabold text-slate-900">Your courses</Text>
+              <Text className="mb-3 mt-0.5 text-sm font-semibold text-slate-500">Pick one and follow its path — no more endless scrolling.</Text>
+              {COURSES_META.map((c) => {
+                const units = CURRICULUM.filter((u) => u.course === c.id);
+                const total = units.reduce((a, u) => a + u.blocks.length, 0);
+                const done = units.reduce((a, u) => a + u.blocks.filter(isBlockDone).length, 0);
+                const pct = total ? Math.round((done / total) * 100) : 0;
+                const status = total > 0 && done >= total ? 'Course complete \u{1F389}' : done > 0 ? `Continue · ${done}/${total}` : `Start · ${total} steps`;
+                return (
+                  <Pressable
+                    key={c.id}
+                    onPress={() => void selectCourse(c.id)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${c.name}: ${status}`}
+                    className="mb-3 w-full flex-row items-center rounded-3xl border-2 border-slate-200 bg-white p-4"
+                  >
+                    <View className="h-12 w-12 items-center justify-center rounded-full bg-slate-900">
+                      <Text className="text-2xl">{c.icon}</Text>
+                    </View>
+                    <View className="ml-3 flex-1">
+                      <Text className="font-duo text-base font-extrabold text-slate-900" numberOfLines={1}>
+                        {c.name}
+                      </Text>
+                      <View className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                        <View className="h-full rounded-full bg-green-500" style={{ width: `${pct}%` }} />
+                      </View>
+                      <Text className="mt-1 text-xs font-bold text-slate-500">{status}</Text>
+                    </View>
+                    <Text className="text-2xl font-extrabold text-slate-300">›</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
           {/* Curriculum units: Duo banner + winding FCC-mapped nodes + chest milestone */}
-          {CURRICULUM.map((unit, ui) => {
+          {courseId ? visibleUnits().map((unit, ui) => {
             const done = unit.blocks.filter(isBlockDone).length;
             const open = expanded[unit.id] ?? false;
-            const courseChanged = ui === 0 || CURRICULUM[ui - 1].course !== unit.course;
+            const courseChanged = ui === 0 || visibleUnits()[ui - 1]?.course !== unit.course;
             const courseMeta = COURSES_META.find((c) => c.id === unit.course);
             return (
               <View key={unit.id} className="mb-8 w-full max-w-sm items-center">
@@ -856,7 +915,7 @@ export default function PathMap() {
                 ) : null}
               </View>
             );
-          })}
+          }) : null}
 
           {/* Special node: newest custom revision */}
           {newestReady && (

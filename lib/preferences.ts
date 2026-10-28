@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SOUND_KEY = 'bolingo.soundOn';
 const HAPTICS_KEY = 'bolingo.hapticsOn';
 const MINUTES_KEY = 'bolingo.dailyMinutes';
+const COURSE_KEY = 'bolingo.selectedCourse';
 
 export const DAILY_MINUTES_OPTIONS = [5, 10, 15, 20] as const;
 
@@ -59,5 +60,22 @@ export async function getHapticsOn(): Promise<boolean> {
 export async function setHapticsOn(on: boolean): Promise<void> {
   try {
     await AsyncStorage.setItem(HAPTICS_KEY, on ? '1' : '0');
+  } catch {}
+}
+
+/** Duolingo-style course picker: null = all-courses grid, else one course path. */
+export async function getSelectedCourse(): Promise<string | null> {
+  try {
+    const v = await AsyncStorage.getItem(COURSE_KEY);
+    return v || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function setSelectedCourse(id: string | null): Promise<void> {
+  try {
+    if (id) await AsyncStorage.setItem(COURSE_KEY, id);
+    else await AsyncStorage.removeItem(COURSE_KEY);
   } catch {}
 }
