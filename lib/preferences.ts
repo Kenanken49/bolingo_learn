@@ -4,8 +4,11 @@ const SOUND_KEY = 'bolingo.soundOn';
 const HAPTICS_KEY = 'bolingo.hapticsOn';
 const MINUTES_KEY = 'bolingo.dailyMinutes';
 const COURSE_KEY = 'bolingo.selectedCourse';
+const WEEKLY_KEY = 'bolingo.weeklyDays';
 
 export const DAILY_MINUTES_OPTIONS = [5, 10, 15, 20] as const;
+/** Codecademy-style weekly target: gentler than a strict daily streak. */
+export const WEEKLY_DAYS_OPTIONS = [3, 5, 7] as const;
 
 /** Duolingo-style daily commitment (default 10). Drives the projected outcome line. */
 export async function getDailyMinutes(): Promise<number> {
@@ -21,6 +24,23 @@ export async function getDailyMinutes(): Promise<number> {
 export async function setDailyMinutes(min: number): Promise<void> {
   try {
     await AsyncStorage.setItem(MINUTES_KEY, String(min));
+  } catch {}
+}
+
+/** Weekly practice target, days per week (default 5). */
+export async function getWeeklyDays(): Promise<number> {
+  try {
+    const v = await AsyncStorage.getItem(WEEKLY_KEY);
+    const n = Number(v);
+    return (WEEKLY_DAYS_OPTIONS as readonly number[]).includes(n) ? n : 5;
+  } catch {
+    return 5;
+  }
+}
+
+export async function setWeeklyDays(days: number): Promise<void> {
+  try {
+    await AsyncStorage.setItem(WEEKLY_KEY, String(days));
   } catch {}
 }
 

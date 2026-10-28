@@ -13,7 +13,7 @@ import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
 import { GOALS, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
-import { getDailyMinutes, setDailyMinutes, DAILY_MINUTES_OPTIONS, outcomeForMinutes, getSelectedCourse, setSelectedCourse } from '../../lib/preferences';
+import { getDailyMinutes, setDailyMinutes, DAILY_MINUTES_OPTIONS, outcomeForMinutes, getSelectedCourse, setSelectedCourse, getWeeklyDays } from '../../lib/preferences';
 import { levelForXp } from '../../lib/levels';
 import { getDueCount } from '../../lib/srs';
 
@@ -257,6 +257,8 @@ export default function PathMap() {
   const [goal, setGoalState] = useState<GoalId | null>(null);
   // Duolingo onboarding: daily commitment (minutes/day) + projected outcome.
   const [minutes, setMinutesState] = useState(10);
+  // Codecademy-style weekly target: gentler than a strict daily streak.
+  const [weeklyDays, setWeeklyDays] = useState(5);
   // SRS: how many memory cards are due (drives the Daily Review nudge).
   const [dueCount, setDueCount] = useState(0);
   // Daily Quest: lessons finished today (drives the quest progress bar).
@@ -291,6 +293,7 @@ export default function PathMap() {
       setOnboardedState(await hasOnboarded());
       setGoalState(await getGoal());
       setMinutesState(await getDailyMinutes().catch(() => 10));
+      setWeeklyDays(await getWeeklyDays().catch(() => 5));
       if (p) setDueCount(await getDueCount(p.id).catch(() => 0));
       if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
       const saved = await getSelectedCourse().catch(() => null);
@@ -522,6 +525,7 @@ export default function PathMap() {
       ))}
       <View className="mt-4 rounded-2xl border-2 border-slate-200 p-4">
         <Text className="text-sm font-extrabold text-slate-800">Daily Quest · {minutes} min/day {todayCount >= 1 ? '✅' : ''}</Text>
+        <Text className="mt-1 text-xs font-bold text-slate-400">Weekly target: {weeklyDays} days · streak {streak}🔥</Text>
         <Text className="mt-1 text-sm text-slate-500">
           {profile
             ? todayCount >= 1
@@ -859,6 +863,9 @@ export default function PathMap() {
                         <View className="h-full rounded-full bg-green-500" style={{ width: `${pct}%` }} />
                       </View>
                       <Text className="mt-1 text-xs font-bold text-slate-500">{status}</Text>
+                      <Text className="mt-0.5 text-[11px] font-bold text-slate-400">
+                        {c.difficulty} · {c.hours} · XP separate from mastery ({done}/{total})
+                      </Text>
                     </View>
                     <Text className="text-2xl font-extrabold text-slate-300">›</Text>
                   </Pressable>

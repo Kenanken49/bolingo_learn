@@ -89,13 +89,18 @@ export async function getDueCount(userId: string): Promise<number> {
   }
 }
 
-/** Oldest-due cards first, capped for a ~2-minute session. */
+/**
+ * Mistakes first, then oldest-due (Duolingo Mistakes-review pattern):
+ * lapsed cards are retrieval failures — rehearse them before routine dues.
+ * Capped for a ~2-minute session.
+ */
 export async function getDueItems(userId: string, limit = REVIEW_CAP): Promise<DueItem[]> {
   const { data, error } = await supabase
     .from('srs_cards')
-    .select('item_key,prompt,correct_chain,options,lesson_title')
+    .select('item_key,prompt,correct_chain,options,lesson_title,lapses')
     .eq('user_id', userId)
     .lte('due_at', new Date().toISOString())
+    .order('lapses', { ascending: false })
     .order('due_at', { ascending: true })
     .limit(limit);
   if (error || !data) return [];

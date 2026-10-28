@@ -14,6 +14,9 @@ import {
   setDailyMinutes,
   DAILY_MINUTES_OPTIONS,
   outcomeForMinutes,
+  getWeeklyDays,
+  setWeeklyDays,
+  WEEKLY_DAYS_OPTIONS,
 } from '../../lib/preferences';
 
 export default function Settings() {
@@ -23,6 +26,7 @@ export default function Settings() {
   const [remindersOn, setReminders] = useState(false);
   const [todayCount, setTodayCount] = useState(0);
   const [minutes, setMinutes] = useState(10);
+  const [weeklyDays, setWeekly] = useState(5);
 
   const refresh = useCallback(async () => {
     try {
@@ -30,6 +34,7 @@ export default function Settings() {
       setProfile(p);
       if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
       setMinutes(await getDailyMinutes().catch(() => 10));
+      setWeekly(await getWeeklyDays().catch(() => 5));
       setReminders(await areRemindersOn());
       setSoundOn(await getSoundOn());
       setHapticsOn(await getHapticsOn());
@@ -131,6 +136,24 @@ export default function Settings() {
             ))}
           </View>
           <Text className="mt-1 text-xs text-amber-700">🎯 {outcomeForMinutes(minutes)}</Text>
+          <Text className="mt-3 text-xs font-bold uppercase tracking-widest text-amber-600">Weekly target</Text>
+          <View className="mt-1 flex-row gap-2">
+            {WEEKLY_DAYS_OPTIONS.map((d) => (
+              <Pressable
+                key={d}
+                onPress={() => {
+                  setWeekly(d);
+                  void setWeeklyDays(d);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`${d} days per week`}
+                className={`flex-1 items-center rounded-xl border-2 py-1.5 ${weeklyDays === d ? 'border-amber-500 bg-amber-100' : 'border-slate-200 bg-white'}`}
+              >
+                <Text className={`text-xs font-extrabold ${weeklyDays === d ? 'text-amber-700' : 'text-slate-500'}`}>{d}d/wk</Text>
+              </Pressable>
+            ))}
+          </View>
+          <Text className="mt-1 text-xs text-amber-700">Practice {weeklyDays} days a week — missing one day never resets you.</Text>
       </View>
 
       <View className="mt-6 w-full max-w-sm gap-3">

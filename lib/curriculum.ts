@@ -31,13 +31,23 @@ export interface CurriculumUnit {
   blocks: CurriculumBlock[];
 }
 
-export const COURSES_META = [
-  { id: 'html', name: 'Course 1 · Complete HTML', icon: '\u{1F310}', blurb: 'Duolingo path style — ⚡ bite-sized 2–5 min nodes, streaks, chests.' },
-  { id: 'rwd', name: 'Course 2 · Responsive Web Design', icon: '\u{1F4D0}', blurb: 'freeCodeCamp style — ⚡ bite-sized 2–5 min lessons, workshops, labs, exam.' },
-  { id: 'design', name: 'Course 3 · UI/UX Design for Developers', icon: '\u{1F3A8}', blurb: 'Design ecosystem — ⚡ bite-sized theory, Figma masterclasses, guides hub.' },
-  { id: 'lang', name: 'Course 4 · World Languages & Chess', icon: '\u{1F30D}', blurb: 'Duolingo style — basics, phrases, tenses, review, checkpoints.' },
-  { id: 'certs', name: 'Course 5 · Leveled Certifications', icon: '\u{1F393}', blurb: '7 tracks · 5 unlockable levels each — bite-sized lessons into real capstone projects.' },
-  { id: 'linux', name: 'Course 6 · Linux Journey', icon: '\u{1F427}', blurb: '22 courses · 185 bite-sized lessons — the full Linux Journey, no daily limit.' },
+/** freeCodeCamp-catalog pattern: difficulty + workload on every course card. */
+export type CourseDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
+
+export const COURSES_META: Array<{
+  id: string;
+  name: string;
+  icon: string;
+  blurb: string;
+  difficulty: CourseDifficulty;
+  hours: string;
+}> = [
+  { id: 'html', name: 'Course 1 · Complete HTML', icon: '\u{1F310}', blurb: 'Duolingo path style — ⚡ bite-sized 2–5 min nodes, streaks, chests.', difficulty: 'Beginner', hours: '~4h' },
+  { id: 'rwd', name: 'Course 2 · Responsive Web Design', icon: '\u{1F4D0}', blurb: 'freeCodeCamp style — ⚡ bite-sized 2–5 min lessons, workshops, labs, exam.', difficulty: 'Beginner', hours: '~12h' },
+  { id: 'design', name: 'Course 3 · UI/UX Design for Developers', icon: '\u{1F3A8}', blurb: 'Design ecosystem — ⚡ bite-sized theory, Figma masterclasses, guides hub.', difficulty: 'Beginner', hours: '~20h' },
+  { id: 'lang', name: 'Course 4 · World Languages & Chess', icon: '\u{1F30D}', blurb: 'Duolingo style — basics, phrases, tenses, review, checkpoints.', difficulty: 'Beginner', hours: 'ongoing' },
+  { id: 'certs', name: 'Course 5 · Leveled Certifications', icon: '\u{1F393}', blurb: '7 tracks · 5 unlockable levels each — bite-sized lessons into real capstone projects.', difficulty: 'Intermediate', hours: '~300h' },
+  { id: 'linux', name: 'Course 6 · Linux Journey', icon: '\u{1F427}', blurb: '22 courses · 185 bite-sized lessons — the full Linux Journey, no daily limit.', difficulty: 'Intermediate', hours: '~25h' },
 ];
 
 export const KIND_META: Record<BlockKind, { label: string; icon: string; color: string }> = {
