@@ -72,9 +72,10 @@ export function priorDifficulty(f?: ItemFeatures): number {
   return clamp(0.12 * (chain - 1) + (f.isBuild ? 0.2 : 0) - 0.15, -1.5, 1.5);
 }
 
-/** Lucky-guess rate: ~1-in-4+ on 4-option MCQ, near zero on builds. */
+/** Per-type lucky-guess rate (mixed-harness locked): MCQ taps 0.30, BUILD chains 0.12, unknown 0.20. */
 export function guessRate(f?: ItemFeatures): number {
-  return f && f.isBuild ? 0.06 : 0.22;
+  if (!f) return GUESS; // unknown type -> neutral global fallback (locked at 0.2)
+  return f.isBuild ? GUESS_BUILD : GUESS_MCQ;
 }
 /** Slip rate: even masters fat-finger ~8%. */
 export function slipRate(): number {
@@ -130,6 +131,9 @@ const DIFF_K0 = 0.12;
 const DIFF_TAU = 12;
 /** Guess (MCQ 4-option slip of attention) / slip rates for BKT-style weighting. */
 const GUESS = 0.2;
+/** Per-type lucky-guess rates (grid-locked by scripts/kiki-tune-mixed.cjs). */
+const GUESS_MCQ = 0.30;
+const GUESS_BUILD = 0.12;
 const SLIP = 0.08;
 /** Skill prior: code skills start slightly productive, chess slightly sharp. */
 function skillPrior(skill: string): number {
