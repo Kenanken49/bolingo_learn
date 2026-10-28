@@ -4,6 +4,7 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/GamifiedCodePlayer';
 import DuoButton from '../../../components/DuoButton';
+import AskBingo from '../../../components/AskBingo';
 import Mascot from '../../../components/AfricanMascots';
 import { supabase, toDbLessonId } from '../../../lib/supabase';
 import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
@@ -352,6 +353,8 @@ export default function QuizPlayer() {
           </View>
         </View>
       ) : null}
+      {/* Super Intelligent help: Bingo answers stuck learners in context. */}
+      <AskBingo lessonTitle={String(title ?? 'Lesson')} prompt={q?.prompt} />
       <StatusBar style="auto" />
     </View>
   );

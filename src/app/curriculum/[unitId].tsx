@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CURRICULUM, KIND_META, type BlockKind } from '../../../lib/curriculum';
 import { getCourseLesson } from '../../../lib/courses';
+import AskBingo from '../../../components/AskBingo';
 
 const GROUPS: Array<{ title: string; kinds: BlockKind[]; blurb: string }> = [
   { title: 'Learn the theory', kinds: ['lesson'], blurb: 'First exposure: core concepts with live examples.' },
@@ -33,6 +34,7 @@ export default function CurriculumUnit() {
   const totalXp = unit.blocks.reduce((s, b) => s + b.xp, 0);
 
   return (
+    <View className="flex-1 bg-slate-50">
     <ScrollView contentContainerClassName="bg-slate-50 px-6 pb-16 pt-12">
       <Pressable onPress={() => router.replace('/')} accessibilityRole="button" accessibilityLabel="Back to learning path">
         <Text className="font-bold text-sky-600">‹ Back to Learn</Text>
@@ -143,5 +145,8 @@ export default function CurriculumUnit() {
       </Pressable>
       <StatusBar style="auto" />
     </ScrollView>
+      {/* Super Intelligent help on every unit path: Bingo knows the unit. */}
+      <AskBingo lessonTitle={unit.title} prompt={unit.goal} />
+    </View>
   );
 }

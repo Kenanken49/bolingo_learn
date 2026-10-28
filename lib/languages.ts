@@ -7,6 +7,10 @@
 import { MCQ, BUILD, validateBank, type CourseLesson } from './quizBank';
 import { SWAHILI_PLUS } from './swahili-plus';
 import { ENGLISH_PLUS } from './english-plus';
+import { SPANISH_PLUS } from './spanish-plus';
+import { FRENCH_PLUS } from './french-plus';
+import { GERMAN_PLUS } from './german-plus';
+import { CHESS_PLUS } from './chess-plus';
 
 export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   /* ---------------- Course 4 · World Languages (Duolingo style) ---------------- */
@@ -974,7 +978,7 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
 };
 
 /* ---------------- Comprehensive sets: Swahili + English (own files) ---------------- */
-Object.assign(LANGUAGE_COURSES, SWAHILI_PLUS, ENGLISH_PLUS);
+Object.assign(LANGUAGE_COURSES, SWAHILI_PLUS, ENGLISH_PLUS, SPANISH_PLUS, FRENCH_PLUS, GERMAN_PLUS, CHESS_PLUS);
 
 // Fail loudly at import time — a bad seed breaks the bundle, not a session.
 Object.values(LANGUAGE_COURSES).forEach(validateBank);

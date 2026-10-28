@@ -7,6 +7,7 @@ import CodeEditor, { combineDoc, type CodeDoc } from '../../../components/CodeEd
 import { getCourseProject } from '../../../lib/courses';
 import { fetchRemoteProject, getCertProject, gradeProject } from '../../../lib/certifications';
 import { completeLesson, getProfile } from '../../../lib/progress';
+import AskBingo from '../../../components/AskBingo';
 import { supabase } from '../../../lib/supabase';
 import { setLessonResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
@@ -138,6 +139,7 @@ export default function CertificationProject() {
   };
 
   return (
+    <View className="flex-1 bg-slate-100">
     <ScrollView contentContainerClassName="bg-slate-100 px-4 pb-16 pt-12 md:px-6">
       <View className="w-full max-w-3xl self-center">
         <Pressable onPress={() => router.replace('/')} accessibilityRole="button" accessibilityLabel="Back to learning path">
@@ -231,5 +233,8 @@ export default function CertificationProject() {
       </View>
       <StatusBar style="auto" />
     </ScrollView>
+      {/* Super Intelligent help: Bingo debugs stuck builders in context. */}
+      <AskBingo lessonTitle={String(title ?? project.title)} prompt={project.brief[0]} />
+    </View>
   );
 }
