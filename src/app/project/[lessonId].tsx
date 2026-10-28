@@ -238,7 +238,12 @@ export default function CertificationProject() {
       <StatusBar style="auto" />
     </ScrollView>
       {/* Super Intelligent help: Bingo debugs stuck builders in context. */}
-      <AskBingo lessonTitle={String(title ?? project.title)} prompt={project.brief[0]} userId={builderId} />
+      <AskBingo
+        lessonTitle={String(title ?? project.title)}
+        prompt={project.brief[0]}
+        theory={project.brief.join(' ').slice(0, 900)}
+        userId={builderId}
+      />
     </View>
   );
 }

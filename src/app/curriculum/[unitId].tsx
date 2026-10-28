@@ -151,7 +151,13 @@ export default function CurriculumUnit() {
       <StatusBar style="auto" />
     </ScrollView>
       {/* Super Intelligent help on every unit path: Bingo knows the unit. */}
-      <AskBingo lessonTitle={unit.title} prompt={unit.goal} userId={unitUserId} />
+      <AskBingo
+        lessonTitle={unit.title}
+        prompt={unit.goal}
+        theory={unit.blocks.map((b) => `${b.title}: ${b.blurb}`).join(' ').slice(0, 900)}
+        strongFirst={unit.course === 'lang'}
+        userId={unitUserId}
+      />
     </View>
   );
 }

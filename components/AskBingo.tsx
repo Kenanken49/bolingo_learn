@@ -10,6 +10,10 @@ interface Props {
   lessonTitle: string;
   /** Current question/project step, when there is one. */
   prompt?: string;
+  /** Authoritative lesson theory — grounds the small model in facts. */
+  theory?: string;
+  /** Language banks: try the strong fallback brain first. */
+  strongFirst?: boolean;
   /** Signed-in learner id — votes are logged only when present. */
   userId?: string | null;
 }
@@ -19,14 +23,14 @@ interface Props {
  * where the learner types what confuses them; Bingo answers in context.
  * Free for all learners — offline or AI failure falls back to the Kamusi.
  */
-export default function AskBingo({ lessonTitle, prompt, userId = null }: Props) {
+export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, userId = null }: Props) {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const context: BingoContext = { lessonTitle, prompt };
+  const context: BingoContext = { lessonTitle, prompt, theory, strongFirst };
 
   const send = async () => {
     if (loading || !question.trim()) return;

@@ -14,6 +14,8 @@ import * as Haptics from 'expo-haptics';
 // Hearts gate retired: wrong answers no longer consume hearts (unlimited learning).
 
 import { fetchExplanation } from '../lib/explain';
+import { getCourseLesson } from '../lib/courses';
+import { getLanguageLesson } from '../lib/languages';
 import HelpfulVote from './HelpfulVote';
 import { getSoundOn, getHapticsOn } from '../lib/preferences';
 import { CORRECT_CHIME, WRONG_BUZZ } from '../assets/sounds';
@@ -110,7 +112,13 @@ export default function GamifiedCodePlayer({
       const text = await fetchExplanation(
         questionData.prompt,
         selectedTokens.join(' '),
-        questionData.correctChain.join(' ')
+        questionData.correctChain.join(' '),
+        {
+          theory: getCourseLesson(lessonId)?.theory.slice(0, 2).join(' ').slice(0, 900),
+          reference: questionData.explain,
+          // Language banks: 1.5B misnames terms even grounded — strong brain first.
+          strongFirst: !!getLanguageLesson(lessonId),
+        }
       );
       setExplain(text);
     } catch {

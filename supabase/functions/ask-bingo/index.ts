@@ -57,7 +57,8 @@ function cleanModelText(data: {
 async function chatComplete(
   messages: Array<{ role: string; content: string }>,
   maxTokens: number,
-  temperature: number
+  temperature: number,
+  strongFirst = false
 ): Promise<{ text: string; via: string }> {
   const apiKey = Deno.env.get('LLM_API_KEY') ?? '';
   if (!apiKey) throw new Error('Missing LLM_API_KEY secret.');
@@ -65,6 +66,10 @@ async function chatComplete(
   if (FALLBACK_URL && FALLBACK_KEY) {
     attempts.push({ url: FALLBACK_URL, key: FALLBACK_KEY, model: FALLBACK_MODEL, via: 'fallback' });
   }
+  // Language banks try the strong brain first (1.5B misnames terms even
+  // grounded); code lessons stay primary-first. Order swap only — coverage
+  // is identical either way, and `via` records which brain answered.
+  if (strongFirst && attempts.length === 2) attempts.reverse();
   let lastErr: unknown = new Error('No LLM backend configured.');
   for (const a of attempts) {
     try {
@@ -93,25 +98,32 @@ serve(async (req: Request) => {
   try {
     const { question, context } = (await req.json()) as {
       question?: string;
-      context?: { lessonTitle?: string; prompt?: string };
+      context?: { lessonTitle?: string; prompt?: string; theory?: string; strongFirst?: boolean };
     };
     if (!question || !question.trim()) return json({ error: 'Missing question.' }, 400);
 
     const where = [context?.lessonTitle, context?.prompt].filter(Boolean).join(' — ');
+    // Grounding: the self-hosted 1.5B recalls facts poorly but reads well.
+    // Lesson theory ships with the request so the model copies facts instead
+    // of inventing them (measured fix: "Sama" -> "Asante").
+    const theory = (context?.theory ?? '').slice(0, 1500);
+    const material = theory
+      ? `Authoritative lesson material — base every factual claim on this, never contradict it:\n${theory}`
+      : '';
     const { text: answer, via } = await chatComplete(
       [
         {
-          role: 'system',
-          content:
-            'You are Bingo, a warm, encouraging owl tutor inside the Bolingo learning app. The student is stuck on a lesson and asks for help. Answer their question directly in at most 4 short sentences: give a hint or the key idea, never just the bare answer — guide them to discover it. Plain language, no jargon, no condescension, one small encouragement at the end.',
-        },
-        {
-          role: 'user',
-          content: `Lesson context: ${where || 'general study'}\nStudent question: ${question.trim()}`,
-        },
+          role: 'system',              content:
+                'You are Bingo, a warm, encouraging owl tutor inside the Bolingo learning app. The student is stuck on a lesson and asks for help. Answer their question directly in at most 4 short sentences: give a hint or the key idea, never just the bare answer — guide them to discover it. When lesson material is provided, treat it as authoritative: quote its facts and terms exactly. Plain language, no jargon, no condescension, one small encouragement at the end.',
+          },
+          {
+            role: 'user',
+            content: `Lesson context: ${where || 'general study'}\n${material}${material ? '\n' : ''}Student question: ${question.trim()}`,
+          },
       ],
       600,
-      0.6
+      0.6,
+      context?.strongFirst === true
     );
     return json({ answer, via });
   } catch (e) {

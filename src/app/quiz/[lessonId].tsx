@@ -10,6 +10,7 @@ import { supabase, toDbLessonId } from '../../../lib/supabase';
 import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
+import { getLanguageLesson } from '../../../lib/languages';
 import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
 import { gradeCard, getDueItems } from '../../../lib/srs';
@@ -353,8 +354,14 @@ export default function QuizPlayer() {
           </View>
         </View>
       ) : null}
-      {/* Super Intelligent help: Bingo answers stuck learners in context. */}
-      <AskBingo lessonTitle={String(title ?? 'Lesson')} prompt={q?.prompt} userId={userId} />
+      {/* Super Intelligent help: Bingo answers stuck learners in context, grounded in lesson theory. */}
+      <AskBingo
+        lessonTitle={String(title ?? 'Lesson')}
+        prompt={q?.prompt}
+        theory={getCourseLesson(typeof lessonId === 'string' ? lessonId : '')?.theory.slice(0, 2).join(' ').slice(0, 900)}
+        strongFirst={typeof lessonId === 'string' && !!getLanguageLesson(lessonId)}
+        userId={userId}
+      />
       <StatusBar style="auto" />
     </View>
   );

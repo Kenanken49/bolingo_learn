@@ -8,6 +8,16 @@ import { supabase } from './supabase';
 export interface BingoContext {
   lessonTitle?: string;
   prompt?: string;
+  /**
+   * Authoritative lesson material (theory text). The small self-hosted
+   * model recalls facts poorly (measured: "Sama" for "thank you" instead
+   * of "Asante"); with theory attached it reads instead of recalling.
+   * Truncated client-side to ~900 chars — free over the VPS, cheap on
+   * fallback, and worth every token in correctness.
+   */
+  theory?: string;
+  /** Language banks: try the fallback brain first (see ExplainContext). */
+  strongFirst?: boolean;
 }
 
 const cache = new Map<string, string>();
