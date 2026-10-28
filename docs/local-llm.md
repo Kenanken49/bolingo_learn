@@ -78,6 +78,13 @@ Fallback unset = primary-only (today's behavior). Every success carries a
 never include URLs — the VPS path embeds its token. Live-tested Oct 28:
 `via: primary`, 16 s, clean content.
 
+Primary timeout is 30 s (VPS p99 ~16-20 s): a hung VPS fails over to the
+~2 s fallback instead of leaving learners staring. Proven Oct 28 with a
+degraded (not dead) primary: `via: fallback` in 2.7 s with a flawless
+preterite-vs-present explanation. Any primary failure mode — refused,
+error status, hang, empty — converges on the same catch → fallback, so a
+degraded primary keeps serving real learners throughout.
+
 ## Costs
 
 - VPS: ~1 GB disk, ~2 GB RAM for the loaded model. No per-token billing.

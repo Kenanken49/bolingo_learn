@@ -70,7 +70,9 @@ async function chatComplete(
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${a.key}` },
         body: JSON.stringify({ model: a.model, messages, max_tokens: maxTokens, temperature }),
-        signal: AbortSignal.timeout(50_000),
+        // 30 s: VPS p99 is ~16-20 s (cold load + inference); beyond that the
+        // learner is better served by the ~2 s fallback than by more waiting.
+        signal: AbortSignal.timeout(30_000),
       });
       if (!res.ok) throw new Error(`LLM request failed with status ${res.status}.`);
       const data = await res.json();
