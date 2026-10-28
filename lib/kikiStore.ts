@@ -90,8 +90,17 @@ export function getKikiState(): KikiState {
 }
 
 /** Grade one attempt through Kiki v3 (prediction + update + throttled sync). */
-export function kikiAttempt(skill: SkillId, key: string, correct: boolean, f?: ItemFeatures): { p: number } {
+export function kikiAttempt(skill: SkillId, key: string, correct: boolean, f?: ItemFeatures): { p: number; d: number } {
   const out = recordAttempt(state, skill, key, correct, Date.now(), f);
+  // Analytics (signed-in only, best-effort, never blocking): one row per
+  // graded attempt powers scripts/kiki-calibrate.cjs. Guests stay local.
+  if (userId) {
+    const uid: string = userId;
+    const row = { user_id: uid, skill, item_key: key, is_build: f ? f.isBuild : false, chain_len: f ? Math.max(1, Math.floor(f.chainLen)) : 1, difficulty: out.d, predicted_p: out.p, correct };
+    void supabase.from("kiki_attempts").insert(row).then(({ error }) => {
+      if (error) console.warn("kiki analytics insert failed:", error.message);
+    });
+  }
   void writeLocal();
   if (userId && Date.now() - lastRemoteSave > REMOTE_THROTTLE_MS) void writeRemote(userId);
   return out;

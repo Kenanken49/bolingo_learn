@@ -396,3 +396,37 @@ create policy "Users manage own kiki profile"
   with check (auth.uid() = user_id);
 
 grant all on public.kiki_profiles to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Kiki v3 analytics: one row per graded attempt (signed-in learners only).
+-- Guests stay device-local (no row). Powers scripts/kiki-calibrate.cjs:
+-- calibration bins, per-type (MCQ/BUILD) predicted-vs-actual, Brier score,
+-- and the empirical guess floor that validates GUESS_MCQ / GUESS_BUILD.
+-- Missing rows are expected (offline / guest play) — the calibrator reports
+-- coverage and refuses verdicts below n=100 per type.
+-- ---------------------------------------------------------------------------
+create table if not exists public.kiki_attempts (
+  id bigint generated always as identity primary key,
+  user_id uuid not null references public.profiles (id) on delete cascade,
+  skill text not null,
+  item_key text not null,
+  is_build boolean not null default false,
+  chain_len integer not null default 1,
+  difficulty double precision not null,
+  predicted_p double precision not null,
+  correct boolean not null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.kiki_attempts enable row level security;
+
+drop policy if exists "Users log and read own attempts" on public.kiki_attempts;
+create policy "Users log and read own attempts"
+  on public.kiki_attempts for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+grant insert, select on public.kiki_attempts to authenticated;
+
+create index if not exists kiki_attempts_user_time on public.kiki_attempts (user_id, created_at desc);
+create index if not exists kiki_attempts_type_time on public.kiki_attempts (is_build, created_at desc);

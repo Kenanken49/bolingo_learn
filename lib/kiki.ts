@@ -177,7 +177,7 @@ export function recordAttempt(
   correct: boolean,
   now = Date.now(),
   f?: ItemFeatures,
-): { p: number } {
+): { p: number; d: number } {
   try {
     applyDrift(s, now);
     const sk = s.skills[skill] ?? skillPrior(skill);
@@ -220,9 +220,9 @@ export function recordAttempt(
     const arr = (s.log[skill] ??= []);
     arr.push({ t: now, c: correct ? 1 : 0 });
     if (arr.length > 60) arr.splice(0, arr.length - 60);
-    return { p };
+    return { p, d };
   } catch {
-    return { p: 0.5 };
+    return { p: 0.5, d: 0 };
   }
 }
 
