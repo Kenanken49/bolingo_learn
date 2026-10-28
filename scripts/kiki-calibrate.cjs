@@ -144,10 +144,14 @@ async function reportTutorGuardrail(db, sinceArg, minVotes) {
 
 async function main() {
   const args = process.argv.slice(2);
-  const sinceArg = args[args.indexOf('--since') + 1];
-  const minNArg = args[args.indexOf('--min-n') + 1];
+  const flagArg = (flag) => {
+    const i = args.indexOf(flag);
+    return i === -1 ? undefined : args[i + 1];
+  };
+  const sinceArg = flagArg('--since');
+  const minNArg = flagArg('--min-n');
   const MIN_N = minNArg ? parseInt(minNArg, 10) : 100;
-  const minVotesArg = args[args.indexOf('--min-votes') + 1];
+  const minVotesArg = flagArg('--min-votes');
   const MIN_VOTES = minVotesArg ? parseInt(minVotesArg, 10) : 5;
   const env = { ...loadEnv(), ...process.env };
   const url = env.SUPABASE_URL;
