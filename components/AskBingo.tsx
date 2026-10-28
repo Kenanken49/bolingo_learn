@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import Mascot from './AfricanMascots';
+import HelpfulVote from './HelpfulVote';
 import { askBingo, type BingoContext } from '../lib/askBingo';
 
 interface Props {
@@ -9,6 +10,8 @@ interface Props {
   lessonTitle: string;
   /** Current question/project step, when there is one. */
   prompt?: string;
+  /** Signed-in learner id — votes are logged only when present. */
+  userId?: string | null;
 }
 
 /**
@@ -16,7 +19,7 @@ interface Props {
  * where the learner types what confuses them; Bingo answers in context.
  * Free for all learners — offline or AI failure falls back to the Kamusi.
  */
-export default function AskBingo({ lessonTitle, prompt }: Props) {
+export default function AskBingo({ lessonTitle, prompt, userId = null }: Props) {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState<string | null>(null);
@@ -77,16 +80,20 @@ export default function AskBingo({ lessonTitle, prompt }: Props) {
                   </Text>
                   <Text className="mt-0.5 text-sm font-semibold text-slate-700">{prompt}</Text>
                 </View>
-              ) : null}
-
-              {answer ? (
-                <View className="mt-3 rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
-                  <Text className="text-sm font-bold uppercase tracking-widest text-amber-700">
-                    🦉 Bingo says
-                  </Text>
-                  <Text className="mt-1 text-base leading-6 text-slate-800">{answer}</Text>
-                </View>
-              ) : null}
+              ) : null}              {answer ? (
+              <View className="mt-3 rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
+                <Text className="text-sm font-bold uppercase tracking-widest text-amber-700">
+                  🦉 Bingo says
+                </Text>
+                <Text className="mt-1 text-base leading-6 text-slate-800">{answer}</Text>
+                <HelpfulVote
+                  userId={userId}
+                  lessonTitle={lessonTitle}
+                  prompt={prompt ?? ''}
+                  question={question}
+                />
+              </View>
+            ) : null}
 
               {error ? (
                 <View className="mt-3 rounded-2xl bg-red-50 p-4">

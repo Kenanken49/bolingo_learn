@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { getProfile } from '../../../lib/progress';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -18,6 +19,10 @@ export default function CurriculumUnit() {
   const { unitId } = useLocalSearchParams<{ unitId: string }>();
   const unit = useMemo(() => CURRICULUM.find((u) => u.id === unitId) ?? CURRICULUM[0], [unitId]);
   const [open, setOpen] = useState<Record<string, boolean>>({ 'Learn the theory': true });
+  const [unitUserId, setUnitUserId] = useState<string | null>(null);
+  useEffect(() => {
+    getProfile().then((p) => setUnitUserId(p?.id ?? null)).catch(() => {});
+  }, []);
 
   if (!unit) {
     return (
@@ -146,7 +151,7 @@ export default function CurriculumUnit() {
       <StatusBar style="auto" />
     </ScrollView>
       {/* Super Intelligent help on every unit path: Bingo knows the unit. */}
-      <AskBingo lessonTitle={unit.title} prompt={unit.goal} />
+      <AskBingo lessonTitle={unit.title} prompt={unit.goal} userId={unitUserId} />
     </View>
   );
 }

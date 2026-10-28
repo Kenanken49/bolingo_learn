@@ -14,6 +14,7 @@ import * as Haptics from 'expo-haptics';
 // Hearts gate retired: wrong answers no longer consume hearts (unlimited learning).
 
 import { fetchExplanation } from '../lib/explain';
+import HelpfulVote from './HelpfulVote';
 import { getSoundOn, getHapticsOn } from '../lib/preferences';
 import { CORRECT_CHIME, WRONG_BUZZ } from '../assets/sounds';
 
@@ -326,9 +327,16 @@ export default function GamifiedCodePlayer({
           ) : null}
           {feedback === 'wrong' ? (
             explain ? (
-              <Text className="mt-2 rounded-xl bg-violet-50 p-3 text-sm leading-5 text-violet-900">
-                ✨ {explain}
-              </Text>
+              <View className="mt-2 rounded-xl bg-violet-50 p-3">
+                <Text className="text-sm leading-5 text-violet-900">✨ {explain}</Text>
+                <HelpfulVote
+                  userId={userId}
+                  lessonTitle={questionLabel}
+                  prompt={questionData.prompt}
+                  question={selectedTokens.join(' ')}
+                  compact
+                />
+              </View>
             ) : (
               <Pressable
                 onPress={() => void explainAnswer()}

@@ -354,7 +354,7 @@ export default function QuizPlayer() {
         </View>
       ) : null}
       {/* Super Intelligent help: Bingo answers stuck learners in context. */}
-      <AskBingo lessonTitle={String(title ?? 'Lesson')} prompt={q?.prompt} />
+      <AskBingo lessonTitle={String(title ?? 'Lesson')} prompt={q?.prompt} userId={userId} />
       <StatusBar style="auto" />
     </View>
   );

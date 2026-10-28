@@ -49,6 +49,10 @@ export default function CertificationProject() {
     }),
     [project]
   );
+  const [builderId, setBuilderId] = useState<string | null>(null);
+  useEffect(() => {
+    getProfile().then((p) => setBuilderId(p?.id ?? null)).catch(() => {});
+  }, []);
   const [doc, setDoc] = useState<CodeDoc>(starter);
   const [submitted, setSubmitted] = useState(false);
   const [resetTick, setResetTick] = useState(0);
@@ -234,7 +238,7 @@ export default function CertificationProject() {
       <StatusBar style="auto" />
     </ScrollView>
       {/* Super Intelligent help: Bingo debugs stuck builders in context. */}
-      <AskBingo lessonTitle={String(title ?? project.title)} prompt={project.brief[0]} />
+      <AskBingo lessonTitle={String(title ?? project.title)} prompt={project.brief[0]} userId={builderId} />
     </View>
   );
 }
