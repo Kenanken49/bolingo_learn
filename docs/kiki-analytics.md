@@ -8,7 +8,7 @@ Validates the brain against live learners instead of only simulations.
    `kiki_attempts` row per graded answer (signed-in learners only; guests
    stay device-local; failures only warn). Needs the table once:
    Supabase dashboard → SQL editor → paste the "Kiki v3 analytics" block
-   from `supabase/schema.sql` → Run.
+   from `supabase/schema.sql` → Run (includes the service_role read grant).
 2. **Calibrate** — `node scripts/kiki-calibrate.cjs [--since YYYY-MM-DD]`:
    coverage, decile calibration bins, Brier skill, and per-type
    hardest-decile floors vs the locked `GUESS_MCQ` / `GUESS_BUILD`.

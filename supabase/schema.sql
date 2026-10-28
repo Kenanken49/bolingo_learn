@@ -427,6 +427,9 @@ create policy "Users log and read own attempts"
   with check (auth.uid() = user_id);
 
 grant insert, select on public.kiki_attempts to authenticated;
+-- Read-only service key for scripts/kiki-calibrate.cjs (bypasses RLS but
+-- still needs an explicit table grant — without this the script gets 42501).
+grant select on public.kiki_attempts to service_role;
 
 create index if not exists kiki_attempts_user_time on public.kiki_attempts (user_id, created_at desc);
 create index if not exists kiki_attempts_type_time on public.kiki_attempts (is_build, created_at desc);

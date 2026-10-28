@@ -100,6 +100,12 @@ async function main() {
     if (sinceArg) q = q.gte('created_at', sinceArg);
     const { data, error } = await q;
     if (error) {
+      if (/permission denied/i.test(error.message)) {
+        console.error('Service key is valid but lacks a table grant (42501).');
+        console.error('Run once in Supabase dashboard → SQL editor:');
+        console.error('  grant select on public.kiki_attempts to service_role;');
+        process.exit(2);
+      }
       if (error.code === '42P01' || /does not exist|not find/i.test(error.message)) {
         console.error('Table public.kiki_attempts is missing.');
         console.error('Apply it once: Supabase dashboard → SQL editor → paste the');
