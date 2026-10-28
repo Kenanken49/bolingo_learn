@@ -62,8 +62,16 @@ failure/timeout/empty answer, retry once against optional hosted secrets:
 
 ```bash
 supabase secrets set LLM_FALLBACK_URL=https://api.groq.com/openai/v1/chat/completions \
-  LLM_FALLBACK_KEY=<groq-key> LLM_FALLBACK_MODEL=llama-3.3-70b-versatile
+  LLM_FALLBACK_KEY=<groq-key> LLM_FALLBACK_MODEL=openai/gpt-oss-120b
 ```
+
+Note (Oct 28, 2026): Groq retired the `llama-3.3-70b-versatile` and
+`llama-3.1-8b-instant` IDs (both 404 `model_not_found`).
+`openai/gpt-oss-120b` is the verified live ID — a 120B open model that
+answered the hablé/hablo grammar question perfectly in 1.6 s direct,
+2.0 s through edge-failover (`via: fallback`, warm tone, correct
+preterite-vs-present teaching). If Groq retires IDs again, probe
+candidates directly (`model_not_found` = dead) before touching secrets.
 
 Fallback unset = primary-only (today's behavior). Every success carries a
 `via: "primary" | "fallback"` tag (clients ignore it). Error messages
