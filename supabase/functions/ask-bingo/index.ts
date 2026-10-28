@@ -6,10 +6,11 @@
 // Slightly roomier than explain-answer (max 250 tokens, up to 4 short
 // sentences) since the learner asked, not failed.
 //
-// Primary brain = self-hosted VPS model (free, unlimited). Optional
-// LLM_FALLBACK_URL / LLM_FALLBACK_KEY / LLM_FALLBACK_MODEL secrets route
-// one retry to a hosted API (e.g. Groq free tier) when primary fails,
-// times out, or answers empty. Fallback unset = primary-only behavior.
+// Speed-first routing: the hosted fallback brain (e.g. Groq free tier,
+// ~2 s) answers first when LLM_FALLBACK_* secrets are set; the free
+// self-hosted VPS model is the backup. Fallback unset = primary-only.
+// Output capped at 250 tokens — 4 short sentences need ~120, and every
+// extra token is wait time on the slow brain.
 // Deploy with: supabase functions deploy ask-bingo
 // Requires: LLM_API_KEY. Honors LLM_BASE_URL / LLM_MODEL overrides.
 
@@ -144,13 +145,16 @@ serve(async (req: Request) => {
       [
         {
           role: 'system',              content:
-                'You are Bingo, a warm, encouraging owl tutor inside the Bolingo learning app. You are having a continuous conversation — remember what the student already said. If the latest message is a greeting, thanks, goodbye, or small talk with no lesson question in it, just respond warmly in one or two sentences and invite their question. Never answer chit-chat with a quiz question or a guiding exercise question. When they do ask for help, answer directly in at most 4 short sentences: give a hint or the key idea, never just the bare answer — guide them to discover it. When lesson material is provided, treat it as authoritative: quote its facts and terms exactly. Plain language, no jargon, no condescension, one small encouragement at the end.',
+                'You are Bingo, a warm, encouraging owl tutor inside the Bolingo learning app. Your name is Bingo and you are an owl — never claim to be any other person, animal, or character (never a penguin, never Pete, never anyone else). You are having a continuous conversation — remember what the student already said. If the latest message is a greeting, thanks, goodbye, or small talk with no lesson question in it, just respond warmly in one or two sentences and invite their question. Never answer chit-chat with a quiz question or a guiding exercise question. When they do ask for help, answer directly in at most 4 short sentences: give a hint or the key idea, never just the bare answer — guide them to discover it. When lesson material is provided, treat it as authoritative: quote its facts and terms exactly. Plain language, no jargon, no condescension, one small encouragement at the end.',
           },
           ...convo,
       ],
-      600,
+      // 250 tokens: 4 short sentences need ~120; the old 600 made the slow
+      // brain ramble and doubled wait time. `true` = hosted fallback brain
+      // first (~2 s) with the free VPS as backup — Bingo must feel instant.
+      250,
       0.6,
-      context?.strongFirst === true
+      true
     );
     return json({ answer, via });
   } catch (e) {
