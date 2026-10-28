@@ -42,6 +42,19 @@ learner → Supabase edge fn → https://bolingo.co.ke/llm-<secret>/v1/…
 3. Live-test: invoke `ask-bingo` with a real question; expect a 2–4 sentence
    hint in seconds, no `reasoning`/`think` text in the reply.
 
+## Live status (Oct 28, 2026)
+
+Secrets point at the VPS model. Measured through production:
+ask-bingo ~15 s (cold), explain-answer ~10 s, clean `content`, no
+`<think>` leakage. First call after idle is slowest (model load + TLS).
+
+Known quality ceiling at 1.5B: hints land in the right neighborhood but
+wobble on terminology (e.g. correctly guides hablé→past, but may fumble
+the tense name; explains she→watches agreement, but may echo the answer
+tautologically). Acceptable for hints, not exam-grade. Upgrade path when
+budget allows: `ollama pull` a larger model on the VPS (e.g. qwen2.5:7b
+needs ~8 GB RAM — check `free -m` first) and swap only `LLM_MODEL`.
+
 ## Costs
 
 - VPS: ~1 GB disk, ~2 GB RAM for the loaded model. No per-token billing.
