@@ -24,6 +24,22 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 
+/**
+ * Reasoning-model safe: some local/self-hosted models (DeepSeek R1 family
+ * via Ollama) put chain-of-thought in `reasoning`/`reasoning_content` or
+ * inline `<think>` tags instead of `content`. Prefer real content, fall back
+ * to the reasoning fields, and always strip leaked thought blocks so
+ * learners never see the model's inner monologue.
+ */
+function cleanModelText(data: {
+  choices?: Array<{ message?: { content?: unknown; reasoning_content?: unknown; reasoning?: unknown } }>;
+}): string {
+  const msg = data.choices?.[0]?.message ?? {};
+  const pick = (v: unknown) => (typeof v === 'string' ? v : '');
+  const raw = pick(msg.content) || pick(msg.reasoning_content) || pick(msg.reasoning);
+  return raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+}
+
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
@@ -59,7 +75,7 @@ serve(async (req: Request) => {
     });
     if (!res.ok) throw new Error(`LLM request failed: ${res.status} ${await res.text()}`);
     const data = await res.json();
-    const answer: string = data.choices?.[0]?.message?.content?.trim() ?? '';
+    const answer: string = cleanModelText(data);
     if (!answer) throw new Error('LLM returned an empty answer.');
     return json({ answer });
   } catch (e) {
