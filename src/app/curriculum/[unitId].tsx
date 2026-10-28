@@ -83,9 +83,15 @@ export default function CurriculumUnit() {
               accessibilityLabel={`${isOpen ? 'Collapse' : 'Expand'} ${g.title}`}
               className="flex-row items-center justify-between bg-slate-100 px-5 py-4"
             >
-              <View>
-                <Text className="text-lg font-extrabold text-slate-900">{g.title}</Text>
-                <Text className="text-sm text-slate-500">{g.blurb}</Text>
+              <View className="flex-row items-center">
+                {/* freeCodeCamp-style step number per section */}
+                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-slate-900">
+                  <Text className="text-sm font-black text-white">{GROUPS.indexOf(g) + 1}</Text>
+                </View>
+                <View>
+                  <Text className="text-lg font-extrabold text-slate-900">{g.title}</Text>
+                  <Text className="text-sm text-slate-500">{g.blurb} · {blocks.length} step{blocks.length === 1 ? '' : 's'}</Text>
+                </View>
               </View>
               <Text className="text-xl text-slate-400">{isOpen ? '▲' : '▼'}</Text>
             </Pressable>

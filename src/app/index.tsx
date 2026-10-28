@@ -77,8 +77,16 @@ function PathNode({
   const accessibilityLabel = `${label}: ${state}${sub ? `, ${sub}` : ''}`;
   const role: AccessibilityRole = onPress && !locked ? 'button' : 'text';
 
+  // Duolingo signature: the next playable node wears a START bubble and a
+  // bouncing ring; done nodes turn gold, locked nodes go grey with a lock.
   return (
     <View className="items-center" style={{ transform: [{ translateX: offset }] }}>
+      {state === 'active' ? (
+        <View className="mb-1 rounded-xl border-2 border-slate-200 bg-white px-4 py-1.5 shadow-sm">
+          <Text className="font-duo text-sm font-black tracking-widest text-green-500">START</Text>
+          <View className="absolute -bottom-1.5 left-1/2 h-3 w-3 rotate-45 border-b-2 border-r-2 border-slate-200 bg-white" />
+        </View>
+      ) : null}
       <Pressable
         disabled={locked || state === 'processing' || !onPress}
         onPress={onPress}
