@@ -538,4 +538,184 @@ export const TRACK_DB: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'db-celestial-bodies': {
+    id: 'db-celestial-bodies',
+    title: 'Celestial Bodies Database',
+    theory: [
+      'Capstone 1 of 5: model a universe in PostgreSQL. Tables for galaxy, star, planet, and moon — each row points at its parent, so moons join through planets to stars to galaxies.',
+      'Keys carry the design: SERIAL primary keys on every table, UNIQUE names where duplicates make no sense, NOT NULL on every foreign key so no orphan rows exist.',
+      'Columns fit the domain: BOOLEAN for has_life, INT for counts and periods, DECIMAL or FLOAT for distances, TEXT or VARCHAR for names and descriptions.',
+    ],
+    questions: [
+      MCQ(
+        'Every moon must belong to a planet. Which constraint?',
+        'NOT NULL foreign key to planet',
+        ['NOT NULL foreign key to planet', 'Nullable text column', 'UNIQUE moon name only', 'No constraint needed'],
+        'Required reference, no orphans.'
+      ),
+      MCQ(
+        'Two galaxies named Andromeda must be impossible. Which constraint?',
+        'UNIQUE on galaxy name',
+        ['UNIQUE on galaxy name', 'PRIMARY KEY on name', 'FOREIGN KEY on name', 'CHECK on name length'],
+        'Uniqueness without making it the key.'
+      ),
+      BUILD(
+        'Moons of planet 4, with the planet name',
+        ['SELECT moon.name', 'FROM moon', 'JOIN planet', 'ON moon.planet_id = planet.planet_id', 'WHERE planet.planet_id = 4;'],
+        ['SELECT moon.name', 'FROM moon', 'FROM planet', 'JOIN planet', 'ON moon.planet_id = planet.planet_id', 'WHERE planet.planet_id = 4;', 'GROUP BY'],
+        'Join on the key, filter on the parent.'
+      ),
+      MCQ(
+        'Orbital distance like 1.42 billion km fits best in…',
+        'DECIMAL / FLOAT numeric column',
+        ['DECIMAL / FLOAT numeric column', 'BOOLEAN column', 'SERIAL column', 'A separate table per digit'],
+        'Continuous measures need numeric types.'
+      ),
+    ],
+  },
+
+  'db-mario-database': {
+    id: 'db-mario-database',
+    title: 'Mario Database',
+    theory: [
+      'Capstone 2 of 5: query a game-character database with SELECT, WHERE, ORDER BY, and aggregates. Read the schema first — column names decide every query.',
+      'Filters combine with AND/OR/NOT; pattern matching uses LIKE with % wildcards. Aggregate questions need COUNT, SUM, AVG, MIN, MAX with GROUP BY splitting rows into buckets.',
+      'Order and limit shape output: ORDER BY … DESC with LIMIT n answers every "top n" question. Aliases with AS keep result columns readable.',
+    ],
+    questions: [
+      MCQ(
+        'Names starting with M. Which WHERE clause?',
+        'WHERE name LIKE \'M%\'',
+        ['WHERE name LIKE \'M%\'', 'WHERE name = \'M\'', 'WHERE name LIKE \'%M\'', 'WHERE name IN (\'M\')'],
+        'Trailing wildcard: starts-with.'
+      ),
+      MCQ(
+        'Count characters per game. Which clause splits the buckets?',
+        'GROUP BY game',
+        ['GROUP BY game', 'ORDER BY game', 'LIMIT game', 'JOIN game'],
+        'Group first, then COUNT each bucket.'
+      ),
+      BUILD(
+        'Top 3 tallest characters, tallest first',
+        ['SELECT name', 'ORDER BY height DESC', 'LIMIT 3;'],
+        ['SELECT name', 'ORDER BY height DESC', 'ORDER BY height ASC', 'LIMIT 3;', 'LIMIT 1;'],
+        'Sort descending, cut at three.'
+      ),
+      MCQ(
+        'Average coins per level, one row. Which select?',
+        'SELECT AVG(coins)',
+        ['SELECT AVG(coins)', 'SELECT coins', 'SELECT SUM(coins) per row', 'SELECT coins GROUPED'],
+        'Bare aggregate collapses to a single row.'
+      ),
+    ],
+  },
+
+  'db-bike-shop': {
+    id: 'db-bike-shop',
+    title: 'Bike Rental Shop',
+    theory: [
+      'Capstone 3 of 5: a Bash-driven rental script over Postgres. The script greets, lists bikes from the database, reads the customer choice, and records rentals.',
+      'Bash reads input, psql runs queries, and command substitution captures results into variables. Menus loop until the choice validates against real bike ids.',
+      'Rentals insert a row linking customer to bike with the current date; returning flips availability back. Every query result the script branches on must be trimmed of psql headers.',
+    ],
+    questions: [
+      MCQ(
+        'Script needs the bike list inside a variable. Which mechanism?',
+        'Command substitution: BIKES=$(psql …)',
+        ['Command substitution: BIKES=$(psql …)', 'An HTML table', 'A screenshot of the terminal', 'A second database'],
+        'Capture query output into the script.'
+      ),
+      MCQ(
+        'Customer picks bike 99, which does not exist. Script must…',
+        'Re-show the menu until the id validates',
+        ['Re-show the menu until the id validates', 'Insert rental for bike 99', 'Delete all bikes', 'Exit and drop the database'],
+        'Validate choice against real ids, loop on miss.'
+      ),
+      BUILD(
+        'Record rental of bike 2 by customer 7 today',
+        ['INSERT INTO rentals(customer_id, bike_id, date)', 'VALUES(7, 2, CURRENT_DATE);'],
+        ['INSERT INTO rentals(customer_id, bike_id, date)', 'INSERT INTO bikes', 'VALUES(7, 2, CURRENT_DATE);', 'VALUES(2, 7);'],
+        'Link both ids with today.'
+      ),
+      MCQ(
+        'psql output piped into script logic needs which flags?',
+        'Tuples-only, unaligned output',
+        ['Tuples-only, unaligned output', 'Full ASCII art tables', 'HTML output mode', 'Pager forced on'],
+        'Clean values branch cleanly.'
+      ),
+    ],
+  },
+
+  'db-salon-scheduler': {
+    id: 'db-salon-scheduler',
+    title: 'Salon Appointment Scheduler',
+    theory: [
+      'Capstone 4 of 5: book salon appointments from Bash. Customers identify by phone — known numbers greet by name, new numbers trigger registration before booking.',
+      'Services list from the database; the chosen service id must validate like the bike ids did. The appointment row links customer, service, and time.',
+      'Confirmation echoes the full booking back: service name, time, and customer name. No booking without a registered customer row.',
+    ],
+    questions: [
+      MCQ(
+        'Phone matches no customer. Correct flow?',
+        'Register the name first, then book',
+        ['Register the name first, then book', 'Book under a blank name', 'Refuse service', 'Reuse another customer row'],
+        'Customer row must exist before the booking references it.'
+      ),
+      MCQ(
+        'Service id must be real. Validation mirrors…',
+        'The bike-id menu loop: query, check, re-ask',
+        ['The bike-id menu loop: query, check, re-ask', 'Trusting the input blindly', 'Booking two services at once', 'Skipping the services table'],
+        'Same validate-then-act loop, new table.'
+      ),
+      BUILD(
+        'Find the customer behind a phone number',
+        ['SELECT name', 'FROM customers', 'WHERE phone = \'555-0134\';'],
+        ['SELECT name', 'SELECT phone', 'FROM customers', 'FROM services', 'WHERE phone = \'555-0134\';'],
+        'Phone is the lookup key.'
+      ),
+      MCQ(
+        'After inserting the appointment the script must…',
+        'Echo service, time, and name back as confirmation',
+        ['Echo service, time, and name back as confirmation', 'Stay silent', 'List every customer', 'Drop the services table'],
+        'Confirmation proves the write landed.'
+      ),
+    ],
+  },
+
+  'db-number-guessing': {
+    id: 'db-number-guessing',
+    title: 'Number Guessing Game',
+    theory: [
+      'Capstone 5 of 5: a Bash guessing game with Postgres memory. Random secret between 1 and 1000; the script counts guesses and stores each player best score.',
+      'Players identify by username — first-timers get a welcome and a row; returners hear their games-played and best score. Usernames repeat safely: one row per name.',
+      'Hints steer play: higher or lower after every miss. Integers only — non-numeric guesses get rejected without counting.',
+    ],
+    questions: [
+      MCQ(
+        'Username "ada" returns. Script greets with…',
+        'Games played and best score from her row',
+        ['Games played and best score from her row', 'A brand-new welcome', 'A second row for ada', 'The secret number'],
+        'Memory is the feature: read before play.'
+      ),
+      MCQ(
+        'Guess "twelve" arrives. Correct handling?',
+        'Reject without counting the guess',
+        ['Reject without counting the guess', 'Count it as 12', 'Crash the script', 'Treat it as correct'],
+        'Validate numeric before comparing.'
+      ),
+      BUILD(
+        'Secret number, 1 to 1000',
+        ['SECRET=$(( RANDOM', '% 1000 + 1 ))'],
+        ['SECRET=$(( RANDOM', 'SECRET=1000', '% 1000 + 1 ))', '% 999 ))'],
+        'Modulo bounds the range, plus one floors it at 1.'
+      ),
+      MCQ(
+        'New best score lands. Which write?',
+        'UPDATE players SET best = n WHERE name matches',
+        ['UPDATE players SET best = n WHERE name matches', 'INSERT a duplicate player row', 'DELETE the player', 'UPDATE every row'],
+        'Targeted update on the known row.'
+      ),
+    ],
+  },
 };

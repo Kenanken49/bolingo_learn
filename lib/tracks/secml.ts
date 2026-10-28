@@ -558,4 +558,184 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'sec-stock-checker': {
+    id: 'sec-stock-checker',
+    title: 'Stock Price Checker',
+    theory: [
+      'Capstone 1 of 5: fetch a stock quote and track likes. GET /api/stock-prices?stock=SYM returns price plus likes; two symbols return relative likes (each minus the other).',
+      'Likes bind to IP: one like per address per stock, anonymous users counted once. Like state changes the count; re-liking from the same IP does nothing.',
+      'Helmet hardens every response: no sniffing, no unwanted framing, HTTPS assumed. Price data comes from the quote service; likes live in the database keyed by stock plus IP hash.',
+    ],
+    questions: [
+      MCQ(
+        'Same IP likes SYM twice. Like count moves…',
+        '+1 total — second like is a no-op',
+        ['+1 total — second like is a no-op', '+2 total', 'Back to 0', 'To a random value'],
+        'IP-keyed likes are idempotent.'
+      ),
+      MCQ(
+        'Two stocks queried with like on. rel_likes for the first equals…',
+        'Its likes minus the other likes',
+        ['Its likes minus the other likes', 'Sum of both', 'Always zero', 'The price difference'],
+        'Relative means the difference.'
+      ),
+      BUILD(
+        'One like per IP per stock, enforced',
+        ['findOne({ stock,', 'ipHash })', '?? create'],
+        ['findOne({ stock,', 'ipHash })', '?? create', 'deleteMany(', 'updateAll('],
+        'Lookup before counting.'
+      ),
+      MCQ(
+        'Helmet on an API means…',
+        'Secure headers on every response',
+        ['Secure headers on every response', 'No responses at all', 'Passwords in headers', 'Likes disabled'],
+        'Hardened headers, same JSON.'
+      ),
+    ],
+  },
+
+  'sec-anon-board': {
+    id: 'sec-anon-board',
+    title: 'Anonymous Message Board',
+    theory: [
+      'Capstone 2 of 5: threads and replies with delete passwords. POST creates, GET lists the 10 freshest threads with 3 newest replies each, PUT reports a reply, DELETE removes with its password.',
+      'Passwords never store raw — hash before saving, compare hashes on delete. Wrong password fails the delete; the content stays.',
+      'Board isolation: every query filters by board name. Reporting flips a flag instead of deleting; the 10/3 shape keeps responses small.',
+    ],
+    questions: [
+      MCQ(
+        'Delete arrives with the wrong password. Result?',
+        'Refused — content stays',
+        ['Refused — content stays', 'Deleted anyway', 'Board dropped', 'Password emailed out'],
+        'Hash mismatch blocks the write.'
+      ),
+      MCQ(
+        'GET a board returns how much?',
+        '10 freshest threads, 3 newest replies each',
+        ['10 freshest threads, 3 newest replies each', 'Everything ever posted', 'Only reply counts', 'One random thread'],
+        'Bounded shape, freshest first.'
+      ),
+      BUILD(
+        'Store a delete password safely',
+        ['bcrypt.hash(', 'password,', 'rounds)'],
+        ['bcrypt.hash(', 'password,', 'rounds)', 'md5(', 'btoa('],
+        'Salted hash, never plaintext.'
+      ),
+      MCQ(
+        'Reporting a reply does what?',
+        'Flags it — visible until a delete removes it',
+        ['Flags it — visible until a delete removes it', 'Deletes it instantly', 'Bans the board', 'Clears all passwords'],
+        'Report marks; delete removes.'
+      ),
+    ],
+  },
+
+  'sec-issue-tracker': {
+    id: 'sec-issue-tracker',
+    title: 'Issue Tracker',
+    theory: [
+      'Capstone 3 of 5: full CRUD on project issues. POST requires title text; GET filters on any field via query params; PUT updates only supplied fields and stamps updated_on; DELETE needs the id.',
+      'Missing id on update or delete earns a no-id error; unknown ids earn could-not-update/delete. Open/closed flips via a status field; closed_on stamps when an issue closes.',
+      'Every response echoes the affected document so clients stay in sync. Filters combine — title plus open status narrows to matching open issues.',
+    ],
+    questions: [
+      MCQ(
+        'PUT arrives with no _id. Response?',
+        'Missing-id error, nothing updated',
+        ['Missing-id error, nothing updated', 'Update all issues', 'Create a new issue', 'Delete the project'],
+        'No target, no write.'
+      ),
+      MCQ(
+        'Issue closes. Which stamps move?',
+        'status flips, closed_on set, updated_on refreshed',
+        ['status flips, closed_on set, updated_on refreshed', 'created_on rewritten', 'Only the title changes', 'Nothing — closing is silent'],
+        'Close is a triple write.'
+      ),
+      BUILD(
+        'Filter issues by query params',
+        ['find(', 'req.query', ')'],
+        ['find(', 'req.query', 'findById(', ')', 'req.body'],
+        'Query object is the filter.'
+      ),
+      MCQ(
+        'PUT with a valid id but no fields. Response?',
+        'No-update error — nothing to change',
+        ['No-update error — nothing to change', 'Silent success', 'Delete the issue', 'Clear all fields'],
+        'Empty updates fail loudly.'
+      ),
+    ],
+  },
+
+  'ml-linear-regression': {
+    id: 'ml-linear-regression',
+    title: 'Linear Regression Predictor',
+    theory: [
+      'Capstone 4 of 5: fit a line through training data with gradient descent or the normal equation. Features scale first — unscaled inputs stall learning.',
+      'Cost is mean squared error; the learning rate steps weights downhill. Too large diverges, too small crawls — the checks expect convergence on a known dataset.',
+      'Evaluate on held-out data: report error on unseen rows, never training rows. A bias term (intercept) lets the line miss the origin.',
+    ],
+    questions: [
+      MCQ(
+        'Features span 1–100000. First move before training?',
+        'Scale features to a common range',
+        ['Scale features to a common range', 'Delete small features', 'Raise the learning rate 100x', 'Skip the bias term'],
+        'Scale first or descent stalls.'
+      ),
+      MCQ(
+        'Loss explodes to NaN by iteration 10. Likely cause?',
+        'Learning rate far too large',
+        ['Learning rate far too large', 'Too much data', 'Bias term present', 'Features scaled'],
+        'Overshooting steps diverge.'
+      ),
+      BUILD(
+        'Mean squared error over predictions',
+        ['((y_pred - y)', '** 2).mean()'],
+        ['((y_pred - y)', '** 2).mean()', '.sum()', '.max()'],
+        'Square residuals, average them.'
+      ),
+      MCQ(
+        'Honest model score comes from…',
+        'Held-out rows the model never trained on',
+        ['Held-out rows the model never trained on', 'The training rows again', 'Random numbers', 'The largest weights'],
+        'Test measures generalization.'
+      ),
+    ],
+  },
+
+  'ml-spam-classifier': {
+    id: 'ml-spam-classifier',
+    title: 'Spam Classifier',
+    theory: [
+      'Capstone 5 of 5: text to spam-or-ham with a neural net. Tokenize messages to id sequences, pad to equal length, embed, then pool to a fixed vector.',
+      'A dense layer plus sigmoid head outputs the spam probability; 0.5 splits the verdict. Train on labeled texts, validate on unseen ones — accuracy on held-out messages is the grade.',
+      'Overfitting watch: training accuracy far above validation means memorize, not learn — add dropout or more data. Class imbalance (mostly ham) needs weighting or the model predicts ham always.',
+    ],
+    questions: [
+      MCQ(
+        'Messages vary from 5 to 200 words. Batching needs…',
+        'Padding to one length after tokenizing',
+        ['Padding to one length after tokenizing', 'Deleting long messages', 'One sample per batch', 'Sorting by sender'],
+        'Uniform shapes batch together.'
+      ),
+      MCQ(
+        'Train 99%, validation 61%. Diagnosis?',
+        'Overfitting — memorizing, add dropout or data',
+        ['Overfitting — memorizing, add dropout or data', 'Underfitting — train longer only', 'Perfect generalization', 'Bad test labels always'],
+        'The gap is the giveaway.'
+      ),
+      BUILD(
+        'Probability head for binary spam',
+        ['Dense(1,', 'activation=\'sigmoid\')'],
+        ['Dense(1,', 'activation=\'sigmoid\')', 'activation=\'relu\')', 'Dense(100,'],
+        'Single sigmoid unit: P(spam).'
+      ),
+      MCQ(
+        '95% of training mail is ham. Naive model predicts…',
+        'Ham always — 95% without learning',
+        ['Ham always — 95% without learning', 'Spam always', 'Perfect labels', 'Random fairly'],
+        'Imbalance rewards the lazy majority vote.'
+      ),
+    ],
+  },
 };

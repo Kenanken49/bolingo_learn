@@ -149,4 +149,184 @@ export const TRACK_RWD: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'rwd-cat-photo': {
+    id: 'rwd-cat-photo',
+    title: 'Cat Photo App',
+    theory: [
+      'Capstone 1 of 5: a single page that shows a cat photo with a heading, a paragraph, and links. The automated checks look for exactly one h1 naming the page, a main section, and an image with descriptive alt text.',
+      'Links first: an anchor needs href to go somewhere — a real URL for the gallery link and #footer for the jump link. The image sits inside the figure with figcaption describing it.',
+      'Lists close it out: one unordered list of things cats love, one ordered list of things cats hate, plus a form with a text input and a submit button.',
+    ],
+    questions: [
+      MCQ(
+        'The checks demand one element naming the page. Which?',
+        'Exactly one h1',
+        ['Exactly one h1', 'Two h1 elements', 'An h1 inside every section', 'No h1 — title tag is enough'],
+        'One h1 per page: the document name.'
+      ),
+      MCQ(
+        'The cat image must describe itself to screen readers. Which attribute?',
+        'alt',
+        ['alt', 'src', 'href', 'title'],
+        'alt text replaces the image when it cannot be seen.'
+      ),
+      BUILD(
+        'Jump link to the page footer',
+        ['<a', 'href="#footer">', 'Jump', '</a>'],
+        ['<a', 'href="#footer">', 'href="footer"', 'Jump', '</a>', '<link'],
+        'Hash href targets the id below.'
+      ),
+      MCQ(
+        'Things cats love: bullets, no order. Which list?',
+        'ul with li items',
+        ['ul with li items', 'ol with li items', 'dl with dt items', 'table with tr items'],
+        'Unordered for love, ordered for the ranked hate list.'
+      ),
+    ],
+  },
+
+  'rwd-survey-form': {
+    id: 'rwd-survey-form',
+    title: 'Survey Form',
+    theory: [
+      'Capstone 2 of 5: a form page with a title, a short description, and a working form. Every input needs an id, a label pointing at it, and a name so the submission carries data.',
+      'Variety matters: text, email, and number inputs plus a dropdown, radio group, checkboxes, a textarea, and a submit button. Email and number types bring free browser validation.',
+      'The number input takes min and max; the submit button sends everything. Labels use for matching each input id — that pairing is what the checks verify.',
+    ],
+    questions: [
+      MCQ(
+        'A label must programmatically point at its input. How?',
+        'for matching the input id',
+        ['for matching the input id', 'for matching the input name', 'Nesting is forbidden', 'A title attribute'],
+        'for + id is the verified pairing.'
+      ),
+      MCQ(
+        'Which input type rejects "not-an-email" before submit?',
+        'type="email"',
+        ['type="email"', 'type="text"', 'type="string"', 'type="mail"'],
+        'Email type brings format validation free.'
+      ),
+      BUILD(
+        'Bounded number input, 1 to 120',
+        ['<input', 'type="number"', 'min="1"', 'max="120">'],
+        ['<input', 'type="number"', 'type="text"', 'min="1"', 'max="120">', 'min="0"'],
+        'Type plus bounds, one element.'
+      ),
+      MCQ(
+        'Pick exactly one of several options (size: small/medium/large). Which control?',
+        'Radio group with one shared name',
+        ['Radio group with one shared name', 'Checkboxes with different names', 'A textarea', 'Three submit buttons'],
+        'Shared name makes radios mutually exclusive.'
+      ),
+    ],
+  },
+
+  'rwd-tech-doc': {
+    id: 'rwd-tech-doc',
+    title: 'Technical Documentation Page',
+    theory: [
+      'Capstone 3 of 5: documentation with a fixed navbar and scrollable content. The nav holds one link per section; each link href matches a section id exactly.',
+      'Layout: navbar fixed to the left on desktop (position: fixed, full height), content pushed right with margin-left. A media query collapses the nav on narrow screens.',
+      'Content rules: at least five sections, each with a header, paragraphs, and code samples in code elements. Clicking a nav link must scroll to its section.',
+    ],
+    questions: [
+      MCQ(
+        'Nav link "#loops" must scroll to the Loops section. What must exist?',
+        'A section with id="loops"',
+        ['A section with id="loops"', 'A section with class="loops"', 'A loops tag', 'Nothing — hashes scroll automatically'],
+        'Hash links resolve against ids.'
+      ),
+      MCQ(
+        'Desktop navbar stays visible while docs scroll. Which position?',
+        'position: fixed',
+        ['position: fixed', 'position: static', 'position: relative', 'float: left'],
+        'Fixed removes it from scroll flow.'
+      ),
+      BUILD(
+        'Push scrolled content clear of a 220px fixed nav',
+        ['margin-left:', '220px;'],
+        ['margin-left:', '220px;', 'padding-top:', 'float:'],
+        'Content margin must clear the fixed rail.'
+      ),
+      MCQ(
+        'Inline code samples inside docs paragraphs belong in…',
+        'code elements',
+        ['code elements', 'img elements', 'form elements', 'nav elements'],
+        'code marks the samples the checks count.'
+      ),
+    ],
+  },
+
+  'rwd-portfolio': {
+    id: 'rwd-portfolio',
+    title: 'Personal Portfolio',
+    theory: [
+      'Capstone 4 of 5: your portfolio with a welcome section, a projects grid, and a contact link. The welcome section fills the first viewport (height: 100vh) with one h1.',
+      'Navbar fixed to the viewport top with links to each section. The projects section shows tiles — each tile links out to a project and carries the project name.',
+      'Contact closes the page: a profile link opening in a new tab. A media query keeps the grid readable on phones.',
+    ],
+    questions: [
+      MCQ(
+        'Welcome section must fill exactly the first viewport. Which declaration?',
+        'height: 100vh',
+        ['height: 100vh', 'height: 100px', 'height: 100%', 'min-height: 10vh'],
+        'Viewport units size against the window.'
+      ),
+      MCQ(
+        'Profile link must open in a new tab. Which attribute?',
+        'target="_blank"',
+        ['target="_blank"', 'target="_self"', 'open="new"', 'tab="true"'],
+        'Blank target opens the new tab.'
+      ),
+      BUILD(
+        'Pin the navbar to the viewport top',
+        ['position:', 'fixed;', 'top:', '0;'],
+        ['position:', 'fixed;', 'static;', 'top:', '0;', 'bottom:'],
+        'Fixed plus top zero pins it.'
+      ),
+      MCQ(
+        'Project tiles side by side, wrapping on small screens. Which layout?',
+        'Flexbox with flex-wrap, or CSS grid',
+        ['Flexbox with flex-wrap, or CSS grid', 'One table per tile', 'float on every tile', 'Inline text only'],
+        'Flex or grid makes the wrapping tile wall.'
+      ),
+    ],
+  },
+
+  'rwd-product-landing': {
+    id: 'rwd-product-landing',
+    title: 'Product Landing Page',
+    theory: [
+      'Capstone 5 of 5: a landing page with a fixed header, a hero, feature cards, an embedded video, and a signup form. The header stays fixed with a logo image and nav links to page sections.',
+      'The form needs an email input and a submit button; submitting sends to the endpoint the checks expect. The video embeds via iframe with a title for accessibility.',
+      'Features lay out with flexbox; a media query reflows hero and cards into one column under 600px. Nav links must all point at real sections.',
+    ],
+    questions: [
+      MCQ(
+        'Signup form must send the address somewhere. What carries the destination?',
+        'The form action attribute',
+        ['The form action attribute', 'The button color', 'The input placeholder', 'The page title'],
+        'Action is the submission target.'
+      ),
+      MCQ(
+        'Embedded demo video, accessible. Which element and extra?',
+        'iframe with a title attribute',
+        ['iframe with a title attribute', 'video with no attributes', 'img with src video', 'audio with controls'],
+        'Framed video plus a title the checks read.'
+      ),
+      BUILD(
+        'Email capture: the input the checks demand',
+        ['<input', 'type="email"', 'required>'],
+        ['<input', 'type="email"', 'type="text"', 'required>', 'optional>'],
+        'Email type plus required blocks empty submits.'
+      ),
+      MCQ(
+        'Hero and cards stack vertically on phones. Which rule?',
+        '@media (max-width: 600px) switching to column',
+        ['@media (max-width: 600px) switching to column', '@media (min-width: 600px) switching to column', 'A second h1', 'display: none on the hero'],
+        'The phone breakpoint reflows to one column.'
+      ),
+    ],
+  },
 };

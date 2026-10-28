@@ -538,4 +538,184 @@ export const TRACK_FED: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'fed-quote-machine': {
+    id: 'fed-quote-machine',
+    title: 'Random Quote Machine',
+    theory: [
+      'Capstone 1 of 5: show a random quote with its author and a button for a new one. State holds the current quote; each click picks a different index and re-renders.',
+      'A share link opens a pre-filled post carrying the quote text — encode it so punctuation survives the URL. Quote text and author render in dedicated elements the checks can find.',
+      'New-quote logic must guarantee change: loop or filter until the index differs from the current one, so rapid clicks never show the same quote twice.',
+    ],
+    questions: [
+      MCQ(
+        'New Quote clicked twice fast shows the same quote. Fix?',
+        'Re-pick until the index differs from current',
+        ['Re-pick until the index differs from current', 'Disable the button forever', 'Show quotes alphabetically', 'Reload the page each click'],
+        'Guarantee change, not just randomness.'
+      ),
+      MCQ(
+        'Share link carries quote text with quotes and dashes. What protects it?',
+        'encodeURIComponent on the text',
+        ['encodeURIComponent on the text', 'Uppercase everything', 'Strip all punctuation', 'Shorten to 10 characters'],
+        'Encoding keeps special characters URL-safe.'
+      ),
+      BUILD(
+        'Random valid index for a quotes array',
+        ['Math.floor(', 'Math.random()', '* quotes.length)'],
+        ['Math.floor(', 'Math.random()', 'Math.ceil(', '* quotes.length)', '/ quotes.length)'],
+        'Floor of random times length stays in range.'
+      ),
+      MCQ(
+        'Quote and author must live in…',
+        'Dedicated elements with stable ids',
+        ['Dedicated elements with stable ids', 'The button label', 'A console.log', 'An alert popup'],
+        'Checks read the rendered elements.'
+      ),
+    ],
+  },
+
+  'fed-markdown-previewer': {
+    id: 'fed-markdown-previewer',
+    title: 'Markdown Previewer',
+    theory: [
+      'Capstone 2 of 5: an editor textarea and a live preview side by side. Every keystroke updates state; the preview re-renders markdown as HTML instantly.',
+      'Required markdown coverage: headings, bold, italic, links, inline code, code blocks, lists, blockquotes, images, and strikethrough. A parser library does the conversion — the app wires input to output.',
+      'The editor ships pre-filled with a demo covering every element, so the preview is never empty on load. Rendered HTML goes in via the framework escape hatch for raw HTML.',
+    ],
+    questions: [
+      MCQ(
+        'Typing must update the preview on every keystroke. Which wiring?',
+        'Controlled textarea: value from state, onChange writes state',
+        ['Controlled textarea: value from state, onChange writes state', 'Uncontrolled input read once on submit', 'Preview polls the DOM every second', 'Two separate states never synced'],
+        'Single state source drives both panes.'
+      ),
+      MCQ(
+        'Preview must render <strong> from **text**. Who converts?',
+        'A markdown parser library',
+        ['A markdown parser library', 'CSS bold styling', 'The browser address bar', 'String.toUpperCase'],
+        'Parse markdown to HTML, then render it.'
+      ),
+      BUILD(
+        'Render parsed HTML inside React',
+        ['dangerouslySetInnerHTML={{', '__html:', 'html }}'],
+        ['dangerouslySetInnerHTML={{', 'innerText=', '__html:', 'html }}', 'children='],
+        'The raw-HTML escape hatch.'
+      ),
+      MCQ(
+        'Why ship the editor pre-filled?',
+        'Preview demonstrates every element on first load',
+        ['Preview demonstrates every element on first load', 'To slow down typing', 'Placeholders cannot be styled', 'State requires 500 characters'],
+        'Demo content proves all coverage instantly.'
+      ),
+    ],
+  },
+
+  'fed-drum-machine': {
+    id: 'fed-drum-machine',
+    title: 'Drum Machine',
+    theory: [
+      'Capstone 3 of 5: nine pads (Q W E A S D Z X C) firing clips on click and keypress. Each pad owns an audio element; triggering resets playback and plays from zero.',
+      'A display shows the name of the last-fired clip. Key handling listens at the window level and maps key codes to pads, ignoring repeats while held.',
+      'Power and bank switches gate playback: off silences everything, bank swaps the clip set. Volume slider scales every clip.',
+    ],
+    questions: [
+      MCQ(
+        'Rapid-fire pad hits must restart the sound. Which step?',
+        'Set currentTime to 0 before play()',
+        ['Set currentTime to 0 before play()', 'Create a new Audio each hit', 'Wait for the clip to finish', 'Lower the volume to zero'],
+        'Rewind-then-play makes hits machine-gun clean.'
+      ),
+      MCQ(
+        'Pressing Q must fire the Q pad. Where does the listener live?',
+        'Window keydown mapped to pad keys',
+        ['Window keydown mapped to pad keys', 'On the footer element', 'In the page title', 'On mouse move'],
+        'Global listener catches keys regardless of focus.'
+      ),
+      BUILD(
+        'Play the pad clip from the top',
+        ['clip.currentTime', '=', '0;', 'clip.play();'],
+        ['clip.currentTime', 'clip.volume', '=', '0;', 'clip.play();', 'clip.stop();'],
+        'Rewind, then play.'
+      ),
+      MCQ(
+        'Power switch is off. Pad clicked. Result?',
+        'Silence — gate blocks playback',
+        ['Silence — gate blocks playback', 'Plays at double volume', 'Plays the wrong bank', 'Deletes the clip'],
+        'Every trigger checks power first.'
+      ),
+    ],
+  },
+
+  'fed-calculator': {
+    id: 'fed-calculator',
+    title: 'Javascript Calculator',
+    theory: [
+      'Capstone 4 of 5: a calculator with digits, four operators, decimal, equals, and clear. The display shows the running expression and the result; consecutive operators collapse to the last one pressed (minus preserves negative signs).',
+      'Decimal discipline: each number holds at most one dot. Equals evaluates with correct precedence — multiply and divide before add and subtract — and the result becomes the start of the next expression (chaining).',
+      'Clear resets everything to the initial state. Leading zeros collapse: typing 0 then 5 shows 5, not 05.',
+    ],
+    questions: [
+      MCQ(
+        'User presses 5 × − + 5 (times, minus, plus, five). Expression?',
+        '5 + 5 — last operator wins, minus kept for negatives',
+        ['5 + 5 — last operator wins, minus kept for negatives', '5 × − + 5 literally', '5 × 5', 'Error, lock the pad'],
+        'Collapse runs of operators to the final one.'
+      ),
+      MCQ(
+        'Display shows 3.5 and user presses dot again. Result?',
+        'Ignored — one dot per number',
+        ['Ignored — one dot per number', '3.5.', '3..5', 'Clear the display'],
+        'Dots attach to the current number only.'
+      ),
+      BUILD(
+        'Evaluate 3 + 5 × 2 correctly',
+        ['3 +', '5 * 2', '= 13'],
+        ['3 +', '5 * 2', '= 13', '= 16', '3 + 5 first'],
+        'Precedence: multiply before add.'
+      ),
+      MCQ(
+        'After equals shows 13, user presses + 2 =. Result?',
+        '15 — result chains into the next expression',
+        ['15 — result chains into the next expression', '2 — starts over', '13 — equals locks', 'NaN'],
+        'Answers become the next left operand.'
+      ),
+    ],
+  },
+
+  'fed-pomodoro-clock': {
+    id: 'fed-pomodoro-clock',
+    title: '25 + 5 Clock',
+    theory: [
+      'Capstone 5 of 5: a Pomodoro timer with adjustable session and break lengths (1–60), start/stop, and reset. The time display counts mm:ss down every second.',
+      'At zero the beep sounds and the phase flips: session becomes break and back. Length controls work while paused; while running they pause adjustment or apply to the next phase.',
+      'Reset restores defaults (25 session, 5 break), stops the tick, silences and rewinds the beep. The beep element must be an audio element the checks can trigger.',
+    ],
+    questions: [
+      MCQ(
+        'Timer hits 00:00 during a session. Exact sequence?',
+        'Beep plays, label flips to Break, break length starts',
+        ['Beep plays, label flips to Break, break length starts', 'Timer freezes at 00:00 silently', 'Session restarts immediately', 'Lengths reset to 25/5'],
+        'Signal, flip phase, count the new length.'
+      ),
+      MCQ(
+        'Session length controls while the clock is running should…',
+        'Not corrupt the live countdown',
+        ['Not corrupt the live countdown', 'Add minutes mid-tick freely', 'Delete the beep element', 'Skip the break phase'],
+        'Adjust paused, or defer to next phase.'
+      ),
+      BUILD(
+        'One-second tick that survives re-renders',
+        ['setInterval(', 'tick,', '1000)'],
+        ['setInterval(', 'tick,', '1000)', 'setTimeout(', 'tick(),'],
+        'Interval id stored for stop and reset.'
+      ),
+      MCQ(
+        'Reset pressed mid-session. Full result?',
+        'Defaults restored, tick stopped, beep rewound',
+        ['Defaults restored, tick stopped, beep rewound', 'Only the label changes', 'Beep loops forever', 'Lengths double'],
+        'Reset is total: time, phase, sound, lengths.'
+      ),
+    ],
+  },
 };

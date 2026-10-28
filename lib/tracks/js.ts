@@ -498,4 +498,184 @@ export const TRACK_JS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'js-palindrome': {
+    id: 'js-palindrome',
+    title: 'Palindrome Checker',
+    theory: [
+      'Capstone 1 of 5: read user text and announce whether it is a palindrome. Normalize first: lowercase everything and strip every character that is not a letter or digit.',
+      'Compare the cleaned string against its reverse. An empty input after cleaning counts as no verdict — prompt for real text instead.',
+      'The verdict renders on the page with the original input quoted, so the learner sees exactly what was judged.',
+    ],
+    questions: [
+      MCQ(
+        'Normalize "A man, a plan" for the check. First two moves?',
+        'Lowercase, then strip non-alphanumerics',
+        ['Lowercase, then strip non-alphanumerics', 'Uppercase, then add punctuation', 'Split into words, sort them', 'Reverse, then lowercase'],
+        'Case-insensitive, punctuation-blind comparison.'
+      ),
+      MCQ(
+        'Which pattern removes everything except letters and digits?',
+        '/[^a-z0-9]/g',
+        ['/[^a-z0-9]/g', '/[a-z0-9]/g', '/[^ ]/g', '/\\w+/'],
+        'Negated class targets the junk; replace with empty string.'
+      ),
+      BUILD(
+        'Reverse a cleaned string',
+        ['[...s]', '.reverse()', '.join(\'\')'],
+        ['[...s]', '.reverse()', '.join(\'\')', '.sort()', '.push()'],
+        'Spread, reverse, rejoin — then compare.'
+      ),
+      MCQ(
+        'User submits only spaces and punctuation. Correct response?',
+        'Ask for real text — no verdict',
+        ['Ask for real text — no verdict', 'Declare it a palindrome', 'Crash on empty string', 'Check the raw input uncleaned'],
+        'Nothing alphanumeric means nothing to judge.'
+      ),
+    ],
+  },
+
+  'js-roman-numeral': {
+    id: 'js-roman-numeral',
+    title: 'Roman Numeral Converter',
+    theory: [
+      'Capstone 2 of 5: convert integers 1–3999 to Roman numerals. A lookup table pairs values with symbols: 1000→M, 900→CM, 500→D, 400→CD, 100→C, 90→XC, 50→L, 40→XL, 10→X, 9→IX, 5→V, 4→IV, 1→I.',
+      'Greedy loop: while the number remains, take the largest table value that fits, append its symbol, subtract. Subtractive pairs (IV, IX, XL, XC, CD, CM) must sit in the table — never build them by logic.',
+      'Guard the edges: reject numbers below 1, above 3999, and non-integers before converting.',
+    ],
+    questions: [
+      MCQ(
+        'Converting 94: after XC (90), what comes next?',
+        'IV — 4 is the largest fit of the remainder',
+        ['IV — 4 is the largest fit of the remainder', 'IIII', 'V', 'IX'],
+        'Greedy: biggest fitting symbol, subtract, repeat.'
+      ),
+      MCQ(
+        'Why must 900→CM live in the lookup table?',
+        'Greedy subtraction only works if subtractive pairs are entries',
+        ['Greedy subtraction only works if subtractive pairs are entries', 'To make the table longer', 'Roman law requires it', 'To slow the loop down'],
+        'Without CM the loop would emit DCCCC.'
+      ),
+      BUILD(
+        'Table entry every converter needs',
+        ['[900,', '\'CM\'],'],
+        ['[900,', '\'CM\'],', '[900,', '\'DCCCC\'],', '[999,'],
+        'Value-symbol pair, subtractive included.'
+      ),
+      MCQ(
+        'Input 0 or 4000 arrives. Correct response?',
+        'Reject — range is 1 to 3999',
+        ['Reject — range is 1 to 3999', 'Convert anyway with negatives', 'Return an empty string silently', 'Round to the nearest valid'],
+        'Standard numerals cover 1–3999 only.'
+      ),
+    ],
+  },
+
+  'js-cash-register': {
+    id: 'js-cash-register',
+    title: 'Cash Register Game',
+    theory: [
+      'Capstone 3 of 5: from price and cash, compute change and report status. Change equals cash minus price; when cash falls short, alert the customer to bring more.',
+      'Three statuses: INSUFFICIENT_FUNDS when the drawer cannot cover change, CLOSED when the drawer total exactly equals change (pay it all out), OPEN otherwise with per-denomination breakdown.',
+      'Walk denominations high to low, spending each only up to what the drawer holds. Floating point is the trap — work in cents or round at every step.',
+    ],
+    questions: [
+      MCQ(
+        'Price 3.26, cash 100, drawer holds plenty. Status?',
+        'OPEN with the per-denomination breakdown',
+        ['OPEN with the per-denomination breakdown', 'CLOSED', 'INSUFFICIENT_FUNDS', 'PENDING'],
+        'Covered with money left over: open and itemize.'
+      ),
+      MCQ(
+        'Drawer total exactly equals the change owed. Status and payout?',
+        'CLOSED — hand over the whole drawer',
+        ['CLOSED — hand over the whole drawer', 'OPEN with coins only', 'INSUFFICIENT_FUNDS', 'OPEN with bills only'],
+        'Exact match empties the drawer: closed.'
+      ),
+      BUILD(
+        'Safest change arithmetic in JavaScript',
+        ['Math.round(', 'change', '* 100)'],
+        ['Math.round(', 'change', '* 100)', 'parseInt(', '/ 100)'],
+        'Cents kill 0.1 + 0.2 drift.'
+      ),
+      MCQ(
+        'Cash is less than price. First move?',
+        'Alert: customer cash is short',
+        ['Alert: customer cash is short', 'Open the drawer anyway', 'Report CLOSED', 'Dispense random coins'],
+        'No change problem exists until payment covers price.'
+      ),
+    ],
+  },
+
+  'js-caesars-cipher': {
+    id: 'js-caesars-cipher',
+    title: 'Caesars Cipher',
+    theory: [
+      'Capstone 4 of 5: ROT13 — shift every letter 13 places, leave everything else untouched. A becomes N, N becomes A; digits, spaces, and punctuation pass through unchanged.',
+      'Uppercase the input first so one alphabet range covers everything. For each character code: A–M shifts forward 13, N–Z shifts back 13, anything outside A–Z copies through.',
+      'ROT13 is its own inverse: encoding twice returns the original. That symmetry is the self-test — run the output through again and expect the input.',
+    ],
+    questions: [
+      MCQ(
+        'Encoding "HELLO WORLD" — what happens to the space?',
+        'Passes through unchanged',
+        ['Passes through unchanged', 'Shifts to M', 'Is deleted', 'Becomes N'],
+        'Only A–Z shifts; everything else copies.'
+      ),
+      MCQ(
+        'Char code 78 (N) under ROT13 becomes…',
+        '65 (A) — wrap back 13',
+        ['65 (A) — wrap back 13', '91', '78 unchanged', '64'],
+        'Second half wraps backward; first half shifts forward.'
+      ),
+      BUILD(
+        'Guard: only shift A–Z codes',
+        ['if', '(code >= 65', '&& code <= 90)'],
+        ['if', '(code >= 65', '&& code <= 90)', '|| code < 65)', 'while'],
+        'Range check before arithmetic.'
+      ),
+      MCQ(
+        'Fastest self-test that the cipher is correct?',
+        'Encode the output again — expect the input',
+        ['Encode the output again — expect the input', 'Encode a third time', 'Compare lengths only', 'Check the first letter only'],
+        'ROT13 is an involution: twice is identity.'
+      ),
+    ],
+  },
+
+  'js-telephone-validator': {
+    id: 'js-telephone-validator',
+    title: 'Telephone Validator',
+    theory: [
+      'Capstone 5 of 5: accept valid US numbers, reject the rest. Valid shapes: 5555555555, 555-555-5555, (555)555-5555, (555) 555-5555, 555 555 5555, 1 555 555 5555 and their mixes.',
+      'Parentheses must pair around the area code — (555) passes, (555 or 555) fails. A leading 1 country code is optional but must stand alone, never glued to the area code.',
+      'One regex with optional groups covers every shape; anything with letters, wrong digit counts, or unbalanced parens fails. Empty input gets a prompt, not a verdict.',
+    ],
+    questions: [
+      MCQ(
+        '"1 (555) 555-5555" — verdict?',
+        'Valid — country code plus paired parens',
+        ['Valid — country code plus paired parens', 'Invalid — spaces forbidden', 'Invalid — parens forbidden with 1', 'Invalid — dashes required'],
+        'Optional 1, paired parens, ten digits: valid.'
+      ),
+      MCQ(
+        '"(555-555-5555" — verdict?',
+        'Invalid — unbalanced parenthesis',
+        ['Invalid — unbalanced parenthesis', 'Valid — dash instead of close paren', 'Valid — open paren is enough', 'Invalid — too many digits'],
+        'Parens pair or nothing.'
+      ),
+      BUILD(
+        'Optional leading country code in the regex',
+        ['^(1\\s?)?', '\\d'],
+        ['^(1\\s?)?', '\\d', '(1\\s?)*', '$1'],
+        'Optional group, then digits.'
+      ),
+      MCQ(
+        '"555-abc-5555" — verdict?',
+        'Invalid — letters are never allowed',
+        ['Invalid — letters are never allowed', 'Valid — letters read as digits', 'Valid — dashes fix it', 'Invalid — too short'],
+        'Digits, spaces, dashes, parens, one leading 1: nothing else.'
+      ),
+    ],
+  },
 };

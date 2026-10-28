@@ -552,4 +552,184 @@ export const TRACK_PY: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'py-budget-app': {
+    id: 'py-budget-app',
+    title: 'Budget App',
+    theory: [
+      'Capstone 1 of 5: Category ledgers with deposit, withdraw, transfer, and a spend chart. The ledger lists every entry; the balance sums amounts — withdrawals store as negatives.',
+      'Transfers move money between categories with paired entries ("Transfer to X" / "Transfer from Y"). Withdrawals beyond the balance fail with False and record nothing.',
+      'The spend chart shows whole percentages per category as bars of o characters, floored to tens. Category names print vertically beneath the bars.',
+    ],
+    questions: [
+      MCQ(
+        'Food balance 500, withdraw 700. Result?',
+        'False — nothing recorded',
+        ['False — nothing recorded', 'True, balance goes negative', 'True, balance hits zero', 'Transfers instead'],
+        'No overdrafts: fail clean.'
+      ),
+      MCQ(
+        'Transfer 50 from Food to Clothing records…',
+        'Withdraw entry in Food, deposit entry in Clothing',
+        ['Withdraw entry in Food, deposit entry in Clothing', 'One entry in Food only', 'Ledger deletion', 'A new category'],
+        'Paired entries keep both ledgers honest.'
+      ),
+      BUILD(
+        'Balance of a ledger of amounts',
+        ['sum(', 'entry[\'amount\']', 'for entry in self.ledger)'],
+        ['sum(', 'entry[\'amount\']', 'len(', 'for entry in self.ledger)', 'for entry in ledger)'],
+        'Sum every stored amount.'
+      ),
+      MCQ(
+        'Spend share 34.9% renders in the chart as…',
+        '30 — percentages floor to tens',
+        ['30 — percentages floor to tens', '34', '35', '40'],
+        'Floor, never round, to the ten.'
+      ),
+    ],
+  },
+
+  'py-polygon-calculator': {
+    id: 'py-polygon-calculator',
+    title: 'Polygon Area Calculator',
+    theory: [
+      'Capstone 2 of 5: Rectangle with Square as its subclass. get_area multiplies sides, get_perimeter doubles the sum, get_diagonal uses Pythagoras — all from stored width and height.',
+      'get_picture draws the shape with * characters, capped: too big returns "Too big for picture." get_amount_inside counts how many of another shape tile inside without rotation.',
+      'Square inherits everything and fixes the invariant: set_side, set_width, and set_height all keep width equal to height. Its repr names the class and side.',
+    ],
+    questions: [
+      MCQ(
+        'Rectangle 3×6 picture. Row content?',
+        'Six stars per row, three rows',
+        ['Six stars per row, three rows', 'Three stars per row, six rows', 'One 3×6 number', 'An empty string'],
+        'Width stars, height rows.'
+      ),
+      MCQ(
+        'Square side 4, set_width(9) called. New sides?',
+        '9 × 9 — square keeps width equal height',
+        ['9 × 9 — square keeps width equal height', '9 × 4', '4 × 9', 'Unchanged 4 × 4'],
+        'Every setter preserves the invariant.'
+      ),
+      BUILD(
+        'Diagonal of a width×height rectangle',
+        ['(width ** 2', '+ height ** 2)', '** 0.5'],
+        ['(width ** 2', '+ height ** 2)', '** 0.5', 'width * height', '** 2'],
+        'Pythagoras, then square root.'
+      ),
+      MCQ(
+        '50×50 shape picture requested. Result?',
+        '"Too big for picture."',
+        ['"Too big for picture."', '2500 stars', 'An empty page', 'A smaller scaled picture'],
+        'Over the cap refuses politely.'
+      ),
+    ],
+  },
+
+  'py-demographic-analyzer': {
+    id: 'py-demographic-analyzer',
+    title: 'Demographic Data Analyzer',
+    theory: [
+      'Capstone 3 of 5: Pandas over census rows. Load the CSV into a DataFrame, then answer: race counts, average age of men, education vs salary rates, work hours, countries, occupations.',
+      'Boolean masks filter rows; .mean() on a mask gives rates directly. Group by country or occupation, then compare high-earner shares to find the richest slice.',
+      'Edge care: strip whitespace from string columns first, and guard divisions where a group could be empty.',
+    ],
+    questions: [
+      MCQ(
+        'Share of Bachelors holders earning >50K. Pandas idiom?',
+        'Mean of the (bachelors AND rich) mask',
+        ['Mean of the (bachelors AND rich) mask', 'Count of all rows', 'Max salary overall', 'Median age of everyone'],
+        'Mask, combine, mean — rate in one line.'
+      ),
+      MCQ(
+        'Country column reads " United-States" with a leading space. First move?',
+        'Strip whitespace from string columns',
+        ['Strip whitespace from string columns', 'Drop the column', 'Lowercase all numbers', 'Sort descending'],
+        'Dirty strings split groups silently.'
+      ),
+      BUILD(
+        'Richest occupation by high-earner rate',
+        ['df[df[\'salary\']', '> 50K].groupby(\'occupation\')', '.size() / df.groupby(\'occupation\').size()', '.idxmax()'],
+        ['df[df[\'salary\']', '> 50K].groupby(\'occupation\')', '.size() / df.groupby(\'occupation\').size()', '.idxmax()', '.mean()', '.sum()'],
+        'Rate per group, then the top label.'
+      ),
+      MCQ(
+        'No one works the minimum hours. Safest rate computation?',
+        'Guard empty groups before dividing',
+        ['Guard empty groups before dividing', 'Divide anyway', 'Return 100%', 'Drop all rows'],
+        'Empty denominators need a guard.'
+      ),
+    ],
+  },
+
+  'py-time-calculator': {
+    id: 'py-time-calculator',
+    title: 'Time Calculator',
+    theory: [
+      'Capstone 4 of 5: add durations to 12-hour times. Parse the start, add hours and minutes, flip AM/PM every 12 hours, and count days passed.',
+      'Optional weekday shifts forward by days-passed mod 7. Output names the new time, the weekday when given, and "(next day)" or "(n days later)" as needed.',
+      'Minutes carry into hours; hours wrap at 12 with the AM/PM flip. Day counting starts only after a full 24 hours elapse.',
+    ],
+    questions: [
+      MCQ(
+        '"11:30 PM" + "2:45", no weekday. Result names…',
+        '2:15 AM, next day',
+        ['2:15 AM, next day', '1:15 AM, next day', '2:15 PM, same day', '13:75 AM'],
+        'Carry minutes, flip past midnight, count the day.'
+      ),
+      MCQ(
+        'Start Monday, 48 hours pass. Weekday output?',
+        'Wednesday — 2 days forward',
+        ['Wednesday — 2 days forward', 'Monday — weekdays never shift', 'Sunday', 'Friday'],
+        'Shift by days mod 7 from the start day.'
+      ),
+      BUILD(
+        'Minutes past the hour after adding',
+        ['total_minutes', '% 60'],
+        ['total_minutes', '% 60', '// 60', '+ 60'],
+        'Modulo keeps the minute hand.'
+      ),
+      MCQ(
+        'Same time next day (24h added, no weekday). Suffix?',
+        '"(next day)"',
+        ['"(next day)"', 'No suffix', '"(2 days later)"', '"(same day)"'],
+        'Exactly one day earns the singular.'
+      ),
+    ],
+  },
+
+  'py-arithmetic-formatter': {
+    id: 'py-arithmetic-formatter',
+    title: 'Arithmetic Formatter',
+    theory: [
+      'Capstone 5 of 5: arrange addition/subtraction problems vertically, side by side, four spaces apart. Each problem stacks operands right-aligned under the operator with a dash rule.',
+      'Validation order: too many problems first, then operator check, then digit check, then length check. First failure returns its error — nothing formats.',
+      'Optional second argument shows the answers beneath the dashes, aligned to the same width. Operands cap at four digits.',
+    ],
+    questions: [
+      MCQ(
+        'Six problems arrive. Formatter returns…',
+        'The too-many error, nothing arranged',
+        ['The too-many error, nothing arranged', 'First five arranged', 'All six squeezed', 'An empty string'],
+        'Count check runs before everything.'
+      ),
+      MCQ(
+        '"32 * 8" arrives. Which error?',
+        'Operator must be + or -',
+        ['Operator must be + or -', 'Too many problems', 'Numbers must be digits', 'Numbers too long'],
+        'Operator gate is second in order.'
+      ),
+      BUILD(
+        'Dash rule width for operands of width w',
+        ['\'-\'', '* (w + 2)'],
+        ['\'-\'', '* (w + 2)', '* w', '+ 2'],
+        'Operator plus space, then the digits.'
+      ),
+      MCQ(
+        '"99999 + 1" arrives. Which error?',
+        'Numbers cannot exceed four digits',
+        ['Numbers cannot exceed four digits', 'Too many problems', 'Bad operator', 'Letters forbidden'],
+        'Five digits trips the length gate.'
+      ),
+    ],
+  },
 };

@@ -548,4 +548,184 @@ export const TRACK_BE: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'be-timestamp': {
+    id: 'be-timestamp',
+    title: 'Timestamp Microservice',
+    theory: [
+      'Capstone 1 of 5: an endpoint that answers every date question. GET /api/:date? returns unix milliseconds and a UTC string; empty date means right now.',
+      'Parsing accepts ISO strings and bare millisecond numbers. Anything unparseable gets { error: "Invalid Date" } — the checks probe this path deliberately.',
+      'Express serves it: one route, one handler, JSON out. new Date(input) does the heavy lifting; isNaN on getTime detects failure.',
+    ],
+    questions: [
+      MCQ(
+        'GET /api/1451001600000 must return…',
+        'unix 1451001600000 plus its UTC string',
+        ['unix 1451001600000 plus its UTC string', 'Only the UTC string', 'Only the unix number', '{ error: "Invalid Date" }'],
+        'Both fields, every success.'
+      ),
+      MCQ(
+        'GET /api/not-a-date must return…',
+        '{ error: "Invalid Date" }',
+        ['{ error: "Invalid Date" }', 'unix 0', 'The current time', 'A 500 crash'],
+        'Invalid in, error object out.'
+      ),
+      BUILD(
+        'Detect an unparseable date',
+        ['isNaN(', 'd.getTime()', ')'],
+        ['isNaN(', 'd.getTime()', 'd.getTime(', ')', 'isFinite('],
+        'NaN time means invalid date.'
+      ),
+      MCQ(
+        'GET /api with no date returns…',
+        'The current time in both fields',
+        ['The current time in both fields', 'An error', 'unix 0', 'Empty object'],
+        'Missing date defaults to now.'
+      ),
+    ],
+  },
+
+  'be-file-metadata': {
+    id: 'be-file-metadata',
+    title: 'File Metadata Microservice',
+    theory: [
+      'Capstone 2 of 5: accept an upload and report its name, type, and size. A multipart form posts the file; upload middleware parks it in memory or temp storage.',
+      'The handler reads originalname, mimetype, and size off the parsed file object and returns all three as JSON. No file attached means a clean client error, not a crash.',
+      'Limits matter: cap file size in middleware so one upload cannot exhaust the server. The form field name must match what the middleware expects.',
+    ],
+    questions: [
+      MCQ(
+        'Handler needs the uploaded filename. Which property?',
+        'req.file.originalname',
+        ['req.file.originalname', 'req.body.filename', 'req.query.name', 'req.headers.name'],
+        'Middleware attaches the parsed file to req.file.'
+      ),
+      MCQ(
+        'Form posts with no file attached. Correct response?',
+        'A 400 asking for a file — no crash',
+        ['A 400 asking for a file — no crash', 'Report size 0 as success', 'Hang until timeout', 'Return another user file'],
+        'Missing file is a client error, handled.'
+      ),
+      BUILD(
+        'JSON metadata every upload returns',
+        ['{ name,', 'type,', 'size }'],
+        ['{ name,', 'type,', 'size }', '{ path,', 'hash }'],
+        'Name, type, size — the metadata triple.'
+      ),
+      MCQ(
+        'One giant upload must not kill the server. Where is the cap?',
+        'File-size limit in the upload middleware',
+        ['File-size limit in the upload middleware', 'In the JSON response', 'In the HTML form title', 'Nowhere — disk is infinite'],
+        'Reject oversized files before buffering them.'
+      ),
+    ],
+  },
+
+  'be-url-shortener': {
+    id: 'be-url-shortener',
+    title: 'URL Shortener Microservice',
+    theory: [
+      'Capstone 3 of 5: POST a URL, get back a short id; GET /api/shorturl/:id redirects to the original. Mongo stores the pair; the id is the lookup key.',
+      'Validation first: only http/https URLs get stored — DNS lookup confirms the host resolves. Anything else earns an invalid-URL error, never a row.',
+      'Redirects use 302 to the stored original. Unknown ids get a no-such-URL error instead of a blind redirect.',
+    ],
+    questions: [
+      MCQ(
+        'POST ftp://files/x arrives. Correct response?',
+        'Invalid URL — only http/https stored',
+        ['Invalid URL — only http/https stored', 'Shorten it anyway', 'Redirect to ftp', 'Store and crash later'],
+        'Scheme allowlist guards the store.'
+      ),
+      MCQ(
+        'GET /api/shorturl/7 for a known id must…',
+        '302 redirect to the stored original',
+        ['302 redirect to the stored original', 'Return the id as JSON', 'Delete the row', 'Render the homepage'],
+        'Lookup, then redirect.'
+      ),
+      BUILD(
+        'Confirm a host resolves before storing',
+        ['dns.lookup(', 'hostname,', 'cb)'],
+        ['dns.lookup(', 'hostname,', 'cb)', 'dns.resolve(', 'url)'],
+        'DNS proves the host exists.'
+      ),
+      MCQ(
+        'Unknown short id arrives. Correct response?',
+        'No-such-URL error, no redirect',
+        ['No-such-URL error, no redirect', 'Redirect to homepage', 'Redirect to a random URL', 'Create the row on the fly'],
+        'Miss means error, never a guess.'
+      ),
+    ],
+  },
+
+  'be-exercise-tracker': {
+    id: 'be-exercise-tracker',
+    title: 'Exercise Tracker',
+    theory: [
+      'Capstone 4 of 5: users with exercise logs. POST /api/users creates a user; POST /api/users/:id/exercises appends description, duration, and an optional date defaulting to today.',
+      'The log endpoint returns the user plus their exercises, filtered by from/to dates and capped by limit. Dates store as Date objects; responses format them as readable strings.',
+      'Missing users and bad ids get errors, never phantom rows. Duration must be a number — validate before saving.',
+    ],
+    questions: [
+      MCQ(
+        'Exercise posts with no date. Stored date?',
+        'Today — default fills it',
+        ['Today — default fills it', 'Unix epoch', 'Null forever', 'Rejected as invalid'],
+        'Optional date defaults to now.'
+      ),
+      MCQ(
+        'Log request carries ?from=2024-01-01&limit=2. Handler must…',
+        'Filter by date, then cap at 2 entries',
+        ['Filter by date, then cap at 2 entries', 'Ignore both params', 'Return all entries twice', 'Delete older entries'],
+        'Query params shape the log.'
+      ),
+      BUILD(
+        'Append an exercise to a user log',
+        ['user.log.push({', 'description,', 'duration,', 'date })'],
+        ['user.log.push({', 'description,', 'duration,', 'date })', 'user.log = [', 'date }]'],
+        'Push the entry object onto the log.'
+      ),
+      MCQ(
+        'Duration arrives as "thirty". Correct handling?',
+        'Reject — duration must be numeric',
+        ['Reject — duration must be numeric', 'Store the string', 'Default to 0 silently', 'Crash the process'],
+        'Validate numbers before saving.'
+      ),
+    ],
+  },
+
+  'be-header-parser': {
+    id: 'be-header-parser',
+    title: 'Request Header Parser',
+    theory: [
+      'Capstone 5 of 5: GET /api/whoami reports the caller. The handler reads IP, preferred language, and software from the request and returns all three as JSON.',
+      'Sources: IP from the connection (respecting proxies), language from accept-language, software from user-agent. Header names arrive lowercased on req.headers.',
+      'No input, no database — pure request inspection. The checks call from different clients and expect their own details echoed back.',
+    ],
+    questions: [
+      MCQ(
+        'Preferred language lives in which header?',
+        'accept-language',
+        ['accept-language', 'content-type', 'authorization', 'host'],
+        'The client preference header.'
+      ),
+      MCQ(
+        'Client software (OS, browser) lives in…',
+        'user-agent',
+        ['user-agent', 'user-name', 'x-powered-by', 'cookie'],
+        'User-agent describes the caller.'
+      ),
+      BUILD(
+        'Read a header inside Express',
+        ['req.headers[', '"accept-language"', ']'],
+        ['req.headers[', '"accept-language"', '"Accept-Language"', ']', 'req.body['],
+        'Lowercased keys on req.headers.'
+      ),
+      MCQ(
+        'Behind a proxy, the true client IP needs…',
+        'Trust-proxy plus x-forwarded-for awareness',
+        ['Trust-proxy plus x-forwarded-for awareness', 'Reading req.body.ip', 'Guessing from user-agent', 'Ignoring it — IPs do not matter'],
+        'Proxies hide the socket address.'
+      ),
+    ],
+  },
 };
