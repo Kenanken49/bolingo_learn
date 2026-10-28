@@ -1,0 +1,49 @@
+# Self-hosted tutor LLM (no external keys)
+
+All three learner-facing AI paths — **Ask Bingo** (`ask-bingo`), **Explain My
+Answer** (`explain-answer`), **Roleplay** (`roleplay-chat`) — speak plain
+OpenAI-compatible `/v1/chat/completions`. Pointing them at our own model
+needs **zero code changes**: only the three Supabase secrets change.
+
+## Why not DeepSeek-R1 directly
+
+R1 is a *reasoning* model: it must "think" (hundreds of tokens) before every
+answer. Measured on a real PC (Oct 2026):
+
+- `deepseek-r1:1.5b` — ~56 s per short answer, **and hallucinated** basic
+  Spanish grammar ("hablable is for native speakers…"). Wrong + slow.
+- `deepseek-r1:7b` — **4.5+ min** per answer on CPU. Unusable interactively.
+
+Cutting the wait while staying in the same family means using R1-1.5B's
+non-reasoning sibling: **`qwen2.5:1.5b`** (the R1-1.5B distill is built on
+Qwen2.5-1.5B — same brain, no thinking tax). It answers directly in seconds
+on CPU, and our edge functions already strip any `<think>` leakage and fall
+back to `reasoning` fields (`cleanModelText`), so either model shape is safe.
+
+## Architecture
+
+```
+learner → Supabase edge fn → https://bolingo.co.ke/llm-<secret>/v1/…
+                              └─ nginx ──► 127.0.0.1:11434 (Ollama, VPS-local)
+```
+
+- Ollama **never leaves localhost**; the only public surface is the secret
+  path, which acts as the password. `LLM_API_KEY` is then just a local gate
+  token, not a paid third-party key.
+- If the VPS is ever unreachable, the app's Ask Bingo sheet falls back to
+  the offline 📖 Kamusi — learners are never stranded.
+
+## Runbook
+
+1. On the VPS as root: copy `scripts/vps-llm-setup.sh`, run
+   `bash vps-llm-setup.sh`, keep the three printed values private.
+2. From your dev machine (Supabase CLI already linked):
+   `supabase secrets set LLM_BASE_URL=<url> LLM_MODEL=qwen2.5:1.5b LLM_API_KEY=<token>`
+3. Live-test: invoke `ask-bingo` with a real question; expect a 2–4 sentence
+   hint in seconds, no `reasoning`/`think` text in the reply.
+
+## Costs
+
+- VPS: ~1 GB disk, ~2 GB RAM for the loaded model. No per-token billing.
+- Cloud fallback (optional): keep a funded `LLM_API_KEY` out of the secrets
+  and the app keeps working as today — the secrets simply choose the brain.
