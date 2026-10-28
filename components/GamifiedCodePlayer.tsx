@@ -85,15 +85,16 @@ export default function GamifiedCodePlayer({
   const [explain, setExplain] = useState<string | null>(null);
   const [explainLoading, setExplainLoading] = useState(false);
 
-  // freeCodeCamp-style test checklist derived from the expected chain.
-  // Single-token answers (multiple-choice) collapse to one test.
+  // freeCodeCamp-style test checklist. Labels stay generic on purpose: the
+  // exact answer is never printed until the learner produces it (see the
+  // correct banner below). Live pass/fail still guides each attempt.
   const tests = (() => {
     const chain = questionData.correctChain;
-    if (chain.length <= 1) return [{ label: `Answer is exactly ${chain.join(' ')}`, pass: (s: string[]) => JSON.stringify(s) === JSON.stringify(chain) }];
+    if (chain.length <= 1) return [{ label: 'Test 1 · the exact answer (1 token)', pass: (s: string[]) => JSON.stringify(s) === JSON.stringify(chain) }];
     return [
-      { label: `Opens with ${chain[0]}`, pass: (s: string[]) => s[0] === chain[0] },
-      { label: `Closes with ${chain[chain.length - 1]}`, pass: (s: string[]) => s[s.length - 1] === chain[chain.length - 1] },
-      { label: `Full chain matches (${chain.length} tokens)`, pass: (s: string[]) => JSON.stringify(s) === JSON.stringify(chain) },
+      { label: 'Test 1 · opening token correct', pass: (s: string[]) => s[0] === chain[0] },
+      { label: 'Test 2 · closing token correct', pass: (s: string[]) => s[s.length - 1] === chain[chain.length - 1] },
+      { label: `Test 3 · full chain in order (${chain.length} tokens)`, pass: (s: string[]) => JSON.stringify(s) === JSON.stringify(chain) },
     ];
   })();
   const [ranTests, setRanTests] = useState(false);
@@ -167,6 +168,17 @@ export default function GamifiedCodePlayer({
     setAvailableTokens([...availableTokens, token]);
     setSelectedTokens(selectedTokens.filter((_, i) => i !== index));
   };
+
+  // Wrong attempts get a directional hint (which structural test failed),
+  // never the expected chain. Single-token (multiple-choice) questions get
+  // an elimination hint instead of an opener/closer pointer.
+  const firstFailedTest = feedback === 'wrong' ? tests.findIndex((t) => !t.pass(selectedTokens)) : -1;
+  const wrongHint = (() => {
+    if (questionData.correctChain.length <= 1) return 'Hint: rule out one option you know is wrong, then try another.';
+    if (firstFailedTest === 0) return 'Hint: the opening token is off — re-check how this construct starts.';
+    if (firstFailedTest === 1) return 'Hint: the closing token is off — re-check how this construct ends.';
+    return 'Hint: the shape is close but the order is not — compare token by token.';
+  })();
 
   const checkAnswer = async () => {
     if (selectedTokens.length === 0 || feedback) return;
@@ -327,9 +339,12 @@ export default function GamifiedCodePlayer({
           </Text>
           <Text className="mt-1 text-slate-600">
             {feedback === 'correct'
-              ? (questionData.explain ?? 'Review your block tags and keep going.')
-              : `Expected: ${questionData.correctChain.join(' ')}`}
+              ? `Answer: ${questionData.correctChain.join(' ')}`
+              : wrongHint}
           </Text>
+          {feedback === 'correct' && questionData.explain ? (
+            <Text className="mt-1 text-sm text-slate-500">Why: {questionData.explain}</Text>
+          ) : null}
           {feedback === 'wrong' && questionData.explain ? (
             <Text className="mt-1 text-sm text-slate-500">Why: {questionData.explain}</Text>
           ) : null}
