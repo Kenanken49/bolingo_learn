@@ -13,8 +13,13 @@
  * Verdicts require n>=100 per type, else INSUFFICIENT DATA (never a false
  * FLAG on thin data). Missing/empty table exits 2 with apply instructions.
  *
+ * 4. Tutor guardrail — aggregates public.bingo_votes by (lesson, prompt):
+ *   worst contexts (helpful rate < 50%, n>=min-votes) are flagged for
+ *   strongFirst routing or Kamusi fallback. This is where the 1.5B's
+ *   terminology fumbles show up as data instead of anecdotes.
+ *
  * Usage:
- *   node scripts/kiki-calibrate.cjs [--since YYYY-MM-DD] [--min-n 100]
+ *   node scripts/kiki-calibrate.cjs [--since YYYY-MM-DD] [--min-n 100] [--min-votes 5]
  *
  * Env (from .env, never committed): SUPABASE_URL + SUPABASE_SECRET_KEY.
  */
@@ -76,11 +81,74 @@ function bins(rows, k = 10) {
   return out;
 }
 
+/**
+ * Tutor guardrail aggregation: group helpfulness votes by lesson context,
+ * keep contexts with enough votes, flag sub-50% helpful rates worst-first.
+ * Pure (no I/O) so --self-test covers it deterministically.
+ */
+function worstContexts(votes, minN) {
+  const by = new Map();
+  for (const v of votes) {
+    const k = `${v.lesson_title || ''}|||${v.prompt || ''}`;
+    let e = by.get(k);
+    if (!e) { e = { lesson: v.lesson_title || '', prompt: v.prompt || '', n: 0, helpful: 0 }; by.set(k, e); }
+    e.n += 1;
+    if (v.helpful) e.helpful += 1;
+  }
+  return [...by.values()]
+    .filter((e) => e.n >= minN)
+    .map((e) => ({ ...e, rate: e.helpful / e.n }))
+    .filter((e) => e.rate < 0.5)
+    .sort((a, b) => a.rate - b.rate || b.n - a.n);
+}
+
+async function reportTutorGuardrail(db, sinceArg, minVotes) {
+  console.log('\n--- Tutor guardrail (bingo_votes) ---');
+  const PAGE = 1000;
+  let votes = [];
+  for (let from = 0; ; from += PAGE) {
+    let q = db.from('bingo_votes').select('lesson_title,prompt,helpful,created_at').order('id', { ascending: true }).range(from, from + PAGE - 1);
+    if (sinceArg) q = q.gte('created_at', sinceArg);
+    const { data, error } = await q;
+    if (error) {
+      if (error.code === '42P01' || /does not exist|not find/i.test(error.message)) {
+        console.log('bingo_votes not applied yet — run supabase/migrations_bingo_votes.sql, then re-run.');
+        return;
+      }
+      console.log('bingo_votes unreadable:', error.message);
+      return;
+    }
+    if (!data || !data.length) break;
+    votes = votes.concat(data);
+    if (data.length < PAGE) break;
+  }
+  if (!votes.length) {
+    console.log('No helpfulness votes yet. Tap thumbs up/down on Bingo answers signed-in, then re-run.');
+    console.log('Verdict tutor: INSUFFICIENT DATA (table live, zero votes).');
+    return;
+  }
+  const helpful = votes.filter((v) => v.helpful).length;
+  console.log(`votes=${votes.length} helpful=${helpful} rate=${(helpful / votes.length).toFixed(3)}`);
+  const worst = worstContexts(votes, minVotes);
+  if (!worst.length) {
+    console.log(`No context below 50% with n>=${minVotes} — small model holding everywhere measured.`);
+    console.log('Verdict tutor: CONFIRMED — no fumble context found.');
+    return;
+  }
+  console.log(`worst contexts (helpful rate asc, n>=${minVotes}):`);
+  for (const e of worst.slice(0, 10)) {
+    console.log(`  ${e.rate.toFixed(2)} helpful (n=${e.n}) · ${e.lesson} — ${e.prompt.slice(0, 80)}`);
+  }
+  console.log('Verdict tutor: FLAG — contexts above merit strongFirst routing or Kamusi fallback.');
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const sinceArg = args[args.indexOf('--since') + 1];
   const minNArg = args[args.indexOf('--min-n') + 1];
   const MIN_N = minNArg ? parseInt(minNArg, 10) : 100;
+  const minVotesArg = args[args.indexOf('--min-votes') + 1];
+  const MIN_VOTES = minVotesArg ? parseInt(minVotesArg, 10) : 5;
   const env = { ...loadEnv(), ...process.env };
   const url = env.SUPABASE_URL;
   const key = env.SUPABASE_SECRET_KEY || env.SUPABASE_SERVICE_ROLE_KEY;
@@ -122,6 +190,8 @@ async function main() {
 
   const locked = lockedConstants();
   console.log(`Kiki calibration — ${rows.length} attempts${sinceArg ? ` since ${sinceArg}` : ''}`);
+  // Guardrail always reports (votes can predate attempts) — never gated.
+  await reportTutorGuardrail(db, sinceArg, MIN_VOTES);
   if (!rows.length) {
     console.log('No attempts logged yet. Play a lesson signed-in, then re-run.');
     console.log('Verdict: INSUFFICIENT DATA (table live, zero rows).');
@@ -171,7 +241,14 @@ if (process.argv.includes('--self-test')) {
   A(Math.abs(s.meanP - 0.5) < 0.01, 'meanP');
   A(bins(fake, 10).length === 10, 'bins');
   A(s.skill > 0, 'brier skill positive on calibrated fakes');
-  console.log('SELF-TEST PASS: summarize/bins/verdict math OK');
+  const fv = [];
+  for (let i = 0; i < 10; i++) fv.push({ lesson_title: 'Spanish Past Stories', prompt: 'Hable?', helpful: i < 2 });
+  for (let i = 0; i < 3; i++) fv.push({ lesson_title: 'Swahili Basics', prompt: 'Hi?', helpful: true });
+  const w = worstContexts(fv, 5);
+  A(w.length === 1 && w[0].lesson === 'Spanish Past Stories' && Math.abs(w[0].rate - 0.2) < 1e-9, 'worstContexts flags sub-50% context');
+  A(worstContexts(fv, 20).length === 0, 'worstContexts respects minN');
+  A(worstContexts(fv.map((v) => ({ ...v, helpful: true })), 5).length === 0, 'worstContexts ignores healthy contexts');
+  console.log('SELF-TEST PASS: summarize/bins/verdict/guardrail math OK');
   process.exit(0);
 }
 main().catch((e) => {
