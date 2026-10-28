@@ -33,18 +33,20 @@ const json = (body: unknown, status = 200) =>
   });
 
 /**
- * Reasoning-model safe: some local/self-hosted models (DeepSeek R1 family
- * via Ollama) put chain-of-thought in `reasoning`/`reasoning_content` or
- * inline `<think>` tags instead of `content`. Prefer real content, fall back
- * to the reasoning fields, and always strip leaked thought blocks so
- * learners never see the model's inner monologue.
+ * Learners must NEVER see chain-of-thought. Reasoning models (DeepSeek R1,
+ * gpt-oss) expose thinking in `reasoning`/`reasoning_content` fields or
+ * inline `<think>` blocks — all of it is discarded here. Only `content`
+ * (the model's final answer) is surfaced; empty content counts as failure
+ * so the caller falls through to the next backend, never to raw thinking.
+ * (Proven Oct 28: gpt-oss-120b once returned empty content with full
+ * reasoning — the old reasoning-fallback showed learners "We need to
+ * respond as Bingo...". Never again.)
  */
 function cleanModelText(data: {
-  choices?: Array<{ message?: { content?: unknown; reasoning_content?: unknown; reasoning?: unknown } }>;
+  choices?: Array<{ message?: { content?: unknown } }>;
 }): string {
   const msg = data.choices?.[0]?.message ?? {};
-  const pick = (v: unknown) => (typeof v === 'string' ? v : '');
-  const raw = pick(msg.content) || pick(msg.reasoning_content) || pick(msg.reasoning);
+  const raw = typeof msg.content === 'string' ? msg.content : '';
   return raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
 }
 
@@ -108,7 +110,7 @@ serve(async (req: Request) => {
           content: `Lesson context: ${where || 'general study'}\nStudent question: ${question.trim()}`,
         },
       ],
-      250,
+      600,
       0.6
     );
     return json({ answer, via });
