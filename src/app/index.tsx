@@ -686,6 +686,27 @@ export default function PathMap() {
             </View>
             <Text className="text-2xl font-extrabold text-violet-400">›</Text>
           </Pressable>
+          {/* Offline Kamusi: no-network, no-AI dictionary for language learners. */}
+          <Pressable
+            onPress={() => router.push('/dictionary')}
+            accessibilityRole="button"
+            accessibilityLabel="Offline kamusi and dictionary, no AI needed"
+            className="mb-4 w-full max-w-sm flex-row items-center rounded-3xl border-2 border-emerald-200 bg-emerald-50 p-4"
+          >
+            <View className="h-12 w-12 items-center justify-center rounded-full bg-emerald-600">
+              <Text className="text-2xl">📖</Text>
+            </View>
+            <View className="ml-3 flex-1">
+              <Text className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
+                📖 Offline kamusi · no AI needed
+              </Text>
+              <Text className="font-duo text-base font-extrabold text-slate-900" numberOfLines={1}>
+                Kiswahili ↔ English dictionary
+              </Text>
+              <Text className="text-xs font-bold text-slate-500">2,273 SW headwords · 12,000 EN words · works offline</Text>
+            </View>
+            <Text className="text-2xl font-extrabold text-emerald-400">›</Text>
+          </Pressable>
           {/* Core Curriculum: 7 certification tracks × 5 mandatory projects. */}
           <Pressable
             onPress={() => router.push('/certifications')}

@@ -1,0 +1,15 @@
+{
+  "built": "2026-10-28",
+  "swahili": {
+    "name": "FreeDict Swahili-English (swh-eng) v0.4.4",
+    "url": "https://freedict.org",
+    "license": "GNU GPL v2 or later",
+    "entries": 2273
+  },
+  "english": {
+    "name": "English WordNet 2024 (EWN)",
+    "url": "https://github.com/globalwordnet/english-wordnet",
+    "license": "see english-wordnet repo (WordNet-derived, attribution required)",
+    "entries": 12000
+  }
+}
