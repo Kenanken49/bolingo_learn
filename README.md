@@ -106,6 +106,14 @@ applause starts on that handoff frame rather than on the tap, so the five
 seconds of crowd sit exactly under the five seconds of ribbons. Results mount
 the storm directly; only the chest gets a ceremony in front of it.
 
+The storm is also frame-budgeted: after a 700ms settle (so the mount spike
+doesn't count) it samples its own frame times, and if more than half of a
+30-frame window runs longer than 32ms — below ~30fps — it trims from 42 ribbons
+to 29 and then 20, stopping there so the celebration still reads as confetti.
+The shared clock is never touched, so trimming can't shorten the five seconds
+or desync the applause, and because each ribbon is seeded by index, dropping the
+tail never makes the survivors jump.
+
 ## Core loop (Path Map ➔ Quiz Player ➔ Loss Aversion)
 
 Expo Router (`src/app/`) drives the habit loop:

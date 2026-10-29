@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import Reanimated, {
   useSharedValue,
@@ -19,6 +19,13 @@ import Reanimated, {
  * version stays dense without mounting hundreds of views. The full duration
  * matches the five-second applause; the default is the quick burst.
  *
+ * Quality is adaptive: 42 animated views are free on a flagship and can drag a
+ * low-end Android under 30fps, so the storm samples its own frame times and
+ * thins the ribbon count when the frame budget is blown. The shared clock is never
+ * touched, so trimming particles cannot shorten the five seconds or break the
+ * audio sync. Removing the tail of the array is seamless — each ribbon is seeded
+ * by index, so survivors keep their exact position, colour and fall phase.
+ *
  *   {burst && <Celebration duration={FULL_CELEBRATION_MS} onDone={...} />}
  */
 
@@ -30,6 +37,18 @@ const RIBBON_COLORS = [
 ];
 
 const DEFAULT_DURATION = 1000;
+const MIN_RIBBONS = 16;
+/** A frame over two vsyncs at 60Hz: the storm is running below ~30fps. */
+const LONG_FRAME_MS = 32;
+/** More than half the window is long frames — sustained, not a GC blip. */
+const SLOW_FRAME_RATIO = 0.5;
+/** Ignore stalls longer than this: a backgrounded tab, not a slow frame. */
+const STALL_MS = 200;
+/** Ignore the mount spike: 42 first frames of layout cost are not steady state. */
+const SETTLE_MS = 700;
+const SAMPLE_FRAMES = 30;
+/** Two cuts take 42 → 29 → 20; beyond that the storm stops reading as confetti. */
+const MAX_REDUCTIONS = 2;
 
 interface Ribbon {
   left: number;
@@ -100,10 +119,52 @@ export default function Celebration({
 }) {
   const { width, height } = useWindowDimensions();
   const progress = useSharedValue(0);
+  // Ribbon budget for this run. Starts at the requested count and only ever
+  // steps down, so the storm never oscillates between qualities mid-fall.
+  const [liveCount, setLiveCount] = useState(count);
+
+  useEffect(() => {
+    if (typeof globalThis.requestAnimationFrame !== 'function') return;
+    const floor = Math.min(MIN_RIBBONS, count);
+    let handle = 0;
+    let first = 0;
+    let last = 0;
+    let cuts = 0;
+    const samples: number[] = [];
+
+    const tick = (now: number) => {
+      if (!first) first = now;
+      if (last > 0 && now - first >= SETTLE_MS) {
+        const dt = now - last;
+        if (dt > 0 && dt < STALL_MS) samples.push(dt);
+      }
+      last = now;
+      if (samples.length >= SAMPLE_FRAMES) {
+        // Ratio of genuinely long frames, not the mean: a fast device that
+        // stutters once per GC still has a low mean, and a 120Hz panel would
+        // otherwise look slow next to a 60Hz one. Only a sustained majority of
+        // >32ms frames means the storm itself is too heavy.
+        const long = samples.reduce((n, dt) => n + (dt > LONG_FRAME_MS ? 1 : 0), 0);
+        const ratio = long / samples.length;
+        samples.length = 0;
+        if (ratio >= SLOW_FRAME_RATIO && cuts < MAX_REDUCTIONS) {
+          cuts += 1;
+          setLiveCount((n) => Math.max(floor, Math.round(n * 0.7)));
+        }
+      }
+      // Call through globalThis: an unbound rAF reference throws in browsers.
+      handle = globalThis.requestAnimationFrame(tick);
+    };
+
+    handle = globalThis.requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(handle);
+    // The budget and floor are fixed for the life of one storm.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const ribbons = useMemo<Ribbon[]>(
     () =>
-      Array.from({ length: count }, (_, i) => {
+      Array.from({ length: liveCount }, (_, i) => {
         // 0.72–1.68s per fall: short enough to read as confetti, varied enough
         // that five seconds of it never looks like a metronome.
         const cycle = 0.72 + (((i * 733) % 97) / 100);
@@ -119,7 +180,7 @@ export default function Celebration({
           offset: (((i * 479) % 1000) / 1000) * cycle,
         };
       }),
-    [count, width]
+    [liveCount, width]
   );
 
   useEffect(() => {
@@ -135,6 +196,7 @@ export default function Celebration({
   return (
     <Reanimated.View
       testID="celebration-burst"
+      accessibilityLabel={`${ribbons.length} ribbons`}
       pointerEvents="none"
       style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 60 }}
     >
