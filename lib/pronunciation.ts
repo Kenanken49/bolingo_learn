@@ -23,7 +23,7 @@ import { VoiceQuality, type Voice } from 'expo-speech';
  * On-device only: no API key, no per-play cost, still works offline.
  */
 
-export type Mentor = 'livia' | 'bingo';
+export type Mentor = 'livia' | 'bingo' | 'zora';
 
 export interface LanguagePreset {
   base: 'es' | 'fr' | 'de' | 'sw' | 'en';
@@ -98,11 +98,13 @@ export function languageForLesson(lessonId: string): LanguagePreset | null {
 
 /**
  * Character identity lives in pacing only (1.0 pitch = the voice the OS
- * recorded). Livia is the patient model; Bingo is the lively narrator.
+ * recorded). Livia is the patient language model, Bingo the lively narrator,
+ * Zora the brisk build coach.
  */
 const CHARACTER_VOICE: Record<Mentor, { pitch: number; rate: number; slowRate: number }> = {
   livia: { pitch: 1, rate: 0.86, slowRate: 0.62 },
   bingo: { pitch: 1, rate: 0.98, slowRate: 0.8 },
+  zora: { pitch: 1, rate: 0.93, slowRate: 0.7 },
 };
 
 type PronounceQuestion = { prompt: string; correctChain: string[] };
@@ -126,14 +128,31 @@ const ANY_DETERMINER = new Set([
 ]);
 
 /**
- * Voice names that read as feminine on the platforms that expose named
- * voices (Apple, Windows, Google's named cloud voices). Livia is a woman, so
- * she prefers one when the choice exists; this is only a nudge, because many
- * Android voices carry no name at all and clarity must win over casting when
- * the installed voice is the only one in the language.
+ * Casting. Livia and Zora are women, Bingo is a man, and the platforms that
+ * name their voices (Apple, Windows, Google's cloud voices) give us enough to
+ * pick accordingly. Android often exposes no name at all, so this can only
+ * ever be a preference: with one voice installed, everyone shares it rather
+ * than a character falling silent.
  */
+type VoiceGender = 'feminine' | 'masculine';
+
+const CHARACTER_GENDER: Record<Mentor, VoiceGender> = {
+  livia: 'feminine',
+  zora: 'feminine',
+  bingo: 'masculine',
+};
+
 const FEMININE_VOICE =
-  /\b(samantha|ava|allison|susan|karen|moira|tessa|serena|victoria|zira|aria|jenny|sonia|natasha|libby|michelle|paulina|monica|marisol|lucia|laura|carmen|elena|isabel|amelie|audrey|celine|anna|petra|katja|yelda|milena)\b/i;
+  /\b(samantha|ava|allison|susan|karen|moira|tessa|serena|victoria|zira|aria|jenny|sonia|natasha|libby|michelle|paulina|monica|marisol|lucia|laura|carmen|elena|isabel|paula|sofia|valentina|camila|marta|amelie|audrey|celine|anna|petra|katja|yelda|milena|joana|amelia)\b/i;
+
+const MASCULINE_VOICE =
+  /\b(alex|aaron|arthur|daniel|david|diego|carlos|pablo|jorge|raul|enrique|javier|manuel|pedro|miguel|andres|fernando|fred|tom|guy|ryan|george|james|liam|thomas|mark|markus|stefan|hans|klaus|oliver|gordon|rishi|male|hombre)\b/i;
+
+function voiceGender(voice: Voice): VoiceGender | null {
+  if (FEMININE_VOICE.test(voice.name)) return 'feminine';
+  if (MASCULINE_VOICE.test(voice.name)) return 'masculine';
+  return null;
+}
 
 const NOVELTY_VOICE =
   /whisper|novelty|zarvox|albert|bad news|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|wobble|bahh|deranged|hysterical|pipe organ|grandma|grandpa|rocko|shelley|flo|sandy|eddy|reed|junior|ralph|fred/i;
@@ -255,7 +274,9 @@ export function spokenPhrase(
   // names aloud ("parrot", "sparkles"). Strip them before anything else.
   text = text.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu, ' ');
 
-  // Markup and arrows.
+  // Markup and arrows. Zora reads build hints that contain real HTML, so the
+  // tags go before the "greater than" arrow rule can turn them into pauses.
+  text = text.replace(/<\/?[a-z][^>\n]{0,160}>/gi, ' ');
   text = text.replace(/`+/g, ' ').replace(/\*+/g, ' ').replace(/#/g, ' ');
   text = text.replace(/\s*(?:->|→|=>|>)\s*/g, ', ');
   // Bracketed asides and parenthesised English glosses.
@@ -521,7 +542,6 @@ function voiceScore(voice: Voice, preset: LanguagePreset, character: Mentor): nu
   if (/compact|espeak|pico|sapi|eloquence/i.test(id)) score -= 22;
   if (/(google|microsoft|siri|samantha|ava|allison|karen|moira|tessa|serena|paulina|monica|marisol|jorge|diego|amelie|audrey|thomas|anna|petra|markus|aria|jenny|sonia|natasha|libby|ryan)/i.test(voice.name))
     score += 6;
-  if (character === 'livia' && FEMININE_VOICE.test(voice.name)) score += 8;
   if (NOVELTY_VOICE.test(voice.name)) score -= 200;
   return score;
 }
@@ -544,17 +564,24 @@ function pickBest(
   const candidates = voices.filter((v) => !NOVELTY_VOICE.test(v.name));
   const native = candidates.filter((v) => baseLocale(v.language) === base);
   if (native.length === 0) return null;
-  const ranked = [...native].sort((a, b) => voiceScore(b, preset, character) - voiceScore(a, preset, character));
+  // Cast the part before ranking the voices: a character never takes a voice
+  // that reads as the other gender when one that reads as theirs is installed.
+  // Unnamed voices stay eligible as the fallback pool, which is what Android
+  // needs, and never outrank a correctly cast voice when both exist.
+  const wanted = CHARACTER_GENDER[character];
+  const cast = native.filter((v) => voiceGender(v) === wanted);
+  const pool = cast.length > 0 ? cast : native;
+  const ranked = [...pool].sort((a, b) => voiceScore(b, preset, character) - voiceScore(a, preset, character));
   // Distinct character voices: the narrator avoids the model's voice when a
   // second acceptable voice exists.
   return ranked.find((v) => !avoid.has(v.identifier)) ?? ranked[0] ?? null;
 }
 
 async function resolveVoice(preset: LanguagePreset, character: Mentor): Promise<ResolvedVoice> {
-  // Both characters speak the whole course, so each gets its own lane: Livia
-  // takes the best voice, Bingo the next acceptable one. Two characters that
-  // sound like two people is the difference between a conversation and one
-  // robot changing speed.
+  // Every character speaks the whole course, so each gets its own lane: the
+  // best voice for the first of them, the next acceptable one for the others.
+  // Characters that sound like different people is the difference between a
+  // conversation and one robot changing speed.
   const key = `${preset.base}:${character}`;
   if (voiceCache.has(key)) {
     const cached = voiceCache.get(key) ?? null;

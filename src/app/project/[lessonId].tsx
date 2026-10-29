@@ -16,6 +16,7 @@ import Mascot from '../../../components/AfricanMascots';
 import { supabase } from '../../../lib/supabase';
 import { setLessonResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
+import { APP_SPEECH, speakAs, stopSpeaking } from '../../../lib/pronunciation';
 
 /** Web preview: react-native-webview has no web implementation, so render a real iframe. */
 function WebPreview({ html }: { html: string }) {
@@ -83,6 +84,13 @@ export default function CertificationProject() {
       live = false;
     };
   }, []);
+  // Leaving the project must not leave Zora talking over the next screen.
+  useEffect(
+    () => () => {
+      void stopSpeaking();
+    },
+    []
+  );
 
   const combined = useMemo(() => combineDoc(doc), [doc]);
   const checks = useMemo(() => (project ? gradeProject(project, combined) : []), [combined, project]);
@@ -102,6 +110,16 @@ export default function CertificationProject() {
       </View>
     );
   }
+
+  // One line for both the card and Zora's voice, so she always reads exactly
+  // what the learner sees.
+  const coachLine = allPass
+    ? `All ${checks.length} stories pass. Ship it — submit for +${project.xp} XP.`
+    : `${shown.filter((c) => !c.pass).length} of ${shown.length} stories still failing. Next: ${shown.find((c) => !c.pass)?.hint ?? 'run the tests and read the first failing story.'}`;
+
+  const hearZora = () => {
+    void speakAs({ character: 'zora', text: coachLine, language: APP_SPEECH });
+  };
 
   const reset = () => {
     setDoc(starter);
@@ -208,12 +226,19 @@ export default function CertificationProject() {
         <View className="mt-4 flex-row items-center rounded-2xl border-2 border-pink-200 bg-pink-50 p-3 dark:border-[#FF2DAA]/30 dark:bg-[#12000C]">
           <Mascot character="zora" mood={allPass ? 'party' : 'happy'} size={56} />
           <View className="ml-2 flex-1">
-            <Text className="text-xs font-extrabold uppercase tracking-widest text-pink-700 dark:text-[#FF2DAA]">Zora · Build coach</Text>
-            <Text className="mt-0.5 text-sm font-semibold text-slate-700 dark:text-slate-200">
-              {allPass
-                ? `All ${checks.length} stories pass. Ship it — submit for +${project.xp} XP.`
-                : `${shown.filter((c) => !c.pass).length} of ${shown.length} stories still failing. Next: ${shown.find((c) => !c.pass)?.hint ?? 'run the tests and read the first failing story.'}`}
-            </Text>
+            <View className="flex-row items-center justify-between">
+              <Text className="text-xs font-extrabold uppercase tracking-widest text-pink-700 dark:text-[#FF2DAA]">Zora · Build coach</Text>
+              <Pressable
+                onPress={hearZora}
+                accessibilityRole="button"
+                accessibilityLabel="Hear Zora read the build hint"
+                hitSlop={8}
+                className="h-8 w-8 items-center justify-center rounded-full bg-pink-100 dark:bg-[#FF2DAA]/20"
+              >
+                <AppIcon name="volume" size={15} color="#DB2777" />
+              </Pressable>
+            </View>
+            <Text className="mt-0.5 text-sm font-semibold text-slate-700 dark:text-slate-200">{coachLine}</Text>
           </View>
         </View>
 

@@ -95,7 +95,10 @@ Language lessons are voiced by [lib/pronunciation.ts](lib/pronunciation.ts):
 Livia models every target phrase in its own language and Bingo narrates the
 English around it. Pitch stays at 1.0 — pitch-shifted TTS drags its formants and
 sounds foreign — so the characters differ by pacing (Livia 0.86, 🐢 0.62; Bingo
-0.98) and by each taking their own installed voice in every language. The
+0.98; Zora 0.93) and by each taking their own installed voice in every language.
+Livia and Zora are cast with a woman's voice and Bingo with a man's whenever the
+platform names its voices; Zora reads her build hint aloud in the project
+runner. The
 engine fills gaps with the answer being taught, drops English glosses, keeps
 accents and restores question intonation, prefers neural/network voices over
 compact and robotic ones, excludes novelty voices, and falls back to a

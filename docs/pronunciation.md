@@ -22,12 +22,13 @@ So:
 | --- | --- | --- | --- | --- |
 | Livia | language model | 1.0 | 0.86 | 0.62 |
 | Bingo | narrator / questions | 1.0 | 0.98 | 0.80 |
+| Zora | build coach | 1.0 | 0.93 | 0.70 |
 
 Character distinction comes from pacing and from picking *different installed
-voices*: every language has a `model` lane (Livia) and a `narrator` lane
-(Bingo), so a phone with two acceptable Spanish voices hears two Spanish
-speakers instead of one robot at two speeds. When only one voice exists, both
-characters share it and pacing carries the difference.
+voices*: every language has a `livia`, a `bingo` and a `zora` lane, so a phone
+with several acceptable Spanish voices hears different Spanish speakers instead
+of one robot at three speeds. When only one voice exists, everyone shares it and
+pacing carries the difference.
 
 ## Voice selection
 
@@ -50,9 +51,14 @@ characters share it and pacing carries the difference.
    `voiceschanged`), the engine still asks for the right locale and lets the OS
    choose, rather than defaulting to the UI language.
 
-Livia additionally prefers a voice whose platform name reads as feminine
-(Samantha, Zira, Paulina…). It is a nudge, never a filter: on Android most
-voices have no name at all, and being understood beats being cast.
+Casting is explicit: **Livia and Zora are women, Bingo is a man.** `pickBest()`
+first keeps the native voices whose platform name reads as the character's
+gender (Samantha, Zira, Paulina… for the women; David, Daniel, Jorge… for
+Bingo), and only then ranks them by quality. If no voice of that gender is
+installed, it falls back to the full native pool — an unnamed Android voice or a
+single installed voice still gets used, because a character with the wrong
+voice is better than a silent lesson. The name lists live next to
+`CHARACTER_GENDER` in [lib/pronunciation.ts](../lib/pronunciation.ts).
 
 Presets live at the top of the file. Adding a language means adding one
 `LanguagePreset` and a `PRESETS` entry — `languageForLesson()` keys off the
@@ -115,6 +121,16 @@ phrase in the language's own voice instead of reading Spanish with an English
 accent. It also trims a dangling scaffold after the quote: `"Gracias" means…`
 is spoken as just the phrase, never as "Gracias. Means."
 
+## Zora, the build coach
+
+Zora speaks in the project runner (`/project/[lessonId]`): the speaker button
+beside her hint reads the exact line on the card, so the learner can hear
+"2 of 3 stories still failing…" instead of decoding it. Hints contain real HTML
+(`Add <a href=…>See cats</a>.`), and `spokenPhrase()` strips the tags before
+speaking — otherwise the engine reads tag names or falls over the angle
+brackets. Zora uses the feminine casting lane and stops speaking when the screen
+unmounts.
+
 ## In the lesson player
 
 `components/GamifiedCodePlayer.tsx` wires the engine to the UI:
@@ -145,9 +161,13 @@ is spoken as just the phrase, never as "Gracias. Means."
    open, and pressing **Hear Livia** must produce `es-MX` (or the best installed
    Spanish locale), pitch `1`, rate `0.86` on a three-word phrase, `0.83` on a
    one-word or seven-word phrase; 🐢 must be `0.62` / `0.60`.
-3. Open an English lesson: Livia and Bingo should use different installed voices.
-4. Answer a question wrong: after the cue, Livia repeats the correct phrase slowly.
-5. Sweep the banks: every question must resolve to a non-empty phrase with no
+3. Open an English lesson: Livia (woman) and Bingo (man) should use different
+   installed voices — on Windows/macOS, a name like Zira/Samantha for Livia and
+   David/Alex for Bingo.
+4. Open `/project/rwd-cat-photo` and tap the speaker beside Zora's hint: a
+   feminine voice should read the line with the HTML tags stripped.
+5. Answer a question wrong: after the cue, Livia repeats the correct phrase slowly.
+6. Sweep the banks: every question must resolve to a non-empty phrase with no
    `___`, quotes, glosses or markup. A temporary `/pronounce-check` route was
    used for this during development (314 questions, 0 issues); recreate it from
    `phraseForQuestion()` if the banks change substantially.
