@@ -133,6 +133,10 @@ around beginner survival topics:
 Each lesson is five questions with a teaching note on every answer, and each is
 wired into [lib/curriculum.ts](lib/curriculum.ts) before the daily review and
 checkpoint, so completion, XP, chests and the final exam all work unchanged.
+The Swahili and English checkpoints and final exams each close with one item
+from the questions, adjective/describing and health lessons, so that material is
+assessed rather than only browsable — the checkpoint stays shorter than the
+final (9 and 9 for Swahili, 8 and 9 for English).
 
 Topic sequencing was checked against the public-domain FSI Basic Courses and
 publicly available beginner YouTube playlists; no third-party audio, captions or lesson

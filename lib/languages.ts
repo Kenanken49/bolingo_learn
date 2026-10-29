@@ -693,7 +693,7 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   'swahili-quiz': {
     id: 'swahili-quiz',
     title: 'Swahili Checkpoint',
-    theory: ['Checkpoint: greetings, phrases, verbs, and tenses from the full Swahili course.'],
+    theory: ['Checkpoint: greetings, questions and negation, adjective agreement, health, verbs, and tenses from the full Swahili course.'],
     questions: [
       MCQ(
         '"Habari" means…',
@@ -730,6 +730,24 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'We will eat',
         ['We will eat', 'We are eating', 'We ate', 'Let us eat'],
         'Tenses check: tu-ta-kula = we + future -ta- + eat.'
+      ),
+      MCQ(
+        '“Anafanya kazi” (he works) becomes which negative?',
+        'Hafanyi kazi',
+        ['Hafanyi kazi', 'Hafanya kazi', 'Anafanya kazi', 'Hakufanya kazi'],
+        'Present negative: ha- replaces a-, -na- drops, and the final -a becomes -i — hafanyi kazi.'
+      ),
+      BUILD(
+        'Say “good children”:',
+        ['Watoto', 'wazuri'],
+        ['wazuri', 'Watoto', 'mzuri', 'wadogo'],
+        'Watoto is class 2 plural, so the adjective takes wa-: watoto wazuri. Mzuri is the singular.'
+      ),
+      BUILD(
+        'Tell the doctor “My head hurts”:',
+        ['Naumwa', 'na', 'kichwa'],
+        ['kichwa', 'Naumwa', 'na', 'tumbo'],
+        'Naumwa = it hurts me; na kichwa names the place. Naumwa na tumbo is the stomach.'
       ),
     ],
   },
@@ -941,7 +959,7 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   'english-quiz': {
     id: 'english-quiz',
     title: 'English Checkpoint',
-    theory: ['Checkpoint: alphabet, articles, everyday phrases, and tenses from the full English course.'],
+    theory: ['Checkpoint: alphabet, articles, everyday phrases, questions, describing and comparing, health, and tenses from the full English course.'],
     questions: [
       MCQ(
         'Fill the gap: "___ hour".',
@@ -972,6 +990,24 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'boxes',
         ['boxes', 'boxs', 'boxies', 'box'],
         'After -x, add -es: box → boxes, bus → buses.'
+      ),
+      MCQ(
+        'Fill the gap: “___ he call you yesterday?”',
+        'Did',
+        ['Did', 'Does', 'Do', 'Was'],
+        'Yesterday is past, so the auxiliary is did + base verb: did he call.'
+      ),
+      MCQ(
+        'The comparative of “good” is…',
+        'better',
+        ['better', 'gooder', 'more good', 'best'],
+        'Good is irregular: good → better → best. “Best” is the superlative, not the comparative.'
+      ),
+      BUILD(
+        'Give advice: “You shouldn’t drive.”',
+        ['You', "shouldn't", 'drive'],
+        ['drive', 'You', "shouldn't", 'should'],
+        'Should + not contracts to shouldn’t, then the base verb: shouldn’t drive.'
       ),
     ],
   },

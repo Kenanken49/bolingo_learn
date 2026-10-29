@@ -299,7 +299,9 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
   'english-final': {
     id: 'english-final',
     title: 'English Final Exam',
-    theory: ['Final exam: greetings, numbers, articles, shopping, travel, work, and past stories — the whole comprehensive course.'],
+    theory: [
+      'Final exam: greetings, numbers, articles, shopping, travel, work, questions, describing and comparing, health, and past stories — the whole comprehensive course.',
+    ],
     questions: [
       MCQ(
         'A stranger greets you with “How is it going?” You answer…',
@@ -336,6 +338,29 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         ['work', 'as', 'a', 'driver'],
         ['driver', 'work', 'for', 'as', 'a'],
         'Work AS a role, FOR a company. Both halves win.'
+      ),
+      BUILD(
+        'Ask about the past: “Where did he go?”',
+        ['Where', 'did', 'he', 'go'],
+        ['go', 'Where', 'did', 'he', 'went'],
+        'After did the verb stays in the base form: did he go, never did he went.'
+      ),
+      MCQ(
+        'Which sentence is correct?',
+        'This room is more comfortable than mine.',
+        [
+          'This room is more comfortable than mine.',
+          'This room is comfortabler than mine.',
+          'This room is most comfortable than mine.',
+          'This room is more comfortable that mine.',
+        ],
+        'Long adjectives take more … than; -er belongs to short ones like cheaper.'
+      ),
+      BUILD(
+        'Say “I am allergic to peanuts”:',
+        ['I', 'am', 'allergic', 'to', 'peanuts'],
+        ['peanuts', 'I', 'am', 'allergic', 'to', 'allergy'],
+        'I am allergic to + the food. Allergy is the noun; allergic is the adjective.'
       ),
     ],
   },

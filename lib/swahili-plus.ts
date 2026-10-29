@@ -340,7 +340,9 @@ export const SWAHILI_PLUS: Record<string, CourseLesson> = {
   'swahili-final': {
     id: 'swahili-final',
     title: 'Swahili Final Exam',
-    theory: ['Final exam: greetings, numbers, noun classes, family, food, travel, verbs, and time — the whole comprehensive course.'],
+    theory: [
+      'Final exam: greetings, numbers, noun classes, family, food, travel, questions and negation, adjectives, health, verbs, and time — the whole comprehensive course.',
+    ],
     questions: [
       BUILD(
         'Greet an elder respectfully and pick the reply pair:',
@@ -377,6 +379,24 @@ export const SWAHILI_PLUS: Record<string, CourseLesson> = {
         ['Jina', 'langu', 'ni', 'Amina'],
         ['Amina', 'Jina', 'ni', 'langu'],
         'Introduce first: jina langu ni… — then ninapenda chai!'
+      ),
+      MCQ(
+        '“Je, una pesa?” is asking…',
+        'Do you have money?',
+        ['Do you have money?', 'Where is the money?', 'How much is it?', 'Do you want money?'],
+        'Je opens a yes/no question and una pesa is “you have money” — the answer is ndiyo or hapana.'
+      ),
+      MCQ(
+        '“Yeye ni mrefu kuliko mimi” means…',
+        'He is taller than me',
+        ['He is taller than me', 'He is as tall as me', 'I am taller than him', 'He is very tall'],
+        'Kuliko = than, and mrefu takes the m- agreement of a class 1 person.'
+      ),
+      BUILD(
+        'Say “I have a fever”:',
+        ['Nina', 'homa'],
+        ['homa', 'Nina', 'kikohozi', 'dawa'],
+        'Nina = I have; homa = fever. Kikohozi is a cough and dawa is medicine.'
       ),
     ],
   },
