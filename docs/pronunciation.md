@@ -172,7 +172,33 @@ Every language exercise offers **Say it back** (`components/SpeakBack.tsx`).
 Recognition is handled by the device: `expo-speech-recognition` binds to
 `SFSpeechRecognizer` on iOS, `SpeechRecognizer` on Android, and the Web Speech
 API in the browser. The app asks for microphone + speech permission on the first
-tap and never writes the audio to disk or to Supabase.
+tap. The audio is never uploaded: it stays in the cache directory (native) or
+in a tab-scoped blob URL (web) only long enough to replay the attempt, and is
+deleted when a newer attempt replaces it or the exercise closes.
+
+### Replaying your attempt
+
+A transcript cannot tell a learner that their `r` sounds like an `l`, so the
+result card offers the real recording: **Your attempt** plays your take and
+**Hear Livia** plays the model beside it. One voice at a time — starting the
+model pauses your recording, and starting yours stops Livia.
+
+The recognizer owns the microphone, and opening a second recorder session on
+native fights it for the audio route, so `lib/attemptAudio.ts` takes the audio
+from the recognition session itself:
+
+- **Native** asks for `recordingOptions.persist` (Android 13+, iOS): the
+  recognizer writes a WAV into the cache and the `audioend` event returns its
+  URI. `supportsRecording()` gates the option, so older Android simply has no
+  replay button instead of a dead one.
+- **Web** cannot persist from the browser recognizer, so a `MediaRecorder` taps
+  the same microphone while it listens and hands back a blob URL.
+
+A new attempt pauses and deletes the previous recording before opening the
+microphone, so a score is never paired with the wrong voice. The button's
+playing state is polled from the live player (expo-audio emits no play/end
+status on web), and leaving the exercise cancels an in-flight recording and
+discards the file.
 
 The transcript goes through [lib/speakBack.ts](../lib/speakBack.ts):
 
@@ -224,8 +250,11 @@ explains it and the lesson stays playable.
 5. Answer a question wrong: after the cue, Livia repeats the correct phrase slowly.
 6. Speak-back: `node scripts/check-speak-back.cjs` (also in `npm test`). In a
    development build, open a language lesson, tap **Say it back**, say the
-   phrase, and confirm the score and coloured words. Deny the microphone
-   permission once to see the explanation card.
+   phrase, and confirm the score and coloured words. Then confirm **Your
+   attempt** replays your recording, **Hear Livia** pauses it, the label returns
+   to *Your attempt* when playback ends, and **Try again** replaces it with the
+   new take. On Android 12 or older the replay button should be absent. Deny the
+   microphone permission once to see the explanation card.
 7. Sweep the banks: every question must resolve to a non-empty phrase with no
    `___`, quotes, glosses or markup. A temporary `/pronounce-check` route was
    used for this during development (314 questions, 0 issues); recreate it from

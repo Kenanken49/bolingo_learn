@@ -189,8 +189,14 @@ from an acceptable one, and it does not pretend to.
   in `app.config.js`; rebuild the client after pulling this
   (`npx expo run:android` / `run:ios`, or a new EAS build).
 - Web uses the browser's Web Speech API (Chrome, Safari).
-- The app never stores the audio. Depending on the device, the OS/browser
-  service may send it to its provider to transcribe it.
+- The app never uploads the audio. An attempt is kept on the device only long
+  enough to replay it, then deleted when you retry or leave the exercise.
+  Depending on the device, the OS/browser service may send it to its provider
+  to transcribe it.
+- After the score, **Your attempt** sits next to **Hear Livia** so the learner
+  can hear their own recording against the model before retrying. Native
+  (Android 13+/iOS) keeps the audio from the recognizer's session; web records
+  beside it. On older Android the replay button is simply omitted.
 - If the recognizer or microphone is unavailable, the card explains why and the
   lesson stays playable.
 - Bands: ≥90 nailed it, ≥75 close, ≥50 almost, below that try again.

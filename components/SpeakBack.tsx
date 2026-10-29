@@ -7,8 +7,17 @@ import {
   useSpeechRecognitionEvent,
   type ExpoSpeechRecognitionErrorCode,
 } from 'expo-speech-recognition';
+import { useAudioPlayer } from 'expo-audio';
 import { speakAs, stopSpeaking, type LanguagePreset } from '../lib/pronunciation';
 import { bestSpeakBack, speakBackVerdict, type SpeakBackScore } from '../lib/speakBack';
+import {
+  attemptCaptureSupported,
+  beginWebAttempt,
+  cancelWebAttempt,
+  discardAttempt,
+  endWebAttempt,
+  nativeAttemptCaptureOptions,
+} from '../lib/attemptAudio';
 
 type Phase = 'idle' | 'listening' | 'result' | 'error';
 
@@ -58,10 +67,17 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
   const [score, setScore] = useState<SpeakBackScore | null>(null);
   const [interim, setInterim] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  // The learner's own voice, replayed next to Livia's model before a retry.
+  const [attemptUri, setAttemptUri] = useState<string | null>(null);
+  const [attemptPlaying, setAttemptPlaying] = useState(false);
   const [pulse] = useState(() => new Animated.Value(0));
+  const [captureSupported] = useState(attemptCaptureSupported);
+  const attemptPlayer = useAudioPlayer(attemptUri ? { uri: attemptUri } : null);
   const settled = useRef(false);
   const phaseRef = useRef<Phase>('idle');
   const transcripts = useRef<string[]>([]);
+  const attemptRef = useRef<string | null>(null);
+  const webCapturing = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mounted = useRef(true);
   const listening = phase === 'listening';
@@ -82,15 +98,50 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
     return () => loop.stop();
   }, [listening, pulse]);
 
+  // The web player emits no status on play or end, so the button follows the
+  // live player state — and native needs the same end-of-playback hand-off.
+  useEffect(() => {
+    if (!attemptPlaying) return;
+    const id = setInterval(() => {
+      const status = attemptPlayer.currentStatus;
+      if (status.didJustFinish || (!status.playing && status.currentTime > 0)) {
+        setAttemptPlaying(false);
+      }
+    }, 250);
+    // An attempt is capped at 12s; never leave the label stuck past that.
+    const cap = setTimeout(() => setAttemptPlaying(false), 15000);
+    return () => {
+      clearInterval(id);
+      clearTimeout(cap);
+    };
+  }, [attemptPlaying, attemptPlayer]);
+
   const clearTimer = useCallback(() => {
     if (timer.current) clearTimeout(timer.current);
     timer.current = null;
   }, []);
 
+  const rememberAttempt = useCallback((uri: string | null) => {
+    if (!uri || !mounted.current) return;
+    const previous = attemptRef.current;
+    attemptRef.current = uri;
+    setAttemptUri(uri);
+    if (previous && previous !== uri) discardAttempt(previous);
+  }, []);
+
+  // Web records beside the recognizer and hands back a blob URL; native hands
+  // back a file URI through `audioend`. Both end here.
+  const stopCapture = useCallback(() => {
+    if (!webCapturing.current) return;
+    webCapturing.current = false;
+    void endWebAttempt().then(rememberAttempt);
+  }, [rememberAttempt]);
+
   const finish = useCallback(() => {
     if (settled.current) return;
     settled.current = true;
     clearTimer();
+    stopCapture();
     const result = bestSpeakBack(phrase, transcripts.current);
     if (!result.heard || result.words.length === 0) {
       if (!mounted.current) return;
@@ -101,22 +152,28 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
     if (!mounted.current) return;
     setScore(result);
     setPhase('result');
-  }, [clearTimer, phrase]);
+  }, [clearTimer, phrase, stopCapture]);
 
   const fail = useCallback(
     (code?: ExpoSpeechRecognitionErrorCode) => {
       if (settled.current) return;
       settled.current = true;
       clearTimer();
+      stopCapture();
       if (!mounted.current) return;
       setPhase('error');
       setMessage(messageFor(code, language.label));
     },
-    [clearTimer, language.label]
+    [clearTimer, language.label, stopCapture]
   );
 
   useSpeechRecognitionEvent('start', () => {
     if (mounted.current) setPhase('listening');
+  });
+
+  useSpeechRecognitionEvent('audioend', (event) => {
+    // Native persistence: the WAV is only safe to read once audioend fires.
+    if (event.uri) rememberAttempt(event.uri);
   });
 
   useSpeechRecognitionEvent('result', (event) => {
@@ -147,6 +204,12 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
     return () => {
       mounted.current = false;
       clearTimer();
+      webCapturing.current = false;
+      cancelWebAttempt();
+      const uri = attemptRef.current;
+      attemptRef.current = null;
+      // Let the audio player release the source before the file disappears.
+      if (uri) setTimeout(() => discardAttempt(uri), 0);
       try {
         ExpoSpeechRecognitionModule.abort();
       } catch {}
@@ -155,8 +218,14 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
 
   const start = async () => {
     if (phaseRef.current === 'listening') return;
-    // Livia must not talk into the microphone.
+    // Livia must not talk into the microphone, and a new attempt replaces the
+    // previous recording rather than being compared with the wrong one.
     await stopSpeaking();
+    attemptPlayer.pause();
+    setAttemptPlaying(false);
+    discardAttempt(attemptRef.current);
+    attemptRef.current = null;
+    setAttemptUri(null);
     if (!mounted.current) return;
     settled.current = false;
     transcripts.current = [];
@@ -177,6 +246,9 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
         return;
       }
       setPhase('listening');
+      // Web cannot persist from the recognizer, so record beside it.
+      webCapturing.current = await beginWebAttempt();
+      if (!mounted.current) return;
       // A learner who taps and walks away shouldn't hold the microphone open.
       timer.current = setTimeout(() => {
         try {
@@ -191,6 +263,8 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
         addsPunctuation: false,
         // Bias the recognizer toward the phrase being taught.
         contextualStrings: [phrase],
+        // Android 13+/iOS keep the attempt audio; elsewhere this is omitted.
+        ...(nativeAttemptCaptureOptions() ?? {}),
       });
     } catch {
       if (!mounted.current) return;
@@ -200,13 +274,31 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
   };
 
   const stop = () => {
+    stopCapture();
     try {
       ExpoSpeechRecognitionModule.stop();
     } catch {}
   };
 
   const hearModel = () => {
+    attemptPlayer.pause();
+    setAttemptPlaying(false);
     void speakAs({ character: 'livia', text: phrase, language, slow: true });
+  };
+
+  // Play / stop the learner's own take. Livia waits while they listen.
+  const toggleAttempt = async () => {
+    if (!attemptUri) return;
+    if (attemptPlaying) {
+      attemptPlayer.pause();
+      setAttemptPlaying(false);
+      void attemptPlayer.seekTo(0);
+      return;
+    }
+    await stopSpeaking();
+    await attemptPlayer.seekTo(0);
+    attemptPlayer.play();
+    setAttemptPlaying(true);
   };
 
   if (listening) {
@@ -275,16 +367,24 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
             ? 'Clear and complete. Say it once more to lock it in.'
             : 'Green words matched, amber only differed by an accent, red is what the recognizer missed.'}
         </Text>
-        <View className="mt-3 flex-row flex-wrap gap-2">
-          <Pressable
-            onPress={() => void start()}
-            accessibilityRole="button"
-            accessibilityLabel="Try the phrase again"
-            className="flex-row items-center rounded-full bg-emerald-600 px-4 py-2 active:bg-emerald-700"
-          >
-            <AppIcon name="mic" size={15} color="#FFFFFF" />
-            <Text className="ml-1.5 text-sm font-extrabold text-white">Try again</Text>
-          </Pressable>
+        <Text className="mt-3 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+          Compare
+        </Text>
+        <View className="mt-1 flex-row flex-wrap gap-2">
+          {attemptUri && captureSupported ? (
+            <Pressable
+              onPress={() => void toggleAttempt()}
+              accessibilityRole="button"
+              accessibilityLabel={attemptPlaying ? 'Stop your attempt' : 'Replay your attempt'}
+              accessibilityHint="Plays the recording of your own voice"
+              className="flex-row items-center rounded-full border border-emerald-300 bg-emerald-50 px-4 py-2 active:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950"
+            >
+              <AppIcon name={attemptPlaying ? 'pause' : 'play'} size={15} color="#059669" />
+              <Text className="ml-1.5 text-sm font-extrabold text-emerald-700 dark:text-emerald-300">
+                {attemptPlaying ? 'Playing…' : 'Your attempt'}
+              </Text>
+            </Pressable>
+          ) : null}
           <Pressable
             onPress={hearModel}
             accessibilityRole="button"
@@ -295,8 +395,24 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
             <Text className="ml-1.5 text-sm font-extrabold text-violet-700 dark:text-violet-300">Hear Livia</Text>
           </Pressable>
         </View>
+        {attemptUri ? (
+          <Text className="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500">
+            Listen to yours, then Livia’s — the difference is what to fix.
+          </Text>
+        ) : null}
+        <View className="mt-3 flex-row flex-wrap gap-2">
+          <Pressable
+            onPress={() => void start()}
+            accessibilityRole="button"
+            accessibilityLabel="Try the phrase again"
+            className="flex-row items-center rounded-full bg-emerald-600 px-4 py-2 active:bg-emerald-700"
+          >
+            <AppIcon name="mic" size={15} color="#FFFFFF" />
+            <Text className="ml-1.5 text-sm font-extrabold text-white">Try again</Text>
+          </Pressable>
+        </View>
         <Text className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
-          Recognized by your device’s speech service — Bolingo doesn’t store the audio.
+          Recognized by your device’s speech service. Your attempt stays on this device and is deleted when you retry.
         </Text>
       </View>
     );
