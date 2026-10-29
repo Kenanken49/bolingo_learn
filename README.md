@@ -95,6 +95,17 @@ when no native voice is installed. The phrase plays when an exercise opens, and
 a miss is followed by a slow replay of the correct sentence. Details and the QA
 checklist: [docs/pronunciation.md](docs/pronunciation.md).
 
+## Celebrations (chest ➔ five-second storm)
+
+A unit chest is claimed in two beats. [components/ChestOpening.tsx](components/ChestOpening.tsx)
+drops the chest in, rattles it, throws the lid and fires the gold sparks, beam
+and rings over `CHEST_OPEN_MS` (1080ms). On its last frame it calls `onOpened`
+and the screen hands straight over to [components/Celebration.tsx](components/Celebration.tsx)
+for the full `FULL_CELEBRATION_MS` ribbon storm — no overlap and no gap. The
+applause starts on that handoff frame rather than on the tap, so the five
+seconds of crowd sit exactly under the five seconds of ribbons. Results mount
+the storm directly; only the chest gets a ceremony in front of it.
+
 ## Core loop (Path Map ➔ Quiz Player ➔ Loss Aversion)
 
 Expo Router (`src/app/`) drives the habit loop:

@@ -29,6 +29,7 @@ import StreakTrail from '../../components/jungle/StreakTrail';
 
 import AudiobookPlayer from '../../components/AudiobookPlayer';
 import Celebration, { FULL_CELEBRATION_MS } from '../../components/Celebration';
+import ChestOpening from '../../components/ChestOpening';
 import Mascot from '../../components/AfricanMascots';
 import { playCelebration } from '../../lib/sfx';
 import AppIcon, { ContentMark, type AppIconName } from '../../components/AppIcon';
@@ -390,6 +391,9 @@ export default function PathMap() {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   // Unit chest win: drives the same five-second burst as results.
   const [chestWin, setChestWin] = useState<string | null>(null);
+  // Chest ceremony runs in two phases so the applause starts exactly on the
+  // frame the ribbons do, not a second earlier when the chest is claimed.
+  const [chestPhase, setChestPhase] = useState<'opening' | 'storm'>('opening');
   // Inverted onboarding: guests play before they ever see a signup form.
   const [onboarded, setOnboardedState] = useState(true); // true until proven first-run (avoids card flash)
   const [goal, setGoalState] = useState<GoalId | null>(null);
@@ -660,10 +664,10 @@ export default function PathMap() {
     if (!unit.blocks.every(isBlockDone) || completed.has(id)) return;
     try {
       await completeLesson(profile.id, CHEST_XP, id);
-      // A unit chest is a milestone, not a tap: the full five-second applause
-      // gets the same-length ribbon storm, with the reward spelled out on top.
+      // A unit chest is a milestone, not a tap: the chest cracks open first,
+      // then hands off to the full five-second applause + ribbon storm.
+      setChestPhase('opening');
       setChestWin(unit.title);
-      void playCelebration();
       await refresh();
     } catch {
       Alert.alert('Claim failed', 'Check your connection and try again.');
@@ -2004,14 +2008,24 @@ export default function PathMap() {
         </View>
       </Modal>
 
-      {chestWin ? (
+      {chestWin && chestPhase === 'opening' ? (
+        <ChestOpening
+          key={`open-${chestWin}`}
+          title={chestWin}
+          onOpened={() => {
+            setChestPhase('storm');
+            void playCelebration();
+          }}
+        />
+      ) : null}
+      {chestWin && chestPhase === 'storm' ? (
         <Celebration
-          key={chestWin}
+          key={`storm-${chestWin}`}
           duration={FULL_CELEBRATION_MS}
           onDone={() => setChestWin(null)}
         />
       ) : null}
-      {chestWin ? (
+      {chestWin && chestPhase === 'storm' ? (
         <View
           pointerEvents="none"
           style={{ position: 'absolute', top: 78, left: 0, right: 0, zIndex: 70, alignItems: 'center' }}
