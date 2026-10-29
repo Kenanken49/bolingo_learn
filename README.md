@@ -31,7 +31,7 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
 
 ```bash
 npm run typecheck   # TypeScript
-npm test            # 5.000s cue + results celebration gate
+npm test            # 5.000s cue + celebration gate + speak-back matcher
 npm run lint        # ESLint (expo lint)
 ```
 
@@ -109,6 +109,35 @@ long sentences instead of delivering everything at one metronomic clip. The
 phrase plays when an exercise opens, and a miss is followed by a slow replay of
 the correct sentence. Details and the QA checklist:
 [docs/pronunciation.md](docs/pronunciation.md).
+
+## Speak-back practice (language lessons)
+
+Every language exercise has a **Say it back** button under Livia's controls.
+Tap it, say the phrase, and the device's speech recognizer returns a transcript;
+[lib/speakBack.ts](lib/speakBack.ts) aligns it word by word to the model phrase
+and scores the attempt 0–100. Exact words are green, accent-only differences
+(`esta` / `está`) are amber, substituted or missing words are red, and extra
+words are appended in grey. The best of the recognizer's alternatives wins.
+
+The label says **word match** on purpose: this catches wrong, missing or
+misrecognized words, not phoneme quality. It cannot tell a perfect rolled `rr`
+from an acceptable one, and it does not pretend to.
+
+- Native uses the OS recognizer through
+  [expo-speech-recognition](https://github.com/jamsch/expo-speech-recognition)
+  (iOS `SFSpeechRecognizer`, Android `SpeechRecognizer`). It is a native module,
+  so it needs a development build — Expo Go has no recognizer. The config plugin
+  adds microphone + speech-recognition permissions and the permission copy is
+  in `app.config.js`; rebuild the client after pulling this
+  (`npx expo run:android` / `run:ios`, or a new EAS build).
+- Web uses the browser's Web Speech API (Chrome, Safari).
+- The app never stores the audio. Depending on the device, the OS/browser
+  service may send it to its provider to transcribe it.
+- If the recognizer or microphone is unavailable, the card explains why and the
+  lesson stays playable.
+- Bands: ≥90 nailed it, ≥75 close, ≥50 almost, below that try again.
+- Alignment, accent folding and the extra-word penalty are covered by
+  `node scripts/check-speak-back.cjs` (part of `npm test`).
 
 ## Celebrations (chest ➔ five-second storm)
 

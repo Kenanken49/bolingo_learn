@@ -29,6 +29,7 @@ import {
 import HelpfulVote from './HelpfulVote';
 import { getHapticsOn, getSoundOn } from '../lib/preferences';
 import AppIcon from './AppIcon';
+import SpeakBack from './SpeakBack';
 
 export interface CodeQuizData {
   prompt: string;
@@ -328,34 +329,37 @@ export default function GamifiedCodePlayer({
         <Text className="mb-1 font-duo text-xl font-bold text-slate-900 dark:text-slate-100">{questionData.prompt}</Text>
         <Text className="text-sm text-slate-500 dark:text-slate-400">Assemble the tokens below, run the tests, then check your answer.</Text>
         {language ? (
-          <View className="mt-3 flex-row flex-wrap items-center gap-2">
-            <Pressable
-              onPress={() => void speakLanguagePhrase()}
-              accessibilityRole="button"
-              accessibilityLabel={`Hear Livia pronounce the ${language.label} phrase`}
-              className="flex-row items-center rounded-full bg-violet-600 px-4 py-2 active:bg-violet-700"
-            >
-              <AppIcon name="volume" size={16} color="#FFFFFF" />
-              <Text className="ml-1.5 font-semibold text-white">Hear Livia · {language.label}</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => void speakLanguagePhrase(true)}
-              accessibilityRole="button"
-              accessibilityLabel={`Hear Livia pronounce the ${language.label} phrase slowly`}
-              className="h-10 w-10 items-center justify-center rounded-full border border-violet-300 bg-violet-50 active:bg-violet-100 dark:border-violet-800 dark:bg-violet-950"
-            >
-              <Text style={{ fontSize: 17 }}>🐢</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => void readPromptAsBingo()}
-              accessibilityRole="button"
-              accessibilityLabel="Hear Bingo read the question"
-              className="flex-row items-center rounded-full border border-slate-300 bg-white px-4 py-2 active:bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
-            >
-              <AppIcon name="volume" size={16} color="#64748B" />
-              <Text className="ml-1.5 font-semibold text-slate-700 dark:text-slate-200">Bingo reads it</Text>
-            </Pressable>
-          </View>
+          <>
+            <View className="mt-3 flex-row flex-wrap items-center gap-2">
+              <Pressable
+                onPress={() => void speakLanguagePhrase()}
+                accessibilityRole="button"
+                accessibilityLabel={`Hear Livia pronounce the ${language.label} phrase`}
+                className="flex-row items-center rounded-full bg-violet-600 px-4 py-2 active:bg-violet-700"
+              >
+                <AppIcon name="volume" size={16} color="#FFFFFF" />
+                <Text className="ml-1.5 font-semibold text-white">Hear Livia · {language.label}</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => void speakLanguagePhrase(true)}
+                accessibilityRole="button"
+                accessibilityLabel={`Hear Livia pronounce the ${language.label} phrase slowly`}
+                className="h-10 w-10 items-center justify-center rounded-full border border-violet-300 bg-violet-50 active:bg-violet-100 dark:border-violet-800 dark:bg-violet-950"
+              >
+                <Text style={{ fontSize: 17 }}>🐢</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => void readPromptAsBingo()}
+                accessibilityRole="button"
+                accessibilityLabel="Hear Bingo read the question"
+                className="flex-row items-center rounded-full border border-slate-300 bg-white px-4 py-2 active:bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
+              >
+                <AppIcon name="volume" size={16} color="#64748B" />
+                <Text className="ml-1.5 font-semibold text-slate-700 dark:text-slate-200">Bingo reads it</Text>
+              </Pressable>
+            </View>
+            {phrase ? <SpeakBack key={`${lessonId}:${phrase}`} phrase={phrase} language={language} /> : null}
+          </>
         ) : (
           <Pressable
             onPress={playNarration}

@@ -28,6 +28,7 @@
     "expo-router": "~58.0.0",
     "expo-secure-store": "~58.0.2",
     "expo-speech": "~58.0.0",
+    "expo-speech-recognition": "^58.0.1",
     "expo-splash-screen": "~58.0.11",
     "expo-status-bar": "~58.0.4",
     "expo-web-browser": "~58.0.0",
@@ -64,7 +65,8 @@
     "lint": "expo lint",
     "check:audio": "node scripts/check-celebration-duration.cjs",
     "check:results": "node scripts/check-results-celebration.cjs",
-    "test": "node scripts/check-celebration-duration.cjs && node scripts/check-results-celebration.cjs"
+    "check:speakback": "node scripts/check-speak-back.cjs",
+    "test": "node scripts/check-celebration-duration.cjs && node scripts/check-results-celebration.cjs && node scripts/check-speak-back.cjs"
   },
   "private": true
 }

@@ -58,6 +58,14 @@ module.exports = ({ config }) => ({
       },
     ],
     [
+      'expo-speech-recognition',
+      {
+        microphonePermission: 'Bolingo uses the microphone so you can practise speaking a phrase.',
+        speechRecognitionPermission: 'Bolingo uses speech recognition to check the words you said.',
+        androidSpeechServicePackages: ['com.google.android.googlequicksearchbox'],
+      },
+    ],
+    [
       'react-native-google-mobile-ads',
       {
         androidAppId: process.env.ADMOB_ANDROID_APP_ID || 'ca-app-pub-3940256099942544~3347511713',

@@ -144,6 +144,39 @@ unmounts.
 - Starting any playback stops the previous utterance, and leaving the screen
   stops speech entirely.
 
+## Speak-back practice
+
+Every language exercise offers **Say it back** (`components/SpeakBack.tsx`).
+Recognition is handled by the device: `expo-speech-recognition` binds to
+`SFSpeechRecognizer` on iOS, `SpeechRecognizer` on Android, and the Web Speech
+API in the browser. The app asks for microphone + speech permission on the first
+tap and never writes the audio to disk or to Supabase.
+
+The transcript goes through [lib/speakBack.ts](../lib/speakBack.ts):
+
+- tokens are lowercased, stripped of punctuation and accent-folded for
+  comparison, so `donde esta el bano` matches `¿Dónde está el baño?`;
+- Levenshtein alignment over words finds matches, substitutions, omissions and
+  insertions;
+- an exact word counts 1; an accent-only match also counts 1 but shows amber;
+  a substituted word counts 0.5; an extra word subtracts 0.25; the credit is
+  normalized to 0–100;
+- `maxAlternatives: 3` means the best-scoring alternative wins, so one misheard
+  word in the first guess doesn't fail an otherwise correct answer;
+- bands: ≥90 great, ≥75 good, ≥50 almost, below that again.
+
+**What it is not:** phoneme scoring. The recognizer collapses pronunciation to
+words, so the UI labels the result "word match". A wrong word is caught; a
+strong accent whose words are still recognized is (rightly) not. Real
+phoneme-level assessment needs a pronunciation API such as Azure Speech
+Pronunciation Assessment behind a server-side function; that adds a paid
+dependency and should be a premium feature if it is ever added.
+
+**Requirements:** a development build for native (Expo Go has no speech
+recognizer); Chrome or Safari for web. Permission copy lives in `app.config.js`.
+If the recognizer is missing, the mic is denied or nothing is heard, the card
+explains it and the lesson stays playable.
+
 ## What this deliberately does not do
 
 - No recorded native audio per sentence. Duolingo ships studio recordings; this
@@ -167,7 +200,11 @@ unmounts.
 4. Open `/project/rwd-cat-photo` and tap the speaker beside Zora's hint: a
    feminine voice should read the line with the HTML tags stripped.
 5. Answer a question wrong: after the cue, Livia repeats the correct phrase slowly.
-6. Sweep the banks: every question must resolve to a non-empty phrase with no
+6. Speak-back: `node scripts/check-speak-back.cjs` (also in `npm test`). In a
+   development build, open a language lesson, tap **Say it back**, say the
+   phrase, and confirm the score and coloured words. Deny the microphone
+   permission once to see the explanation card.
+7. Sweep the banks: every question must resolve to a non-empty phrase with no
    `___`, quotes, glosses or markup. A temporary `/pronounce-check` route was
    used for this during development (314 questions, 0 issues); recreate it from
    `phraseForQuestion()` if the banks change substantially.
