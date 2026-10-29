@@ -339,4 +339,130 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'english-questions': {
+    id: 'english-questions',
+    title: 'English Questions & Negatives',
+    theory: [
+      'Present simple questions use do or does + base verb: Do you work here? Does she live in Nairobi? Past questions use did + base verb: Did they arrive?',
+      'Negatives use don’t, doesn’t or didn’t + base verb: I don’t drive. She doesn’t work here. They didn’t call. Never add -s or -ed after the auxiliary.',
+      'Question-word order is question word + auxiliary + subject + verb: Where does he live? Why did you call? Short answers repeat the auxiliary: Yes, I do. / No, she doesn’t.',
+    ],
+    questions: [
+      MCQ(
+        '“___ she live in Mombasa?”',
+        'Does',
+        ['Does', 'Do', 'Is', 'Did'],
+        'She is third-person singular, so present simple takes does + live.'
+      ),
+      BUILD(
+        'Make it negative: “He works on Sundays.”',
+        ['He', "doesn't", 'work', 'on', 'Sundays'],
+        ['He', "doesn't", 'work', 'works', 'on', 'Sundays'],
+        'The auxiliary carries the tense; work stays in the base form — doesn’t work.'
+      ),
+      MCQ(
+        'Choose the correct question.',
+        'Where does he live?',
+        ['Where does he live?', 'Where he does live?', 'Where does he lives?', 'Where do he live?'],
+        'Question word + auxiliary + subject + base verb: where + does + he + live.'
+      ),
+      BUILD(
+        'Ask about the past: “Did you eat?”',
+        ['Did', 'you', 'eat'],
+        ['eat', 'Did', 'you', 'ate'],
+        'After did, use the base verb: Did you eat? Never Did you ate?'
+      ),
+      MCQ(
+        '“No, she doesn’t.” answers…',
+        'Does she…?',
+        ['Does she…?', 'Do she…?', 'Is she…?', 'Did she…?'],
+        'Short answers echo the auxiliary and tense of the question — does in, doesn’t out.'
+      ),
+    ],
+  },
+
+  'english-comparing': {
+    id: 'english-comparing',
+    title: 'English Describing & Comparing',
+    theory: [
+      'Adjectives go before the noun and do not take a plural -s: two big dogs, a quiet room.',
+      'Short adjectives compare with -er + than (cheaper than, taller than); longer ones use more (more expensive than). Irregulars: good → better → best, bad → worse → worst.',
+      'as … as shows equality: She is as tall as her brother. Too means more than you want; enough means sufficient: too hot, warm enough.',
+    ],
+    questions: [
+      MCQ(
+        'Which phrase is correct?',
+        'two big dogs',
+        ['two big dogs', 'two bigs dogs', 'two dogs big', 'two big dog'],
+        'The adjective stays singular and sits before the noun: two big dogs.'
+      ),
+      BUILD(
+        'Compare: “This bag is cheaper than that one.”',
+        ['This', 'bag', 'is', 'cheaper', 'than', 'that', 'one'],
+        ['cheaper', 'This', 'bag', 'is', 'than', 'that', 'one', 'cheapest'],
+        'One-syllable adjective + -er + than: cheaper than. Cheapest is the superlative.'
+      ),
+      MCQ(
+        '“More expensive” is the comparative of…',
+        'expensive',
+        ['expensive', 'expensiver', 'most expensive', 'expense'],
+        'Long adjectives take more, not -er: more expensive than.'
+      ),
+      BUILD(
+        'Say “She is as tall as her brother.”',
+        ['She', 'is', 'as', 'tall', 'as', 'her', 'brother'],
+        ['tall', 'She', 'is', 'as', 'taller', 'as', 'her', 'brother'],
+        'as + adjective + as shows equality; taller belongs to a than comparison.'
+      ),
+      MCQ(
+        '“The soup is too hot” means…',
+        'It is hotter than I want',
+        ['It is hotter than I want', 'It is exactly right', 'It is not hot', 'It is the hottest soup'],
+        'Too = more than is wanted. Enough would mean it is acceptable.'
+      ),
+    ],
+  },
+
+  'english-health': {
+    id: 'english-health',
+    title: 'English Health & Emergencies',
+    theory: [
+      'Say where it hurts with have or hurt: I have a headache. My back hurts. It hurts here. I feel dizzy.',
+      'Ask for help: I need a doctor. Could you call an ambulance? Where is the nearest pharmacy? I’m allergic to peanuts.',
+      'Give advice with should + base verb: You should rest. You shouldn’t drive. Should never takes -s or -ed.',
+    ],
+    questions: [
+      MCQ(
+        'You have a bad headache. You say…',
+        'I have a headache.',
+        ['I have a headache.', 'I am a headache.', 'My headache has me.', 'I do a headache.'],
+        'Use have for symptoms: I have a headache / a fever / a cough.'
+      ),
+      BUILD(
+        'Ask for a doctor: “I need a doctor.”',
+        ['I', 'need', 'a', 'doctor'],
+        ['doctor', 'I', 'need', 'a', 'medicine'],
+        'I need a doctor — clear, direct, and understood everywhere.'
+      ),
+      MCQ(
+        '“I’m allergic to peanuts” means…',
+        'Peanuts make me ill',
+        ['Peanuts make me ill', 'I love peanuts', 'I am carrying peanuts', 'Peanuts are expensive'],
+        'Allergic means the body reacts badly — avoid the food and tell the staff.'
+      ),
+      BUILD(
+        'Give advice: “You should rest.”',
+        ['You', 'should', 'rest'],
+        ['rest', 'You', 'should', 'rested'],
+        'Should + base verb: should rest. Never should rested or should rests.'
+      ),
+      MCQ(
+        'Choose the polite emergency request.',
+        'Could you call an ambulance?',
+        ['Could you call an ambulance?', 'Call ambulance now!', 'You call ambulance.', 'Ambulance calling?'],
+        'Could you…? is the polite request; the emergency itself stays urgent and clear.'
+      ),
+    ],
+  },
 };

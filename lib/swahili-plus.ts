@@ -380,4 +380,130 @@ export const SWAHILI_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'swahili-questions': {
+    id: 'swahili-questions',
+    title: 'Swahili Questions & Negation',
+    theory: [
+      'Open a yes/no question with Je: Je, unakwenda sokoni? (Are you going to the market?). Question words take the answer’s place: Unakwenda wapi? (Where are you going?), Unaitwa nani? (What are you called?), Kwa nini unacheka? (Why are you laughing?).',
+      'The present negative drops -na- and swaps the subject prefix: ninapenda → sipendi (I don’t like), unasoma → husomi (you don’t read), anafanya kazi → hafanyi kazi (he doesn’t work). Plural follows the same pattern: hatupendi, hampendi, hawapendi.',
+      'For possession and existence: sina (I don’t have), hatuna (we don’t have), hakuna (there is no). Keep the noun after the verb — Hakuna maji means there is no water.',
+    ],
+    questions: [
+      MCQ(
+        'Which word opens a yes/no question in Swahili?',
+        'Je',
+        ['Je', 'Na', 'Ni', 'Kwa'],
+        'Je, unakwenda sokoni? — Je turns the statement into a question.'
+      ),
+      BUILD(
+        'Ask “Where are you going?”',
+        ['Unakwenda', 'wapi'],
+        ['wapi', 'Unakwenda', 'nani', 'lini'],
+        'Unakwenda (you are going) + wapi (where). The question word closes the question.'
+      ),
+      MCQ(
+        '“Sipendi chai” means…',
+        'I don’t like tea',
+        ['I don’t like tea', 'I am drinking tea', 'I want tea', 'I don’t have tea'],
+        'Si- is the I-negative prefix; -penda = like. Sipendi chai = I don’t like tea.'
+      ),
+      BUILD(
+        'Say “We don’t have money”:',
+        ['Hatuna', 'pesa'],
+        ['pesa', 'Hatuna', 'Sina', 'chakula'],
+        'Hatuna = we don’t have (hatu- + na). Sina is the singular I form.'
+      ),
+      MCQ(
+        '“Hakuna maji” means…',
+        'There is no water',
+        ['There is no water', 'The water is cold', 'I don’t want water', 'Bring the water'],
+        'Hakuna = there is no. Maji = water.'
+      ),
+    ],
+  },
+
+  'swahili-adjectives': {
+    id: 'swahili-adjectives',
+    title: 'Swahili Adjectives & Agreement',
+    theory: [
+      'Adjectives follow the noun and agree with its class: mtoto mzuri (a good child), watoto wazuri (good children); kitabu kizuri (a good book), vitabu vizuri (good books).',
+      'Class 9/10 nouns often take n-: nyumba nzuri (a good house), nyumba ndogo (a small house). Learn each noun with its adjective pair, not the adjective alone.',
+      'Compare with kuliko: Yeye ni mrefu kuliko mimi (He is taller than me). Common opposites: -kubwa/-dogo (big/small), -refu/-fupi (tall/short), -pya/-zee (new/old), -zuri/-baya (good/bad).',
+    ],
+    questions: [
+      MCQ(
+        'Choose the correct pair for “a good child”:',
+        'mtoto mzuri',
+        ['mtoto mzuri', 'mtoto wazuri', 'watoto mzuri', 'mtoto vizuri'],
+        'Mtoto is class 1; its adjective takes m-: mtoto mzuri. Watoto wazuri is the plural.'
+      ),
+      BUILD(
+        'Say “big books”:',
+        ['Vitabu', 'vikubwa'],
+        ['vikubwa', 'Vitabu', 'kubwa', 'vidogo'],
+        'Vitabu is class 8 plural, so the adjective takes vi-: vitabu vikubwa.'
+      ),
+      MCQ(
+        '“Nyumba ndogo” means…',
+        'A small house',
+        ['A small house', 'A big house', 'A new house', 'Many houses'],
+        'Nyumba is class 9/10; the adjective takes n-: ndogo = small.'
+      ),
+      BUILD(
+        'Say “The tree is tall”:',
+        ['Mti', 'ni', 'mrefu'],
+        ['mrefu', 'Mti', 'ni', 'fupi'],
+        'Mti (tree) is class 3, so tall is mrefu. Ni links subject and adjective.'
+      ),
+      MCQ(
+        '“Kuliko” is used to…',
+        'Compare two things',
+        ['Compare two things', 'Mean “very”', 'Mark a question', 'Mean “and”'],
+        'Yeye ni mrefu kuliko mimi — he is taller than me. Kuliko = than.'
+      ),
+    ],
+  },
+
+  'swahili-health': {
+    id: 'swahili-health',
+    title: 'Swahili Health & Emergencies',
+    theory: [
+      'Naumwa means I am ill — literally “it hurts me”. Name the place with na: Naumwa na kichwa (headache), Naumwa na tumbo (stomach ache).',
+      'Nina homa (I have a fever), nina kikohozi (I have a cough). Ask for help plainly: Nisaidie! (Help me!), Nahitaji daktari (I need a doctor), Hospitali iko wapi? (Where is the hospital?).',
+      'At the pharmacy ask for dawa (medicine); in an emergency say Piga simu ya dharura (call the emergency number).',
+    ],
+    questions: [
+      MCQ(
+        '“Naumwa na tumbo” means…',
+        'My stomach hurts',
+        ['My stomach hurts', 'I am hungry', 'I ate too much', 'My head hurts'],
+        'Naumwa = it hurts me; na tumbo = in the stomach. Naumwa na kichwa is the headache.'
+      ),
+      BUILD(
+        'Say “I need a doctor”:',
+        ['Nahitaji', 'daktari'],
+        ['daktari', 'Nahitaji', 'dawa', 'hospitali'],
+        'Nahitaji = I need; daktari = doctor. Dawa is medicine, hospitali the building.'
+      ),
+      MCQ(
+        '“Nisaidie!” means…',
+        'Help me!',
+        ['Help me!', 'I am fine', 'Excuse me', 'Goodbye'],
+        'Nisaidie is the direct plea for help — say it loudly and clearly.'
+      ),
+      BUILD(
+        'Ask “Where is the hospital?”',
+        ['Hospitali', 'iko', 'wapi'],
+        ['wapi', 'Hospitali', 'iko', 'daktari'],
+        'Hospitali iko wapi? — iko = it is (located), wapi = where.'
+      ),
+      MCQ(
+        'At the pharmacy you ask for…',
+        'dawa',
+        ['dawa', 'chakula', 'maji', 'kitabu'],
+        'Dawa = medicine. Chakula is food, maji is water, kitabu is a book.'
+      ),
+    ],
+  },
 };

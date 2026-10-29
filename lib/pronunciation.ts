@@ -113,7 +113,7 @@ const TARGET_CLUES: Record<LanguagePreset['base'], RegExp> = {
   es: /\b(hola|gracias|adiós|por favor|sí|el|la|los|las|un|una|de|del|que|y|en|es|son|está|estás|soy|eres|tengo|tiene|puedo|quiero|me|mi|tu|su|como|cómo|muy|bien|mal|mañana|hoy|agua|comida|casa|libro|niña|niño|amigo|amiga|pollo|tren|hermana|hermano|hambre|hablo|hablé|hice|buenas|buenos|noches|días|tardes|dónde|cuánto|cuánta|usted|nosotros|ellos|comí|bebí|habites|habité)\b/i,
   fr: /\b(bonjour|bonsoir|merci|au revoir|salut|coucou|s'il|vous|plaît|oui|non|le|la|les|un|une|des|du|de|et|en|est|sont|je|j'ai|tu|il|elle|nous|avez|ai|faim|fromage|bienvenue|huit|quatre|vingts|pain|eau|maison|livre|fille|garçon|ami|amie|aujourd'hui|demain|hier|où|comment|ça|va|addition|voudrais)\b/i,
   de: /\b(hallo|danke|bitte|tschüss|ja|nein|der|die|das|den|dem|des|ein|eine|und|in|ist|sind|ich|du|er|sie|wir|habe|hat|esse|trinke|hunger|wasser|brot|haus|buch|frau|mann|kind|guten|morgen|abend|wie|geht|ihnen|uhr|halb|groß|klein|glücklich)\b/i,
-  sw: /\b(habari|asante|karibu|tafadhali|ndiyo|hapana|na|ya|wa|kwa|ni|mimi|wewe|yeye|sisi|ninyi|wao|ninakula|maembe|yako|chakula|maji|nyumbani|kitabu|mtoto|mwanamke|mwanaume|rafiki|asubuhi|jioni|usiku|hujambo|sijambo|shikamoo|marahaba|nzuri|vipi|uko)\b/i,
+  sw: /\b(habari|asante|karibu|tafadhali|ndiyo|hapana|na|ya|wa|kwa|ni|mimi|wewe|yeye|sisi|ninyi|wao|ninakula|maembe|yako|chakula|maji|nyumbani|kitabu|mtoto|watoto|mwanamke|mwanaume|rafiki|asubuhi|jioni|usiku|hujambo|sijambo|shikamoo|marahaba|nzuri|vipi|uko|je|wapi|nini|lini|nani|gani|sipendi|hatuna|sina|hakuna|pesa|mzuri|wazuri|kizuri|vizuri|vikubwa|kubwa|ndogo|mrefu|fupi|kuliko|daktari|hospitali|naumwa|nisaidie|nahitaji|dawa|homa|tumbo|kichwa|kikohozi|dharura|iko)\b/i,
   en: /\b(the|hello|thanks|thank|please|welcome|sorry|good|morning|night|yes|no|you|your|i|am|is|are|where|what|when|how|this|that|these|those)\b/i,
 };
 
@@ -256,7 +256,7 @@ export function humanRate(base: number, text: string): number {
 
 /** Interrogatives that need question intonation even when the bank drops the mark. */
 const QUESTION_START =
-  /^(?:[¿¡]\s*)?(?:dónde|cómo|cuándo|quién|cuál|qué|por qué|où|comment|pourquoi|quand|quel|quelle|qu'est-ce|combien|wie|wo|was|warum|wer|wann|which|what|where|who|when|why|how|do|does|did|is|are|can|could|would|should|habari|wapi|nini|vipi)\b/i;
+  /^(?:[¿¡]\s*)?(?:dónde|cómo|cuándo|quién|cuál|qué|por qué|où|comment|pourquoi|quand|quel|quelle|qu'est-ce|combien|wie|wo|was|warum|wer|wann|which|what|where|who|when|why|how|do|does|did|is|are|can|could|would|should|habari|wapi|nini|vipi|je|lini|nani|gani|kwa\s+nini)\b/i;
 
 /**
  * Turn authored content into something a speech engine can actually say.

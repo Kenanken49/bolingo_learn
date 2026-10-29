@@ -89,6 +89,33 @@ OLED; light mode is the same system on quantum paper.
 Zora's build-coach surfaces now render the Figma-frame portrait
 (`assets/characters/zora-portrait.png`), not the old in-code vector.
 
+## Language courses (English & Swahili)
+
+Both language paths now carry seventeen nodes. The newest lessons are original
+Bolingo material built around beginner survival topics:
+
+- **Swahili** — [Questions & Negation](lib/swahili-plus.ts), [Adjectives &
+  Agreement](lib/swahili-plus.ts), [Health & Emergencies](lib/swahili-plus.ts).
+  They cover `Je…?`, `wapi/nani/lini`, the present negative (`sipendi`,
+  `hatuna`, `hakuna`), noun-class agreement (`mtoto mzuri`, `vitabu vikubwa`,
+  `nyumba ndogo`), and `naumwa` / `nisaidie` / `daktari`.
+- **English** — [Questions & Negatives](lib/english-plus.ts), [Describing &
+  Comparing](lib/english-plus.ts), [Health & Emergencies](lib/english-plus.ts).
+  They cover do/does/did, short answers, adjective order, `-er` vs `more`,
+  `as … as`, `too`/`enough`, symptoms, and `should` advice.
+
+Each lesson is five questions with a teaching note on every answer, and each is
+wired into [lib/curriculum.ts](lib/curriculum.ts) before the daily review and
+checkpoint, so completion, XP, chests and the final exam all work unchanged.
+
+**Where courses live.** Built-in courses are code-defined (`lib/*-plus.ts`) and
+merged into `LANGUAGE_COURSES`; they ship with the bundle and work offline.
+Supabase's `lessons` and `questions` tables hold *personalized uploads* and are
+row-level-secured per user — they are not the catalog. Adding a catalog lesson
+therefore means adding it to the bank, not running a migration; a DB-only row
+would never appear on the path. Content is original Bolingo writing, not a
+transcript or re-recording of third-party course audio.
+
 ## Pronunciation (Livia & Bingo)
 
 Language lessons are voiced by [lib/pronunciation.ts](lib/pronunciation.ts):

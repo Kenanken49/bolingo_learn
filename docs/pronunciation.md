@@ -7,7 +7,29 @@ language being taught, and the character only changes *how* it is delivered, not
 *what* is delivered.
 
 Everything runs on-device through `expo-speech`: no API key, no per-play cost,
-and it keeps working offline once a system voice is installed.
+and it keeps working offline once a system voice is installed. These are the
+operating system's own voices, so the app cannot fine-tune or clone them.
+"Tuning" here means casting the right installed voice, matching the locale,
+normalizing the text, and shaping pace and intonation — not training a model.
+
+## Swahili specifics
+
+Swahili shares the five pure vowels of Italian and Spanish, so the preset asks
+for `sw-KE` → `sw-TZ` → `sw-UG` → `sw` and falls back to Italian, then Spanish,
+only when no Swahili voice is installed. Two details make the new beginner
+lessons sound right:
+
+- **Question contour without a mark.** `Je, unakwenda sokoni` is recognized as a
+  question from `je`, `wapi`, `nini`, `lini`, `nani`, `gani` and `kwa nini`, so
+  the engine lifts at the end even when the bank omitted the `?`.
+- **Target-span detection.** `TARGET_CLUES.sw` includes the new lesson
+  vocabulary (`sipendi`, `hatuna`, `hakuna`, `mzuri`, `vikubwa`, `naumwa`,
+  `nisaidie`, `daktari`…), so a quoted Swahili phrase is spoken by the Swahili
+  voice even when the surrounding prompt is English.
+
+English uses `en-US → en-GB → en-KE → en-AU → en`; the Kenyan English voice is
+third in line so East African learners still hear a familiar accent when it is
+installed.
 
 ## Why pitch is fixed at 1.0
 
