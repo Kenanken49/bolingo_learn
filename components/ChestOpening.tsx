@@ -85,9 +85,12 @@ function SparkDot({
 
 export default function ChestOpening({
   title,
+  rewardLabel,
   onOpened,
 }: {
   title: string;
+  /** The rolled payout, e.g. "+10 gems". Revealed as the lid lifts. */
+  rewardLabel?: string;
   onOpened: () => void;
 }) {
   const p = useNatural();
@@ -201,6 +204,15 @@ export default function ChestOpening({
     opacity: interpolate(clock.value, [0, 0.16, 0.9, 1], [0, 1, 1, 0], 'clamp'),
     transform: [{ translateY: interpolate(clock.value, [0, 0.16], [6, 0], 'clamp') }],
   }));
+
+  // The payout lands with the light: hidden until the lid is up, then it pops.
+  const rewardStyle = useAnimatedStyle(() => {
+    const reveal = interpolate(clock.value, [LID_AT + 0.02, 0.8], [0, 1], 'clamp');
+    return {
+      opacity: reveal,
+      transform: [{ translateY: interpolate(reveal, [0, 1], [10, 0]) }, { scale: 0.86 + reveal * 0.14 }],
+    };
+  });
 
   return (
     <Reanimated.View
@@ -414,6 +426,17 @@ export default function ChestOpening({
           >
             {title}
           </Text>
+          {rewardLabel ? (
+            <Reanimated.Text
+              numberOfLines={1}
+              style={[
+                { marginTop: 6, fontSize: 22, fontWeight: '900', color: p.honey, letterSpacing: 0.2 },
+                rewardStyle,
+              ]}
+            >
+              {rewardLabel}
+            </Reanimated.Text>
+          ) : null}
         </Reanimated.View>
       </View>
     </Reanimated.View>

@@ -226,6 +226,34 @@ export default function Settings() {
           <Text className="mt-1 text-xs text-amber-700 dark:text-amber-300">Practice {weeklyDays} days a week — missing one day never resets you.</Text>
       </View>
 
+      {profile ? (
+        <View className="mt-4 w-full max-w-sm rounded-2xl border-2 border-violet-200 bg-violet-50 p-4 dark:border-violet-900 dark:bg-violet-950">
+          <View className="flex-row items-center gap-1.5">
+            <AppIcon name="gift" size={20} color="#7C3AED" />
+            <Text className="text-base font-extrabold text-slate-800 dark:text-slate-100">Chest rewards</Text>
+          </View>
+          <View className="mt-3 flex-row gap-2">
+            <View className="flex-1 flex-row items-center gap-2 rounded-xl border border-violet-200 bg-white px-3 py-2 dark:border-violet-900 dark:bg-slate-900">
+              <AppIcon name="gem" size={16} color="#7C3AED" />
+              <View>
+                <Text className="text-base font-extrabold text-slate-900 dark:text-slate-100">{profile.gems ?? 0}</Text>
+                <Text className="text-[10px] font-bold uppercase tracking-widest text-slate-400">gems</Text>
+              </View>
+            </View>
+            <View className="flex-1 flex-row items-center gap-2 rounded-xl border border-violet-200 bg-white px-3 py-2 dark:border-violet-900 dark:bg-slate-900">
+              <AppIcon name="shield" size={16} color="#0284C7" />
+              <View>
+                <Text className="text-base font-extrabold text-slate-900 dark:text-slate-100">{profile.streak_freezes ?? 0}</Text>
+                <Text className="text-[10px] font-bold uppercase tracking-widest text-slate-400">freezes</Text>
+              </View>
+            </View>
+          </View>
+          <Text className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            Unit chests pay bonus XP, gems, or a streak freeze that covers one missed day.
+          </Text>
+        </View>
+      ) : null}
+
       {/* Appearance: QD-OLED is the product default (true black + quantum
           colour); Light stays available for bright environments. */}
       <View className="mt-6 w-full max-w-sm rounded-2xl border-2 border-cyan-200 bg-white p-4 dark:border-[#1E1E2C] dark:bg-[#06060A]">

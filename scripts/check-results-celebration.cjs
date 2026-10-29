@@ -26,8 +26,11 @@ const ts = require('typescript');
 const ROOT = path.resolve(__dirname, '..');
 const GATE = path.join(ROOT, 'lib', 'resultsGate.ts');
 const CHEST_GATE = path.join(ROOT, 'lib', 'chestGate.ts');
+const CHEST_REWARDS = path.join(ROOT, 'lib', 'chestRewards.ts');
+const STREAK = path.join(ROOT, 'lib', 'streak.ts');
 const SCREEN = path.join(ROOT, 'src', 'app', 'results.tsx');
 const PATH_SCREEN = path.join(ROOT, 'src', 'app', 'index.tsx');
+const CHEST_OPENING = path.join(ROOT, 'components', 'ChestOpening.tsx');
 
 let failures = 0;
 
@@ -56,6 +59,8 @@ function loadGate(file = GATE) {
 
 const gate = loadGate();
 const chestGate = loadGate(CHEST_GATE);
+const chestRewards = loadGate(CHEST_REWARDS);
+const streak = loadGate(STREAK);
 
 check('defaults are the documented 80% threshold', () => {
   assert.equal(gate.PASS_PCT, 80);
@@ -114,6 +119,46 @@ for (const [label, claim, expected] of chestCases) {
     assert.equal(chestGate.shouldCelebrateChest(claim), expected);
   });
 }
+
+check('the chest table can pay XP, gems and a streak freeze', () => {
+  assert.deepEqual(chestRewards.rollChestReward(() => 0), { kind: 'xp', amount: 30 });
+  assert.deepEqual(chestRewards.rollChestReward(() => 0.2), { kind: 'xp', amount: 50 });
+  assert.deepEqual(chestRewards.rollChestReward(() => 0.55), { kind: 'gems', amount: 5 });
+  assert.deepEqual(chestRewards.rollChestReward(() => 0.8), { kind: 'gems', amount: 20 });
+  assert.deepEqual(chestRewards.rollChestReward(() => 0.85), { kind: 'streak_freeze', amount: 1 });
+  assert.deepEqual(chestRewards.rollChestReward(() => 0.999999), { kind: 'streak_freeze', amount: 1 });
+});
+
+check('chest labels describe the actual payout', () => {
+  assert.equal(chestRewards.chestRewardLabel({ kind: 'xp', amount: 75 }), '+75 XP');
+  assert.equal(chestRewards.chestRewardLabel({ kind: 'gems', amount: 10 }), '+10 gems');
+  assert.equal(chestRewards.chestRewardLabel({ kind: 'streak_freeze', amount: 1 }), '+1 streak freeze');
+});
+
+check('a streak freeze covers one missed day and is consumed', () => {
+  assert.deepEqual(
+    streak.advanceStreak({ streak: 7, freezes: 1, lastDay: '2026-10-27', today: '2026-10-29' }),
+    { streak: 8, freezes: 0, usedFreezes: 1 }
+  );
+});
+
+check('a freeze does not cover a longer gap', () => {
+  assert.deepEqual(
+    streak.advanceStreak({ streak: 7, freezes: 1, lastDay: '2026-10-26', today: '2026-10-29' }),
+    { streak: 1, freezes: 1, usedFreezes: 0 }
+  );
+});
+
+check('consecutive days and same-day replays keep the streak', () => {
+  assert.deepEqual(
+    streak.advanceStreak({ streak: 7, freezes: 1, lastDay: '2026-10-28', today: '2026-10-29' }),
+    { streak: 8, freezes: 1, usedFreezes: 0 }
+  );
+  assert.deepEqual(
+    streak.advanceStreak({ streak: 7, freezes: 1, lastDay: '2026-10-29', today: '2026-10-29' }),
+    { streak: 7, freezes: 1, usedFreezes: 0 }
+  );
+});
 
 // --- screen wiring -------------------------------------------------------
 
@@ -176,12 +221,18 @@ const chestWiring = [
     },
   ],
   [
-    'the award is recorded only after completeLesson succeeds',
+    'the rolled reward is persisted before the award is shown',
     () => {
-      const writeAt = pathScreen.indexOf('await completeLesson(profile.id, CHEST_XP, id);');
+      const rollAt = pathScreen.indexOf('const reward = rollChestReward();');
+      const writeAt = pathScreen.indexOf(
+        "await completeLesson(profile.id, reward.kind === 'xp' ? reward.amount : 0, id, {"
+      );
       const awardAt = pathScreen.indexOf('setChestClaim({ ...claim, awarded: true });');
-      assert.ok(writeAt >= 0, 'the claim must persist the reward before celebrating');
+      assert.ok(rollAt >= 0, 'the claim must roll a reward');
+      assert.ok(writeAt > rollAt, 'the roll must happen before the write');
       assert.ok(awardAt > writeAt, 'the award bit must follow the write, not precede it');
+      assert.match(pathScreen, /gems: reward\.kind === 'gems' \? reward\.amount : 0,/);
+      assert.match(pathScreen, /streakFreezes: reward\.kind === 'streak_freeze' \? reward\.amount : 0,/);
       assert.match(
         pathScreen,
         /catch \{\s*Alert\.alert\('Claim failed', 'Check your connection and try again\.'\);\s*\}/
@@ -189,10 +240,30 @@ const chestWiring = [
     },
   ],
   [
+    'the ceremony reveals the rolled reward instead of fixed XP',
+    () => {
+      assert.match(pathScreen, /setChestReward\(reward\);/);
+      assert.match(pathScreen, /const chestRewardText = chestReward \? chestRewardLabel\(chestReward\) : '';/);
+      assert.match(pathScreen, /Chest claimed · \{chestRewardText\}/);
+      assert.doesNotMatch(pathScreen, /CHEST_XP/);
+    },
+  ],
+  [
+    'the chest itself reveals the payout as the lid lifts',
+    () => {
+      const opening = fs.readFileSync(CHEST_OPENING, 'utf8').replace(/\r\n/g, '\n');
+      assert.match(opening, /rewardLabel\?: string;/);
+      assert.match(opening, /\{rewardLabel\}/);
+      // Hidden until the lid is up, so the roll can't spoil the rattle.
+      assert.match(opening, /\[LID_AT \+ 0\.02, 0\.8\]/);
+      assert.match(pathScreen, /rewardLabel=\{chestRewardText\}/);
+    },
+  ],
+  [
     'the chest opening and storm render only for an awarded claim',
     () => {
-      assert.match(pathScreen, /\{chestWin && shouldCelebrateChest\(chestClaim\) && chestPhase === 'opening' \? \(/);
-      assert.match(pathScreen, /\{chestWin && shouldCelebrateChest\(chestClaim\) && chestPhase === 'storm' \? \(/);
+      assert.match(pathScreen, /\{chestWin && chestReward && shouldCelebrateChest\(chestClaim\) && chestPhase === 'opening' \? \(/);
+      assert.match(pathScreen, /\{chestWin && chestReward && shouldCelebrateChest\(chestClaim\) && chestPhase === 'storm' \? \(/);
     },
   ],
   [
@@ -210,11 +281,11 @@ const chestWiring = [
     },
   ],
   [
-    'finishing the storm clears the claim and the title',
+    'finishing the storm clears the reward, claim and title',
     () =>
       assert.match(
         pathScreen,
-        /onDone=\{\(\) => \{\s*setChestWin\(null\);\s*setChestClaim\(null\);\s*\}\}/
+        /onDone=\{\(\) => \{\s*setChestWin\(null\);\s*setChestClaim\(null\);\s*setChestReward\(null\);\s*\}\}/
       ),
   ],
 ];

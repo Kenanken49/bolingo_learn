@@ -26,6 +26,8 @@ alter table public.profiles enable row level security;
 alter table public.profiles
   add column if not exists hearts integer not null default 5,
   add column if not exists hearts_refilled_at timestamptz not null default now(),
+  add column if not exists gems integer not null default 0,
+  add column if not exists streak_freezes integer not null default 0,
   add column if not exists ai_words_used integer not null default 0,
   add column if not exists ai_words_reset_at timestamptz not null default now();
 

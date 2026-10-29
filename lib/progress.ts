@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { advanceStreak } from './streak';
 
 export const MAX_HEARTS = 5;
 export const REFILL_WAIT_MS = 4 * 3600 * 1000;
@@ -13,6 +14,8 @@ export interface Profile {
   is_premium: boolean;
   hearts: number;
   hearts_refilled_at: string;
+  gems: number;
+  streak_freezes: number;
   ai_words_used: number;
   ai_words_reset_at: string;
 }
@@ -23,6 +26,8 @@ const DEFAULTS = {
   last_activity_at: null,
   is_premium: false,
   hearts: MAX_HEARTS,
+  gems: 0,
+  streak_freezes: 0,
   ai_words_used: 0,
 };
 
@@ -172,18 +177,53 @@ async function logXpEvent(userId: string, xp: number): Promise<void> {
   }
 }
 
-/** Award XP and tick the streak (same-day replays don't double-count). */
-export async function completeLesson(userId: string, xpEarned: number, lessonId?: string): Promise<Profile> {
+/** Optional non-XP chest payout persisted alongside the completion. */
+export interface LessonExtras {
+  gems?: number;
+  streakFreezes?: number;
+}
+
+/**
+ * Award XP and tick the streak (same-day replays don't double-count).
+ *
+ * A streak freeze covers missed calendar days: if the learner has enough
+ * freezes for the gap, the streak continues and the freezes are consumed.
+ * Otherwise the streak restarts at one. Chest extras (gems/freezes) ride the
+ * same update, so the reward and the completion commit together.
+ */
+export async function completeLesson(
+  userId: string,
+  xpEarned: number,
+  lessonId?: string,
+  extras: LessonExtras = {}
+): Promise<Profile> {
   const { data: p, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
   if (error || !p) throw error ?? new Error('Profile not found.');
   const profile = p as Profile;
   const today = dayKey(new Date());
-  const last = profile.last_activity_at ? dayKey(new Date(profile.last_activity_at)) : null;
-  const yesterday = dayKey(new Date(Date.now() - 86400000));
-  const streak_count = last === today ? profile.streak_count : last === yesterday ? profile.streak_count + 1 : 1;
+  const lastDay = profile.last_activity_at ? dayKey(new Date(profile.last_activity_at)) : null;
+  const advance = advanceStreak({
+    streak: profile.streak_count,
+    freezes: profile.streak_freezes ?? 0,
+    lastDay,
+    today,
+  });
+
+  const gainedGems = Math.max(0, Math.floor(extras.gems ?? 0));
+  const gainedFreezes = Math.max(0, Math.floor(extras.streakFreezes ?? 0));
+  const patch: Record<string, number | string> = {
+    xp: profile.xp + Math.max(0, xpEarned),
+    streak_count: advance.streak,
+    last_activity_at: new Date().toISOString(),
+  };
+  if (gainedGems > 0) patch.gems = (profile.gems ?? 0) + gainedGems;
+  if (advance.usedFreezes > 0 || gainedFreezes > 0) {
+    patch.streak_freezes = advance.freezes + gainedFreezes;
+  }
+
   const { data, error: upError } = await supabase
     .from('profiles')
-    .update({ xp: profile.xp + xpEarned, streak_count, last_activity_at: new Date().toISOString() })
+    .update(patch)
     .eq('id', userId)
     .select()
     .single();
@@ -191,7 +231,7 @@ export async function completeLesson(userId: string, xpEarned: number, lessonId?
   if (lessonId) {
     await supabase.from('lesson_completions').upsert({ user_id: userId, lesson_id: lessonId });
   }
-  void logXpEvent(userId, xpEarned);
+  void logXpEvent(userId, Math.max(0, xpEarned));
   return data as Profile;
 }
 

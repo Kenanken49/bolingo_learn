@@ -18,6 +18,7 @@ import { GOALS, firstBlockForGoal, goalLabel, hasOnboarded, markOnboarded, nextU
 import { getDailyMinutes, setDailyMinutes, DAILY_MINUTES_OPTIONS, outcomeForMinutes, getSelectedCourse, setSelectedCourse, getWeeklyDays, getAmbientOn, setAmbientOn } from '../../lib/preferences';
 import { levelForXp } from '../../lib/levels';
 import { canClaimChest, shouldCelebrateChest, type ChestClaim } from '../../lib/chestGate';
+import { chestRewardLabel, rollChestReward, type ChestReward } from '../../lib/chestRewards';
 import { getDueCount } from '../../lib/srs';
 import { useAmbient } from '../../lib/ambient';
 import { useNatural } from '../../lib/natural';
@@ -35,8 +36,6 @@ import Mascot from '../../components/AfricanMascots';
 import { playCelebration } from '../../lib/sfx';
 import AppIcon, { ContentMark, type AppIconName } from '../../components/AppIcon';
 import LearnerAvatar from '../../components/LearnerAvatar';
-
-const CHEST_XP = 50;
 
 type NodeState = 'completed' | 'active' | 'locked' | 'processing' | 'failed';
 
@@ -212,7 +211,7 @@ function UnitHeader({ unit, doneCount, totalCount }: { unit: CurriculumUnit; don
           <Text style={{ fontSize: 10.5, fontWeight: '700', color: p.muted }}>
             {doneCount}/{totalCount} complete
           </Text>
-          <Text style={{ fontSize: 10.5, fontWeight: '700', color: p.muted }}>+50 XP chest</Text>
+          <Text style={{ fontSize: 10.5, fontWeight: '700', color: p.muted }}>Chest: XP · gems · freeze</Text>
         </View>
       </View>
     </View>
@@ -394,6 +393,7 @@ export default function PathMap() {
   // `chestClaim` is set only after an eligible claim is awarded, so the
   // opening and the storm can never celebrate an incomplete or failed claim.
   const [chestClaim, setChestClaim] = useState<ChestClaim | null>(null);
+  const [chestReward, setChestReward] = useState<ChestReward | null>(null);
   const [chestWin, setChestWin] = useState<string | null>(null);
   // Chest ceremony runs in two phases so the applause starts exactly on the
   // frame the ribbons do, not a second earlier when the chest is claimed.
@@ -607,6 +607,9 @@ export default function PathMap() {
   const xp = profile?.xp ?? 0;
   const streak = profile?.streak_count ?? 0;
   const used = profile?.ai_words_used ?? 0;
+  const chestRewardText = chestReward ? chestRewardLabel(chestReward) : '';
+  const chestRewardIcon: AppIconName =
+    chestReward?.kind === 'gems' ? 'gem' : chestReward?.kind === 'streak_freeze' ? 'shield' : 'star';
 
   const [newestReady, ...olderLessons] = userLessons.filter((l) => lessonStatus(l) === 'ready');
   const pendingUploads = uploads.filter((u) => u.status === 'processing');
@@ -670,12 +673,18 @@ export default function PathMap() {
       alreadyClaimed: completed.has(id),
     };
     if (!canClaimChest(claim)) return;
+    const reward = rollChestReward();
     try {
-      await completeLesson(profile.id, CHEST_XP, id);
+      await completeLesson(profile.id, reward.kind === 'xp' ? reward.amount : 0, id, {
+        gems: reward.kind === 'gems' ? reward.amount : 0,
+        streakFreezes: reward.kind === 'streak_freeze' ? reward.amount : 0,
+      });
       // A unit chest is a milestone, not a tap: the chest cracks open first,
       // then hands off to the full five-second applause + ribbon storm. Only
-      // an awarded, eligible claim may set the ceremony state.
+      // an awarded, eligible claim may set the ceremony state, and the rolled
+      // reward travels with that state so the reveal never falls back to XP.
       setChestClaim({ ...claim, awarded: true });
+      setChestReward(reward);
       setChestPhase('opening');
       setChestWin(unit.title);
       await refresh();
@@ -1421,7 +1430,7 @@ export default function PathMap() {
                     </View>
                     );
                   })}
-                  {/* Variable-reward chest: one-shot +50 XP claim per finished unit. */}
+                  {/* Variable-reward chest: one weighted claim per finished unit. */}
                   {(() => {
                     const unitDone = unit.blocks.every(isBlockDone);
                     const claimed = completed.has(`chest:${unit.id}`);
@@ -1430,7 +1439,7 @@ export default function PathMap() {
                         state={!unitDone ? 'locked' : claimed ? 'completed' : 'active'}
                         icon={claimed ? 'trophy' : 'gift'}
                         label="Unit chest"
-                        sub={!unitDone ? 'Finish the unit' : claimed ? `Claimed! +${CHEST_XP} XP` : `Tap to claim +${CHEST_XP} XP`}
+                        sub={!unitDone ? 'Finish the unit' : claimed ? 'Claimed!' : 'Tap to claim a reward'}
                         offset={WIND[unit.blocks.length % WIND.length]}
                         onPress={() => void claimChest(unit)}
                       />
@@ -2018,10 +2027,11 @@ export default function PathMap() {
         </View>
       </Modal>
 
-      {chestWin && shouldCelebrateChest(chestClaim) && chestPhase === 'opening' ? (
+      {chestWin && chestReward && shouldCelebrateChest(chestClaim) && chestPhase === 'opening' ? (
         <ChestOpening
           key={`open-${chestWin}`}
           title={chestWin}
+          rewardLabel={chestRewardText}
           onOpened={() => {
             if (!shouldCelebrateChest(chestClaim)) return;
             setChestPhase('storm');
@@ -2029,24 +2039,25 @@ export default function PathMap() {
           }}
         />
       ) : null}
-      {chestWin && shouldCelebrateChest(chestClaim) && chestPhase === 'storm' ? (
+      {chestWin && chestReward && shouldCelebrateChest(chestClaim) && chestPhase === 'storm' ? (
         <Celebration
           key={`storm-${chestWin}`}
           duration={FULL_CELEBRATION_MS}
           onDone={() => {
             setChestWin(null);
             setChestClaim(null);
+            setChestReward(null);
           }}
         />
       ) : null}
-      {chestWin && shouldCelebrateChest(chestClaim) && chestPhase === 'storm' ? (
+      {chestWin && chestReward && shouldCelebrateChest(chestClaim) && chestPhase === 'storm' ? (
         <View
           pointerEvents="none"
           style={{ position: 'absolute', top: 78, left: 0, right: 0, zIndex: 70, alignItems: 'center' }}
         >
           <View
             accessible
-            accessibilityLabel={`Unit chest claimed: plus ${CHEST_XP} XP for ${chestWin}`}
+            accessibilityLabel={`Unit chest claimed: ${chestRewardText} for ${chestWin}`}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -2060,10 +2071,10 @@ export default function PathMap() {
               paddingVertical: 9,
             }}
           >
-            <AppIcon name="gift" size={17} color={p.honey} />
+            <AppIcon name={chestRewardIcon} size={17} color={p.honey} />
             <View style={{ flexShrink: 1 }}>
               <Text style={{ fontSize: 12.5, fontWeight: '900', color: p.ink }}>
-                Chest claimed · +{CHEST_XP} XP
+                Chest claimed · {chestRewardText}
               </Text>
               <Text numberOfLines={1} style={{ fontSize: 10.5, fontWeight: '700', color: p.muted }}>
                 {chestWin}

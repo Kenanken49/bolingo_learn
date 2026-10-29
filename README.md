@@ -46,8 +46,12 @@ the burst is seeded from the gate and `<Celebration>` renders only behind
 `burst && celebrates`. It also executes the chest gate from
 [lib/chestGate.ts](lib/chestGate.ts) and asserts the path screen records the
 award only after `completeLesson` succeeds, then re-checks that awarded claim
-before the chest opens and again before the storm starts. Flip either gate or
-drop the render guard and `npm test` fails.
+before the chest opens and again before the storm starts. It walks the chest
+payout table in [lib/chestRewards.ts](lib/chestRewards.ts) (every row reachable,
+weights summing to 100, labels matching the kind) and exercises the streak freeze
+in [lib/streak.ts](lib/streak.ts) — one missed day is covered and consumed, a
+longer gap still resets. Flip either gate or drop the render guard and `npm test`
+fails.
 
 ## Edge Functions
 
@@ -196,6 +200,16 @@ seconds of crowd sit exactly under the five seconds of ribbons. Results mount
 the storm directly, but only for a pass (80%+, unrounded) or a level-up — a
 failed run gets the review panel and no applause. Only the chest gets a
 ceremony in front of the storm.
+
+Chests pay a variable reward. [lib/chestRewards.ts](lib/chestRewards.ts) is a
+weighted table — bonus XP (30/50/75/100), gems (5/10/20) or a streak freeze —
+rolled once at claim time and written with the claim by `completeLesson`, so the
+payout and the `chest:<unitId>` completion commit together and a failure mid-write
+shows nothing. The roll then travels with the ceremony state: the chest's caption
+reveals it as the lid lifts, and the storm badge repeats it (`+10 gems`,
+`+1 streak freeze`, `+75 XP`) instead of the old fixed 50 XP. Gems and freezes are
+shown in Settings, and a freeze is consumed by `advanceStreak` when it covers a
+single missed day.
 
 The storm is also frame-budgeted: after a 700ms settle (so the mount spike
 doesn't count) it samples its own frame times, and if more than half of a
