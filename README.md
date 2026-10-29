@@ -95,13 +95,17 @@ Language lessons are voiced by [lib/pronunciation.ts](lib/pronunciation.ts):
 Livia models every target phrase in its own language and Bingo narrates the
 English around it. Pitch stays at 1.0 — pitch-shifted TTS drags its formants and
 sounds foreign — so the characters differ by pacing (Livia 0.86, 🐢 0.62; Bingo
-0.98) and, in English lessons, by using different installed voices. The engine
-fills gaps with the answer being taught, drops English glosses, keeps accents
-and restores question intonation, prefers enhanced/neural voices, excludes
-novelty voices, and falls back to a vowel-compatible voice (Swahili → Italian)
-when no native voice is installed. The phrase plays when an exercise opens, and
-a miss is followed by a slow replay of the correct sentence. Details and the QA
-checklist: [docs/pronunciation.md](docs/pronunciation.md).
+0.98) and by each taking their own installed voice in every language. The
+engine fills gaps with the answer being taught, drops English glosses, keeps
+accents and restores question intonation, prefers neural/network voices over
+compact and robotic ones, excludes novelty voices, and falls back to a
+vowel-compatible voice (Swahili → Italian) when no native voice is installed. It
+also breathes where a speaker would — a comma before a long clause link, dashes
+and semicolons turned into pauses — and eases the rate on one-word answers and
+long sentences instead of delivering everything at one metronomic clip. The
+phrase plays when an exercise opens, and a miss is followed by a slow replay of
+the correct sentence. Details and the QA checklist:
+[docs/pronunciation.md](docs/pronunciation.md).
 
 ## Celebrations (chest ➔ five-second storm)
 

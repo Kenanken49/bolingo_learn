@@ -12,9 +12,13 @@ import { VoiceQuality, type Voice } from 'expo-speech';
  *
  * Layers, in order of importance:
  *  1. Correct locale for every word (English scaffolding vs target phrase).
- *  2. The best installed voice (enhanced/neural preferred, novelty voices banned).
+ *  2. The best installed voice (neural/network preferred, robotic and novelty
+ *     voices pushed down) and a separate voice for each character.
  *  3. Clean text: blanks filled, glosses and markup stripped, punctuation kept.
- *  4. Character pacing: Livia models slowly, Bingo narrates at conversational speed.
+ *  4. Human delivery: breath points inside long sentences and a rate that
+ *     adapts to how much is being said — the two things a person does that a
+ *     metronome-paced engine does not.
+ *  5. Character pacing: Livia models slowly, Bingo narrates at conversational speed.
  *
  * On-device only: no API key, no per-play cost, still works offline.
  */
@@ -121,6 +125,16 @@ const ANY_DETERMINER = new Set([
   ...ENGLISH.determiners,
 ]);
 
+/**
+ * Voice names that read as feminine on the platforms that expose named
+ * voices (Apple, Windows, Google's named cloud voices). Livia is a woman, so
+ * she prefers one when the choice exists; this is only a nudge, because many
+ * Android voices carry no name at all and clarity must win over casting when
+ * the installed voice is the only one in the language.
+ */
+const FEMININE_VOICE =
+  /\b(samantha|ava|allison|susan|karen|moira|tessa|serena|victoria|zira|aria|jenny|sonia|natasha|libby|michelle|paulina|monica|marisol|lucia|laura|carmen|elena|isabel|amelie|audrey|celine|anna|petra|katja|yelda|milena)\b/i;
+
 const NOVELTY_VOICE =
   /whisper|novelty|zarvox|albert|bad news|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|wobble|bahh|deranged|hysterical|pipe organ|grandma|grandpa|rocko|shelley|flo|sandy|eddy|reed|junior|ralph|fred/i;
 
@@ -134,6 +148,87 @@ function baseLocale(locale: string): string {
 
 function hasLetters(text: string): boolean {
   return /\p{L}/u.test(text);
+}
+
+/**
+ * Words a speaker naturally breathes before when they join two clauses.
+ * Written Spanish drops the comma before "y"; a speaker still takes a small
+ * one when the halves are long ("…pollo, y beber agua"), which is what stops
+ * a sentence from arriving as one unbroken run.
+ *
+ * Numbers are safe: "treinta y dos" has one word before the link, below the
+ * three-word threshold.
+ */
+const CLAUSE_LINKS: Record<LanguagePreset['base'], Set<string>> = {
+  es: new Set(['y', 'e', 'o', 'u', 'pero', 'sino', 'porque']),
+  fr: new Set(['et', 'ou', 'mais', 'car', 'donc', 'puis']),
+  de: new Set(['und', 'oder', 'aber', 'denn', 'weil']),
+  sw: new Set(['na', 'au', 'lakini', 'kama']),
+  en: new Set(['and', 'but', 'or', 'because', 'so', 'yet']),
+};
+
+/**
+ * Turn written punctuation into the pauses a person actually takes: dashes
+ * and semicolons become commas (engines otherwise read a long, robotic hold),
+ * and a comma is added before a clause link when the first half is long
+ * enough to deserve a breath. Comma insertion keeps the sentence inside one
+ * utterance, so the engine's pitch contour still falls naturally across it.
+ */
+function breathe(text: string, base: LanguagePreset['base'] = 'en'): string {
+  let out = text
+    .replace(/\s*[—–]\s*/g, ', ')
+    .replace(/\s+-\s+/g, ', ')
+    .replace(/\s*;\s*/g, ', ')
+    // A colon before an explanation reads as the same beat; some engines say
+    // "colon" instead. Times (10:30) have no space after the colon and are
+    // left alone.
+    .replace(/\s*:\s+/g, ', ');
+
+  const links = CLAUSE_LINKS[base];
+  const tokens = out.split(/\s+/).filter(Boolean);
+  let sinceBreak = 0;
+  for (let i = 0; i < tokens.length; i += 1) {
+    const token = tokens[i] ?? '';
+    const bare = token.toLowerCase().replace(/^[¿¡"'«(\[]+|[)"'»,.;:!?\]]+$/g, '');
+    const previous = tokens[i - 1] ?? '';
+    if (i > 0 && i < tokens.length - 1 && links.has(bare)) {
+      if (sinceBreak >= 3 && !/[,;:]$/.test(previous)) tokens[i - 1] = `${previous},`;
+      // The link is the clause boundary itself; the next clause starts fresh.
+      sinceBreak = 0;
+      continue;
+    }
+    if (/[.!?,;:]$/.test(token)) sinceBreak = 0;
+    else sinceBreak += 1;
+  }
+
+  return tokens
+    .join(' ')
+    .replace(/\s+([,.;:!?])/g, '$1')
+    .replace(/,{2,}/g, ',')
+    // Space after a mark only when a word follows it, never before another
+    // mark ("news?, so…" must not become "news? , so…").
+    .replace(/([,.;:!?])(?=[^\s\d,.;:!?])/g, '$1 ')
+    // A pause mark belongs between words, never at the very end: "Hola;" and
+    // "Hola —" must not reach the engine as "Hola,".
+    .replace(/[,;:]+\s*$/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * How fast this particular phrase should be delivered. A person does not say a
+ * seven-word sentence at the same metronomic clip as a one-word answer: longer
+ * phrases get a little more room, and very short ones are eased so the last
+ * syllable is not clipped. The shift stays under 8%, so Livia still sounds like
+ * Livia and the pedagogy stays predictable.
+ */
+export function humanRate(base: number, text: string): number {
+  const words = text.split(/\s+/).filter((word) => /\p{L}/u.test(word)).length;
+  const breaks = (text.match(/[,;:]/g) ?? []).length;
+  let rate = base;
+  if (words >= 7 || words <= 2) rate *= 0.96;
+  if (breaks >= 3) rate *= 0.97;
+  return Math.max(0.55, Math.min(1.35, Math.round(rate * 100) / 100));
 }
 
 /* ------------------------------------------------------------------ *
@@ -156,8 +251,12 @@ export function spokenPhrase(
   const end = options.end ?? true;
   let text = String(raw ?? '').normalize('NFC');
 
+  // Emoji and pictographs are decoration, and several engines read their
+  // names aloud ("parrot", "sparkles"). Strip them before anything else.
+  text = text.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu, ' ');
+
   // Markup and arrows.
-  text = text.replace(/`+/g, ' ').replace(/\*+/g, ' ');
+  text = text.replace(/`+/g, ' ').replace(/\*+/g, ' ').replace(/#/g, ' ');
   text = text.replace(/\s*(?:->|→|=>|>)\s*/g, ', ');
   // Bracketed asides and parenthesised English glosses.
   text = text.replace(/\[[^\]]*\]/g, ' ');
@@ -173,10 +272,16 @@ export function spokenPhrase(
 
   // Ellipses read as a hang, not a pause, on several engines.
   text = text.replace(/\s*…+\s*/g, '. ').replace(/\s*\.{3,}\s*/g, '. ');
+  // "¿Dónde está…?" leaves a period in front of the question mark; the engine
+  // then says the mark as a stop before a question. Keep only the stronger mark.
+  text = text.replace(/\.\s*([?!,;:])/g, '$1').replace(/([?!])\s*\./g, '$1');
   text = text.replace(/\s*[·•|]+\s*/g, ', ');
 
   text = text.replace(/\s+/g, ' ').trim();
   text = text.replace(/^[,;:.\s]+|[,;:\s]+$/g, '').trim();
+  // Human breath points, before terminal punctuation decides the contour.
+  text = breathe(text, options.preset?.base ?? 'en');
+
   // Sentence case, including after a Spanish opening mark.
   if (text) {
     const offset = /^[¿¡]/.test(text) ? 1 : 0;
@@ -343,24 +448,43 @@ function push(list: SpeechSegment[], text: string, preset: LanguagePreset): void
 }
 
 /**
+ * Prompts often trail off after the quoted phrase — `"Gracias" means…`,
+ * `“How is it going?” is…`. Read aloud, that tail becomes a stranded "Means."
+ * after the phrase. A prompt whose remainder is only one of these dangling
+ * verbs is spoken up to the closing quote.
+ */
+const DANGLING_TAIL =
+  /^[\s,;:—–-]*(?:is|are|was|were|means?|translates?|literally|refers?\s+to|in\s+\w+)\b[\s.…,;:—–-]*$/i;
+
+function spokenPrompt(prompt: string): string {
+  const spans = quotedSpans(prompt);
+  const last = spans[spans.length - 1];
+  if (!last) return prompt;
+  const tail = prompt.slice(last.end);
+  if (!tail.trim() || !DANGLING_TAIL.test(tail)) return prompt;
+  return prompt.slice(0, last.end);
+}
+
+/**
  * Split a prompt into runs of target language and runs of English so Bingo
  * reads "What does, ¿Cómo estás?, mean?" instead of mangling the Spanish.
  */
 export function promptSegments(prompt: string, preset: LanguagePreset): SpeechSegment[] {
+  const source = spokenPrompt(prompt);
   if (preset.base === 'en') {
-    const text = spokenPhrase(prompt);
+    const text = spokenPhrase(source);
     return text ? [{ text, preset }] : [];
   }
 
   const segments: SpeechSegment[] = [];
   let cursor = 0;
-  for (const span of quotedSpans(prompt)) {
-    push(segments, spokenPhrase(prompt.slice(cursor, span.start), { end: false }), APP_SPEECH);
+  for (const span of quotedSpans(source)) {
+    push(segments, spokenPhrase(source.slice(cursor, span.start), { end: false }), APP_SPEECH);
     const target = isTargetSpan(span.text, preset);
     push(segments, spokenPhrase(span.text, target ? { preset, end: false } : { end: false }), target ? preset : APP_SPEECH);
     cursor = span.end;
   }
-  push(segments, spokenPhrase(prompt.slice(cursor)), APP_SPEECH);
+  push(segments, spokenPhrase(source.slice(cursor)), APP_SPEECH);
   return segments.slice(0, 5);
 }
 
@@ -383,14 +507,21 @@ function loadVoices(): Promise<Voice[]> {
   return voicesPromise;
 }
 
-function voiceScore(voice: Voice, preset: LanguagePreset): number {
+function voiceScore(voice: Voice, preset: LanguagePreset, character: Mentor): number {
   const locale = normalizeLocale(voice.language);
   const preferred = preset.locales.findIndex((candidate) => normalizeLocale(candidate) === locale);
   let score = preferred >= 0 ? 100 - preferred * 5 : 60;
   if (voice.quality === VoiceQuality.Enhanced) score += 30;
   // Android surfaces neural/enhanced quality in the name, not the enum.
-  if (/(enhanced|premium|neural|natural)/i.test(voice.name)) score += 20;
-  if (/(google|microsoft|siri|samantha|ava|eloquence)/i.test(voice.name)) score += 5;
+  if (/(enhanced|premium|neural|natural|wavenet|studio)/i.test(voice.name)) score += 20;
+  // Android names its cloud voices "-network" and its compact on-device ones
+  // "-local"; the network voice is the one that sounds like a person.
+  const id = `${voice.name} ${voice.identifier}`;
+  if (/network|online/i.test(id)) score += 18;
+  if (/compact|espeak|pico|sapi|eloquence/i.test(id)) score -= 22;
+  if (/(google|microsoft|siri|samantha|ava|allison|karen|moira|tessa|serena|paulina|monica|marisol|jorge|diego|amelie|audrey|thomas|anna|petra|markus|aria|jenny|sonia|natasha|libby|ryan)/i.test(voice.name))
+    score += 6;
+  if (character === 'livia' && FEMININE_VOICE.test(voice.name)) score += 8;
   if (NOVELTY_VOICE.test(voice.name)) score -= 200;
   return score;
 }
@@ -403,20 +534,28 @@ interface ResolvedVoice {
   approximate: boolean;
 }
 
-function pickBest(voices: Voice[], base: string, preset: LanguagePreset, avoid: Set<string>): Voice | null {
+function pickBest(
+  voices: Voice[],
+  base: string,
+  preset: LanguagePreset,
+  avoid: Set<string>,
+  character: Mentor
+): Voice | null {
   const candidates = voices.filter((v) => !NOVELTY_VOICE.test(v.name));
   const native = candidates.filter((v) => baseLocale(v.language) === base);
   if (native.length === 0) return null;
-  const ranked = [...native].sort((a, b) => voiceScore(b, preset) - voiceScore(a, preset));
+  const ranked = [...native].sort((a, b) => voiceScore(b, preset, character) - voiceScore(a, preset, character));
   // Distinct character voices: the narrator avoids the model's voice when a
   // second acceptable voice exists.
   return ranked.find((v) => !avoid.has(v.identifier)) ?? ranked[0] ?? null;
 }
 
 async function resolveVoice(preset: LanguagePreset, character: Mentor): Promise<ResolvedVoice> {
-  // English is the one language both characters speak, so it gets two lanes:
-  // Livia models with the best voice, Bingo narrates with a different one.
-  const key = preset.base === 'en' ? `en:${character}` : preset.base;
+  // Both characters speak the whole course, so each gets its own lane: Livia
+  // takes the best voice, Bingo the next acceptable one. Two characters that
+  // sound like two people is the difference between a conversation and one
+  // robot changing speed.
+  const key = `${preset.base}:${character}`;
   if (voiceCache.has(key)) {
     const cached = voiceCache.get(key) ?? null;
     return {
@@ -441,8 +580,7 @@ async function resolveVoice(preset: LanguagePreset, character: Mentor): Promise<
     };
   }
 
-  const localeSlot = preset.base === 'en' ? new Set(usedIdentifiers) : new Set<string>();
-  const native = pickBest(voices, preset.base, preset, localeSlot);
+  const native = pickBest(voices, preset.base, preset, new Set(usedIdentifiers), character);
   if (native) {
     voiceCache.set(key, native);
     usedIdentifiers.add(native.identifier);
@@ -450,7 +588,7 @@ async function resolveVoice(preset: LanguagePreset, character: Mentor): Promise<
   }
 
   for (const related of preset.related) {
-    const fallback = pickBest(voices, related, preset, new Set<string>());
+    const fallback = pickBest(voices, related, preset, new Set<string>(), character);
     if (fallback) {
       voiceCache.set(key, fallback);
       return { voice: fallback, locale: fallback.language, hasVoiceList: true, matchedVoice: false, approximate: true };
@@ -484,6 +622,8 @@ export interface PronounceResult {
   /** True when a related-language voice stood in for a missing native one. */
   approximate: boolean;
   voiceName?: string;
+  /** Effective rate after phrase-length shaping (exposed for QA). */
+  rate?: number;
 }
 
 let generation = 0;
@@ -579,9 +719,10 @@ export async function speakAs({
   }
 
   const style = CHARACTER_VOICE[character];
+  const rate = humanRate(slow ? style.slowRate : style.rate, phrase);
   const ok = await speakChunk(phrase, {
     locale: resolved.locale,
-    rate: slow ? style.slowRate : style.rate,
+    rate,
     pitch: style.pitch,
     volume: 1,
     ...(resolved.voice ? { voiceId: resolved.voice.identifier } : {}),
@@ -595,7 +736,16 @@ export async function speakAs({
     matchedVoice: resolved.matchedVoice,
     approximate: resolved.approximate,
     voiceName: resolved.voice?.name,
+    rate,
   };
+}
+
+/** A person takes a breath when switching languages; clips butted together are
+ *  the clearest "stitched by a machine" tell in a mixed prompt. */
+const SEGMENT_BREATH_MS = 220;
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /** Speak mixed-language segments in order, each in its own language. */
@@ -607,14 +757,20 @@ export async function speakSegments(
   const token = generation + 1;
   await stopSpeaking();
   const results: PronounceResult[] = [];
-  for (const segment of segments) {
+  for (let i = 0; i < segments.length; i += 1) {
+    const segment = segments[i]!;
     if (token !== generation) break;
+    if (i > 0) {
+      await wait(SEGMENT_BREATH_MS);
+      if (token !== generation) break;
+    }
     const resolved = await resolveVoice(segment.preset, character);
     if (token !== generation) break;
     const style = CHARACTER_VOICE[character];
+    const rate = humanRate(slow ? style.slowRate : style.rate, segment.text);
     const ok = await speakChunk(segment.text, {
       locale: resolved.locale,
-      rate: slow ? style.slowRate : style.rate,
+      rate,
       pitch: style.pitch,
       volume: 1,
       ...(resolved.voice ? { voiceId: resolved.voice.identifier } : {}),
@@ -627,6 +783,7 @@ export async function speakSegments(
       matchedVoice: resolved.matchedVoice,
       approximate: resolved.approximate,
       voiceName: resolved.voice?.name,
+      rate,
     });
     if (!ok) break;
   }

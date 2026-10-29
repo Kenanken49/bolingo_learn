@@ -24,8 +24,10 @@ So:
 | Bingo | narrator / questions | 1.0 | 0.98 | 0.80 |
 
 Character distinction comes from pacing and from picking *different installed
-voices* where the same language is spoken by both (English lessons get a
-`model` lane and a `narrator` lane).
+voices*: every language has a `model` lane (Livia) and a `narrator` lane
+(Bingo), so a phone with two acceptable Spanish voices hears two Spanish
+speakers instead of one robot at two speeds. When only one voice exists, both
+characters share it and pacing carries the difference.
 
 ## Voice selection
 
@@ -33,8 +35,12 @@ voices* where the same language is spoken by both (English lessons get a
 
 1. Voices whose base locale matches the target (`es`, `fr`, `de`, `sw`, `en`),
    ordered by the preset's regional preference (`es-MX` → `es-US` → `es-ES`).
-2. `VoiceQuality.Enhanced` and names containing `enhanced|premium|neural|natural`
-   score higher; known engines (Google, Microsoft, Siri…) get a small bonus.
+2. `VoiceQuality.Enhanced`, names containing `enhanced|premium|neural|natural|wavenet|studio`,
+   and Android/cloud voices (`-network`, `online`) score higher. Network voices
+   are the neural ones on most Android phones; the compact `-local` fallback is
+   penalised, as are the classic robotic engines (`eSpeak`, `Pico`, `SAPI`,
+   `Eloquence`). Known good voices (Google, Microsoft, Siri, Samantha… ) get a
+   small bonus.
 3. Novelty voices (Whisper, Zarvox, Bells, Bad News…) are excluded — they are
    never acceptable for teaching pronunciation.
 4. If no native voice exists, a **related** voice may stand in: Swahili uses the
@@ -44,9 +50,41 @@ voices* where the same language is spoken by both (English lessons get a
    `voiceschanged`), the engine still asks for the right locale and lets the OS
    choose, rather than defaulting to the UI language.
 
+Livia additionally prefers a voice whose platform name reads as feminine
+(Samantha, Zira, Paulina…). It is a nudge, never a filter: on Android most
+voices have no name at all, and being understood beats being cast.
+
 Presets live at the top of the file. Adding a language means adding one
 `LanguagePreset` and a `PRESETS` entry — `languageForLesson()` keys off the
 lesson id prefix (`spanish-*`, `french-*`, …).
+
+## Human delivery
+
+`expo-speech` has no SSML, so prosody is shaped in the text and in the rate
+passed with each utterance. Two rules carry most of the human feel:
+
+**Breath points.** `breathe()` inserts the small pause a speaker takes inside a
+sentence:
+
+- a comma before a clause link (`y`, `et`, `und`, `na`, `and`, `but`, `weil`…) when
+  at least three words precede it — `"Yo como manzanas y bebo agua"` →
+  `"Yo como manzanas, y bebo agua."`;
+- short lists and numbers are left tight: `"pan y agua"`, `"treinta y dos"`;
+- dashes, semicolons and colons become commas, because engines read them as a
+  long mechanical hold (or say "colon"); times like `10:30` are untouched;
+- the phrase stays a **single utterance**, so the engine's pitch keeps falling
+  across the whole sentence instead of resetting at every chunk.
+
+**Phrase-aware rate.** `humanRate()` eases one- and two-word utterances (a lone
+`"Hola"` otherwise clips its last syllable) and phrases of seven words or more,
+by 4% each, plus 3% when the sentence carries three or more pauses. Character
+identity is untouched: Livia is still 0.86 and Bingo 0.98 on an ordinary
+sentence, and the turtle replay still starts from 0.62 / 0.80.
+
+Mixed-language prompts get a 220ms breath at each language switch, so
+`"What does, ¿Cómo estás?, mean?"` sounds like one person changing language
+rather than three clips butted together. Emoji, `#`, and markup are stripped
+before speaking — several engines otherwise read their names aloud.
 
 ## Text preparation
 
@@ -74,7 +112,8 @@ lesson id prefix (`spanish-*`, `french-*`, …).
 `promptSegments()` splits a prompt into runs of English scaffolding and target
 text, so "Bingo reads it" says the English in Bingo's voice and the quoted
 phrase in the language's own voice instead of reading Spanish with an English
-accent.
+accent. It also trims a dangling scaffold after the quote: `"Gracias" means…`
+is spoken as just the phrase, never as "Gracias. Means."
 
 ## In the lesson player
 
@@ -104,7 +143,8 @@ accent.
 1. `npx tsc --noEmit` and `npx eslint lib/pronunciation.ts`.
 2. Open `/quiz/spanish-basics?title=Spanish%20Basics`; the phrase should play on
    open, and pressing **Hear Livia** must produce `es-MX` (or the best installed
-   Spanish locale), pitch `1`, rate `0.86`; 🐢 must be `0.62`.
+   Spanish locale), pitch `1`, rate `0.86` on a three-word phrase, `0.83` on a
+   one-word or seven-word phrase; 🐢 must be `0.62` / `0.60`.
 3. Open an English lesson: Livia and Bingo should use different installed voices.
 4. Answer a question wrong: after the cue, Livia repeats the correct phrase slowly.
 5. Sweep the banks: every question must resolve to a non-empty phrase with no
