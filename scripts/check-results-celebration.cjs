@@ -25,7 +25,9 @@ const ts = require('typescript');
 
 const ROOT = path.resolve(__dirname, '..');
 const GATE = path.join(ROOT, 'lib', 'resultsGate.ts');
+const CHEST_GATE = path.join(ROOT, 'lib', 'chestGate.ts');
 const SCREEN = path.join(ROOT, 'src', 'app', 'results.tsx');
+const PATH_SCREEN = path.join(ROOT, 'src', 'app', 'index.tsx');
 
 let failures = 0;
 
@@ -41,11 +43,11 @@ function check(name, fn) {
 
 /** Execute the TypeScript gate in-process. `import type` is erased by the
  *  compiler, so the module needs no loader, bundler or native ESM. */
-function loadGate() {
-  const source = fs.readFileSync(GATE, 'utf8');
+function loadGate(file = GATE) {
+  const source = fs.readFileSync(file, 'utf8');
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
-    fileName: GATE,
+    fileName: file,
   });
   const mod = { exports: {} };
   new Function('exports', 'require', 'module', outputText)(mod.exports, require, mod);
@@ -53,6 +55,7 @@ function loadGate() {
 }
 
 const gate = loadGate();
+const chestGate = loadGate(CHEST_GATE);
 
 check('defaults are the documented 80% threshold', () => {
   assert.equal(gate.PASS_PCT, 80);
@@ -85,6 +88,32 @@ check('no result at all stays off', () => {
   assert.equal(gate.shouldCelebrate(null), false);
   assert.equal(gate.shouldCelebrate(undefined), false);
 });
+
+// A chest is claimable only when the whole unit is finished and the one-shot
+// reward has not already been taken. The award bit is separate: eligibility
+// alone must not start the storm if the database write failed.
+check('chest eligibility requires a finished, unclaimed unit', () => {
+  assert.equal(chestGate.canClaimChest({ unitComplete: true, alreadyClaimed: false }), true);
+  assert.equal(chestGate.canClaimChest({ unitComplete: false, alreadyClaimed: false }), false);
+  assert.equal(chestGate.canClaimChest({ unitComplete: true, alreadyClaimed: true }), false);
+  assert.equal(chestGate.canClaimChest(null), false);
+  assert.equal(chestGate.canClaimChest(undefined), false);
+});
+
+const chestCases = [
+  ['awarded eligible claim celebrates', { unitComplete: true, alreadyClaimed: false, awarded: true }, true],
+  ['incomplete claim stays off', { unitComplete: false, alreadyClaimed: false, awarded: true }, false],
+  ['already-claimed chest stays off', { unitComplete: true, alreadyClaimed: true, awarded: true }, false],
+  ['eligible but unawarded claim stays off', { unitComplete: true, alreadyClaimed: false, awarded: false }, false],
+  ['no chest claim stays off', null, false],
+  ['undefined chest claim stays off', undefined, false],
+];
+
+for (const [label, claim, expected] of chestCases) {
+  check(label, () => {
+    assert.equal(chestGate.shouldCelebrateChest(claim), expected);
+  });
+}
 
 // --- screen wiring -------------------------------------------------------
 
@@ -124,9 +153,77 @@ const wiring = [
 
 for (const [label, fn] of wiring) check(label, fn);
 
+// --- chest hand-off wiring ----------------------------------------------
+
+const pathScreen = fs.readFileSync(PATH_SCREEN, 'utf8').replace(/\r\n/g, '\n');
+const chestWiring = [
+  [
+    'the path screen imports the shared chest gate',
+    () =>
+      assert.match(
+        pathScreen,
+        /import \{ canClaimChest, shouldCelebrateChest, type ChestClaim \} from '\.\.\/\.\.\/lib\/chestGate';/
+      ),
+  ],
+  [
+    'claim eligibility is checked before the database write',
+    () => {
+      assert.match(
+        pathScreen,
+        /const claim = \{\s*unitComplete: unit\.blocks\.every\(isBlockDone\),\s*alreadyClaimed: completed\.has\(id\),\s*\};/
+      );
+      assert.match(pathScreen, /if \(!canClaimChest\(claim\)\) return;/);
+    },
+  ],
+  [
+    'the award is recorded only after completeLesson succeeds',
+    () => {
+      const writeAt = pathScreen.indexOf('await completeLesson(profile.id, CHEST_XP, id);');
+      const awardAt = pathScreen.indexOf('setChestClaim({ ...claim, awarded: true });');
+      assert.ok(writeAt >= 0, 'the claim must persist the reward before celebrating');
+      assert.ok(awardAt > writeAt, 'the award bit must follow the write, not precede it');
+      assert.match(
+        pathScreen,
+        /catch \{\s*Alert\.alert\('Claim failed', 'Check your connection and try again\.'\);\s*\}/
+      );
+    },
+  ],
+  [
+    'the chest opening and storm render only for an awarded claim',
+    () => {
+      assert.match(pathScreen, /\{chestWin && shouldCelebrateChest\(chestClaim\) && chestPhase === 'opening' \? \(/);
+      assert.match(pathScreen, /\{chestWin && shouldCelebrateChest\(chestClaim\) && chestPhase === 'storm' \? \(/);
+    },
+  ],
+  [
+    'the onOpened hand-off re-checks the claim before starting the storm',
+    () => {
+      assert.match(
+        pathScreen,
+        /onOpened=\{\(\) => \{\s*if \(!shouldCelebrateChest\(chestClaim\)\) return;\s*setChestPhase\('storm'\);/
+      );
+      assert.equal(
+        (pathScreen.match(/setChestPhase\('storm'\)/g) ?? []).length,
+        1,
+        'the storm phase should have one guarded transition'
+      );
+    },
+  ],
+  [
+    'finishing the storm clears the claim and the title',
+    () =>
+      assert.match(
+        pathScreen,
+        /onDone=\{\(\) => \{\s*setChestWin\(null\);\s*setChestClaim\(null\);\s*\}\}/
+      ),
+  ],
+];
+
+for (const [label, fn] of chestWiring) check(label, fn);
+
 if (failures > 0) {
   console.error(`\n${failures} results-celebration check(s) failed.`);
   process.exitCode = 1;
 } else {
-  console.log('\n[ok] celebration mounts for passes, stays off for failed runs');
+  console.log('\n[ok] celebration mounts for passes and only for an awarded chest claim');
 }

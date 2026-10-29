@@ -17,6 +17,7 @@ import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type Curricu
 import { GOALS, firstBlockForGoal, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
 import { getDailyMinutes, setDailyMinutes, DAILY_MINUTES_OPTIONS, outcomeForMinutes, getSelectedCourse, setSelectedCourse, getWeeklyDays, getAmbientOn, setAmbientOn } from '../../lib/preferences';
 import { levelForXp } from '../../lib/levels';
+import { canClaimChest, shouldCelebrateChest, type ChestClaim } from '../../lib/chestGate';
 import { getDueCount } from '../../lib/srs';
 import { useAmbient } from '../../lib/ambient';
 import { useNatural } from '../../lib/natural';
@@ -390,6 +391,9 @@ export default function PathMap() {
   const [freeListen, setFreeListen] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   // Unit chest win: drives the same five-second burst as results.
+  // `chestClaim` is set only after an eligible claim is awarded, so the
+  // opening and the storm can never celebrate an incomplete or failed claim.
+  const [chestClaim, setChestClaim] = useState<ChestClaim | null>(null);
   const [chestWin, setChestWin] = useState<string | null>(null);
   // Chest ceremony runs in two phases so the applause starts exactly on the
   // frame the ribbons do, not a second earlier when the chest is claimed.
@@ -661,11 +665,17 @@ export default function PathMap() {
       router.push('/auth');
       return;
     }
-    if (!unit.blocks.every(isBlockDone) || completed.has(id)) return;
+    const claim = {
+      unitComplete: unit.blocks.every(isBlockDone),
+      alreadyClaimed: completed.has(id),
+    };
+    if (!canClaimChest(claim)) return;
     try {
       await completeLesson(profile.id, CHEST_XP, id);
       // A unit chest is a milestone, not a tap: the chest cracks open first,
-      // then hands off to the full five-second applause + ribbon storm.
+      // then hands off to the full five-second applause + ribbon storm. Only
+      // an awarded, eligible claim may set the ceremony state.
+      setChestClaim({ ...claim, awarded: true });
       setChestPhase('opening');
       setChestWin(unit.title);
       await refresh();
@@ -2008,24 +2018,28 @@ export default function PathMap() {
         </View>
       </Modal>
 
-      {chestWin && chestPhase === 'opening' ? (
+      {chestWin && shouldCelebrateChest(chestClaim) && chestPhase === 'opening' ? (
         <ChestOpening
           key={`open-${chestWin}`}
           title={chestWin}
           onOpened={() => {
+            if (!shouldCelebrateChest(chestClaim)) return;
             setChestPhase('storm');
             void playCelebration();
           }}
         />
       ) : null}
-      {chestWin && chestPhase === 'storm' ? (
+      {chestWin && shouldCelebrateChest(chestClaim) && chestPhase === 'storm' ? (
         <Celebration
           key={`storm-${chestWin}`}
           duration={FULL_CELEBRATION_MS}
-          onDone={() => setChestWin(null)}
+          onDone={() => {
+            setChestWin(null);
+            setChestClaim(null);
+          }}
         />
       ) : null}
-      {chestWin && chestPhase === 'storm' ? (
+      {chestWin && shouldCelebrateChest(chestClaim) && chestPhase === 'storm' ? (
         <View
           pointerEvents="none"
           style={{ position: 'absolute', top: 78, left: 0, right: 0, zIndex: 70, alignItems: 'center' }}

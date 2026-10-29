@@ -43,8 +43,11 @@ executes the real `shouldCelebrate()` gate from [lib/resultsGate.ts](lib/results
 against a pass/fail matrix — 80% compared unrounded, a level-up still counts
 after a miss, an empty result scores 0 — and then asserts the screen's wiring:
 the burst is seeded from the gate and `<Celebration>` renders only behind
-`burst && celebrates`. Flip the gate's `>=` to `>` or drop the render guard and
-`npm test` fails.
+`burst && celebrates`. It also executes the chest gate from
+[lib/chestGate.ts](lib/chestGate.ts) and asserts the path screen records the
+award only after `completeLesson` succeeds, then re-checks that awarded claim
+before the chest opens and again before the storm starts. Flip either gate or
+drop the render guard and `npm test` fails.
 
 ## Edge Functions
 
