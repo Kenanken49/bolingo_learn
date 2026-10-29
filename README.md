@@ -159,6 +159,15 @@ phrase plays when an exercise opens, and a miss is followed by a slow replay of
 the correct sentence. Details and the QA checklist:
 [docs/pronunciation.md](docs/pronunciation.md).
 
+Settings → **Voice cast** auditions the trio before a lesson: one sample line each
+from Livia, Bingo and Zora, played through `auditionVoice()` in
+[lib/voiceCast.ts](lib/voiceCast.ts) — the same `speakAs()` call a lesson makes, so
+the gender casting, pacing and installed-voice choice are exactly what the learner
+will hear. Tapping the character who is talking stops her, tapping another hands
+the microphone over (never two voices at once), and leaving Settings stops speech.
+If the device has no voice, the card says how to add one instead of failing
+silently.
+
 ## Speak-back practice (language lessons)
 
 Every language exercise has a **Say it back** button under Livia's controls.

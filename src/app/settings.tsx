@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { View, Pressable, ScrollView, Switch, Alert, Platform } from 'react-native';
 import Text from '../../components/ui/Text';
 import { router, useFocusEffect } from 'expo-router';
@@ -17,6 +17,9 @@ import {
 } from '../../lib/reminders';
 import { useTheme } from '../../lib/theme';
 import { playCelebration, playQuizCorrect, playWrong, stopRewardCues } from '../../lib/sfx';
+import Mascot from '../../components/AfricanMascots';
+import { stopSpeaking, type Mentor } from '../../lib/pronunciation';
+import { VOICE_CAST, auditionVoice } from '../../lib/voiceCast';
 import {
   getSoundOn,
   setSoundOn as persistSoundOn,
@@ -49,6 +52,10 @@ export default function Settings() {
   const [todayCount, setTodayCount] = useState(0);
   const [minutes, setMinutes] = useState(10);
   const [weeklyDays, setWeekly] = useState(5);
+  // Which character is talking right now (null = silent), plus a token so a
+  // stopped audition can't clear the state of the one that replaced it.
+  const [auditioning, setAuditioning] = useState<Mentor | null>(null);
+  const auditionToken = useRef(0);
 
   const refresh = useCallback(async () => {
     try {
@@ -72,6 +79,11 @@ export default function Settings() {
       configureReminderHandler();
       // Reconcile a resumed/updated app before painting the switch.
       ensureReminderScheduled().then(refresh).catch(() => refresh());
+      // Leaving Settings must not leave a character mid-sentence on the path.
+      return () => {
+        auditionToken.current += 1;
+        void stopSpeaking();
+      };
     }, [refresh])
   );
 
@@ -109,6 +121,36 @@ export default function Settings() {
   const chooseRewardVolume = async (v: number) => {
     setRewardVolume(v);
     await persistRewardVolume(v);
+  };
+
+  const auditionCast = async (character: Mentor) => {
+    const token = auditionToken.current + 1;
+    auditionToken.current = token;
+    // Tapping the character who is already speaking hangs up; tapping another
+    // stops her first, so two voices never overlap.
+    if (auditioning === character) {
+      await stopSpeaking();
+      setAuditioning(null);
+      return;
+    }
+    await stopRewardCues();
+    setAuditioning(character);
+    try {
+      const result = await auditionVoice(character);
+      if (token !== auditionToken.current || result.spoken) return;
+      Alert.alert(
+        'No voice installed',
+        Platform.OS === 'web'
+          ? 'This browser has no speech voice for English. Try Chrome or Edge, or use the iOS/Android app.'
+          : 'Add an English text-to-speech voice in your device settings, then audition again.'
+      );
+    } catch {
+      if (token === auditionToken.current) {
+        Alert.alert('Could not play', 'The device voice failed to start. Try again in a moment.');
+      }
+    } finally {
+      if (token === auditionToken.current) setAuditioning(null);
+    }
   };
 
   const previewCue = async (kind: 'correct' | 'celebration' | 'wrong') => {
@@ -379,6 +421,65 @@ export default function Settings() {
             </View>
           </View>
         ) : null}
+        {/* Voice cast: hear each teaching voice through the same engine a
+            lesson uses, so nobody meets Zora for the first time mid-exercise. */}
+        <View className="w-full max-w-sm rounded-2xl border-2 border-emerald-200 bg-white p-4 dark:border-emerald-900 dark:bg-[#06060A]">
+          <View className="flex-row items-center gap-1.5">
+            <AppIcon name="mic" size={20} color="#059669" />
+            <Text className="text-base font-extrabold text-slate-800 dark:text-slate-100">Voice cast</Text>
+          </View>
+          <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Tap a character to hear a sample line — the same voice your lessons use.
+          </Text>
+          <View className="mt-3 gap-2">
+            {VOICE_CAST.map((member) => {
+              const active = auditioning === member.id;
+              return (
+                <Pressable
+                  key={member.id}
+                  onPress={() => void auditionCast(member.id)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}
+                  accessibilityLabel={`${active ? 'Stop' : 'Play'} ${member.name}'s sample line`}
+                  className={`flex-row items-center gap-2.5 rounded-xl border-2 p-2.5 ${
+                    active
+                      ? 'border-emerald-500 bg-emerald-50 dark:border-emerald-400 dark:bg-[#00251C]'
+                      : 'border-slate-200 bg-white dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+                  }`}
+                >
+                  <View className="h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-50 dark:bg-[#00251C]">
+                    <Mascot character={member.id} size={38} />
+                  </View>
+                  <View className="flex-1">
+                    <View className="flex-row items-baseline gap-1.5">
+                      <Text className="text-sm font-extrabold text-slate-800 dark:text-slate-100">{member.name}</Text>
+                      <Text className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                        {member.role}
+                      </Text>
+                    </View>
+                    <Text
+                      numberOfLines={2}
+                      className={`text-xs ${active ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-500 dark:text-slate-400'}`}
+                    >
+                      {active ? 'Speaking…' : member.blurb}
+                    </Text>
+                  </View>
+                  <View
+                    className={`h-9 w-9 items-center justify-center rounded-full ${
+                      active ? 'bg-emerald-500' : 'bg-slate-100 dark:bg-[#1E1E2C]'
+                    }`}
+                  >
+                    <AppIcon name={active ? 'pause' : 'play'} size={16} color={active ? '#FFFFFF' : '#64748B'} />
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+          <Text className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
+            Voices come from your device: Livia and Zora are cast feminine, Bingo masculine.
+          </Text>
+        </View>
+
         {row('volume', 'Ambient tune', ambientOn ? 'Grove loop · soft focus' : 'Ambient tune OFF', undefined, (
           <Switch value={ambientOn} onValueChange={toggleAmbient} />
         ))}
