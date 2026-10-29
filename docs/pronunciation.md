@@ -86,6 +86,15 @@ Presets live at the top of the file. Adding a language means adding one
 `LanguagePreset` and a `PRESETS` entry — `languageForLesson()` keys off the
 lesson id prefix (`spanish-*`, `french-*`, …).
 
+Settings → **Voice cast** is the on-device check: it runs the same engine per
+character in both English and Kiswahili and prints the locale and voice the
+platform actually chose, flagging when a related-language voice (Italian or
+Spanish for Swahili) is standing in. A platform that never returns a voice list
+reports **voice list unavailable** rather than "no voice installed" — the sample
+still plays through the engine by locale, but the card cannot claim to know what
+is installed. Confirm a device reports a native Swahili voice there before
+trusting a language lesson's pronunciation.
+
 ## Human delivery
 
 `expo-speech` has no SSML, so prosody is shaped in the text and in the rate
@@ -244,7 +253,9 @@ explains it and the lesson stays playable.
    one-word or seven-word phrase; 🐢 must be `0.62` / `0.60`.
 3. Open an English lesson: Livia (woman) and Bingo (man) should use different
    installed voices — on Windows/macOS, a name like Zira/Samantha for Livia and
-   David/Alex for Bingo.
+   David/Alex for Bingo. Settings → Voice cast reports the same choice per
+   character; switch it to Kiswahili and it should name a `sw-KE`/`sw-TZ` voice,
+   or warn that a related voice is standing in.
 4. Open `/project/rwd-cat-photo` and tap the speaker beside Zora's hint: a
    feminine voice should read the line with the HTML tags stripped.
 5. Answer a question wrong: after the cue, Livia repeats the correct phrase slowly.

@@ -168,14 +168,19 @@ phrase plays when an exercise opens, and a miss is followed by a slow replay of
 the correct sentence. Details and the QA checklist:
 [docs/pronunciation.md](docs/pronunciation.md).
 
-Settings → **Voice cast** auditions the trio before a lesson: one sample line each
-from Livia, Bingo and Zora, played through `auditionVoice()` in
-[lib/voiceCast.ts](lib/voiceCast.ts) — the same `speakAs()` call a lesson makes, so
-the gender casting, pacing and installed-voice choice are exactly what the learner
-will hear. Tapping the character who is talking stops her, tapping another hands
-the microphone over (never two voices at once), and leaving Settings stops speech.
-If the device has no voice, the card says how to add one instead of failing
-silently.
+Settings → **Voice cast** checks the installed voices before a lesson: switch
+between **English** and **Kiswahili**, then tap Livia, Bingo or Zora for a sample
+line played through `auditionVoice()` in [lib/voiceCast.ts](lib/voiceCast.ts) —
+the same `speakAs()` call a lesson makes, so the gender casting, pacing and
+installed-voice choice are exactly what the learner will hear. After each
+audition the card reports what the platform actually used (character · language ·
+locale · voice name) and flags an approximate fallback, so a device missing a
+native Swahili voice says so instead of surprising the learner mid-exercise.
+Tapping the character who is talking stops her, tapping another hands the
+microphone over (never two voices at once), and leaving Settings stops speech.
+When the language is missing the card says which voice to install; when a
+platform refuses to list its voices at all (some browsers) it says that
+separately, so a timeout is never mistaken for a missing language.
 
 ## Speak-back practice (language lessons)
 

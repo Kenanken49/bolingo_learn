@@ -91,6 +91,9 @@ const PRESETS: Record<string, LanguagePreset> = {
 /** The app's own narration language: Bingo reads instructions in this voice. */
 export const APP_SPEECH = ENGLISH;
 
+/** The Swahili preset, exported so Settings can check a device's Swahili voice. */
+export const SWAHILI_SPEECH = SWAHILI;
+
 export function languageForLesson(lessonId: string): LanguagePreset | null {
   const prefix = lessonId.toLowerCase().split('-')[0];
   return PRESETS[prefix] ?? null;
@@ -520,10 +523,18 @@ const usedIdentifiers = new Set<string>();
 /** Voices can arrive late on web; never block a tap for more than 1.2s. */
 function loadVoices(): Promise<Voice[]> {
   if (!voicesPromise) {
-    voicesPromise = Promise.race([
+    const pending = Promise.race([
       Speech.getAvailableVoicesAsync().catch(() => [] as Voice[]),
       new Promise<Voice[]>((resolve) => setTimeout(() => resolve([]), 1200)),
     ]);
+    voicesPromise = pending;
+    // A timeout is not an answer. Browsers populate `speechSynthesis.getVoices()`
+    // asynchronously, so caching the empty race result would make every later
+    // call — including the Settings voice check — report that no voice exists.
+    // Drop the cache on empty and let the next tap ask again.
+    void pending.then((voices) => {
+      if (voices.length === 0) voicesPromise = null;
+    });
   }
   return voicesPromise;
 }

@@ -19,7 +19,7 @@ import { useTheme } from '../../lib/theme';
 import { playCelebration, playQuizCorrect, playWrong, stopRewardCues } from '../../lib/sfx';
 import Mascot from '../../components/AfricanMascots';
 import { stopSpeaking, type Mentor } from '../../lib/pronunciation';
-import { VOICE_CAST, auditionVoice } from '../../lib/voiceCast';
+import { VOICE_CAST, auditionVoice, castMember, type CastLanguage } from '../../lib/voiceCast';
 import {
   getSoundOn,
   setSoundOn as persistSoundOn,
@@ -55,6 +55,19 @@ export default function Settings() {
   // Which character is talking right now (null = silent), plus a token so a
   // stopped audition can't clear the state of the one that replaced it.
   const [auditioning, setAuditioning] = useState<Mentor | null>(null);
+  const [castLanguage, setCastLanguage] = useState<CastLanguage>('en');
+  // What the platform actually chose on the last audition, so a device with a
+  // missing Swahili voice is visible before a lesson exposes it.
+  const [voiceCheck, setVoiceCheck] = useState<{
+    character: Mentor;
+    language: CastLanguage;
+    locale: string;
+    voiceName?: string;
+    matched: boolean;
+    approximate: boolean;
+    /** False when the platform never reported a voice list at all. */
+    hasVoiceList: boolean;
+  } | null>(null);
   const auditionToken = useRef(0);
 
   const refresh = useCallback(async () => {
@@ -82,6 +95,8 @@ export default function Settings() {
       // Leaving Settings must not leave a character mid-sentence on the path.
       return () => {
         auditionToken.current += 1;
+        setAuditioning(null);
+        setVoiceCheck(null);
         void stopSpeaking();
       };
     }, [refresh])
@@ -123,6 +138,17 @@ export default function Settings() {
     await persistRewardVolume(v);
   };
 
+  const castLanguageLabel = (language: CastLanguage) => (language === 'sw' ? 'Kiswahili' : 'English');
+
+  const chooseCastLanguage = (language: CastLanguage) => {
+    if (language === castLanguage) return;
+    auditionToken.current += 1;
+    setAuditioning(null);
+    setVoiceCheck(null);
+    setCastLanguage(language);
+    void stopSpeaking();
+  };
+
   const auditionCast = async (character: Mentor) => {
     const token = auditionToken.current + 1;
     auditionToken.current = token;
@@ -135,14 +161,28 @@ export default function Settings() {
     }
     await stopRewardCues();
     setAuditioning(character);
+    setVoiceCheck(null);
+    const language = castLanguage;
     try {
-      const result = await auditionVoice(character);
-      if (token !== auditionToken.current || result.spoken) return;
+      const result = await auditionVoice(character, language);
+      if (token !== auditionToken.current) return;
+      setVoiceCheck({
+        character,
+        language,
+        locale: result.locale,
+        voiceName: result.voiceName,
+        matched: result.matchedVoice,
+        approximate: result.approximate,
+        hasVoiceList: result.hasVoiceList,
+      });
+      if (result.spoken) return;
       Alert.alert(
-        'No voice installed',
+        'No voice played',
         Platform.OS === 'web'
-          ? 'This browser has no speech voice for English. Try Chrome or Edge, or use the iOS/Android app.'
-          : 'Add an English text-to-speech voice in your device settings, then audition again.'
+          ? result.hasVoiceList
+            ? `This browser has no ${castLanguageLabel(language)} speech voice. Try Chrome or Edge, or use the iOS/Android app.`
+            : 'The browser did not start speech. Check that this tab is not muted, then try again.'
+          : `Add a ${castLanguageLabel(language)} text-to-speech voice in your device settings, then audition again.`
       );
     } catch {
       if (token === auditionToken.current) {
@@ -429,7 +469,40 @@ export default function Settings() {
             <Text className="text-base font-extrabold text-slate-800 dark:text-slate-100">Voice cast</Text>
           </View>
           <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Tap a character to hear a sample line — the same voice your lessons use.
+            Tap a character to hear a sample line in English or Kiswahili — the same voices your lessons use.
+          </Text>
+          <Text className="mt-3 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+            Sample language
+          </Text>
+          <View className="mt-1 flex-row gap-2">
+            {(['en', 'sw'] as const).map((language) => {
+              const selected = castLanguage === language;
+              return (
+                <Pressable
+                  key={language}
+                  onPress={() => chooseCastLanguage(language)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  accessibilityLabel={`Audition the cast in ${castLanguageLabel(language)}`}
+                  className={`flex-1 items-center rounded-xl border-2 py-2 ${
+                    selected
+                      ? 'border-emerald-400 bg-emerald-50 dark:border-emerald-500 dark:bg-[#00251C]'
+                      : 'border-slate-200 bg-white dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+                  }`}
+                >
+                  <Text
+                    className={`text-sm font-extrabold ${
+                      selected ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    {language === 'sw' ? 'Kiswahili' : 'English'}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          <Text className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
+            Switch language, then tap a character to check that installed voice.
           </Text>
           <View className="mt-3 gap-2">
             {VOICE_CAST.map((member) => {
@@ -440,7 +513,7 @@ export default function Settings() {
                   onPress={() => void auditionCast(member.id)}
                   accessibilityRole="button"
                   accessibilityState={{ selected: active }}
-                  accessibilityLabel={`${active ? 'Stop' : 'Play'} ${member.name}'s sample line`}
+                  accessibilityLabel={`${active ? 'Stop' : 'Play'} ${member.name}'s ${castLanguageLabel(castLanguage)} sample line`}
                   className={`flex-row items-center gap-2.5 rounded-xl border-2 p-2.5 ${
                     active
                       ? 'border-emerald-500 bg-emerald-50 dark:border-emerald-400 dark:bg-[#00251C]'
@@ -475,8 +548,60 @@ export default function Settings() {
               );
             })}
           </View>
+          {voiceCheck ? (
+            <View
+              className={`mt-2 rounded-xl border px-3 py-2 ${
+                voiceCheck.matched
+                  ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-[#00251C]'
+                  : 'border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-[#2A1B06]'
+              }`}
+              accessibilityLiveRegion="polite"
+            >
+              <View className="flex-row items-center gap-1.5">
+                <AppIcon
+                  name={voiceCheck.matched ? 'checkCircle' : 'alert'}
+                  size={13}
+                  color={voiceCheck.matched ? '#059669' : '#B45309'}
+                />
+                <Text
+                  className={`text-[10px] font-extrabold uppercase tracking-widest ${
+                    voiceCheck.matched
+                      ? 'text-emerald-700 dark:text-emerald-300'
+                      : 'text-amber-700 dark:text-amber-300'
+                  }`}
+                >
+                  {voiceCheck.matched
+                    ? 'Native voice found'
+                    : voiceCheck.approximate
+                      ? 'Approximate voice'
+                      : voiceCheck.hasVoiceList
+                        ? 'No matching voice'
+                        : 'Voice list unavailable'}
+                </Text>
+              </View>
+              <Text
+                className={`mt-1 text-xs font-bold ${
+                  voiceCheck.matched
+                    ? 'text-emerald-800 dark:text-emerald-200'
+                    : 'text-amber-800 dark:text-amber-200'
+                }`}
+              >
+                {castMember(voiceCheck.character).name} · {castLanguageLabel(voiceCheck.language)} · {voiceCheck.locale}
+                {voiceCheck.voiceName ? ` · ${voiceCheck.voiceName}` : ''}
+              </Text>
+              <Text className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                {voiceCheck.matched
+                  ? 'This is the exact voice this character uses in lessons.'
+                  : voiceCheck.approximate
+                    ? `No ${castLanguageLabel(voiceCheck.language)} voice is installed, so a related-language voice is standing in. Install one for accurate vowels.`
+                    : voiceCheck.hasVoiceList
+                      ? `Install a ${castLanguageLabel(voiceCheck.language)} voice in your device settings; the engine used this locale instead.`
+                      : `This platform does not report its installed voices, so the sample went to the engine with the ${voiceCheck.locale} locale. The sound you just heard is what lessons will use.`}
+              </Text>
+            </View>
+          ) : null}
           <Text className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
-            Voices come from your device: Livia and Zora are cast feminine, Bingo masculine.
+            Voices come from your device: Livia and Zora are cast feminine, Bingo masculine. Swahili needs a sw-KE, sw-TZ or sw-UG voice.
           </Text>
         </View>
 
