@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, View, Text, Pressable, ScrollView } from 'react-native';
+import { Animated, View, Pressable, ScrollView } from 'react-native';
+import Text from '../../../components/ui/Text';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/GamifiedCodePlayer';
 import DuoButton from '../../../components/DuoButton';
+import AppIcon, { type AppIconName } from '../../../components/AppIcon';
 import AskBingo from '../../../components/AskBingo';
 import Mascot from '../../../components/AfricanMascots';
 import { supabase, toDbLessonId } from '../../../lib/supabase';
@@ -46,6 +48,8 @@ interface DbQuestion {
 
 export default function QuizPlayer() {
   const { lessonId, title } = useLocalSearchParams<{ lessonId: string; title?: string }>();
+  // Role split: Zora introduces code/design lessons; Livia introduces languages.
+  const isLanguageLesson = typeof lessonId === 'string' && Boolean(getLanguageLesson(lessonId));
   const [questions, setQuestions] = useState<CodeQuizData[] | null>(null);
   const [index, setIndex] = useState(0);
   const [hearts, setHearts] = useState(MAX_HEARTS);
@@ -149,7 +153,7 @@ export default function QuizPlayer() {
     // SRS injection: subtly weave up to 2 due memory cards from OTHER lessons
     // into this session so slipping rules resurface right when they're fading.
     // Injected cards keep their original keys so grading reschedules them,
-    // and get a 🔁 prefix so learners know why old content reappeared.
+    // and get a Review prefix so learners know why old content reappeared.
     // Total stays bite-sized: never exceed 6 questions per session.
     if (p && baseQuestions.length > 0 && baseQuestions.length < 6) {
       try {
@@ -160,7 +164,7 @@ export default function QuizPlayer() {
         if (due.length > 0) {
           const injectedQ = due.map((d) => ({
             ...d.question,
-            prompt: `🔁 Review · ${d.lessonTitle}: ${d.question.prompt}`,
+            prompt: `Review · ${d.lessonTitle}: ${d.question.prompt}`,
           }));
           const injectedK = due.map((d) => d.key);
           // Weave after the 2nd question so the session starts familiar, then recalls.
@@ -174,8 +178,8 @@ export default function QuizPlayer() {
     }
     setQuestions(baseQuestions);
     setQKeys(baseKeys);
-    if (!(await hasSeenQuizIntro())) setShowCoach(true);
-  }, [lessonId]);
+    if (!(await hasSeenQuizIntro(isLanguageLesson ? 'lang' : 'code'))) setShowCoach(true);
+  }, [lessonId, isLanguageLesson]);
 
   useEffect(() => {
     load().catch((e) => console.warn('Quiz load failed:', e));
@@ -195,22 +199,22 @@ export default function QuizPlayer() {
 
   if (!questions) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-slate-500">Loading questions…</Text>
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-slate-500 dark:text-slate-400">Loading questions…</Text>
       </View>
     );
   }
   if (reviewEmpty) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
+      <View className="flex-1 items-center justify-center px-6">
         <Mascot character="livia" mood="happy" size={110} />
-        <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400">Livia ✋ says well done</Text>
-        <Text className="mt-3 font-duo text-2xl font-extrabold text-slate-900">All caught up!</Text>
-        <Text className="mt-1 text-center text-base text-slate-500">
+        <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Livia says well done</Text>
+        <Text className="mt-3 font-duo text-2xl font-extrabold text-slate-900 dark:text-slate-100">All caught up!</Text>
+        <Text className="mt-1 text-center text-base text-slate-500 dark:text-slate-400">
           Nothing is due — your memory is fresh. Come back tomorrow to keep it that way.
         </Text>
         <View className="mt-5 w-full max-w-sm">
-          <DuoButton onPress={() => router.replace('/')} label="Back to learning path" title="Path 🗺️" />
+          <DuoButton onPress={() => router.replace('/')} label="Back to learning path" title="Path" />
         </View>
         <StatusBar style="auto" />
       </View>
@@ -218,8 +222,8 @@ export default function QuizPlayer() {
   }
   if (questions.length === 0 || !q) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-lg text-slate-600">No questions in this lesson yet.</Text>
+      <View className="flex-1 items-center justify-center px-6">
+        <Text className="text-lg text-slate-600 dark:text-slate-400">No questions in this lesson yet.</Text>
         <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-slate-800 px-6 py-3">
           <Text className="font-bold text-white">Back to Path</Text>
         </Pressable>
@@ -269,17 +273,20 @@ export default function QuizPlayer() {
   };
 
   return (
-    <View className="flex-1 bg-white">
-      <ScrollView contentContainerClassName="bg-white px-6 pb-16 pt-12">
+    <View className="flex-1">
+      <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-xl self-center px-4 pb-24 pt-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
         {/* Combo banner: pops every time the streak extends past 1. */}
         {combo >= 2 ? (
           <Animated.View
             style={{ transform: [{ scale: pulse }] }}
             className="mb-2 items-center rounded-2xl bg-orange-500 py-2"
           >
-            <Text className="text-lg font-black text-white">
-              🔥 COMBO ×{combo}{combo >= 5 ? ' — UNSTOPPABLE' : combo >= 3 ? ' — ON FIRE' : ''}
-            </Text>
+            <View className="flex-row items-center justify-center gap-1.5">
+              <AppIcon name="flame" size={20} color="#FFFFFF" />
+              <Text className="text-lg font-black text-white">
+                COMBO ×{combo}{combo >= 5 ? ' — UNSTOPPABLE' : combo >= 3 ? ' — ON FIRE' : ''}
+              </Text>
+            </View>
           </Animated.View>
         ) : null}
         <GamifiedCodePlayer
@@ -324,27 +331,31 @@ export default function QuizPlayer() {
       {/* First-visit coach marks: contextual, dismissible, shown exactly once. */}
       {showCoach ? (
         <View className="absolute inset-0 z-10 items-center justify-center bg-slate-900/70 px-6">
-          <View className="w-full max-w-sm items-center rounded-3xl bg-white p-5 shadow-xl">
-            <Mascot character="zora" mood="happy" size={72} />
-            <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400">Meet Zora ⚡ your coach</Text>
-            <Text className="mt-2 font-duo text-xl font-extrabold text-slate-900">How a lesson works</Text>
+          <View className="w-full max-w-sm items-center rounded-3xl bg-white dark:bg-slate-900 p-5 shadow-xl">
+            <Mascot character={isLanguageLesson ? 'livia' : 'zora'} mood="happy" size={72} />
+            <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+              {isLanguageLesson ? 'Meet Livia, your language mentor' : 'Meet Zora, your build coach'}
+            </Text>
+            <Text className="mt-2 font-duo text-xl font-extrabold text-slate-900 dark:text-slate-100">How a lesson works</Text>
             {[
-              ['👆', 'Tap tokens', 'Build your answer in the drop zone. Tap again to remove one.'],
-              ['▶️', 'Run tests', 'Check your code like a real dev — free, no hearts lost.'],
-              ['✅', 'Check answer', 'Correct earns +10 XP. Wrong costs one ❤️.'],
-            ].map(([icon, title, body]) => (
+                ['hand', 'Tap tokens', 'Build your answer in the drop zone. Tap again to remove one.'],
+                isLanguageLesson
+                  ? ['volume', 'Hear Livia', 'Livia pronounces the phrase in its native voice — tap 🐢 to hear it slowly. Bingo can read the question too.']
+                  : ['play', 'Run tests', 'Check your code like a real dev — free, no hearts lost.'],
+                ['checkCircle', 'Check answer', 'Correct earns +10 XP. Wrong never costs hearts.'],
+              ].map(([icon, title, body]) => (
               <View key={title} className="mt-3 flex-row items-start">
-                <Text className="text-2xl">{icon}</Text>
+                <AppIcon name={icon as AppIconName} size={26} color="#0F172A" />
                 <View className="ml-2 flex-1">
-                  <Text className="font-extrabold text-slate-900">{title}</Text>
-                  <Text className="text-sm text-slate-600">{body}</Text>
+                  <Text className="font-extrabold text-slate-900 dark:text-slate-100">{title}</Text>
+                  <Text className="text-sm text-slate-600 dark:text-slate-400">{body}</Text>
                 </View>
               </View>
             ))}
             <View className="mt-4 w-full">
               <DuoButton
                 onPress={() => {
-                  void markQuizIntroSeen();
+                  void markQuizIntroSeen(isLanguageLesson ? 'lang' : 'code');
                   setShowCoach(false);
                 }}
                 label="Start playing"

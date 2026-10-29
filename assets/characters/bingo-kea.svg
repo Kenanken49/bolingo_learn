@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="200" height="220" role="img" aria-label="Bingo the Kea, forward facing">
+  <g id="tail">
+    <ellipse id="tail-left" cx="40" cy="195" rx="16" ry="22" fill="#3B82C4" transform="rotate(14 40 195)"/>
+    <ellipse id="tail-right" cx="160" cy="195" rx="16" ry="22" fill="#3B82C4" transform="rotate(-14 160 195)"/>
+  </g>
+  <g id="wings">
+    <g id="wing-left">
+      <rect x="8" y="95" width="34" height="92" rx="17" fill="#1F7A52"/>
+      <rect x="34" y="95" width="8" height="92" fill="#E4572E" opacity="0.9"/>
+      <circle cx="20" cy="110" r="7" fill="#C09A3E" opacity="0.9"/>
+      <circle cx="20" cy="132" r="7" fill="#C09A3E" opacity="0.9"/>
+      <circle cx="20" cy="154" r="7" fill="#C09A3E" opacity="0.9"/>
+    </g>
+    <g id="wing-right">
+      <rect x="158" y="95" width="34" height="92" rx="17" fill="#1F7A52"/>
+      <rect x="158" y="95" width="8" height="92" fill="#E4572E" opacity="0.9"/>
+      <circle cx="180" cy="110" r="7" fill="#C09A3E" opacity="0.9"/>
+      <circle cx="180" cy="132" r="7" fill="#C09A3E" opacity="0.9"/>
+      <circle cx="180" cy="154" r="7" fill="#C09A3E" opacity="0.9"/>
+    </g>
+  </g>
+  <ellipse id="body" cx="100" cy="115" rx="100" ry="100" fill="#2E9E6B"/>
+  <g id="head">
+    <ellipse id="head-cap" cx="100" cy="80" rx="82" ry="74" fill="#6F6040"/>
+    <rect id="crown-tuft" x="90" y="2" width="20" height="20" rx="2" fill="#4A4230" transform="rotate(45 100 12)"/>
+    <g id="belly">
+      <ellipse cx="100" cy="160" rx="60" ry="54" fill="#E4D9BC"/>
+      <circle cx="80" cy="150" r="11" fill="#C09A3E" opacity="0.85"/>
+      <circle cx="120" cy="165" r="9" fill="#C09A3E" opacity="0.85"/>
+      <circle cx="100" cy="195" r="10" fill="#E4572E" opacity="0.8"/>
+    </g>
+    <g id="eyes">
+      <circle id="eye-left" cx="62" cy="72" r="30" fill="#fff"/>
+      <circle id="eye-right" cx="138" cy="72" r="30" fill="#fff"/>
+      <circle id="pupil-left" cx="62" cy="66" r="13" fill="#1c1c1e"/>
+      <circle id="pupil-right" cx="138" cy="66" r="13" fill="#1c1c1e"/>
+    </g>
+    <g id="brows" stroke="#4A4230" stroke-width="9" stroke-linecap="round">
+      <line x1="32" y1="38" x2="80" y2="38"/>
+      <line x1="120" y1="38" x2="168" y2="38"/>
+    </g>
+    <g id="beak">
+      <rect x="84" y="108" width="32" height="40" rx="16" fill="#2E2A26"/>
+      <rect x="91" y="137" width="18" height="14" rx="7" fill="#4A4440"/>
+    </g>
+    <g id="mouth-happy">
+      <path d="M80 155 Q100 175 120 155" stroke="#4A4230" stroke-width="7" fill="none" stroke-linecap="round"/>
+    </g>
+    <circle id="blush-left" cx="30" cy="105" r="12" fill="#FDA4AF" opacity="0.8"/>
+    <circle id="blush-right" cx="170" cy="105" r="12" fill="#FDA4AF" opacity="0.8"/>
+  </g>
+  <g id="necklace">
+    <circle cx="66" cy="198" r="7" fill="#EF4444"/>
+    <circle cx="83" cy="198" r="7" fill="#FBBF24"/>
+    <circle cx="100" cy="198" r="7" fill="#22C55E"/>
+    <circle cx="117" cy="198" r="7" fill="#FBBF24"/>
+    <circle cx="134" cy="198" r="7" fill="#EF4444"/>
+  </g>
+  <rect id="foot-left" x="40" y="206" width="44" height="12" rx="6" fill="#57534E"/>
+  <rect id="foot-right" x="116" y="206" width="44" height="12" rx="6" fill="#57534E"/>
+</svg>

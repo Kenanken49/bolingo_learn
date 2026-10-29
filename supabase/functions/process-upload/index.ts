@@ -16,6 +16,17 @@
 //      100k billed words/month.
 //   7. Flip user_uploads.status to `ready` (or `failed` with a logged error).
 //
+// Reliability model (big-book hardened):
+//   - The handler validates + returns HTTP 202 immediately, continuing the
+//     pipeline in the background via EdgeRuntime.waitUntil. The client polls
+//     user_uploads until status flips — a full-book PDF + CPU-hosted LLM +
+//     several TTS calls can take minutes, far past the request window.
+//   - PDF text is capped (60k chars) before the LLM step; the LLM prompt is
+//     capped at 8k chars so small self-hosted models don't crawl.
+//   - LLM/TTS fetches carry timeouts so one slow call fails loudly instead
+//     of hanging the row in `processing` forever.
+//   - Segment TTS runs concurrently (Promise.allSettled), not sequentially.
+//
 // Invoke after upload (client calls this with { upload_id }), or wire a
 // Supabase Storage webhook (object created in `user-materials`) to this endpoint.
 // Deploy with: supabase functions deploy process-upload
@@ -39,9 +50,16 @@ const corsHeaders = {
 const LLM_BASE_URL = Deno.env.get('LLM_BASE_URL') ?? 'https://api.deepseek.com/chat/completions';
 const LLM_MODEL = Deno.env.get('LLM_MODEL') ?? 'deepseek-chat';
 const TTS_PROVIDER = Deno.env.get('TTS_PROVIDER') ?? 'elevenlabs';
-const TTS_MODEL_ID = Deno.env.get('TTS_MODEL_ID') ?? 'eleven_multilingual_v2';
+const TTS_MODEL_ID = Deno.env.get('TTS_MODEL_ID') ?? 'eleven_turbo_v2_5';
 const TTS_VOICE = Deno.env.get('TTS_VOICE') ?? 'alloy';
 const OPENAI_BASE_URL = Deno.env.get('OPENAI_BASE_URL') ?? 'https://api.openai.com/v1';
+
+// Big-book bounds: full PDFs go through pdf-parse (memory-heavy), so cap the
+// text before anything downstream sees it. Billing counts the capped text.
+const MAX_EXTRACT_CHARS = 60000;
+// Small self-hosted models (e.g. 1.5B on CPU) crawl on huge contexts —
+// 3.5k chars is plenty for 4-5 quiz elements and ~2x faster than 8k.
+const MAX_LLM_CHARS = 3500;
 
 const CURRICULUM_PROMPT = `You are an elite educational structuralist designing bite-sized mobile lessons (2-5 minutes each, dead-time friendly). Analyze this uploaded text. Extract the top 2-3 core concepts only. Generate a TOTAL of 4-5 interactive quiz elements (mix multiple-choice and drag-and-drop) using this JSON schema: [{ "type": "multiple-choice" | "drag-and-drop", "prompt": "...", "options": ["...", "..."], "answer": "..." }]. Keep prompts short and mobile-friendly. Return nothing but valid JSON.`;
 
@@ -75,7 +93,8 @@ async function extractText(fileName: string, bytes: Uint8Array): Promise<string>
   const lower = fileName.toLowerCase();
   // Text/Markdown: parsed directly as a string.
   if (lower.endsWith('.txt') || lower.endsWith('.md') || lower.endsWith('.csv')) {
-    return new TextDecoder().decode(bytes);
+    const text = new TextDecoder().decode(bytes).trim();
+    return text.length > MAX_EXTRACT_CHARS ? text.slice(0, MAX_EXTRACT_CHARS) : text;
   }
   // PDFs: lightweight text extraction via pdf-parse (npm: specifier works
   // in Supabase Edge Functions' Deno runtime).
@@ -84,7 +103,16 @@ async function extractText(fileName: string, bytes: Uint8Array): Promise<string>
     const result = await pdfParse(bytes);
     const text = (result?.text ?? '').trim();
     if (!text) throw new Error('No extractable text found in PDF (scanned image?).');
-    return text;
+    return text.length > MAX_EXTRACT_CHARS ? text.slice(0, MAX_EXTRACT_CHARS) : text;
+  }
+  // Photos/scans (Premium Scan): OCR via a vision-capable chat model.
+  // The self-hosted 1.5B primary is text-only, so scans route to the
+  // LLM_FALLBACK_* backend (e.g. Groq's free llama-4-scout vision).
+  if (/\.(jpe?g|png|webp)$/.test(lower)) {
+    return await transcribePhoto(bytes);
+  }
+  if (/\.(heic|heif)$/.test(lower)) {
+    throw new Error('iPhone HEIC photos are not supported — open the photo, save/share it as JPG first, then scan it.');
   }
   // Phase 2 extension point: transcribe audio (e.g. Whisper) before the LLM
   // step. Failing loudly keeps uploads honest.
@@ -92,6 +120,71 @@ async function extractText(fileName: string, bytes: Uint8Array): Promise<string>
     throw new Error('Audio transcription is not wired up yet (Phase 2). Upload .txt/.md/.pdf for now.');
   }
   throw new Error(`Unsupported file type: ${fileName}`);
+}
+
+const VISION_URL = Deno.env.get('LLM_FALLBACK_URL') ?? '';
+const VISION_KEY = Deno.env.get('LLM_FALLBACK_KEY') ?? '';
+const VISION_MODEL = Deno.env.get('LLM_FALLBACK_MODEL') ?? '';
+// Phone photos at quality 0.7 land well under this; bigger means the
+// learner should retake closer-up rather than pay OCR on a billboard.
+const MAX_PHOTO_BYTES = 6_000_000;
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let s = '';
+  const CHUNK = 0x8000;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    s += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(s);
+}
+
+function sniffMime(bytes: Uint8Array): string {
+  if (bytes.length > 3 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e) return 'image/png';
+  if (bytes.length > 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'image/jpeg';
+  if (bytes.length > 12 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) return 'image/webp';
+  return 'image/jpeg';
+}
+
+async function transcribePhoto(bytes: Uint8Array): Promise<string> {
+  if (!VISION_URL || !VISION_KEY) {
+    throw new Error('Photo scanning is not wired up yet — set the LLM_FALLBACK_* vision secrets (e.g. Groq + a vision model) to enable Scan.');
+  }
+  if (bytes.length > MAX_PHOTO_BYTES) {
+    throw new Error(`Photo is too large (~${(bytes.length / 1048576).toFixed(1)} MB) — retake it closer-up so the notes fill the frame (max 6 MB).`);
+  }
+  const res = await fetch(VISION_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${VISION_KEY}` },
+    body: JSON.stringify({
+      model: VISION_MODEL,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You are an OCR engine. Transcribe every handwritten and printed word in the photo exactly, preserving line breaks and layout order. Return ONLY the transcription, no commentary, no markdown fences.',
+        },
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: 'Transcribe this study-note photo:' },
+            { type: 'image_url', image_url: { url: `data:${sniffMime(bytes)};base64,${bytesToBase64(bytes)}` } },
+          ],
+        },
+      ],
+      temperature: 0,
+      max_tokens: 2000,
+    }),
+    signal: AbortSignal.timeout(120_000),
+  });
+  if (!res.ok) throw new Error(`Photo OCR failed: ${res.status} ${await res.text()}`);
+  const data = await res.json();
+  let content: string = data.choices?.[0]?.message?.content ?? '';
+  // Reasoning-style vision models leak <think> blocks — strip them.
+  content = content.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+  if (!content) {
+    throw new Error('No readable text found in this photo — retake it sharper, with the notes filling the frame and good light.');
+  }
+  return content.length > MAX_EXTRACT_CHARS ? content.slice(0, MAX_EXTRACT_CHARS) : content;
 }
 
 async function generateQuizQuestions(rawText: string): Promise<QuizItem[]> {
@@ -104,10 +197,12 @@ async function generateQuizQuestions(rawText: string): Promise<QuizItem[]> {
       model: LLM_MODEL,
       messages: [
         { role: 'system', content: CURRICULUM_PROMPT },
-        { role: 'user', content: rawText.slice(0, 12000) },
+        { role: 'user', content: rawText.slice(0, MAX_LLM_CHARS) },
       ],
       temperature: 0.4,
     }),
+    // A hung LLM must fail loudly, not park the row in `processing`.
+    signal: AbortSignal.timeout(100_000),
   });
   if (!res.ok) throw new Error(`LLM request failed: ${res.status} ${await res.text()}`);
   const data = await res.json();
@@ -129,6 +224,7 @@ async function synthesizeAudio(narration: string): Promise<Uint8Array> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({ model: 'tts-1', input: narration.slice(0, 4000), voice: TTS_VOICE }),
+      signal: AbortSignal.timeout(60_000),
     });
     if (!res.ok) throw new Error(`OpenAI TTS failed: ${res.status} ${await res.text()}`);
     return new Uint8Array(await res.arrayBuffer());
@@ -143,27 +239,23 @@ async function synthesizeAudio(narration: string): Promise<Uint8Array> {
       Accept: 'audio/mpeg',
     },
     body: JSON.stringify({ text: narration.slice(0, 4000), model_id: TTS_MODEL_ID }),
+    signal: AbortSignal.timeout(60_000),
   });
   if (!res.ok) throw new Error(`ElevenLabs TTS failed: ${res.status} ${await res.text()}`);
   return new Uint8Array(await res.arrayBuffer());
 }
 
-serve(async (req: Request) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
-  const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
-  if (!supabaseUrl || !serviceKey) {
-    return new Response('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY', { status: 500 });
-  }
-  const supabase = createClient(supabaseUrl, serviceKey);
+type ProcessResult =
+  | { ok: true; lesson_id: number; question_count: number; segment_count: number }
+  | { ok: false; error: string };
 
-  let uploadId: string | undefined;
+// The full pipeline. Never rejects — every failure path flips the row to
+// `failed` so the client never polls forever.
+async function processUpload(
+  supabase: ReturnType<typeof createClient>,
+  uploadId: string,
+): Promise<ProcessResult> {
   try {
-    const body = await req.json();
-    // Support direct invocation { upload_id } and Storage webhooks { record: { id, ... } }.
-    uploadId = body.upload_id ?? body.record?.id;
-    if (!uploadId) return new Response('Missing upload_id', { status: 400 });
-
     const { data: upload, error: fetchError } = await supabase
       .from('user_uploads')
       .select('*')
@@ -183,7 +275,7 @@ serve(async (req: Request) => {
     const isPremium = (owner as { is_premium?: boolean } | null)?.is_premium === true;
     let aiUsed = (owner as { ai_words_used?: number } | null)?.ai_words_used ?? 0;
     const resetAt = new Date(
-      (owner as { ai_words_reset_at?: string } | null)?.ai_words_reset_at ?? new Date(0).toISOString()
+      (owner as { ai_words_reset_at?: string } | null)?.ai_words_reset_at ?? new Date(0).toISOString(),
     );
     if (Date.now() - resetAt.getTime() > 30 * 86400 * 1000) {
       aiUsed = 0;
@@ -196,7 +288,7 @@ serve(async (req: Request) => {
     const lower = upload.file_name.toLowerCase();
     const isText = lower.endsWith('.txt') || lower.endsWith('.md') || lower.endsWith('.csv');
     if (!isPremium && !isText) {
-      throw new Error('Free tier supports text files only — upgrade to Premium for PDF & audio.');
+      throw new Error('Free tier supports text files only — upgrade to Premium for PDF, photo Scan & audio.');
     }
 
     const text = await extractText(upload.file_name, new Uint8Array(await file.arrayBuffer()));
@@ -207,7 +299,7 @@ serve(async (req: Request) => {
     const billable = isPremium ? words : 0;
     if (isPremium && aiUsed + billable > PREMIUM_MONTHLY_WORD_CAP) {
       throw new Error(
-        `Monthly AI budget used (${aiUsed.toLocaleString()}/${PREMIUM_MONTHLY_WORD_CAP.toLocaleString()} words).`
+        `Monthly AI budget used (${aiUsed.toLocaleString()}/${PREMIUM_MONTHLY_WORD_CAP.toLocaleString()} words).`,
       );
     }
     const quiz = await generateQuizQuestions(text);
@@ -245,62 +337,129 @@ serve(async (req: Request) => {
         prompt: q.prompt,
         options: q.options,
         answer: q.answer,
-      }))
+      })),
     );
     if (questionsError) throw new Error(`Questions insert failed: ${questionsError.message}`);
 
-    // Audiobook engine: premium gets elite TTS (ElevenLabs/OpenAI) — one
-    // full-mix MP3 plus one segment MP3 per quiz element for block
-    // highlighting. Free tier skips server TTS entirely; the app narrates
-    // on-device via expo-speech at $0 cost.
-    const fullNarration = isPremium ? quiz.map((q) => q.prompt).join('\n').slice(0, 4000) : '';
-    let audioUrl: string | undefined;
-    const segments: Array<{ question_id: string; prompt: string; audio_url: string }> = [];
-    if (fullNarration) {
-      const mix = await synthesizeAudio(fullNarration);
-      audioUrl = `${upload.user_id}/audio/${lesson.id}.mp3`;
-      const { error: upError } = await supabase.storage
-        .from('user-materials')
-        .upload(audioUrl, mix, { contentType: 'audio/mpeg', upsert: true });
-      if (upError) throw new Error(`Audio upload failed: ${upError.message}`);
-    }
+    // STAGED READY: flip to ready immediately so the learner can open the
+    // lesson in ~30-60s (PDF parse + one LLM call). Audio fills in after —
+    // the old order held status in `processing` through 6 slow TTS calls,
+    // which is why full books "took forever" even though the quiz was done.
+    await supabase.from('user_uploads').update({ status: 'ready', error: null }).eq('id', upload.id);
+    const earlyResult: ProcessResult = { ok: true, lesson_id: lesson.id, question_count: quiz.length, segment_count: 0 };
 
-    const { data: rows } = await supabase
-      .from('questions')
-      .select('id,prompt')
-      .eq('lesson_id', lesson.id)
-      .order('created_at');
-    for (const [i, row] of ((rows ?? []) as Array<{ id: string; prompt: string }>).entries()) {
-      try {
-        const seg = await synthesizeAudio(row.prompt.slice(0, 1000));
-        const segPath = `${upload.user_id}/audio/${lesson.id}/${i}.mp3`;
-        const { error: segError } = await supabase.storage
-          .from('user-materials')
-          .upload(segPath, seg, { contentType: 'audio/mpeg', upsert: true });
-        if (segError) throw segError;
-        segments.push({ question_id: row.id, prompt: row.prompt, audio_url: segPath });
-      } catch (segErr) {
-        console.warn(`Segment ${i} TTS failed, skipping:`, segErr);
+    // Audiobook engine (non-blocking): premium gets elite TTS — one full-mix
+    // MP3 plus one segment MP3 per quiz element. Free tier skips server TTS;
+    // the app narrates on-device via expo-speech at $0 cost. TTS failures
+    // only skip audio — the lesson is already ready above.
+    try {
+      const fullNarration = isPremium ? quiz.map((q) => q.prompt).join('\n').slice(0, 4000) : '';
+      let audioUrl: string | undefined;
+      const segments: Array<{ question_id: string; prompt: string; audio_url: string }> = [];
+      const jobs: Array<Promise<void>> = [];
+      if (fullNarration) {
+        jobs.push(
+          (async () => {
+            const mix = await synthesizeAudio(fullNarration);
+            audioUrl = `${upload.user_id}/audio/${lesson.id}.mp3`;
+            const { error: upError } = await supabase.storage
+              .from('user-materials')
+              .upload(audioUrl, mix, { contentType: 'audio/mpeg', upsert: true });
+            if (upError) throw upError;
+          })(),
+        );
       }
+      const { data: rows } = await supabase
+        .from('questions')
+        .select('id,prompt')
+        .eq('lesson_id', lesson.id)
+        .order('created_at');
+      for (const [i, row] of (((rows ?? []) as Array<{ id: string; prompt: string }>)).entries()) {
+        jobs.push(
+          (async () => {
+            const seg = await synthesizeAudio(row.prompt.slice(0, 1000));
+            const segPath = `${upload.user_id}/audio/${lesson.id}/${i}.mp3`;
+            const { error: segError } = await supabase.storage
+              .from('user-materials')
+              .upload(segPath, seg, { contentType: 'audio/mpeg', upsert: true });
+            if (segError) throw segError;
+            segments.push({ question_id: row.id, prompt: row.prompt, audio_url: segPath });
+          })(),
+        );
+      }
+      const settled = await Promise.allSettled(jobs);
+      for (const r of settled) {
+        if (r.status === 'rejected') console.warn('TTS job skipped:', r.reason);
+      }
+      if (audioUrl || segments.length > 0) {
+        await supabase
+          .from('lessons')
+          .update({ content: { ...lessonContent, audio_url: audioUrl, segments } })
+          .eq('id', lesson.id);
+      }
+      return { ok: true, lesson_id: lesson.id, question_count: quiz.length, segment_count: segments.length };
+    } catch (ttsErr) {
+      console.warn('Post-ready TTS skipped:', ttsErr);
+      return earlyResult;
     }
-    await supabase
-      .from('lessons')
-      .update({ content: { ...lessonContent, audio_url: audioUrl, segments } })
-      .eq('id', lesson.id);
-
-    await supabase.from('user_uploads').update({ status: 'ready' }).eq('id', upload.id);
-    return new Response(
-      JSON.stringify({ ok: true, lesson_id: lesson.id, question_count: quiz.length, segment_count: segments.length }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
   } catch (e) {
     console.error('process-upload failed:', e);
-    if (uploadId) {
-      await supabase.from('user_uploads').update({ status: 'failed' }).eq('id', uploadId);
+    // Persist the reason on the row (truncated) so the app can show WHY it
+    // failed instead of a bare red dot — read it with:
+    //   select file_name, status, error from user_uploads order by created_at desc limit 5;
+    const reason = String(e && typeof e === 'object' && 'message' in e ? (e as { message: unknown }).message : e).slice(0, 500);
+    try {
+      await supabase.from('user_uploads').update({ status: 'failed', error: reason }).eq('id', uploadId);
+    } catch {
+      /* status flip is best-effort */
     }
-    return new Response(JSON.stringify({ error: String(e) }), {
+    return { ok: false, error: String(e) };
+  }
+}
+
+serve(async (req: Request) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+  if (!supabaseUrl || !serviceKey) {
+    return new Response('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY', { status: 500 });
+  }
+  const supabase = createClient(supabaseUrl, serviceKey);
+
+  let uploadId: string | undefined;
+  try {
+    const body = await req.json();
+    // Support direct invocation { upload_id } and Storage webhooks { record: { id, ... } }.
+    uploadId = body.upload_id ?? body.record?.id;
+    if (!uploadId) return new Response('Missing upload_id', { status: 400 });
+  } catch {
+    return new Response('Missing upload_id', { status: 400 });
+  }
+
+  const done = processUpload(supabase, uploadId);
+  // Background the pipeline and acknowledge immediately: the client polls
+  // user_uploads until ready. Big books take minutes — far past the
+  // request/response window, which used to die and park rows in
+  // `processing` forever.
+  const rt = (globalThis as Record<string, unknown>).EdgeRuntime as
+    | { waitUntil(p: Promise<unknown>): void }
+    | undefined;
+  if (rt && typeof rt.waitUntil === 'function') {
+    rt.waitUntil(done);
+    return new Response(JSON.stringify({ accepted: true, upload_id: uploadId }), {
+      status: 202,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+  // Local runtimes without EdgeRuntime: run inline and report the outcome.
+  const result = await done;
+  if (!result.ok) {
+    return new Response(JSON.stringify({ error: result.error }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
+  return new Response(JSON.stringify(result), {
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 });

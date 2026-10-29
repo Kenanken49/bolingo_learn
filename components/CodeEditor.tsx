@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
-import { View, Text, Pressable, TextInput, ScrollView } from 'react-native';
+import { View, Pressable, ScrollView } from 'react-native';
+import Text from './ui/Text';
+import TextInput from './ui/TextInput';
 
 export type CodeLang = 'html' | 'css' | 'js';
 
@@ -44,11 +46,11 @@ function highlight(lang: CodeLang, code: string, keyPrefix: string) {
     const tok = m[0];
     let cls = 'text-slate-200';
     if (lang === 'html') {
-      cls = tok.startsWith('<!--') ? 'text-slate-500' : tok.startsWith('"') ? 'text-amber-300' : 'text-sky-400';
+      cls = tok.startsWith('<!--') ? 'text-slate-500 dark:text-slate-400' : tok.startsWith('"') ? 'text-amber-300' : 'text-sky-400';
     } else if (lang === 'css') {
-      cls = tok.startsWith('/*') ? 'text-slate-500' : tok.startsWith('"') ? 'text-amber-300' : /[:;{]/.test(tok) ? 'text-slate-200' : 'text-fuchsia-400';
+      cls = tok.startsWith('/*') ? 'text-slate-500 dark:text-slate-400' : tok.startsWith('"') ? 'text-amber-300' : /[:;{]/.test(tok) ? 'text-slate-200' : 'text-fuchsia-400';
     } else {
-      cls = tok.startsWith('//') || tok.startsWith('/*') ? 'text-slate-500' : /^["']/.test(tok) || /^\d+$/.test(tok) ? 'text-amber-300' : 'text-fuchsia-400';
+      cls = tok.startsWith('//') || tok.startsWith('/*') ? 'text-slate-500 dark:text-slate-400' : /^["']/.test(tok) || /^\d+$/.test(tok) ? 'text-amber-300' : 'text-fuchsia-400';
     }
     push(tok, cls);
     last = idx + tok.length;
@@ -85,7 +87,7 @@ function GutteredInput({
       <View className="flex-row" style={{ minHeight: 256 }}>
         <View className="w-10 bg-slate-900 py-4">
           {Array.from({ length: lines }, (_, i) => (
-            <Text key={i} className="text-right font-mono text-sm leading-5 text-slate-600" style={{ paddingRight: 8 }}>
+            <Text key={i} className="text-right font-mono text-sm leading-5 text-slate-600 dark:text-slate-400" style={{ paddingRight: 8 }}>
               {i + 1}
             </Text>
           ))}
@@ -165,7 +167,7 @@ export default function CodeEditor({
               className={`flex-row items-center px-4 py-2.5 ${active ? 'bg-slate-950' : ''}`}
             >
               <View className={`mr-1.5 h-2.5 w-2.5 rounded-full ${t.color}`} />
-              <Text className={`font-mono text-xs font-bold ${active ? 'text-white' : 'text-slate-500'}`}>
+              <Text className={`font-mono text-xs font-bold ${active ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`}>
                 {t.label}
               </Text>
             </Pressable>

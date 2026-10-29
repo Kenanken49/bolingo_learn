@@ -6,6 +6,7 @@ export const REFILL_WAIT_MS = 4 * 3600 * 1000;
 export interface Profile {
   id: string;
   username: string | null;
+  avatar_url: string | null;
   xp: number;
   streak_count: number;
   last_activity_at: string | null;
@@ -52,6 +53,50 @@ async function applyHeartRegen(profile: Profile): Promise<Profile> {
   return data as Profile;
 }
 
+/** Pull Google OAuth details (name + photo) out of the auth user metadata. */
+function oauthImport(user: { user_metadata?: Record<string, unknown> }): { username: string | null; avatar_url: string | null } {
+  const m = user?.user_metadata ?? {};
+  const pick = (...keys: string[]): string | null => {
+    for (const k of keys) {
+      const v = m[k];
+      if (typeof v === 'string' && v.trim()) return v.trim();
+    }
+    return null;
+  };
+  return { username: pick('full_name', 'name', 'preferred_username'), avatar_url: pick('avatar_url', 'picture') };
+}
+
+/**
+ * Backfill name/photo from the OAuth provider (Google) into the profile row.
+ * Never overwrites a username the learner set themselves — only fills blanks
+ * and refreshes the photo. Best-effort, never blocks the caller.
+ */
+async function syncOAuthProfile(userId: string, row: Profile, user: { user_metadata?: Record<string, unknown> }): Promise<Profile> {
+  const imported = oauthImport(user);
+  const patch: Partial<Profile> = {};
+  if (!row.username && imported.username) patch.username = imported.username;
+  if (imported.avatar_url && imported.avatar_url !== row.avatar_url) patch.avatar_url = imported.avatar_url;
+  if (Object.keys(patch).length === 0) return row;
+  try {
+    const { data, error } = await supabase.from('profiles').update(patch).eq('id', userId).select().single();
+    if (!error && data) return data as Profile;
+    // Name taken by another learner (usernames are unique)? Keep the photo,
+    // drop the clashing name — never show data that isn't saved.
+    if (patch.avatar_url && patch.username) {
+      const { data: retried, error: retryError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: patch.avatar_url })
+        .eq('id', userId)
+        .select()
+        .single();
+      if (!retryError && retried) return retried as Profile;
+    }
+  } catch {
+    /* best-effort — callers must never break on a photo/name sync */
+  }
+  return row;
+}
+
 /** Load the signed-in user's profile, creating it on first run. Null when guest. */
 export async function getProfile(): Promise<Profile | null> {
   const {
@@ -59,16 +104,36 @@ export async function getProfile(): Promise<Profile | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
   const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-  if (data) return applyHeartRegen(data as Profile);
+  if (data) {
+    const synced = await syncOAuthProfile(user.id, data as Profile, user);
+    return applyHeartRegen(synced);
+  }
   if (error && (error as { code?: string }).code !== 'PGRST116') throw error;
-  const { data: created, error: insertError } = await supabase
+  const imported = oauthImport(user);
+  let created: Profile | null = null;
+  const { data: first, error: firstError } = await supabase
     .from('profiles')
-    .insert({ id: user.id })
+    .insert({ id: user.id, username: imported.username, avatar_url: imported.avatar_url })
     .select()
     .single();
-  if (insertError || !created) throw insertError ?? new Error('Could not create profile.');
+  if (!firstError && first) {
+    created = first as Profile;
+  } else if ((firstError as { code?: string } | null)?.code === '23505' && imported.username) {
+    // Google display name already taken — retry without it; the learner can
+    // set their own name later. Photo has no unique constraint, keep it.
+    const { data: second, error: secondError } = await supabase
+      .from('profiles')
+      .insert({ id: user.id, avatar_url: imported.avatar_url })
+      .select()
+      .single();
+    if (secondError || !second) throw secondError ?? new Error('Could not create profile.');
+    created = second as Profile;
+  } else {
+    throw firstError ?? new Error('Could not create profile.');
+  }
   const now = new Date().toISOString();
-  return { ...DEFAULTS, username: null, hearts_refilled_at: now, ai_words_reset_at: now, ...created } as Profile;
+  const base = { ...DEFAULTS, username: null, avatar_url: null, hearts_refilled_at: now, ai_words_reset_at: now };
+  return { ...base, ...(created as unknown as Record<string, unknown>) } as Profile;
 }
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);

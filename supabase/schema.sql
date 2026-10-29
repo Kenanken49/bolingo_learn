@@ -29,6 +29,9 @@ alter table public.profiles
   add column if not exists ai_words_used integer not null default 0,
   add column if not exists ai_words_reset_at timestamptz not null default now();
 
+-- Google OAuth import: display name + profile photo shown across the app.
+alter table public.profiles add column if not exists avatar_url text;
+
 -- Users can read/update only their own profile.
 drop policy if exists "Users manage own profile" on public.profiles;
 create policy "Users manage own profile"
@@ -51,8 +54,11 @@ create table if not exists public.user_uploads (
   file_name varchar(255) not null,
   file_url text not null,
   status varchar(50) not null default 'processing',
+  error text,
   created_at timestamptz not null default now()
 );
+
+alter table public.user_uploads add column if not exists error text;
 
 alter table public.user_uploads enable row level security;
 
@@ -73,6 +79,13 @@ alter table public.lessons
   add column if not exists upload_source_id uuid references public.user_uploads (id),
   add column if not exists user_id uuid references public.profiles (id) on delete cascade,
   add column if not exists is_user_generated boolean not null default false;
+
+-- Delete flow: removing an upload must remove its generated lesson nodes
+-- (questions cascade from lessons). The bare REFERENCES default blocks the
+-- delete whenever a partial pipeline left a lesson behind a `failed` row.
+alter table public.lessons drop constraint if exists lessons_upload_source_id_fkey;
+alter table public.lessons
+  add constraint lessons_upload_source_id_fkey foreign key (upload_source_id) references public.user_uploads (id) on delete cascade;
 
 alter table public.lessons enable row level security;
 
@@ -98,6 +111,18 @@ drop policy if exists "Users upload own raw files" on storage.objects;
 create policy "Users upload own raw files"
   on storage.objects for insert
   with check (
+    bucket_id = 'user-materials'
+    and auth.role() = 'authenticated'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- Authenticated users can delete their own raw files (powers the 🗑
+-- buttons in My uploads — without this, storage.remove() 400s and the
+-- file lingers even after its queue row is gone).
+drop policy if exists "Users delete own raw files" on storage.objects;
+create policy "Users delete own raw files"
+  on storage.objects for delete
+  using (
     bucket_id = 'user-materials'
     and auth.role() = 'authenticated'
     and (storage.foldername(name))[1] = auth.uid()::text

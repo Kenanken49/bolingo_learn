@@ -6,13 +6,18 @@
  */
 module.exports = ({ config }) => ({
   ...config,
-  name: 'bolingo_learn',
+  name: 'Bolingo Learn',
   slug: 'bolingo_learn',
   version: '1.0.0',
   orientation: 'portrait',
   scheme: 'bolingo-learn',
   icon: './assets/icon.png',
-  userInterfaceStyle: 'light',
+  // QD-OLED is the default, but Light remains a supported appearance.
+  userInterfaceStyle: 'automatic',
+  splash: {
+    backgroundColor: '#000000',
+    resizeMode: 'contain',
+  },
   runtimeVersion: { policy: 'appVersion' },
   updates: {
     url: 'https://u.expo.dev/7ceeed84-5e6b-4157-b515-b7adfba83ddb',
@@ -40,6 +45,8 @@ module.exports = ({ config }) => ({
   web: {
     favicon: './assets/favicon.png',
     bundler: 'metro',
+    themeColor: '#000000',
+    backgroundColor: '#000000',
   },
   plugins: [
     'expo-router',

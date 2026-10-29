@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bolingo Learn — App Wireframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Roboto','Segoe UI',system-ui,sans-serif; background:#eef2f7; color:#1f2937; padding:40px 24px 80px; }
+  .deck { max-width:1400px; margin:0 auto; }
+  .deck-head { text-align:center; margin-bottom:36px; }
+  .deck-head h1 { font-size:34px; font-weight:900; }
+  .deck-head p { color:#64748b; margin-top:6px; font-size:16px; }
+  .screens { display:flex; flex-wrap:wrap; gap:36px; justify-content:center; }
+  .shot { display:flex; flex-direction:column; align-items:center; }
+  .phone { width:340px; height:720px; background:#fff; border-radius:44px; border:10px solid #111827; overflow:hidden; position:relative; box-shadow:0 24px 60px rgba(0,0,0,.18); display:flex; flex-direction:column; }
+  .notch { position:absolute; top:10px; left:50%; transform:translateX(-50%); width:110px; height:24px; background:#111827; border-radius:14px; z-index:5; }
+  .hud { display:flex; align-items:center; justify-content:space-around; padding:40px 10px 10px; border-bottom:2px solid #f1f5f9; font-weight:900; font-size:14px; }
+  .body { flex:1; overflow:hidden; padding:12px 16px; display:flex; flex-direction:column; align-items:center; }
+  .unit { width:100%; background:linear-gradient(135deg,#22c55e,#16a34a); border-radius:20px; padding:12px 14px; color:#fff; }
+  .unit small { font-size:10px; letter-spacing:2px; opacity:.85; font-weight:800; }
+  .unit h3 { font-size:17px; font-weight:900; }
+  .unit p { font-size:11px; opacity:.9; }
+  .bar { height:7px; background:rgba(0,0,0,.2); border-radius:99px; margin-top:8px; }
+  .bar i { display:block; height:100%; width:60%; background:#fff; border-radius:99px; }
+  .node { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; border-bottom:5px solid rgba(0,0,0,.18); margin-top:14px; }
+  .done { background:#ffc800; } .active { background:#58cc02; width:76px; height:76px; box-shadow:0 0 0 6px #dcfce7; }
+  .locked { background:#e2e8f0; }
+  .start-bubble { background:#fff; border:2px solid #e2e8f0; color:#16a34a; font-size:11px; font-weight:900; letter-spacing:2px; border-radius:10px; padding:4px 10px; margin-top:12px; }
+  .upnext { width:100%; background:#f0fdf4; border:2px solid #bbf7d0; border-radius:18px; padding:10px 12px; margin-top:12px; display:flex; gap:10px; align-items:center; }
+  .upnext .ic { width:44px; height:44px; border-radius:50%; background:#58cc02; display:flex; align-items:center; justify-content:center; font-size:22px; }
+  .tabbar { display:flex; border-top:2px solid #f1f5f9; padding:10px 0 18px; justify-content:space-around; font-size:11px; font-weight:800; color:#94a3b8; }
+  .tabbar b { color:#16a34a; }
+  .cap { max-width:340px; margin-top:14px; background:#fff; border-radius:14px; padding:12px 14px; box-shadow:0 4px 14px rgba(0,0,0,.06); }
+  .cap h4 { font-size:13px; font-weight:900; color:#7c3aed; }
+  .cap p { font-size:12px; color:#475569; margin-top:4px; line-height:1.5; }
+  .qbar { width:100%; display:flex; align-items:center; gap:8px; padding-top:34px; }
+  .qbar .track { flex:1; height:12px; background:#e2e8f0; border-radius:99px; }
+  .qbar .track i { display:block; height:100%; width:65%; background:#58cc02; border-radius:99px; }
+  .prompt { width:100%; background:#f8fafc; border:2px solid #e2e8f0; border-radius:18px; padding:14px; margin-top:14px; font-weight:800; font-size:15px; }
+  .tokens { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; justify-content:center; }
+  .tok { border:2px solid #e2e8f0; border-bottom-width:4px; border-radius:12px; padding:8px 12px; font-weight:800; font-size:14px; background:#fff; }
+  .tok.sel { background:#dbeafe; border-color:#3b82f6; color:#1d4ed8; }
+  .cta { width:100%; border-radius:18px; padding:14px; text-align:center; font-weight:900; letter-spacing:1px; margin-top:auto; }
+  .green { background:#58cc02; color:#fff; border-bottom:5px solid #46a302; }
+  .amber { background:#ffc800; color:#7c2d12; border-bottom:5px solid #e0a800; }
+  .dark { background:#1f2937; color:#fff; }
+  .fab { position:absolute; right:12px; bottom:86px; width:56px; height:56px; border-radius:50%; background:#7c3aed; display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:0 8px 20px rgba(124,58,237,.5); }
+  .compare { width:100%; border:2px solid #e2e8f0; border-radius:18px; margin-top:12px; overflow:hidden; }
+  .compare .row { display:flex; padding:8px 10px; font-size:12px; font-weight:700; border-top:1px solid #f1f5f9; }
+  .compare .row.head { border-top:none; background:#f8fafc; }
+  .compare .row span:first-child { flex:1; }
+  .compare .row span { width:64px; text-align:center; }
+  .scanbtn { width:100%; border-radius:16px; padding:12px; text-align:center; font-weight:900; margin-top:10px; font-size:14px; }
+  .upl { width:100%; border:2px solid #e2e8f0; border-radius:14px; padding:8px 10px; margin-top:8px; font-size:12px; display:flex; justify-content:space-between; align-items:center; }
+  .big-emoji { font-size:64px; margin-top:60px; }
+  @keyframes floaty { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-10px) } }
+  @keyframes pulsing { 0%,100% { transform:scale(1) } 50% { transform:scale(1.08) } }
+  @keyframes wiggle { 0%,100% { transform:rotate(-8deg) } 50% { transform:rotate(8deg) } }
+  .active { animation:pulsing 1.4s ease-in-out infinite; }
+  .fab { animation:wiggle 1.6s ease-in-out infinite; }
+  .upnext .ic { animation:floaty 2.4s ease-in-out infinite; }
+  .wordmark { font-size:11px; font-weight:900; letter-spacing:3px; color:#94a3b8; }
+  .xp-ring { width:150px; height:150px; border-radius:50%; border:12px solid #ffc800; border-top-color:#e2e8f0; display:flex; align-items:center; justify-content:center; margin-top:18px; font-weight:900; font-size:28px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="deck-head">
+    <h1>📱 BOLINGO LEARN — App Wireframes v1</h1>
+    <p>Duolingo-style path · playful rounded voice · green = go, amber = premium, purple = Bingo AI. Approve before build.</p>
+  </div>
+  <div class="screens">
+
+    <div class="shot">
+      <div class="phone"><div class="notch"></div>
+        <div class="hud"><span>🌐 WEB ▼</span><span style="color:#f97316">🔥 12</span><span style="color:#0ea5e9">💎 480</span><span style="color:#ef4444">❤️ 5</span><span>👤</span></div>
+        <div class="body">
+          <div class="unit"><small>UNIT 3 · FOOD</small><h3>🍔 At the Market</h3><p>Order food, ask prices, be polite.</p><div class="bar"><i></i></div></div>
+          <div class="start-bubble">START</div>
+          <div class="node active">⭐</div>
+          <div class="node done" style="margin-left:-90px">📖</div>
+          <div class="node done" style="margin-left:80px">🎧</div>
+          <div class="node locked">🔒</div>
+          <div class="upnext"><div class="ic">⭐</div><div><div style="font-size:10px;font-weight:900;color:#16a34a;letter-spacing:1px">⬆ UP NEXT · 3 MIN</div><div style="font-weight:900;font-size:14px">Greetings quiz</div></div></div>
+        </div>
+        <div class="tabbar"><span><b>🏠<br>Learn</b></span><span>🎯<br>Quests</span><span>📷<br>Scan</span><span>👤<br>Profile</span></div>
+      </div>
+      <div class="cap"><h4>WF-APP-01 · Learn Path</h4><p>Snake nodes wind down the screen; next node wears the START bubble and pulses. Unit header carries the guidebook. Streak-at-risk triggers Bingo guilt card above nodes.</p></div>
+    </div>
+
+    <div class="shot">
+      <div class="phone"><div class="notch"></div>
+        <div class="qbar"><span style="font-weight:900;color:#ef4444">❤️ 4</span><div class="track"><i></i></div></div>
+        <div class="body">
+          <div class="prompt">Build: <span style="color:#7c3aed">&lt;p&gt;Hello&lt;/p&gt;</span></div>
+          <div class="tokens">
+            <span class="tok sel">&lt;p&gt;</span><span class="tok sel">Hello</span><span class="tok">&lt;/p&gt;</span><span class="tok">&lt;div&gt;</span><span class="tok">Hi</span>
+          </div>
+          <div class="prompt" style="border-style:dashed;color:#94a3b8;font-size:13px;margin-top:10px">Drop-zone preview: &lt;p&gt; Hello ___</div>
+          <div class="cta green">CHECK ANSWER</div>
+        </div>
+        <div class="fab">🦉</div>
+      </div>
+      <div class="cap"><h4>WF-APP-02 · Lesson player</h4><p>Hearts + progress on top, token builder in the middle, one big CHECK button. Bingo 🦉 floats bottom-right — stuck learners tap for a grounded hint. Combo banner pops over the top at ×2.</p></div>
+    </div>
+
+    <div class="shot">
+      <div class="phone"><div class="notch"></div>
+        <div class="body" style="padding-top:44px">
+          <h3 style="font-weight:900;font-size:20px">🧠 AI Sandbox</h3>
+          <p style="font-size:12px;color:#64748b;text-align:center">Snap notes or drop a file — Bingo builds a revision node.</p>
+          <div class="scanbtn dark">📷 Take photo</div>
+          <div class="scanbtn" style="border:2px solid #e2e8f0">🖼️ From gallery</div>
+          <div class="scanbtn" style="border:2px dashed #cbd5e1;color:#64748b">📥 Pick a file · PDF · TXT · Audio</div>
+          <div class="upl"><span>🖼️ Scanned-notes-28-Oct.jpg</span><b style="color:#16a34a">● ready</b></div>
+          <div class="upl"><span>📄 Magical-child.pdf</span><b style="color:#ef4444">● failed · ⚠️ reason… 🗑</b></div>
+          <div class="cta green" style="margin-top:12px">GENERATE MY NODE ✨</div>
+        </div>
+      </div>
+      <div class="cap"><h4>WF-APP-03 · Scan &amp; uploads</h4><p>Premium-only camera + gallery entries sit above the classic file picker. Every row carries a live status; failures show the exact ⚠️ reason inline with Retry + 🗑 delete.</p></div>
+    </div>
+
+    <div class="shot">
+      <div class="phone"><div class="notch"></div>
+        <div class="body" style="padding-top:44px">
+          <div class="wordmark">BOLINGO LEARN</div>
+          <div style="font-size:44px">👑</div>
+          <h3 style="font-weight:900;font-size:20px">Go Premium</h3>
+          <div class="compare">
+            <div class="row head"><span></span><span style="color:#94a3b8">FREE</span><span style="color:#b45309">👑 PRO</span></div>
+            <div class="row"><span>❤️ Hearts</span><span>5/day</span><b style="width:64px;text-align:center">∞</b></div>
+            <div class="row"><span>📄 Uploads</span><span>Text</span><b style="width:64px;text-align:center">PDF+🎵</b></div>
+            <div class="row"><span>📷 Scan</span><span>—</span><b style="width:64px;text-align:center">✓</b></div>
+            <div class="row"><span>🧠 Roleplay</span><span>🔒</span><b style="width:64px;text-align:center">✓</b></div>
+          </div>
+          <div class="cta amber" style="margin-top:12px">SUBSCRIBE — $7.70/mo</div>
+          <p style="font-size:12px;color:#64748b;margin-top:8px;font-weight:700">Restore purchases</p>
+        </div>
+      </div>
+      <div class="cap"><h4>WF-APP-04 · Paywall</h4><p>Free-vs-Pro table first (Duolingo Super pattern), one amber subscribe button, restore beneath. Store-unavailable builds get an honest notice + dev debug toggle, never a dead button.</p></div>
+    </div>
+
+    <div class="shot">
+      <div class="phone"><div class="notch"></div>
+        <div class="body" style="padding-top:44px">
+          <div style="font-size:56px">🎉</div>
+          <h3 style="font-weight:900;font-size:22px">Lesson complete!</h3>
+          <div class="xp-ring">+30 XP</div>
+          <div class="upnext"><div class="ic" style="background:#f97316">🔥</div><div><div style="font-weight:900;font-size:14px">12-day streak protected!</div><div style="font-size:12px;color:#64748b">🔥 COMBO ×4 — UNSTOPPABLE</div></div></div>
+          <div class="cta green">CONTINUE</div>
+        </div>
+      </div>
+      <div class="cap"><h4>WF-APP-05 · Results</h4><p>Celebration first: XP ring, combo callout, streak flame. Pending-guest winnings surface here as a rescue card before signup. One CONTINUE back to the Path.</p></div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

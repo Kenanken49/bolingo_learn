@@ -9,6 +9,8 @@ export interface UserUpload {
   file_name: string;
   file_url: string;
   status: UploadStatus;
+  /** Failure reason written by process-upload (null unless status is failed). */
+  error: string | null;
 }
 
 /**
@@ -72,8 +74,9 @@ export async function uploadRawFile(
   return upload as UserUpload;
 }
 
-/** Poll the upload until it leaves `processing` (or timeout). */
-export async function waitForUploadReady(uploadId: string, timeoutMs = 120_000): Promise<UserUpload> {
+/** Poll the upload until it leaves `processing` (or timeout). Full books take
+ * minutes (PDF parse + LLM + TTS), so premium gets a 10-minute window. */
+export async function waitForUploadReady(uploadId: string, timeoutMs = 600_000): Promise<UserUpload> {
   const start = Date.now();
   for (;;) {
     const { data, error } = await supabase.from('user_uploads').select('*').eq('id', uploadId).single();

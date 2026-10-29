@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 230" width="200" height="230" role="img" aria-label="Livia mentor">
+  <g id="hair-puffs">
+    <circle cx="28" cy="50" r="34" fill="#111827"/>
+    <circle cx="172" cy="50" r="34" fill="#111827"/>
+    <circle cx="26" cy="28" r="10" fill="#EF4444"/>
+    <circle cx="174" cy="28" r="10" fill="#22C55E"/>
+  </g>
+  <g id="gele">
+    <rect x="20" y="4" width="160" height="60" rx="30" fill="#FBBF24"/>
+    <rect x="36" y="16" width="128" height="16" rx="8" fill="#D97706" opacity="0.7"/>
+    <rect x="88" y="-8" width="24" height="28" rx="6" fill="#D97706" transform="rotate(18 100 6)"/>
+  </g>
+  <ellipse id="face" cx="100" cy="115" rx="72" ry="62" fill="#7A4A2B"/>
+  <g id="eyes">
+    <circle cx="64" cy="100" r="22" fill="#fff"/>
+    <circle cx="136" cy="100" r="22" fill="#fff"/>
+    <circle cx="64" cy="95" r="10" fill="#111827"/>
+    <circle cx="136" cy="95" r="10" fill="#111827"/>
+  </g>
+  <g id="mouth-happy"><rect x="78" y="140" width="44" height="20" rx="10" fill="#7C2D12"/></g>
+  <g id="earrings">
+    <circle cx="26" cy="150" r="8" fill="#FEF3C7" stroke="#D97706" stroke-width="3"/>
+    <circle cx="174" cy="150" r="8" fill="#FEF3C7" stroke="#D97706" stroke-width="3"/>
+  </g>
+  <g id="dress">
+    <rect x="40" y="182" width="120" height="48" rx="20" fill="#EA580C"/>
+    <circle cx="60" cy="198" r="12" fill="#FBBF24"/>
+    <rect x="120" y="200" width="20" height="20" fill="#fff" opacity="0.85" transform="rotate(45 130 210)"/>
+  </g>
+  <rect id="arm-wave" x="168" y="178" width="26" height="52" rx="13" fill="#7A4A2B"/>
+</svg>

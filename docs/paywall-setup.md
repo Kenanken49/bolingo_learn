@@ -38,8 +38,35 @@ Native apps bill through the App Store / Play Store. The **website** needs its o
 4. Without the key, the web paywall shows "Subscribe in the mobile app" and both
    buttons stay inert instead of failing — that is the expected fallback, not a bug.
 
-## 5. Test before release
+## 5. Server truth — RevenueCat webhook (required for "really premium")
+
+Client-side `refreshPremiumStatus` syncs fast, but the webhook is what keeps
+Cancelled/Expired users honest (stores can take hours to propagate).
+
+1. `supabase functions deploy revenuecat-webhook`
+2. `supabase secrets set REVENUECAT_WEBHOOK_SECRET=<random-32-chars>`
+3. RevenueCat dashboard → Integrations → Webhooks → URL =
+   `https://<project-ref>.supabase.co/functions/v1/revenuecat-webhook`,
+   Authorization header = the same secret. Send a test event, then check
+   `profiles.is_premium` flips without the app open.
+
+Costly server paths double-enforce Premium regardless of the flag:
+`process-upload` (PDF/audio + word billing) and `roleplay-chat` (402 unless
+`profiles.is_premium`) both read the profile service-side.
+
+## 6. Test before release
 
 - Android: internal testing track + license-test account → purchase with test card, verify `profiles.is_premium` flips.
 - iOS: sandbox tester (App Store Connect → Users) → subscribe, verify, cancel.
 - Both: Restore purchases button re-checks the entitlement; the `__DEV__` debug toggle covers UI testing with zero charges.
+- LD Player / emulator without Play Store / Expo Go: store billing is
+  unavailable by design — the paywall now says so instead of hanging.
+  Test real purchases in a dev build (`npx expo run:android`) on a device
+  with Play Store, or use the debug toggle (`EXPO_PUBLIC_DEBUG_PREMIUM=1`).
+
+## 7. Grant the admin (one-time SQL)
+
+```sql
+update public.profiles set is_premium = true
+where id = (select id from auth.users where email = 'bolingolearn@pm.me');
+```

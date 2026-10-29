@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark light">
+<title>Bolingo Learn — Jungle Expedition screens</title>
+<meta name="description" content="The Bolingo Learn wireframes, completed as a QD-OLED jungle expedition: nine hi-fi app and web screens, each with its own bird and habitat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ ICON SPRITE ============ -->
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.2 12h17.6M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12.2 2c1.6 3.1 1.3 5.2.1 6.9 2.1-.6 3.4-2.1 3.7-4.2 2.9 2.2 4.5 5.2 4.5 8.3 0 4.4-3.5 8-8.3 8S4 17.4 4 13c0-3.4 2-6.4 4.8-8.6-.4 2.6.4 4.4 1.7 5.5-.5-2.7.1-5.5 1.7-7.9Z" fill="currentColor"/></symbol>
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M7 3h10l3.5 5.6L12 21 3.5 8.6 7 3Z" fill="currentColor"/><path d="M3.8 8.6h16.4M8.5 3.2 12 20.4 15.5 3.2" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21S3.5 15.9 3.5 10A4.7 4.7 0 0 1 12 6.6 4.7 4.7 0 0 1 20.5 10c0 5.9-8.5 11-8.5 11Z" fill="currentColor"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.4-5.8-3-5.8 3 1.1-6.4L2.6 9.4l6.5-.9L12 2.6Z" fill="currentColor"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.2A2.2 2.2 0 0 1 6.2 3H11v17H6.2A2.2 2.2 0 0 0 4 22V5.2ZM20 5.2A2.2 2.2 0 0 0 17.8 3H13v17h4.8A2.2 2.2 0 0 1 20 22V5.2Z" fill="currentColor"/></symbol>
+  <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><rect x="3" y="13" width="4.5" height="8" rx="2.2" fill="currentColor"/><rect x="16.5" y="13" width="4.5" height="8" rx="2.2" fill="currentColor"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="3" fill="currentColor"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3.5 10.5 8.5-7 8.5 7V20a1.5 1.5 0 0 1-1.5 1.5h-4.5V14h-5v7.5H5A1.5 1.5 0 0 1 3.5 20v-9.5Z" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 3h8v5a4 4 0 0 1-8 0V3Z" fill="currentColor"/><path d="M8 5H4v2a4 4 0 0 0 4 4M16 5h4v2a4 4 0 0 1-4 4M12 12v5M8 21h8M9 17h6" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.1"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2.1"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></symbol>
+  <symbol id="i-shop" viewBox="0 0 24 24"><path d="M5 8h14l1.2 12.2a1.5 1.5 0 0 1-1.5 1.8H5.3a1.5 1.5 0 0 1-1.5-1.8L5 8Z" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="M8.5 9V6.5a3.5 3.5 0 0 1 7 0V9" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 20V4M5.5 10.5 12 4l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 4 8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3.5 13.5H10L9 22l9.5-11.5H12L13 2Z" fill="currentColor"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M12 7v5.3l3.4 2" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 2.5c.8 4.4 2.1 5.7 6.5 6.5-4.4.8-5.7 2.1-6.5 6.5-.8-4.4-2.1-5.7-6.5-6.5 4.4-.8 5.7-2.1 6.5-6.5ZM19 15c.4 2.2 1.1 2.9 3.3 3.3-2.2.4-2.9 1.1-3.3 3.3-.4-2.2-1.1-2.9-3.3-3.3 2.2-.4 2.9-1.1 3.3-3.3ZM5.5 16c.3 1.8.9 2.4 2.7 2.7-1.8.3-2.4.9-2.7 2.7-.3-1.8-.9-2.4-2.7-2.7 1.8-.3 2.4-.9 2.7-2.7Z" fill="currentColor"/></symbol>
+  <symbol id="i-brain" viewBox="0 0 24 24"><path d="M9.5 3.2A3.2 3.2 0 0 0 6.3 6.4 3.4 3.4 0 0 0 4 9.7c0 1.1.5 2 1.3 2.7A3.6 3.6 0 0 0 4 15.2 3.5 3.5 0 0 0 7.5 18.7c.2 1.3 1.2 2.3 2.6 2.3 1.5 0 2.4-1.1 2.4-2.5V5.7c0-1.4-.9-2.5-2.2-2.5H9.5ZM14.5 3.2a3.2 3.2 0 0 1 3.2 3.2 3.4 3.4 0 0 1 2.3 3.3c0 1.1-.5 2-1.3 2.7a3.6 3.6 0 0 1 1.3 2.8 3.5 3.5 0 0 1-3.5 3.5c-.2 1.3-1.2 2.3-2.6 2.3-1.5 0-2.4-1.1-2.4-2.5V5.7c0-1.4.9-2.5 2.2-2.5h.8Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2.2h7L17 8h3a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 20 20H4a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 4 8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="9.5" r="1.8" fill="currentColor"/><path d="m4 18 5.2-5.2 3.4 3.4 2.6-2.6L20 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2.5h7l5 5V21a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 5 21V4a1.5 1.5 0 0 1 1-1.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13 2.5v5.5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12.5 5.2 5.2L20 6.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="currentColor"/><path d="m8 12.2 2.8 2.8 5.4-5.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.2 22 20.5H2L12 3.2Z" fill="currentColor"/><path d="M12 9v5.2" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.2" fill="#fff"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 6.5h16M9 6.5V4h6v2.5M6.5 6.5 7.5 21h9l1-14.5M10 10.5v6M14 10.5v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 5v5h-5M4 19v-5h5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.5 10A8 8 0 0 0 5.8 6.8L4 10M4.5 14A8 8 0 0 0 18.2 17.2L20 14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 7.5 7.5 11 12 4l4.5 7L21 7.5 19 20H5L3 7.5Z" fill="currentColor"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5L7 4.5Z" fill="currentColor"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="m4.5 7 7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.5 20 6v6c0 4.7-3.3 8.2-8 9.5-4.7-1.3-8-4.8-8-9.5V6l8-3.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-basket" viewBox="0 0 24 24"><path d="M3 9h18l-2.2 10.2a1.5 1.5 0 0 1-1.5 1.2H6.7a1.5 1.5 0 0 1-1.5-1.2L3 9Z" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="m8 9 4-6 4 6M9 13v4M15 13v4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-google" viewBox="0 0 24 24"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.9h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.8 3-4.4 3-7.4Z" fill="#4285F4"/><path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22Z" fill="#34A853"/><path d="M6.4 14a6 6 0 0 1 0-3.9V7.5H3.1a10 10 0 0 0 0 9.1L6.4 14Z" fill="#FBBC05"/><path d="M12 6c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.5L6.4 10C7.2 7.8 9.4 6 12 6Z" fill="#EA4335"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.3 14.2A8.5 8.5 0 0 1 9.8 3.7a8.5 8.5 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></symbol>
+  <symbol id="i-signal" viewBox="0 0 24 24"><rect x="2" y="14" width="3" height="6" rx="1" fill="currentColor"/><rect x="7" y="10" width="3" height="10" rx="1" fill="currentColor"/><rect x="12" y="6" width="3" height="14" rx="1" fill="currentColor"/><rect x="17" y="2" width="3" height="18" rx="1" fill="currentColor"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2.5 8.5a15 15 0 0 1 19 0M5.5 12a10.5 10.5 0 0 1 13 0M8.5 15.5a6 6 0 0 1 7 0" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><circle cx="12" cy="19" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-battery" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="4" y="9" width="13" height="6" rx="1.2" fill="currentColor"/><path d="M22 10.5v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<!-- ============ HEADER ============ -->
+<header class="deck-head">
+  <div class="deck-head-inner">
+    <div class="deck-title">
+      <img class="deck-owl" src="assets/bingo-happy.png" alt="Bingo the owl">
+      <div>
+        <h1>Bolingo Learn — Jungle Expedition</h1>
+        <p>v2.1 · QD-OLED jungle · nine habitats, nine birds · interactive</p>
+      </div>
+    </div>
+    <div class="segmented" role="group" aria-label="Filter screens">
+      <button type="button" data-filter="all" aria-pressed="true">ALL · 9</button>
+      <button type="button" data-filter="app" aria-pressed="false">APP · 5</button>
+      <button type="button" data-filter="web" aria-pressed="false">WEB · 4</button>
+    </div>
+    <button class="theme-btn" id="theme-toggle" type="button" aria-label="Toggle light and dark mode">
+      <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><use href="#i-moon"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><use href="#i-sun"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="deck">
+
+  <!-- ============ INTRO ============ -->
+  <section class="intro">
+    <div>
+      <span class="eyebrow"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><use href="#i-zap"/></svg> WIREFRAMES → JUNGLE EXPEDITION</span>
+      <h2>Every flow from v1, now on the <span>jungle expedition</span>.</h2>
+      <p>The nine approved screens, completed as one bioluminescent rainforest. Every screen owns a bird and an accent pair — Kea on the Canopy Trail, Kingfisher at River Run, Swift at Mistfall, Peacock at Summit Pass, Bird of Paradise in Victory Glade — so the product feels like a single expedition with distinct camps. True-black OLED surfaces, quantum-dot colour, a living token builder, and real auth states.</p>
+      <div class="intro-chips">
+        <span class="chip"><i></i> 5 app screens</span>
+        <span class="chip"><i></i> 4 web screens</span>
+        <span class="chip purple"><i></i> 9 habitats · 9 birds</span>
+        <span class="chip amber"><i></i> QD-OLED jungle · true black</span>
+      </div>
+    </div>
+    <div class="intro-art">
+      <div class="halo"></div>
+      <img src="assets/bingo-happy.png" alt="Bingo the owl waving">
+    </div>
+  </section>
+
+  <!-- ============ APP SCREENS ============ -->
+  <section class="group" data-group="app" id="group-app">
+    <div class="group-head">
+      <h2>App — the learning loop</h2>
+      <p>Path → lesson → sandbox → paywall → results. The five screens the learner moves through on a phone, at 390 × 806.</p>
+      <span class="group-count">WF-APP-01 → 05</span>
+    </div>
+
+    <div class="screens">
+
+      <!-- APP 01 · PATH -->
+      <article class="shot" id="shot-path">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="notch"></div>
+            <div class="statusbar">
+              <span>9:41</span>
+              <span class="status-icons">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-signal"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wifi"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-battery"/></svg>
+              </span>
+            </div>
+
+            <div class="hud">
+              <span class="course-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-globe"/></svg> WEB</span>
+              <span class="hud-stat"><svg class="flame" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flame"/></svg> 12</span>
+              <span class="hud-stat"><svg class="gem" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg> 480</span>
+              <span class="hud-stat"><svg class="heart" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg> 5</span>
+              <button class="avatar-btn" type="button" aria-label="Your account">
+                <img src="assets/learner.svg" alt="Your learner avatar">
+              </button>
+            </div>
+
+            <div class="app-body">
+              <div class="unit-card">
+                <div class="unit-kicker">UNIT 3 · FOOD</div>
+                <div class="unit-title">
+                  <span class="unit-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-basket"/></svg></span>
+                  At the Market
+                </div>
+                <p>Order food, ask prices, be polite.</p>
+                <div class="progress"><i style="width:60%"></i></div>
+                <div class="unit-foot"><span>3 of 5 complete</span><span>+60 XP left</span></div>
+              </div>
+
+              <div class="path">
+                <div class="node-wrap">
+                  <span class="start-bubble">START</span>
+                  <button class="node active" type="button" data-goto="shot-lesson" aria-label="Start At the Market">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg>
+                  </button>
+                  <span class="node-label">At the market</span>
+                </div>
+                <div class="node-wrap" style="margin-left:-62px">
+                  <span class="node done"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book"/></svg></span>
+                  <span class="node-label">Market words</span>
+                </div>
+                <div class="node-wrap" style="margin-left:58px">
+                  <span class="node done"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-headphones"/></svg></span>
+                  <span class="node-label">Listen &amp; repeat</span>
+                </div>
+                <div class="node-wrap">
+                  <span class="node locked"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></span>
+                  <span class="node-label muted">Polite phrases</span>
+                </div>
+              </div>
+
+              <div class="upnext">
+                <span class="upnext-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>
+                <div style="flex:1">
+                  <div class="upnext-kicker"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow-up"/></svg> UP NEXT · 3 MIN</div>
+                  <div class="upnext-title">Greetings quiz</div>
+                  <div class="upnext-meta">Review · +10 XP</div>
+                </div>
+                <svg viewBox="0 0 24 24" width="18" height="18" style="color:var(--green-ink)" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+              </div>
+            </div>
+
+            <div class="tabbar">
+              <span class="tab on"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg> LEARN</span>
+              <span class="tab"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trophy"/></svg> LEAGUES</span>
+              <span class="tab"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg> QUESTS</span>
+              <span class="tab"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shop"/></svg> SHOP</span>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🦜 Kea · Canopy Trail</span>
+          <h4>WF-APP-01 · Learn path</h4>
+          <p>Snake nodes wind down the screen; the active node wears the <b>START</b> bubble and pulses. The unit header carries the guidebook and progress. The HUD uses the neutral learner silhouette; Livia's portrait belongs to the mentor, not the account. Tap the green node to jump to the lesson.</p>
+        </div>
+      </article>
+
+      <!-- APP 02 · LESSON -->
+      <article class="shot" id="shot-lesson">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="notch"></div>
+            <div class="statusbar">
+              <span>9:41</span>
+              <span class="status-icons">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-signal"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wifi"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-battery"/></svg>
+              </span>
+            </div>
+
+            <div class="lesson-top">
+              <button class="icon-round" type="button" aria-label="Close lesson" data-toggle-lesson>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
+              </button>
+              <span class="hearts-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg> 4</span>
+              <div class="lesson-track"><i style="width:65%"></i></div>
+            </div>
+
+            <div class="lesson-body">
+              <span class="combo"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> COMBO ×2</span>
+              <div class="lesson-kicker">Build the sentence</div>
+              <div class="prompt-card">
+                Build: <code>&lt;p&gt;Hello&lt;/p&gt;</code>
+                <small>Tap the tokens in order, then check.</small>
+              </div>
+
+              <div class="tokens" id="token-bank">
+                <button class="tok" type="button" data-token="&lt;p&gt;">&lt;p&gt;</button>
+                <button class="tok" type="button" data-token="Hello">Hello</button>
+                <button class="tok" type="button" data-token="&lt;/p&gt;">&lt;/p&gt;</button>
+                <button class="tok" type="button" data-token="&lt;div&gt;">&lt;div&gt;</button>
+                <button class="tok" type="button" data-token="Hi">Hi</button>
+              </div>
+
+              <div class="dropzone" id="dropzone">
+                <span class="dz-label">Your answer</span>
+                <span class="dz-blank" id="dz-empty">Tap a token to begin</span>
+              </div>
+
+              <div class="feedback" id="feedback" hidden></div>
+
+              <div class="lesson-cta">
+                <button class="btn btn-green" id="check-btn" type="button">CHECK ANSWER</button>
+              </div>
+            </div>
+
+            <button class="bingo-fab" type="button" aria-label="Ask Bingo for a hint" data-toast="Bingo: the closing tag must match the opening tag. You need one more token.">
+              <img src="assets/bingo-happy.png" alt="">
+            </button>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🐦 Kingfisher · River Run</span>
+          <h4>WF-APP-02 · Lesson player</h4>
+          <p>Hearts and progress on top, a token builder in the middle, one big CHECK. The tokens are live: tap <b>&lt;p&gt;</b>, <b>Hello</b> and <b>&lt;/p&gt;</b> then check. Bingo floats bottom-right with a grounded hint, and the ×2 combo rides above the prompt.</p>
+        </div>
+      </article>
+
+      <!-- APP 03 · SANDBOX -->
+      <article class="shot" id="shot-sandbox">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="notch"></div>
+            <div class="statusbar">
+              <span>9:41</span>
+              <span class="status-icons">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-signal"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wifi"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-battery"/></svg>
+              </span>
+            </div>
+
+            <div class="screen-head">
+              <div class="screen-kicker">Bingo AI</div>
+              <h2><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-brain"/></svg> AI Sandbox</h2>
+              <p>Snap notes or drop a file — Bingo builds a revision node on your path.</p>
+              <img class="sandbox-mascot" src="assets/bingo-happy.png" alt="">
+            </div>
+
+            <div class="sandbox-body">
+              <button class="scan dark" type="button" data-toast="Camera opens the document scanner and sends the page straight to Bingo.">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-camera"/></svg> Take photo
+              </button>
+              <button class="scan" type="button" data-toast="Gallery picks an image; Bingo OCRs it into a lesson.">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-image"/></svg> From gallery
+              </button>
+              <button class="scan dashed" type="button" data-toast="PDF, TXT and audio are Premium; TXT is free.">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg> Pick a file · PDF · TXT · Audio
+              </button>
+              <div class="scan-note">Premium: camera + gallery scan · PDF and audio uploads</div>
+
+              <div class="upload-list">
+                <div class="upl">
+                  <div class="upl-main">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-image"/></svg>
+                    <span class="upl-name">Scanned-notes-28-Oct.jpg</span>
+                    <span class="upl-state ready">● ready</span>
+                  </div>
+                </div>
+                <div class="upl">
+                  <div class="upl-main">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg>
+                    <span class="upl-name">Magical-child.pdf</span>
+                    <span class="upl-state failed">● failed</span>
+                    <span class="upl-actions">
+                      <button type="button" aria-label="Retry upload" data-toast="Retrying Magical-child.pdf — the file is re-queued."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-refresh"/></svg></button>
+                      <button type="button" aria-label="Delete upload" data-toast="Upload removed. No XP was spent."><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trash"/></svg></button>
+                    </span>
+                  </div>
+                  <div class="upl-reason"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-alert"/></svg> No extractable text — the PDF is a scan. Try the camera instead.</div>
+                </div>
+              </div>
+
+              <button class="btn btn-green" type="button" data-toast="Bingo is building your node — this usually takes 20–40 seconds.">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sparkles"/></svg> GENERATE MY NODE
+              </button>
+              <div class="sandbox-foot">One node per upload · free tier reads TXT up to 500 words</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🕊️ Swift · Mistfall</span>
+          <h4>WF-APP-03 · Scan &amp; uploads</h4>
+          <p>Premium camera and gallery entries sit above the classic file picker. Every row carries a live status; the failure shows the exact reason with retry and delete inline instead of a silent dead end.</p>
+        </div>
+      </article>
+
+      <!-- APP 04 · PAYWALL -->
+      <article class="shot" id="shot-paywall">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="notch"></div>
+            <div class="statusbar">
+              <span>9:41</span>
+              <span class="status-icons">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-signal"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wifi"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-battery"/></svg>
+              </span>
+            </div>
+
+            <div class="paywall">
+              <div class="wordmark">Bolingo Learn</div>
+              <div class="crown-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-crown"/></svg></div>
+              <h2>Go Premium</h2>
+              <p class="sub">Unlimited hearts, every upload, and Bingo's elite voices.</p>
+
+              <div class="compare">
+                <div class="crow head">
+                  <span></span>
+                  <span class="c-free">FREE</span>
+                  <span class="c-pro">PRO</span>
+                </div>
+                <div class="crow">
+                  <span class="c-label"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg> Hearts</span>
+                  <span class="c-free">5/day</span>
+                  <span class="c-pro">∞</span>
+                </div>
+                <div class="crow">
+                  <span class="c-label"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg> Uploads</span>
+                  <span class="c-free">Text</span>
+                  <span class="c-pro">PDF + audio</span>
+                </div>
+                <div class="crow">
+                  <span class="c-label"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-camera"/></svg> Scan notes</span>
+                  <span class="c-free">—</span>
+                  <span class="c-pro">✓</span>
+                </div>
+                <div class="crow">
+                  <span class="c-label"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-brain"/></svg> Roleplay</span>
+                  <span class="c-free">🔒</span>
+                  <span class="c-pro">✓</span>
+                </div>
+                <div class="crow">
+                  <span class="c-label"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-headphones"/></svg> Voices</span>
+                  <span class="c-free">Device</span>
+                  <span class="c-pro">Elite</span>
+                </div>
+              </div>
+
+              <div class="price-line"><b>$7.70</b><small>/ month · cancel anytime</small></div>
+              <button class="btn btn-amber" type="button" style="width:100%" data-toast="Checkout opens on iOS and Android. Web billing needs the RevenueCat key.">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-crown"/></svg> SUBSCRIBE
+              </button>
+              <button class="restore" type="button" data-toast="Purchases restored. Premium is active on this account.">Restore purchases</button>
+
+              <div class="store-note">
+                Store unavailable? This build shows an honest notice and a debug toggle — never a dead subscribe button.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🦚 Peacock · Summit Pass</span>
+          <h4>WF-APP-04 · Paywall</h4>
+          <p>The free-vs-Pro table comes first, then one amber subscribe button and restore beneath. The price is stated in the screen, and the store-unavailable fallback is part of the design rather than an afterthought.</p>
+        </div>
+      </article>
+
+      <!-- APP 05 · RESULTS -->
+      <article class="shot" id="shot-results">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="notch"></div>
+            <div class="statusbar">
+              <span>9:41</span>
+              <span class="status-icons">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-signal"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wifi"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-battery"/></svg>
+              </span>
+            </div>
+
+            <div class="results">
+              <img class="party-mascot" src="assets/bingo-party.png" alt="Bingo celebrating">
+              <h2>Lesson complete!</h2>
+              <p class="sub">Daily quest done · 3-minute bite</p>
+
+              <div class="xp-ring">
+                <div><b>+30</b><small>XP EARNED</small></div>
+              </div>
+
+              <div class="streak-card">
+                <span class="streak-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flame"/></svg></span>
+                <div>
+                  <b>12-day streak protected!</b>
+                  <span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-zap"/></svg> COMBO ×4 · UNSTOPPABLE</span>
+                </div>
+              </div>
+
+              <div class="guest-card">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg>
+                <span><b>Keep your 30 XP.</b> Create a free account and this result follows you to every device.</span>
+              </div>
+
+              <button class="btn btn-green" type="button" data-toast="Back to the path — the next node is already unlocked.">
+                CONTINUE <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🦚 Bird of Paradise · Victory Glade</span>
+          <h4>WF-APP-05 · Results</h4>
+          <p>Celebration first: Bingo, the XP ring, the streak flame and the combo. Pending guest winnings surface as a rescue card before signup, and one CONTINUE returns to the Path.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ WEB SCREENS ============ -->
+  <section class="group" data-group="web" id="group-web">
+    <div class="group-head">
+      <h2>Web — the same world, room to breathe</h2>
+      <p>Landing, three-column dashboard, pricing and auth. Livia's portrait carries the mentor through the hero and dashboard; the learner keeps a neutral avatar.</p>
+      <span class="group-count">WF-WEB-01 → 04</span>
+    </div>
+
+    <div class="screens web">
+
+      <!-- WEB 01 · LANDING -->
+      <article class="shot" id="shot-landing">
+        <div class="browser">
+          <div class="chrome">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url">bolingo.co.ke</span>
+          </div>
+          <div class="web">
+            <nav class="web-nav">
+              <a class="brand" href="#shot-landing">
+                <img src="assets/bingo-happy.png" alt="">
+                <span>Bolingo Learn<small>LANGUAGES · CODE · CHESS</small></span>
+              </a>
+              <div class="web-links">
+                <a href="#shot-landing" class="on">COURSES</a>
+                <a href="#shot-dashboard">LEADERBOARD</a>
+                <a href="#shot-pricing">PRICING</a>
+              </div>
+              <div class="web-actions">
+                <button class="btn btn-ghost" type="button" data-scroll="#shot-auth">I HAVE AN ACCOUNT</button>
+                <button class="btn btn-green" type="button" data-scroll="#shot-path">GET STARTED</button>
+              </div>
+            </nav>
+
+            <section class="hero">
+              <div class="hero-copy">
+                <span class="eyebrow"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><use href="#i-flame"/></svg> FREE FOREVER · 2–6 MINUTE LESSONS</span>
+                <h1>The fun way to learn <span>anything.</span></h1>
+                <p>Languages, code, chess — bite-sized lessons, streaks, leagues. Free forever, premium when you're hungry for more.</p>
+                <div class="hero-ctas">
+                  <button class="btn btn-green lg" type="button" data-scroll="#shot-path">START LEARNING — IT'S FREE</button>
+                  <button class="btn btn-ghost lg" type="button" data-toast="The 60-second tour: pick a course, finish one bite, keep the streak. That's the whole product.">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg> WATCH: HOW IT WORKS
+                  </button>
+                </div>
+                <div class="hero-proof">
+                  <img src="assets/learner.svg" alt="A Bolingo learner">
+                  <p><b>Join 42,000 learners</b> — 1,200 finished a lesson today</p>
+                </div>
+              </div>
+
+              <div class="hero-art">
+                <div class="hero-blob"></div>
+                <img class="hero-owl" src="assets/bingo-happy.png" alt="Bingo, the Bolingo owl">
+                <div class="float-card streak">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flame"/></svg>
+                  <span>12-day streak</span>
+                </div>
+                <div class="float-card mentor">
+                  <img src="assets/mentor.png" alt="Livia, your mentor">
+                  <span>Livia<small>Your mentor</small></span>
+                </div>
+                <div class="float-card xp">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg>
+                  <span>+480 XP this week</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="courses">
+              <div class="course">
+                <div class="course-badge es">ES</div>
+                <b>Spanish</b>
+                <span>42k learners</span>
+              </div>
+              <div class="course">
+                <div class="course-badge fr">FR</div>
+                <b>French</b>
+                <span>31k learners</span>
+              </div>
+              <div class="course">
+                <div class="course-badge web">&lt;/&gt;</div>
+                <b>Web Dev</b>
+                <span>28k learners</span>
+              </div>
+              <div class="course">
+                <div class="course-badge chess">♟</div>
+                <b>Chess</b>
+                <span>19k learners</span>
+              </div>
+            </section>
+
+            <div class="strip">
+              <span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flame"/></svg> 1.2M-day streak record</span>
+              <span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg> 4.9 learner rating</span>
+              <span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-globe"/></svg> 120+ countries</span>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🦜 Kea · Canopy Trail</span>
+          <h4>WF-WEB-01 · Landing</h4>
+          <p>Hero: Bingo in the green halo, one promise, one primary CTA. Livia's portrait floats beside him as your mentor, while the neutral learner avatar carries the social-proof row — the product feels inhabited, not stock. Course cards and the credibility strip carry the social proof.</p>
+        </div>
+      </article>
+
+      <!-- WEB 02 · DASHBOARD -->
+      <article class="shot" id="shot-dashboard">
+        <div class="browser">
+          <div class="chrome">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url">bolingo.co.ke/learn</span>
+          </div>
+          <div class="web">
+            <div class="dash-hud">
+              <a class="brand" href="#shot-dashboard">
+                <img src="assets/bingo-happy.png" alt="">
+                <span>Bolingo<small>Learn</small></span>
+              </a>
+              <span class="course-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-globe"/></svg> WEB</span>
+              <div class="hud-stats">
+                <span class="hud-stat"><svg class="flame" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flame"/></svg> 12</span>
+                <span class="hud-stat"><svg class="gem" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg> 480</span>
+                <span class="hud-stat"><svg class="heart" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg> 5</span>
+                <button class="avatar-btn" type="button" aria-label="Your account">
+                  <img src="assets/learner.svg" alt="Your learner avatar">
+                </button>
+              </div>
+            </div>
+
+            <div class="cols">
+              <aside class="sidenav">
+                <a class="snav on" href="#shot-dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg> Learn</a>
+                <a class="snav" href="#shot-dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trophy"/></svg> Leaderboard</a>
+                <a class="snav" href="#shot-dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg> Quests</a>
+                <a class="snav" href="#shot-dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shop"/></svg> Shop</a>
+                <a class="snav" href="#shot-auth"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg> Profile</a>
+
+                <div class="quest-card">
+                  <b>Daily quest · 10 min</b>
+                  <div class="quest-title"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flame"/></svg> Keep the streak</div>
+                  <div class="quest-done"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check-circle"/></svg> Quest complete! 🎉</div>
+                  <div class="quest-track"><i></i></div>
+                </div>
+              </aside>
+
+              <div class="dash-path">
+                <div class="mini-unit">
+                  <span class="unit-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-basket"/></svg></span>
+                  <div><b>Unit 3 · At the Market</b><span>Order food, ask prices, be polite.</span></div>
+                  <span class="mini-check">60%</span>
+                </div>
+
+                <div class="path">
+                  <div class="node-wrap">
+                    <span class="start-bubble">START</span>
+                    <button class="node active" type="button" data-goto="shot-lesson" aria-label="Start At the Market">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg>
+                    </button>
+                    <span class="node-label">At the market</span>
+                  </div>
+                  <div class="node-wrap" style="margin-left:-44px">
+                    <span class="node done"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book"/></svg></span>
+                    <span class="node-label">Market words</span>
+                  </div>
+                  <div class="node-wrap" style="margin-left:42px">
+                    <span class="node done"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-headphones"/></svg></span>
+                    <span class="node-label">Listen &amp; repeat</span>
+                  </div>
+                  <div class="node-wrap">
+                    <span class="node locked"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></span>
+                    <span class="node-label muted">Polite phrases</span>
+                  </div>
+                </div>
+
+                <div class="upnext">
+                  <span class="upnext-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>
+                  <div style="flex:1">
+                    <div class="upnext-kicker">UP NEXT · 3 MIN</div>
+                    <div class="upnext-title">Greetings quiz</div>
+                    <div class="upnext-meta">Review · +10 XP</div>
+                  </div>
+                  <svg viewBox="0 0 24 24" width="17" height="17" style="color:var(--green-ink)" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+                </div>
+              </div>
+
+              <aside class="rpanel">
+                <div class="rcard">
+                  <h5><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg> This week</h5>
+                  <div class="rrow" style="align-items:center;gap:8px">
+                    <img src="assets/learner.svg" alt="" style="width:28px;height:28px;border-radius:50%">
+                    <span>You<b style="margin-left:auto">+230 XP</b></span>
+                  </div>
+                  <div class="rrow"><svg style="color:#f97316" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flame"/></svg> Streak <b>12 days</b></div>
+                  <div class="rrow"><svg style="color:var(--blue)" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg> Total XP <b>480</b></div>
+                  <div class="rrow"><svg style="color:var(--red)" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg> Hearts <b>5 / 5</b></div>
+                </div>
+
+                <div class="rcard mentor">
+                  <h5><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg> Your mentor</h5>
+                  <div class="mentor-row">
+                    <img src="assets/mentor.png" alt="Livia, your mentor">
+                    <div><b>Livia</b><span>Replies in ~2 min</span></div>
+                  </div>
+                  <p>“You're two nodes from a 13-day streak. Want a two-minute review?”</p>
+                  <button class="btn btn-green" type="button" data-toast="Livia opens a guided review of your last three mistakes.">ASK LIVIA</button>
+                </div>
+
+                <div class="rcard ai">
+                  <h5><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-brain"/></svg> AI Sandbox</h5>
+                  <p>Turn your own notes, PDFs or photos into path nodes.</p>
+                  <button class="btn btn-dark" type="button" data-toast="The sandbox opens as a full-screen drop zone on web.">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sparkles"/></svg> OPEN SANDBOX
+                  </button>
+                </div>
+
+                <div class="rcard prem">
+                  <h5><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-crown"/></svg> Go Premium</h5>
+                  <p>Unlimited hearts, PDF + scan + elite voices. $7.70/mo.</p>
+                  <button class="btn btn-amber" type="button" data-scroll="#shot-pricing">SEE PLANS</button>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🦜 Quetzal · Scholar's Grove</span>
+          <h4>WF-WEB-02 · Learn dashboard</h4>
+          <p>Three columns: nav rail with the daily quest, the centered snake path, and a right panel for the learner's week, Livia's mentor card, the AI Sandbox and the premium upsell. The path mirrors the app 1:1 so progress feels continuous across devices.</p>
+        </div>
+      </article>
+
+      <!-- WEB 03 · PRICING -->
+      <article class="shot" id="shot-pricing">
+        <div class="browser">
+          <div class="chrome">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url">bolingo.co.ke/premium</span>
+          </div>
+          <div class="web">
+            <nav class="web-nav">
+              <a class="brand" href="#shot-landing">
+                <img src="assets/bingo-happy.png" alt="">
+                <span>Bolingo Learn<small>LANGUAGES · CODE · CHESS</small></span>
+              </a>
+              <div class="web-links">
+                <a href="#shot-landing">COURSES</a>
+                <a href="#shot-dashboard">LEADERBOARD</a>
+                <a href="#shot-pricing" class="on">PRICING</a>
+              </div>
+              <div class="web-actions">
+                <button class="btn btn-ghost" type="button" data-scroll="#shot-auth">SIGN IN</button>
+                <button class="btn btn-green" type="button" data-scroll="#shot-path">START FREE</button>
+              </div>
+            </nav>
+
+            <div class="price-head">
+              <h1>Simple pricing. Serious progress.</h1>
+              <p>The same free-vs-Pro contract as the app — no surprise paywalls mid-lesson, no ads, no expiring streak freezes.</p>
+            </div>
+
+            <div class="price-grid">
+              <div class="price">
+                <h3>Free</h3>
+                <div class="amount">$0</div>
+                <div class="per">forever</div>
+                <ul>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> 5 hearts a day</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> Text uploads up to 500 words</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> Device voice on every prompt</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> Streaks, leagues, daily quests</li>
+                  <li class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg> Roleplay with Bingo</li>
+                </ul>
+                <button class="btn btn-ghost" type="button" data-scroll="#shot-path">STAY FREE</button>
+              </div>
+
+              <div class="price pro">
+                <span class="ribbon">MOST POPULAR</span>
+                <h3><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-crown"/></svg> Premium</h3>
+                <div class="amount">$7.70<span>/mo</span></div>
+                <div class="per">cancel anytime · restore on any device</div>
+                <ul>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> Unlimited hearts</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> PDF + audio uploads</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> Scan notes with Bingo</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> Elite voices + roleplay</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg> Keep every path node you make</li>
+                </ul>
+                <button class="btn btn-amber" type="button" data-toast="Web checkout opens RevenueCat Web Billing. Without the key, this routes to the mobile apps.">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-crown"/></svg> SUBSCRIBE
+                </button>
+                <a class="restore" href="#shot-pricing" data-toast="Purchases restored. Premium is active on this account.">Restore purchases</a>
+              </div>
+            </div>
+
+            <p class="price-note">Web checkout uses RevenueCat Web Billing. If the key is missing, the page honestly routes learners to the iOS and Android apps instead of showing a dead button. Mobile purchases are restored here automatically by email.</p>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🦚 Peacock · Summit Pass</span>
+          <h4>WF-WEB-03 · Pricing</h4>
+          <p>Same Free-vs-Pro contract as the app (parity = trust), with the price visible, one primary button, and restore right beneath it. The honest store-unavailable path is written into the page.</p>
+        </div>
+      </article>
+
+      <!-- WEB 04 · AUTH -->
+      <article class="shot" id="shot-auth">
+        <div class="browser">
+          <div class="chrome">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url">bolingo.co.ke/auth</span>
+          </div>
+          <div class="web">
+            <nav class="web-nav">
+              <a class="brand" href="#shot-landing">
+                <img src="assets/bingo-happy.png" alt="">
+                <span>Bolingo Learn<small>LANGUAGES · CODE · CHESS</small></span>
+              </a>
+              <div class="web-links">
+                <a href="#shot-landing">COURSES</a>
+                <a href="#shot-dashboard">LEADERBOARD</a>
+                <a href="#shot-pricing">PRICING</a>
+              </div>
+              <div class="web-actions">
+                <button class="btn btn-ghost" type="button" data-scroll="#shot-landing">BACK TO LEARN</button>
+              </div>
+            </nav>
+
+            <div class="auth-wrap">
+              <!-- signed out -->
+              <div class="auth-card" id="auth-out">
+                <div class="auth-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></div>
+                <h2>Welcome back</h2>
+                <p class="sub">Sync XP, uploads and streaks everywhere.</p>
+                <div class="field">
+                  <label for="email">Email</label>
+                  <input id="email" type="email" value="you@example.com" autocomplete="email">
+                </div>
+                <div class="field">
+                  <label for="password">Password</label>
+                  <input id="password" type="password" value="bolingo12" autocomplete="current-password">
+                </div>
+                <button class="btn btn-green" type="button" data-auth="in">SIGN IN</button>
+                <a class="forgot" href="#shot-auth" data-toast="Password reset email sent — the link returns here.">Forgot password?</a>
+                <div class="or">OR</div>
+                <button class="btn btn-ghost google-btn" type="button" data-toast="Google OAuth opens the system browser; accounts link automatically when emails match.">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-google"/></svg> Continue with Google
+                </button>
+                <p class="auth-switch">New here? <button type="button" data-auth="in">Create an account</button></p>
+                <p class="auth-switch" style="margin-top:8px">Preview the signed-in state: <button type="button" data-auth="in">sign in →</button></p>
+              </div>
+
+              <!-- signed in -->
+              <div class="auth-card" id="auth-in" hidden>
+                <img class="auth-avatar" src="assets/learner.svg" alt="Your learner avatar">
+                <h2>Your account</h2>
+                <p class="sub">you@example.com</p>
+                <div class="plan-chip">FREE PLAN · <a href="#shot-pricing">GO PREMIUM</a></div>
+                <div class="auth-stats">
+                  <div class="auth-stat"><b>480</b><span>XP</span></div>
+                  <div class="auth-stat"><b>12</b><span>Streak</span></div>
+                  <div class="auth-stat"><b>5</b><span>Hearts</span></div>
+                </div>
+                <button class="btn btn-green" type="button" data-scroll="#shot-dashboard">BACK TO LEARN</button>
+                <button class="btn btn-ghost" type="button" data-auth="out">SIGN OUT</button>
+                <p class="auth-switch">Signed in as you · <button type="button" data-auth="out">switch preview</button></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <span class="bird-tag">🐦 Sunbird · Trailhead Gate</span>
+          <h4>WF-WEB-04 · Auth</h4>
+          <p>Email and Google side by side; accounts link automatically when emails match. Signed-in state swaps to the neutral learner avatar, account details, plan card and stats. The “sign in” links toggle both states live.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <footer class="deck-foot">
+    <span>Standalone design deck · nothing here is imported by the app · source spec in <a href="v1/app.html">v1/app.html</a> and <a href="v1/web.html">v1/web.html</a></span>
+    <span>Bolingo Learn · Jungle Expedition · October 2026</span>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

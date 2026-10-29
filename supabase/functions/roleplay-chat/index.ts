@@ -11,6 +11,7 @@
 // Requires: LLM_API_KEY. Honors LLM_BASE_URL / LLM_MODEL overrides.
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const LLM_BASE_URL = Deno.env.get('LLM_BASE_URL') ?? 'https://api.deepseek.com/chat/completions';
 const LLM_MODEL = Deno.env.get('LLM_MODEL') ?? 'deepseek-chat';
@@ -94,6 +95,30 @@ async function chatComplete(
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
+    // Server-side Premium gate: the client UI hides Roleplay for free users,
+    // but the costly LLM call must also refuse them here (direct invokes
+    // bypass the app). Free → 402, premium/missing-profile → normal flow.
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+    const jwt = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '');
+    if (supabaseUrl && serviceKey && jwt) {
+      try {
+        const supabase = createClient(supabaseUrl, serviceKey);
+        const { data: { user } } = await supabase.auth.getUser(jwt);
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('is_premium')
+            .eq('id', user.id)
+            .single();
+          if ((profile as { is_premium?: boolean } | null)?.is_premium !== true) {
+            return json({ error: 'Roleplay is a Premium perk — upgrade to continue.', premium_required: true }, 402);
+          }
+        }
+      } catch (gateErr) {
+        console.warn('Premium gate check skipped:', gateErr);
+      }
+    }
     const { scenarioId, history } = (await req.json()) as {
       scenarioId?: string;
       history?: Array<{ role?: string; content?: string }>;

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
+import { View, Pressable, ScrollView, Alert } from 'react-native';
+import Text from './ui/Text';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { getProfile, grantHearts, nextHeartIn, refillWaitRemaining, MAX_HEARTS, type Profile } from '../lib/progress';
+import AppIcon from './AppIcon';
 import { isTestAd } from '../lib/ads';
 
 export interface RewardHook {
@@ -83,21 +85,41 @@ export function RefillView({
   };
 
   return (
-    <ScrollView contentContainerClassName="flex-grow items-center bg-white px-6 py-12">
-      <Text className="text-5xl">💔</Text>
-      <Text className="mt-2 text-2xl font-extrabold text-slate-900">Out of hearts!</Text>
-      <Text className="mt-1 text-center text-base text-slate-500">
-        Mistakes cost hearts. Refill to keep your streak alive.
-      </Text>
+    <ScrollView contentContainerClassName="flex-grow items-center px-6 py-12">
+      {isPremium ? (
+        <View className="mt-2 w-full max-w-sm items-center rounded-3xl border-2 border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-4">
+          <View className="flex-row items-center justify-center gap-1.5">
+            <AppIcon name="crown" size={22} color="#B45309" />
+            <Text className="text-lg font-extrabold text-amber-700 dark:text-amber-300">Premium active — unlimited hearts</Text>
+          </View>
+          <Text className="mt-1 text-center text-sm text-amber-800/80">Wrong answers never stop you. Keep the streak alive.</Text>
+        </View>
+      ) : (
+        <>
+          <View className="h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-950">
+            <AppIcon name="heart" size={30} color="#EF4444" />
+          </View>
+          <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">Out of hearts!</Text>
+          <Text className="mt-1 text-center text-base text-slate-500 dark:text-slate-400">
+            Mistakes cost hearts. Refill to keep your streak alive.
+          </Text>
+        </>
+      )}
 
-      <Text className="mt-4 text-xl font-extrabold text-slate-800">
-        ❤ {hearts}/{MAX_HEARTS}
-      </Text>
+      <View className="mt-4 flex-row items-center gap-1.5">
+        <AppIcon name="heart" size={22} color="#EF4444" />
+        <Text className="text-xl font-extrabold text-slate-800 dark:text-slate-200">
+          {hearts}/{MAX_HEARTS}
+        </Text>
+      </View>
 
       {/* Option 1: rewarded ad → +1 heart on EARNED_REWARD */}
-      <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-200 bg-slate-50 p-5">
-        <Text className="text-lg font-bold text-slate-800">📺 Watch an ad → +1 heart</Text>
-        <Text className="mt-1 text-xs text-slate-400">
+      <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5">
+        <View className="flex-row items-center gap-1.5">
+          <AppIcon name="play" size={20} color="#0F172A" />
+          <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">Watch an ad · +1 heart</Text>
+        </View>
+        <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">
           {!available
             ? 'Needs a native dev build (unavailable in Expo Go / web).'
             : isTestAd
@@ -107,7 +129,7 @@ export function RefillView({
         <Pressable
           onPress={watchAd}
           disabled={showing || (available && !loaded)}
-          className={`mt-3 items-center rounded-2xl py-3 ${showing || (available && !loaded) ? 'bg-slate-300' : 'bg-blue-500'}`}
+          className={`mt-3 items-center rounded-2xl py-3 ${showing || (available && !loaded) ? 'bg-slate-300 dark:bg-slate-700' : 'bg-blue-500'}`}
         >
           <Text className="font-extrabold text-white">
             {!available ? 'Ads need dev build' : showing ? 'Ad playing…' : loaded ? 'Watch ad' : 'Loading ad…'}
@@ -116,9 +138,12 @@ export function RefillView({
       </View>
 
       {/* Option 2: wait */}
-      <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-slate-200 bg-slate-50 p-5">
-        <Text className="text-lg font-bold text-slate-800">⏳ Wait for free refill</Text>
-        <Text className="mt-2 text-base text-slate-600">
+      <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5">
+        <View className="flex-row items-center gap-1.5">
+          <AppIcon name="time" size={20} color="#0F172A" />
+          <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">Wait for free refill</Text>
+        </View>
+        <Text className="mt-2 text-base text-slate-600 dark:text-slate-400">
           {isPremium
             ? 'Premium: your hearts never run out.'
             : nextMs > 0
@@ -130,16 +155,19 @@ export function RefillView({
       </View>
 
       {/* Option 3: premium */}
-      <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-amber-300 bg-amber-50 p-5">
-        <Text className="text-lg font-bold text-slate-800">👑 Go Premium</Text>
-        <Text className="mt-1 text-base text-slate-600">Unlimited hearts, offline audiobooks, no ads.</Text>
+      <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-5">
+        <View className="flex-row items-center gap-1.5">
+          <AppIcon name="crown" size={20} color="#0F172A" />
+          <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">Go Premium</Text>
+        </View>
+        <Text className="mt-1 text-base text-slate-600 dark:text-slate-400">Unlimited hearts, offline audiobooks, no ads.</Text>
         <Pressable onPress={() => router.push('/paywall')} className="mt-3 items-center rounded-2xl bg-amber-500 py-3">
           <Text className="font-extrabold text-white">Upgrade</Text>
         </Pressable>
       </View>
 
       <Pressable onPress={() => router.replace('/')} className="mt-6 items-center rounded-2xl bg-green-500 px-8 py-4">
-        <Text className="text-lg font-extrabold text-white">{hearts > 0 ? 'Back to lesson ❤' : 'Back'}</Text>
+        <Text className="text-lg font-extrabold text-white">{hearts > 0 ? 'Back to lesson' : 'Back'}</Text>
       </Pressable>
       <StatusBar style="auto" />
     </ScrollView>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 230" width="200" height="230" role="img" aria-label="Zora coder">
+  <g id="fade-cut">
+    <rect x="32" y="8" width="136" height="68" rx="32" fill="#111827"/>
+    <rect x="48" y="24" width="104" height="16" rx="8" fill="#374151"/>
+  </g>
+  <ellipse id="face" cx="100" cy="112" rx="72" ry="60" fill="#6B4423"/>
+  <g id="eyes">
+    <circle cx="64" cy="96" r="22" fill="#fff"/>
+    <circle cx="136" cy="96" r="22" fill="#fff"/>
+    <circle cx="64" cy="91" r="10" fill="#111827"/>
+    <circle cx="136" cy="91" r="10" fill="#111827"/>
+  </g>
+  <g id="mouth-happy"><rect x="78" y="136" width="44" height="20" rx="10" fill="#7C2D12"/></g>
+  <g id="tee">
+    <rect x="40" y="178" width="120" height="52" rx="20" fill="#16A34A"/>
+    <rect x="40" y="178" width="120" height="14" rx="7" fill="#FBBF24"/>
+    <rect x="80" y="204" width="40" height="22" rx="4" fill="#fff"/>
+  </g>
+  <rect id="arm-wave" x="6" y="174" width="26" height="52" rx="13" fill="#6B4423"/>
+</svg>

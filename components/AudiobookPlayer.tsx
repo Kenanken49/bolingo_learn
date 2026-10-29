@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Pressable, ScrollView } from 'react-native';
+import Text from './ui/Text';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import type { AudioSegment } from '../lib/audiobook';
 import { speakFree, stopFree } from '../lib/voice';
+import AppIcon from './AppIcon';
 
 interface Props {
   title: string;
@@ -17,8 +19,8 @@ interface Props {
 export default function AudiobookPlayer(props: Props) {
   if (props.segments.length === 0 && !props.fullUrl && !props.freeMode) {
     return (
-      <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-200 bg-slate-50 p-5">
-        <Text className="text-base text-slate-600">
+      <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5">
+        <Text className="text-base text-slate-600 dark:text-slate-400">
           No audio yet — upload material and wait for the pipeline to finish generating the audiobook.
         </Text>
         <Pressable onPress={props.onClose} className="mt-3 items-center rounded-2xl bg-slate-800 py-3">
@@ -52,32 +54,34 @@ function FreePlayer({ title, segments, onClose }: Props) {
   };
 
   return (
-    <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-300 bg-white p-5">
+    <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
       <View className="flex-row items-center justify-between">
-        <Text className="flex-1 text-lg font-extrabold text-slate-800" numberOfLines={1}>
-          🎧 {title}
+        <AppIcon name="headset" size={22} color="#0F172A" />
+        <Text className="ml-2 flex-1 text-lg font-extrabold text-slate-800 dark:text-slate-200" numberOfLines={1}>
+          {title}
         </Text>
-        <Pressable onPress={() => { stopFree(); onClose(); }} className="ml-2 rounded-full bg-slate-100 px-3 py-1">
-          <Text className="font-bold text-slate-600">✕</Text>
+        <Pressable onPress={() => { stopFree(); onClose(); }} className="ml-2 rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1.5">
+          <AppIcon name="close" size={16} color="#475569" />
         </Pressable>
       </View>
-      <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400">Device voice (free)</Text>
+      <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Device voice (free)</Text>
       <ScrollView className="mt-3 max-h-64">
         {prompts.map((p, i) => (
           <Pressable
             key={i}
             onPress={() => go(i)}
-            className={`mb-2 rounded-2xl border-2 p-3 ${i === index ? 'border-slate-500 bg-slate-100' : 'border-slate-200 bg-slate-50'}`}
+            className={`mb-2 rounded-2xl border-2 p-3 ${i === index ? 'border-slate-500 bg-slate-100 dark:bg-slate-800' : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900'}`}
           >
-            <Text className={`text-base ${i === index ? 'font-bold text-slate-900' : 'text-slate-600'}`}>
-              {i === index ? '▶ ' : ''}{p}
-            </Text>
+            <View className="flex-row items-center gap-2">
+              {i === index ? <AppIcon name="play" size={14} color="#0F172A" /> : null}
+              <Text className={`flex-1 text-base ${i === index ? 'font-bold text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>{p}</Text>
+            </View>
           </Pressable>
         ))}
       </ScrollView>
       <View className="mt-2 flex-row items-center justify-between">
-        <Pressable onPress={() => go(index - 1)} className="rounded-full bg-slate-100 px-4 py-2">
-          <Text className="text-lg font-bold text-slate-700">⏮</Text>
+        <Pressable onPress={() => go(index - 1)} className="rounded-full bg-slate-100 dark:bg-slate-800 px-4 py-2">
+          <AppIcon name="prev" size={20} color="#334155" />
         </Pressable>
         <Pressable
           onPress={() => {
@@ -91,10 +95,13 @@ function FreePlayer({ title, segments, onClose }: Props) {
           }}
           className="items-center rounded-full bg-slate-700 px-8 py-3"
         >
-          <Text className="text-lg font-extrabold text-white">{playing ? '⏸ Pause' : '▶ Play'}</Text>
+          <View className="flex-row items-center justify-center gap-2">
+            <AppIcon name={playing ? 'pause' : 'play'} size={20} color="#FFFFFF" />
+            <Text className="text-lg font-extrabold text-white">{playing ? 'Pause' : 'Play'}</Text>
+          </View>
         </Pressable>
-        <Pressable onPress={() => go(index + 1)} className="rounded-full bg-slate-100 px-4 py-2">
-          <Text className="text-lg font-bold text-slate-700">⏭</Text>
+        <Pressable onPress={() => go(index + 1)} className="rounded-full bg-slate-100 dark:bg-slate-800 px-4 py-2">
+          <AppIcon name="next" size={20} color="#334155" />
         </Pressable>
       </View>
     </View>
@@ -134,13 +141,14 @@ function PlayerInner({ title, segments, fullUrl, onClose }: Props) {
     s == null || !isFinite(s) ? '--:--' : `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
   return (
-    <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-green-500 bg-white p-5">
+    <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-green-500 bg-white dark:bg-slate-900 p-5">
       <View className="flex-row items-center justify-between">
-        <Text className="flex-1 text-lg font-extrabold text-slate-800" numberOfLines={1}>
-          🎧 {title}
+        <AppIcon name="headset" size={22} color="#0F172A" />
+        <Text className="ml-2 flex-1 text-lg font-extrabold text-slate-800 dark:text-slate-200" numberOfLines={1}>
+          {title}
         </Text>
-        <Pressable onPress={() => { player.pause(); onClose(); }} className="ml-2 rounded-full bg-slate-100 px-3 py-1">
-          <Text className="font-bold text-slate-600">✕</Text>
+        <Pressable onPress={() => { player.pause(); onClose(); }} className="ml-2 rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1.5">
+          <AppIcon name="close" size={16} color="#475569" />
         </Pressable>
       </View>
 
@@ -150,32 +158,33 @@ function PlayerInner({ title, segments, fullUrl, onClose }: Props) {
             key={q.id + i}
             onPress={() => go(i)}
             className={`mb-2 rounded-2xl border-2 p-3 ${
-              i === index ? 'border-green-500 bg-green-50' : 'border-slate-200 bg-slate-50'
+              i === index ? 'border-green-500 bg-green-50 dark:bg-green-950' : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900'
             }`}
           >
-            <Text className={`text-base ${i === index ? 'font-bold text-slate-900' : 'text-slate-600'}`}>
-              {i === index ? '▶ ' : ''}
-              {q.prompt}
-            </Text>
+            <View className="flex-row items-center gap-2">
+              {i === index ? <AppIcon name="play" size={14} color="#0F172A" /> : null}
+              <Text className={`flex-1 text-base ${i === index ? 'font-bold text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>{q.prompt}</Text>
+            </View>
           </Pressable>
         ))}
       </ScrollView>
 
       <View className="mt-2 flex-row items-center justify-between">
-        <Pressable onPress={() => go(index - 1)} className="rounded-full bg-slate-100 px-4 py-2">
-          <Text className="text-lg font-bold text-slate-700">⏮</Text>
+        <Pressable onPress={() => go(index - 1)} className="rounded-full bg-slate-100 dark:bg-slate-800 px-4 py-2">
+          <AppIcon name="prev" size={20} color="#334155" />
         </Pressable>
         <Pressable
           onPress={() => (status.playing ? player.pause() : player.play())}
-          className="items-center rounded-full bg-green-500 px-8 py-3"
+          className="flex-row items-center justify-center gap-2 rounded-full bg-green-500 px-8 py-3"
         >
-          <Text className="text-lg font-extrabold text-white">{status.playing ? '⏸ Pause' : '▶ Play'}</Text>
+          <AppIcon name={status.playing ? 'pause' : 'play'} size={20} color="#FFFFFF" />
+          <Text className="text-lg font-extrabold text-white">{status.playing ? 'Pause' : 'Play'}</Text>
         </Pressable>
-        <Pressable onPress={() => go(index + 1)} className="rounded-full bg-slate-100 px-4 py-2">
-          <Text className="text-lg font-bold text-slate-700">⏭</Text>
+        <Pressable onPress={() => go(index + 1)} className="rounded-full bg-slate-100 dark:bg-slate-800 px-4 py-2">
+          <AppIcon name="next" size={20} color="#334155" />
         </Pressable>
       </View>
-      <Text className="mt-2 text-center text-sm text-slate-500">
+      <Text className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
         Block {index + 1}/{queue.length} • {fmt(status.currentTime)} / {fmt(status.duration)}
       </Text>
     </View>

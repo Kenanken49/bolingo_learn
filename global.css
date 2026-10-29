@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* Roboto is the platform typeface. Text components set their own weighted
+     face; this keeps bare HTML (and any pre-hydration frame) on the same one. */
+  html,
+  body {
+    font-family: 'Roboto', 'Roboto_400Regular', system-ui, sans-serif;
+  }
+}

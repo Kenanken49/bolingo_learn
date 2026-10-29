@@ -18,13 +18,16 @@ import { completeLesson } from './progress';
 const K_GOAL = 'bolingo.goal';
 const K_ONBOARDED = 'bolingo.onboarded';
 const K_QUIZ_INTRO = 'bolingo.quizIntroSeen';
+const K_QUIZ_INTRO_LANG = 'bolingo.quizIntroSeen.lang';
 const K_HEARTS_INTRO = 'bolingo.heartsIntroSeen';
 const K_PENDING = 'bolingo.pendingGuestResult';
 
 export const GOALS = [
-  { id: 'websites', icon: '🌐', label: 'Build websites' },
-  { id: 'style', icon: '🎨', label: 'Style pages' },
-  { id: 'explore', icon: '👀', label: 'Just exploring' },
+  { id: 'rwd', label: 'Responsive Web Design', icon: 'globe' },
+  { id: 'code', label: 'Programming Languages', icon: 'code' },
+  { id: 'linux', label: 'Learn Linux OS', icon: 'linux' },
+  { id: 'lang', label: 'Learn Languages', icon: 'chat' },
+  { id: 'explore', label: 'Explore', icon: 'eye' },
 ] as const;
 
 export type GoalId = (typeof GOALS)[number]['id'];
@@ -45,7 +48,10 @@ async function set(key: string, value: string): Promise<void> {
 
 export async function getGoal(): Promise<GoalId | null> {
   const g = await get(K_GOAL);
-  return g === 'websites' || g === 'style' || g === 'explore' ? g : null;
+  if (g === 'rwd' || g === 'code' || g === 'linux' || g === 'lang' || g === 'explore') return g;
+  // Migrate legacy goals from the 3-option picker.
+  if (g === 'websites' || g === 'style') return 'rwd';
+  return null;
 }
 
 export async function setGoal(goal: GoalId): Promise<void> {
@@ -53,7 +59,16 @@ export async function setGoal(goal: GoalId): Promise<void> {
 }
 
 export function goalLabel(goal: GoalId | null): string {
-  return GOALS.find((g) => g.id === goal)?.label ?? 'Learn to code';
+  return GOALS.find((g) => g.id === goal)?.label ?? 'Explore';
+}
+
+/** Maps an onboarding goal to its Duo-style course on the Path. */
+export function goalToCourse(goal: GoalId | null): string | null {
+  if (goal === 'rwd') return 'rwd';
+  if (goal === 'code') return 'certs';
+  if (goal === 'linux') return 'linux';
+  if (goal === 'lang') return 'lang';
+  return null;
 }
 
 export async function hasOnboarded(): Promise<boolean> {
@@ -64,12 +79,16 @@ export async function markOnboarded(): Promise<void> {
   await set(K_ONBOARDED, '1');
 }
 
-export async function hasSeenQuizIntro(): Promise<boolean> {
-  return (await get(K_QUIZ_INTRO)) === '1';
+/** Coach marks are per track: Zora introduces code lessons, Livia introduces
+ *  language lessons, so a learner meets the right guide in each domain. */
+export type QuizTrack = 'code' | 'lang';
+
+export async function hasSeenQuizIntro(track: QuizTrack = 'code'): Promise<boolean> {
+  return (await get(track === 'lang' ? K_QUIZ_INTRO_LANG : K_QUIZ_INTRO)) === '1';
 }
 
-export async function markQuizIntroSeen(): Promise<void> {
-  await set(K_QUIZ_INTRO, '1');
+export async function markQuizIntroSeen(track: QuizTrack = 'code'): Promise<void> {
+  await set(track === 'lang' ? K_QUIZ_INTRO_LANG : K_QUIZ_INTRO, '1');
 }
 
 export async function hasSeenHeartsIntro(): Promise<boolean> {
@@ -139,4 +158,19 @@ export function nextUpBlock(completed: Set<string>): CurriculumBlock | null {
     }
   }
   return null;
+}
+
+/** Play-first entry: first uncompleted block inside the goal's course. Falls
+ *  back to the global next-up when the goal is Explore or its course is done. */
+export function firstBlockForGoal(goal: GoalId | null, completed: Set<string>): CurriculumBlock | null {
+  const course = goalToCourse(goal);
+  if (course) {
+    for (const unit of CURRICULUM) {
+      if (unit.course !== course) continue;
+      for (const b of unit.blocks) {
+        if (!completed.has(b.lessonId) && !completed.has(b.id)) return b;
+      }
+    }
+  }
+  return nextUpBlock(completed);
 }

@@ -1,4 +1,4 @@
-# bolingo-learn
+# Bolingo Learn
 
 Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailwind), backed by Supabase (Postgres + Auth), with Supabase Edge Functions for serverless logic.
 
@@ -27,6 +27,17 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
    ```
    Then press `w` (web), `a` (Android), or `i` (iOS).
 
+## Checks
+
+```bash
+npm run typecheck   # TypeScript
+npm test            # celebration cue is exactly 5.000s
+npm run lint        # ESLint (expo lint)
+```
+
+The audio check reads the WAV header directly, so it also guards against a
+re-export silently changing the cue's sample rate or frame count.
+
 ## Edge Functions
 
 - `supabase/functions/streak-reset` — reset stale streaks (schedule daily via cron).
@@ -39,12 +50,57 @@ supabase functions deploy streak-reset
 supabase functions deploy premium-webhook
 ```
 
+## Jungle expedition UI (QD-OLED)
+
+The app is one bioluminescent rainforest. `lib/jungle.ts` maps every route to a
+habitat, a resident bird and a quantum-dot accent pair; the router-level
+`components/jungle/ExpeditionBackdrop.tsx` paints the canopy glow, vines,
+fireflies and bird behind every screen. The home loop adds
+`components/jungle/StreakTrail.tsx`: seven leaves light with each streak day, so
+today's unlit leaf is a visible reason to come back. True black stays black for
+OLED; light mode is the same system on quantum paper.
+
+| Screen | Bird | Habitat |
+| --- | --- | --- |
+| Learn path | 🦜 Kea | Canopy Trail |
+| Lesson player | 🐦 Kingfisher | River Run |
+| Results | 🦚 Bird of Paradise | Victory Glade |
+| Leaderboard | 🦅 Harpy Eagle | Emerald Ridge |
+| Dictionary | 🦜 Hornbill | Word Market |
+| Design lab | 🦩 Crane | Design Lagoon |
+| Roleplay | 🦉 Lyrebird | Campfire Circle |
+| Settings | 🕊️ Nightjar | Basecamp |
+| Paywall | 🦚 Peacock | Summit Pass |
+| Auth | 🐦 Sunbird | Trailhead Gate |
+| Uploads | 🕊️ Swift | Mistfall |
+| Curriculum | 🦜 Quetzal | Scholar's Grove |
+| Project | 🐦 Woodpecker | Builder's Hollow |
+| Certifications | 🦩 Ibis | Sun Temple |
+| Refill | 🐦 Hummingbird | Heart Spring |
+
+Zora's build-coach surfaces now render the Figma-frame portrait
+(`assets/characters/zora-portrait.png`), not the old in-code vector.
+
+## Pronunciation (Livia & Bingo)
+
+Language lessons are voiced by [lib/pronunciation.ts](lib/pronunciation.ts):
+Livia models every target phrase in its own language and Bingo narrates the
+English around it. Pitch stays at 1.0 — pitch-shifted TTS drags its formants and
+sounds foreign — so the characters differ by pacing (Livia 0.86, 🐢 0.62; Bingo
+0.98) and, in English lessons, by using different installed voices. The engine
+fills gaps with the answer being taught, drops English glosses, keeps accents
+and restores question intonation, prefers enhanced/neural voices, excludes
+novelty voices, and falls back to a vowel-compatible voice (Swahili → Italian)
+when no native voice is installed. The phrase plays when an exercise opens, and
+a miss is followed by a slow replay of the correct sentence. Details and the QA
+checklist: [docs/pronunciation.md](docs/pronunciation.md).
+
 ## Core loop (Path Map ➔ Quiz Player ➔ Loss Aversion)
 
 Expo Router (`src/app/`) drives the habit loop:
 
 1. **Path Map** (`/`): Duolingo-style winding track of circular nodes — 🔥 streak / ⭐ XP / ❤ hearts top bar; completed nodes turn gold 🏆, the active node pulses, locked nodes are greyed 🔒 (sequential unlock once signed in). The **🧠 AI Sandbox** FAB opens an upload panel (books, PDFs, audio via the system picker → `user-materials` → pipeline); each finished upload renders a **My Custom Revision** node, with in-flight uploads shown as ⏳ nodes and live statuses.
-2. **Quiz Player** (`/quiz/[lessonId]` + [components/GamifiedCodePlayer.tsx](components/GamifiedCodePlayer.tsx)): the reusable core game engine — tap-token assembly (`correctChain` vs `scrambledTokens`), animated top progress bar, hearts via `progress.ts`, cheerful/buzz chimes from [assets/sounds.ts](assets/sounds.ts) on `expo-audio`, and the 🔊 audiobook anchor (plays the generated narration URL when present, premium-locked hint otherwise). The screen is a thin wrapper: loads demo or Supabase questions (multiple-choice collapses to one token, drag-and-drop splits the stored answer chain), attaches signed segment URLs as `audioUrl`, and handles completion/streak.
+2. **Quiz Player** (`/quiz/[lessonId]` + [components/GamifiedCodePlayer.tsx](components/GamifiedCodePlayer.tsx)): the reusable core game engine — tap-token assembly (`correctChain` vs `scrambledTokens`), animated top progress bar, hearts via `progress.ts`, cheerful/soft correction chimes from [assets/sounds.ts](assets/sounds.ts) on `expo-audio`, and the 🔊 audiobook anchor (plays the generated narration URL when present, premium-locked hint otherwise). The screen is a thin wrapper: loads demo or Supabase questions (multiple-choice collapses to one token, drag-and-drop splits the stored answer chain), attaches signed segment URLs as `audioUrl`, and handles completion/streak.
 3. **Loss-Aversion Screen** (`/refill`, modal): real AdMob rewarded video (+1 heart only on `EARNED_REWARD`, [lib/ads.ts](lib/ads.ts) unit config with Google test ids in dev), live 4-hour countdown from `hearts_refilled_at`, Premium upgrade (honest placeholder — RevenueCat/Stripe plugs in here). Meta Audience Network skipped (deprecated); AdMob serves iOS + Android.
 
 Progress helpers live in [lib/progress.ts](lib/progress.ts) (`getProfile`, `completeLesson`, `loseHeart`, `grantHearts`, `refillWaitRemaining`); guest mode plays with local state only.

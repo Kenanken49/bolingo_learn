@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import { Pressable, Text, type GestureResponderEvent } from 'react-native';
+import { Pressable, type GestureResponderEvent } from 'react-native';
+import Text from './ui/Text';
 
 /**
  * Duo-style tactile button: chunky rounded shape, bold rounded type, and a
@@ -16,7 +17,7 @@ const SKINS: Record<DuoColor, { face: string; edge: string }> = {
   amber: { face: 'bg-amber-400', edge: 'border-amber-600' },
   violet: { face: 'bg-violet-600', edge: 'border-violet-800' },
   slate: { face: 'bg-slate-800', edge: 'border-slate-950' },
-  grey: { face: 'bg-slate-200', edge: 'border-slate-300' },
+  grey: { face: 'bg-slate-200 dark:bg-slate-700', edge: 'border-slate-300 dark:border-slate-700' },
 };
 
 interface Props {
@@ -41,6 +42,8 @@ export default function DuoButton({
   const [pressed, setPressed] = useState(false);
   const skin = SKINS[color];
   const down = pressed && !disabled;
+  // Quantum primaries are bright: dark ink reads better on green/amber.
+  const ink = color === 'green' || color === 'amber' ? 'text-[#03130A]' : 'text-white';
   return (
     <Pressable
       onPress={onPress}
@@ -55,7 +58,7 @@ export default function DuoButton({
       style={down ? { transform: [{ translateY: 3 }] } : undefined}
     >
       {children ?? (
-        <Text className={`font-duo font-extrabold uppercase tracking-wide text-white ${small ? 'text-sm' : 'text-lg'}`}>
+        <Text className={`font-duo font-extrabold uppercase tracking-wide ${ink} ${small ? 'text-sm' : 'text-lg'}`}>
           {title}
         </Text>
       )}

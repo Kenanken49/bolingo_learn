@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, ScrollView, TextInput, Alert, ActivityIndicator, Platform } from 'react-native';
+import { View, Pressable, ScrollView, Alert, ActivityIndicator, Platform } from 'react-native';
+import Text from '../../components/ui/Text';
+import TextInput from '../../components/ui/TextInput';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
 import { makeRedirectUri } from 'expo-auth-session';
 import { supabase } from '../../lib/supabase';
 import { getProfile, type Profile } from '../../lib/progress';
 import { claimPendingGuestResult } from '../../lib/onboarding';
+import BrandMark from '../../components/BrandMark';
+import AppIcon from '../../components/AppIcon';
+import LearnerAvatar from '../../components/LearnerAvatar';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,22 +20,38 @@ const redirectTo = makeRedirectUri({ scheme: 'bolingo-learn', path: 'auth' });
 
 export default function Auth() {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [accountEmail, setAccountEmail] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<'in' | 'up'>('in');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pwMsg, setPwMsg] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     try {
       const p = await getProfile();
       setProfile(p);
+      // Google (or email) identity for the account card — name/photo already
+      // land in `profiles` via getProfile's OAuth backfill; email lives on
+      // the auth user, so read it here.
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        setAccountEmail(user?.email ?? null);
+      } catch {
+        setAccountEmail(null);
+      }
       // Profile-second payoff: rescue any guest XP earned before signup.
       // Runs on every auth resume (email, Google web/native) — the claim is
       // one-shot (cleared after success) so repeats are harmless.
       if (p) {
         const claimed = await claimPendingGuestResult(p.id);
-        if (claimed) setMsg(`🎁 Welcome! Your +${claimed.xpEarned} guest XP was saved to this account.`);
+        if (claimed) setMsg(`Welcome! Your +${claimed.xpEarned} guest XP was saved to this account.`);
       }
     } catch {
       setProfile(null);
@@ -68,6 +90,33 @@ export default function Auth() {
     };
   }, [refresh]);
 
+  // Password-recovery return: the reset email links back with a ?code=…
+  // PKCE grant — exchange it for a session so the user lands signed in
+  // and can set a new password in the card below (no extra screen).
+  useEffect(() => {
+    let cancelled = false;
+    const handle = async (url: string | null) => {
+      if (!url || !url.includes('code=')) return;
+      try {
+        const m = url.match(/[?&]code=([^&]+)/);
+        if (!m) return;
+        const { error } = await supabase.auth.exchangeCodeForSession(decodeURIComponent(m[1]));
+        if (error || cancelled) return;
+        await refresh();
+      } catch {
+        /* ignore malformed links */
+      }
+    };
+    void Linking.getInitialURL().then((u) => {
+      if (!cancelled) void handle(u);
+    });
+    const sub = Linking.addEventListener('url', ({ url }) => void handle(url));
+    return () => {
+      cancelled = true;
+      sub.remove();
+    };
+  }, [refresh]);
+
   const submit = async () => {
     if (!email.includes('@') || password.length < 6) {
       setMsg('Enter a valid email and a 6+ character password.');
@@ -96,6 +145,49 @@ export default function Auth() {
     }
   };
 
+  const sendReset = async () => {
+    if (!email.includes('@')) {
+      setMsg('Enter your email above first, then tap Forgot password.');
+      return;
+    }
+    setBusy(true);
+    setMsg(null);
+    try {
+      const redirect = Platform.OS === 'web' ? makeRedirectUri({ path: 'auth' }) : redirectTo;
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: redirect });
+      if (error) throw error;
+      setMsg('Reset link sent — check your inbox (and spam), open it, then set a new password.');
+    } catch (e) {
+      setMsg(String(e instanceof Error ? e.message : e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const changePw = async () => {
+    if (newPw.length < 6) {
+      setPwMsg('New password must be 6+ characters.');
+      return;
+    }
+    if (newPw !== confirmPw) {
+      setPwMsg('Passwords do not match.');
+      return;
+    }
+    setPwBusy(true);
+    setPwMsg(null);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPw });
+      if (error) throw error;
+      setNewPw('');
+      setConfirmPw('');
+      setPwMsg('Password updated.');
+    } catch (e) {
+      setPwMsg(String(e instanceof Error ? e.message : e));
+    } finally {
+      setPwBusy(false);
+    }
+  };
+
   const signInWithGoogle = async () => {
     setBusy(true);
     setMsg(null);
@@ -121,14 +213,21 @@ export default function Auth() {
         if (res.type !== 'cancel' && res.type !== 'dismiss') setMsg('Google sign-in did not complete.');
         return;
       }
-      // Supabase returns tokens in the URL fragment: #access_token=…&refresh_token=…
-      const hash = res.url.split('#')[1] ?? '';
-      const params = new URLSearchParams(hash);
-      const access_token = params.get('access_token');
-      const refresh_token = params.get('refresh_token');
-      if (!access_token || !refresh_token) throw new Error('Google returned no session — is the provider enabled in Supabase?');
-      const { error: sessionError } = await supabase.auth.setSession({ access_token, refresh_token });
-      if (sessionError) throw sessionError;
+      // Newer Supabase returns a PKCE ?code=… grant; older setups return
+      // tokens in the #access_token fragment — accept either.
+      const codeMatch = res.url.match(/[?&]code=([^&]+)/);
+      if (codeMatch) {
+        const { error: codeError } = await supabase.auth.exchangeCodeForSession(decodeURIComponent(codeMatch[1]));
+        if (codeError) throw codeError;
+      } else {
+        const hash = res.url.split('#')[1] ?? '';
+        const params = new URLSearchParams(hash);
+        const access_token = params.get('access_token');
+        const refresh_token = params.get('refresh_token');
+        if (!access_token || !refresh_token) throw new Error('Google returned no session — is the provider enabled in Supabase? (Dashboard → Authentication → Providers → Google)');
+        const { error: sessionError } = await supabase.auth.setSession({ access_token, refresh_token });
+        if (sessionError) throw sessionError;
+      }
       const p = await getProfile();
       setProfile(p);
       if (p) router.replace('/');
@@ -149,22 +248,65 @@ export default function Auth() {
 
   if (profile) {
     return (
-      <ScrollView contentContainerClassName="flex-grow items-center bg-white px-6 py-12">
-        <Text className="text-5xl">👤</Text>
-        <Text className="mt-2 text-2xl font-extrabold text-slate-900">Your account</Text>
-        <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-200 bg-slate-50 p-5">
-          <Text className="text-base text-slate-600">Signed in</Text>
-          <Text className="text-lg font-bold text-slate-900">{profile.id.slice(0, 8)}…</Text>
-          <Text className="mt-2 text-base text-slate-600">
-            ⚡ {profile.xp} XP • 🔥 {profile.streak_count} • ❤ {profile.hearts}
-          </Text>
-          <Text className="text-base text-slate-600">{profile.is_premium ? '👑 Premium active' : 'Free tier'}</Text>
+      <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+        <BrandMark />
+        <View className="mt-2" />
+        <LearnerAvatar uri={profile.avatar_url} size={80} />
+        <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">{profile.username ?? 'Your account'}</Text>
+        {accountEmail ? <Text className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{accountEmail}</Text> : null}
+        <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5">
+          <View className="mt-2 flex-row items-center justify-center gap-3">
+            <View className="flex-row items-center gap-1">
+              <AppIcon name="zap" size={15} color="#F59E0B" />
+              <Text className="text-base font-bold text-slate-600 dark:text-slate-400">{profile.xp} XP</Text>
+            </View>
+            <View className="flex-row items-center gap-1">
+              <AppIcon name="flame" size={15} color="#F97316" />
+              <Text className="text-base font-bold text-slate-600 dark:text-slate-400">{profile.streak_count}</Text>
+            </View>
+            <View className="flex-row items-center gap-1">
+              <AppIcon name="heart" size={15} color="#EF4444" />
+              <Text className="text-base font-bold text-slate-600 dark:text-slate-400">{profile.hearts}</Text>
+            </View>
+          </View>
+          <View className="mt-1 flex-row items-center justify-center gap-1">
+            {profile.is_premium ? <AppIcon name="crown" size={16} color="#D97706" /> : null}
+            <Text className="text-base text-slate-600 dark:text-slate-400">{profile.is_premium ? 'Premium active' : 'Free tier'}</Text>
+          </View>
+        </View>
+        <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+          <View className="flex-row items-center gap-1.5">
+            <AppIcon name="key" size={18} color="#0F172A" />
+            <Text className="text-base font-extrabold text-slate-900 dark:text-slate-100">Reset password</Text>
+          </View>
+          <TextInput
+            value={newPw}
+            onChangeText={setNewPw}
+            placeholder="New password (6+ characters)"
+            secureTextEntry
+            className="mt-3 w-full rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 text-base text-slate-900 dark:text-slate-100"
+          />
+          <TextInput
+            value={confirmPw}
+            onChangeText={setConfirmPw}
+            placeholder="Confirm new password"
+            secureTextEntry
+            className="mt-2 w-full rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 text-base text-slate-900 dark:text-slate-100"
+          />
+          <Pressable
+            onPress={changePw}
+            disabled={pwBusy}
+            className={`mt-3 items-center rounded-2xl py-3 ${pwBusy ? 'bg-slate-300' : 'bg-slate-900'}`}
+          >
+            {pwBusy ? <ActivityIndicator color="#fff" /> : <Text className="font-bold text-white">Update password</Text>}
+          </Pressable>
+          {pwMsg ? <Text className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">{pwMsg}</Text> : null}
         </View>
         <Pressable onPress={signOut} className="mt-4 w-full max-w-sm items-center rounded-2xl bg-slate-800 py-3">
           <Text className="font-bold text-white">Sign out</Text>
         </Pressable>
         <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
-          <Text className="font-bold text-slate-400">Back to Path</Text>
+          <Text className="font-bold text-slate-400 dark:text-slate-500">Back to Path</Text>
         </Pressable>
         <StatusBar style="auto" />
       </ScrollView>
@@ -172,14 +314,17 @@ export default function Auth() {
   }
 
   return (
-    <ScrollView contentContainerClassName="flex-grow items-center bg-white px-6 py-12">
-      <Text className="text-5xl">🔐</Text>
-      <Text className="mt-2 text-2xl font-extrabold text-slate-900">{mode === 'in' ? 'Welcome back' : 'Create account'}</Text>
-      <Text className="mt-1 text-center text-base text-slate-500">
+    <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+      <BrandMark />
+      <View className="mt-2 h-16 w-16 items-center justify-center rounded-full bg-slate-900">
+        <AppIcon name="lock" size={30} color="#FFFFFF" />
+      </View>
+      <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">{mode === 'in' ? 'Welcome back' : 'Create account'}</Text>
+      <Text className="mt-1 text-center text-base text-slate-500 dark:text-slate-400">
         Sign in to sync XP, upload study material, and keep your streak on every device.
       </Text>
 
-      <View className="mt-6 w-full max-w-sm flex-row rounded-2xl bg-slate-100 p-1">
+      <View className="mt-6 w-full max-w-sm flex-row rounded-2xl bg-slate-100 dark:bg-slate-800 p-1">
         {(['in', 'up'] as const).map((m) => (
           <Pressable
             key={m}
@@ -187,9 +332,9 @@ export default function Auth() {
               setMode(m);
               setMsg(null);
             }}
-            className={`flex-1 items-center rounded-xl py-2 ${mode === m ? 'bg-white shadow' : ''}`}
+            className={`flex-1 items-center rounded-xl py-2 ${mode === m ? 'bg-white dark:bg-slate-900 shadow' : ''}`}
           >
-            <Text className={`font-bold ${mode === m ? 'text-slate-900' : 'text-slate-400'}`}>
+            <Text className={`font-bold ${mode === m ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}`}>
               {m === 'in' ? 'Sign in' : 'Sign up'}
             </Text>
           </Pressable>
@@ -202,14 +347,14 @@ export default function Auth() {
         placeholder="you@example.com"
         autoCapitalize="none"
         keyboardType="email-address"
-        className="mt-4 w-full max-w-sm rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-900"
+        className="mt-4 w-full max-w-sm rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 text-base text-slate-900 dark:text-slate-100"
       />
       <TextInput
         value={password}
         onChangeText={setPassword}
         placeholder="Password (6+ characters)"
         secureTextEntry
-        className="mt-3 w-full max-w-sm rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-900"
+        className="mt-3 w-full max-w-sm rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 text-base text-slate-900 dark:text-slate-100"
       />
 
       <Pressable
@@ -219,25 +364,29 @@ export default function Auth() {
       >
         {busy ? <ActivityIndicator color="#fff" /> : <Text className="text-lg font-extrabold text-white">{mode === 'in' ? 'Sign in' : 'Create account'}</Text>}
       </Pressable>
-      {msg ? <Text className="mt-2 text-center text-sm text-slate-500">{msg}</Text> : null}
+      {msg ? <Text className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">{msg}</Text> : null}
+
+      <Pressable onPress={sendReset} disabled={busy} className="mt-2 items-center">
+        <Text className="font-bold text-sky-600 dark:text-sky-400">Forgot password?</Text>
+      </Pressable>
 
       <View className="mt-4 w-full max-w-sm flex-row items-center gap-2">
-        <View className="h-px flex-1 bg-slate-200" />
-        <Text className="text-xs font-bold text-slate-400">OR</Text>
-        <View className="h-px flex-1 bg-slate-200" />
+        <View className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+        <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">OR</Text>
+        <View className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
       </View>
 
       <Pressable
         onPress={signInWithGoogle}
         disabled={busy}
-        className="mt-4 w-full max-w-sm flex-row items-center justify-center rounded-2xl border-2 border-slate-200 bg-white py-3.5"
+        className="mt-4 w-full max-w-sm flex-row items-center justify-center rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-3.5"
       >
-        <Text className="mr-2 text-lg font-extrabold text-slate-700">G</Text>
-        <Text className="text-base font-bold text-slate-800">Continue with Google</Text>
+        <View className="mr-2"><AppIcon name="google" size={20} color="#4285F4" /></View>
+        <Text className="text-base font-bold text-slate-800 dark:text-slate-200">Continue with Google</Text>
       </Pressable>
 
       <Pressable onPress={() => router.replace('/')} className="mt-4 items-center">
-        <Text className="font-bold text-slate-400">Continue as guest →</Text>
+        <Text className="font-bold text-slate-400 dark:text-slate-500">Continue as guest →</Text>
       </Pressable>
       <StatusBar style="auto" />
     </ScrollView>

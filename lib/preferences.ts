@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SOUND_KEY = 'bolingo.soundOn';
+const REWARD_VOLUME_KEY = 'bolingo.rewardVolume';
+const AMBIENT_KEY = 'bolingo.ambientOn';
 const HAPTICS_KEY = 'bolingo.hapticsOn';
 const MINUTES_KEY = 'bolingo.dailyMinutes';
 const COURSE_KEY = 'bolingo.selectedCourse';
@@ -65,6 +67,47 @@ export async function getSoundOn(): Promise<boolean> {
 export async function setSoundOn(on: boolean): Promise<void> {
   try {
     await AsyncStorage.setItem(SOUND_KEY, on ? '1' : '0');
+  } catch {}
+}
+
+/** Reward-cue volume, in three deliberate steps rather than a slider. Default
+ *  Full preserves the mastered level; Soft is for quiet rooms and shared
+ *  spaces. The ambient loop has its own fixed level. */
+export const REWARD_VOLUME_OPTIONS = [
+  { label: 'Soft', value: 0.35 },
+  { label: 'Medium', value: 0.7 },
+  { label: 'Full', value: 1 },
+] as const;
+
+export async function getRewardVolume(): Promise<number> {
+  try {
+    const v = Number(await AsyncStorage.getItem(REWARD_VOLUME_KEY));
+    return REWARD_VOLUME_OPTIONS.some((o) => o.value === v) ? v : 1;
+  } catch {
+    return 1;
+  }
+}
+
+export async function setRewardVolume(volume: number): Promise<void> {
+  try {
+    const next = REWARD_VOLUME_OPTIONS.find((o) => o.value === volume)?.value ?? 1;
+    await AsyncStorage.setItem(REWARD_VOLUME_KEY, String(next));
+  } catch {}
+}
+
+/** Soothing ambient loop on the home screen. On by default, soft volume. */
+export async function getAmbientOn(): Promise<boolean> {
+  try {
+    const v = await AsyncStorage.getItem(AMBIENT_KEY);
+    return v === null ? true : v === '1';
+  } catch {
+    return true;
+  }
+}
+
+export async function setAmbientOn(on: boolean): Promise<void> {
+  try {
+    await AsyncStorage.setItem(AMBIENT_KEY, on ? '1' : '0');
   } catch {}
 }
 

@@ -36,6 +36,11 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# tooling noise
+*.lnk
+package.json.*
+supabase/.temp/
+
 # generated native folders
 /ios
 /android

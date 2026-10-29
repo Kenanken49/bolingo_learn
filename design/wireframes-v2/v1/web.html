@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bolingo Learn — Web Wireframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Roboto','Segoe UI',system-ui,sans-serif; background:#eef2f7; color:#1f2937; padding:40px 24px 80px; }
+  .deck { max-width:1280px; margin:0 auto; }
+  .deck-head { text-align:center; margin-bottom:36px; }
+  .deck-head h1 { font-size:34px; font-weight:900; }
+  .deck-head p { color:#64748b; margin-top:6px; font-size:16px; }
+  .shot { margin-bottom:48px; display:flex; flex-direction:column; align-items:center; }
+  .browser { width:100%; max-width:1160px; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.16); border:1px solid #e2e8f0; }
+  .chrome { background:#f1f5f9; padding:10px 16px; display:flex; gap:8px; align-items:center; }
+  .dot { width:12px; height:12px; border-radius:50%; }
+  .url { flex:1; background:#fff; border-radius:8px; font-size:12px; color:#64748b; padding:5px 12px; margin-left:8px; }
+  .nav { display:flex; align-items:center; justify-content:space-between; padding:14px 28px; border-bottom:2px solid #f1f5f9; }
+  .nav b { font-size:20px; font-weight:900; color:#16a34a; letter-spacing:2px; }
+  @keyframes floaty { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-12px) } }
+  @keyframes pulsing { 0%,100% { transform:scale(1) } 50% { transform:scale(1.06) } }
+  @keyframes bob { 0%,100% { transform:translateY(0) rotate(-2deg) } 50% { transform:translateY(-8px) rotate(2deg) } }
+  .mascot { animation:floaty 3.2s ease-in-out infinite; }
+  .hero .ctas .btn-g { animation:pulsing 1.8s ease-in-out infinite; }
+  .node { animation:bob 2.6s ease-in-out infinite; }
+  .nav .links { display:flex; gap:18px; font-size:13px; font-weight:800; color:#64748b; }
+  .btn { border-radius:14px; padding:10px 22px; font-weight:900; font-size:14px; }
+  .btn-g { background:#58cc02; color:#fff; border-bottom:4px solid #46a302; }
+  .btn-o { border:2px solid #e2e8f0; color:#475569; }
+  .hero { display:flex; align-items:center; gap:40px; padding:48px 56px; }
+  .hero h2 { font-size:42px; font-weight:900; line-height:1.1; }
+  .hero h2 span { color:#16a34a; }
+  .hero p { color:#64748b; margin-top:12px; font-size:16px; }
+  .hero .ctas { display:flex; gap:12px; margin-top:20px; }
+  .mascot { width:220px; height:220px; border-radius:50%; background:linear-gradient(135deg,#58cc02,#16a34a); display:flex; align-items:center; justify-content:center; font-size:110px; flex-shrink:0; }
+  .courses { display:flex; gap:14px; padding:0 56px 20px; }
+  .course { flex:1; border:2px solid #e2e8f0; border-radius:18px; padding:16px; text-align:center; }
+  .course b { display:block; margin-top:6px; }
+  .course small { color:#64748b; }
+  .strip { background:#1f2937; color:#fff; display:flex; justify-content:space-around; padding:16px; font-weight:900; font-size:14px; flex-wrap:wrap; gap:8px; }
+  .hero, .courses, .price-grid { flex-wrap:wrap; }
+  .hero > div:last-child, .price, .course { min-width:240px; flex:1 1 240px; }
+  @media (max-width:760px) {
+    .hero { padding:28px 20px; } .hero h2 { font-size:30px; }
+    .mascot { width:140px; height:140px; font-size:70px; }
+    .courses, .price-grid { padding-left:20px; padding-right:20px; }
+    .cols { flex-direction:column; } .sidenav, .rpanel { width:100%; border:none; border-bottom:2px solid #f1f5f9; }
+    .nav { flex-wrap:wrap; gap:10px; }
+  .cols { display:flex; min-height:420px; }
+  .sidenav { width:200px; border-right:2px solid #f1f5f9; padding:20px 14px; font-size:13px; font-weight:800; color:#64748b; }
+  .sidenav div { padding:10px 12px; border-radius:12px; margin-bottom:4px; }
+  .sidenav .on { background:#f0fdf4; color:#16a34a; }
+  .path { flex:1; padding:24px; display:flex; flex-direction:column; align-items:center; }
+  .rpanel { width:260px; border-left:2px solid #f1f5f9; padding:20px 16px; display:flex; flex-direction:column; gap:12px; }
+  .card { border:2px solid #e2e8f0; border-radius:16px; padding:14px; font-size:13px; }
+  .card h5 { font-weight:900; margin-bottom:6px; }
+  .card.prem { background:#fffbeb; border-color:#fde68a; }
+  .node { width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; border-bottom:5px solid rgba(0,0,0,.18); margin-top:12px; }
+  .price-grid { display:flex; gap:16px; padding:28px 56px 40px; }
+  .price { flex:1; border:2px solid #e2e8f0; border-radius:20px; padding:22px; }
+  .price.pro { border-color:#fbbf24; background:#fffbeb; }
+  .price ul { list-style:none; margin-top:12px; font-size:14px; }
+  .price li { padding:5px 0; border-top:1px solid #f1f5f9; }
+  .authbox { max-width:420px; margin:36px auto 48px; border:2px solid #e2e8f0; border-radius:22px; padding:28px; text-align:center; }
+  .field { border:2px solid #e2e8f0; border-radius:14px; padding:12px; margin-top:10px; font-size:14px; color:#94a3b8; text-align:left; }
+  .cap { max-width:1160px; margin-top:14px; background:#fff; border-radius:14px; padding:12px 16px; box-shadow:0 4px 14px rgba(0,0,0,.06); }
+  .cap h4 { font-size:13px; font-weight:900; color:#7c3aed; }
+  .cap p { font-size:12.5px; color:#475569; margin-top:4px; line-height:1.55; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="deck-head">
+    <h1>🖥️ BOLINGO LEARN — Web Wireframes v1</h1>
+    <p>Same brand, bigger canvas: marketing landing + 3-column learn dashboard + pricing + auth. Approve before build.</p>
+  </div>
+
+  <div class="shot">
+    <div class="browser">
+      <div class="chrome"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="url">bolingo.co.ke</span></div>
+      <div class="nav"><b>🦉 BOLINGO LEARN</b><div class="links"><span>COURSES</span><span>LEADERBOARD</span><span>PRICING</span></div><div style="display:flex;gap:10px"><span class="btn btn-o">I HAVE AN ACCOUNT</span><span class="btn btn-g">GET STARTED</span></div></div>
+      <div class="hero">
+        <div class="mascot">🦉</div>
+        <div><h2>The fun way to learn <span>anything.</span></h2><p>Languages, code, chess — bite-sized lessons, streaks, leagues. Free forever, premium when you're hungry.</p><div class="ctas"><span class="btn btn-g">START LEARNING — IT'S FREE</span><span class="btn btn-o">▶ WATCH: HOW IT WORKS</span></div></div>
+      </div>
+      <div class="courses">
+        <div class="course"><div style="font-size:34px">🇪🇸</div><b>Spanish</b><small>42k learners</small></div>
+        <div class="course"><div style="font-size:34px">🇫🇷</div><b>French</b><small>31k learners</small></div>
+        <div class="course"><div style="font-size:34px">💻</div><b>Web Dev</b><small>28k learners</small></div>
+        <div class="course"><div style="font-size:34px">♟️</div><b>Chess</b><small>19k learners</small></div>
+      </div>
+      <div class="strip"><span>🔥 1.2M-day streak record</span><span>⭐ 4.9 learner rating</span><span>🌍 120+ countries</span></div>
+    </div>
+    <div class="cap"><h4>WF-WEB-01 · Landing</h4><p>Duolingo-pattern hero: mascot + one promise + one CTA above the fold. Course cards carry live learner counts (social proof), strip carries credibility stats. "I have an account" keeps returning users one click from login.</p></div>
+  </div>
+
+  <div class="shot">
+    <div class="browser">
+      <div class="chrome"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="url">bolingo.co.ke/learn</span></div>
+      <div class="cols">
+        <div class="sidenav"><div class="on">🏠 LEARN</div><div>🏆 LEADERBOARD</div><div>🎯 QUESTS</div><div>🛍️ SHOP</div><div>👤 PROFILE</div><div style="margin-top:16px;background:#f8fafc;border-radius:12px">Daily Quest · 10m<br><b style="color:#16a34a">Quest complete! 🎉</b></div></div>
+        <div class="path">
+          <div class="node" style="background:#58cc02;width:70px;height:70px">⭐</div>
+          <div class="node" style="background:#ffc800;margin-left:-110px">📖</div>
+          <div class="node" style="background:#ffc800;margin-left:100px">🎧</div>
+          <div class="node" style="background:#e2e8f0">🔒</div>
+        </div>
+        <div class="rpanel">
+          <div class="card"><h5>Stats</h5>🔥 Streak 12 · ⭐ 480 XP · ❤️ 5/5</div>
+          <div class="card"><h5>🧠 AI Sandbox</h5>Turn your material into path nodes.<br><br><span class="btn btn-g" style="font-size:12px">OPEN SANDBOX</span></div>
+          <div class="card prem"><h5>👑 Go Premium — $7.70/mo</h5>PDF + Scan + elite voices.</div>
+        </div>
+      </div>
+    </div>
+    <div class="cap"><h4>WF-WEB-02 · Learn dashboard</h4><p>Desktop 3-column layout: nav rail, centered snake path, right panel (stats / sandbox entry / premium upsell). Mirrors the app Path 1:1 so progress feels continuous across devices.</p></div>
+  </div>
+
+  <div class="shot">
+    <div class="browser">
+      <div class="chrome"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="url">bolingo.co.ke/premium</span></div>
+      <div class="price-grid">
+        <div class="price"><h3>Free</h3><p style="font-size:28px;font-weight:900">$0</p><ul><li>❤️ 5 hearts/day</li><li>📄 Text uploads</li><li>🔊 Device voice</li><li>🧠 Roleplay locked</li></ul><br><span class="btn btn-o">STAY FREE</span></div>
+        <div class="price pro"><h3>👑 Premium</h3><p style="font-size:28px;font-weight:900">$7.70<span style="font-size:14px;color:#64748b">/mo</span></p><ul><li>❤️ Unlimited hearts</li><li>📄 PDF + 🎵 audio uploads</li><li>📷 Scan notes with Bingo</li><li>🔊 Elite voices · 🧠 Roleplay</li></ul><br><span class="btn btn-g">SUBSCRIBE</span> <span style="font-size:13px;font-weight:800;color:#64748b"> · Restore purchases</span></div>
+      </div>
+    </div>
+    <div class="cap"><h4>WF-WEB-03 · Pricing</h4><p>Same Free-vs-Pro contract as the app paywall (parity = trust). Web checkout via RevenueCat Web Billing; without the key the page honestly routes users to the mobile apps instead of a dead button.</p></div>
+  </div>
+
+  <div class="shot">
+    <div class="browser">
+      <div class="chrome"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="url">bolingo.co.ke/auth</span></div>
+      <div class="authbox">
+        <div style="font-size:44px">🔐</div>
+        <h3 style="font-weight:900;font-size:22px">Welcome back</h3>
+        <p style="font-size:13px;color:#64748b">Sync XP, uploads and streaks everywhere.</p>
+        <div class="field">you@example.com</div>
+        <div class="field">••••••••</div>
+        <div class="btn btn-g" style="margin-top:12px">SIGN IN</div>
+        <p style="font-size:12px;color:#0ea5e9;font-weight:800;margin-top:8px">Forgot password?</p>
+        <div class="btn btn-o" style="margin-top:12px">Ⓖ Continue with Google</div>
+      </div>
+    </div>
+    <div class="cap"><h4>WF-WEB-04 · Auth</h4><p>Email + Google side by side (account links automatically when emails match). Signed-in state swaps to the avatar + name + plan card with reset-password and sign-out; deep links land here for password recovery.</p></div>
+  </div>
+
+</div>
+</body>
+</html>

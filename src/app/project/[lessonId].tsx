@@ -1,5 +1,6 @@
 import { createElement, useEffect, useMemo, useState } from 'react';
-import { Alert, View, Text, Pressable, ScrollView, Platform } from 'react-native';
+import { Alert, View, Pressable, ScrollView, Platform } from 'react-native';
+import Text from '../../../components/ui/Text';
 // NOTE: no top-level react-native-webview import — Expo Go ships no
 // RNCWebViewModule and the static import crashed the whole route tree.
 // The native preview loads lazily below and degrades to a notice.
@@ -10,6 +11,8 @@ import { getCourseProject } from '../../../lib/courses';
 import { fetchRemoteProject, getCertProject, gradeProject } from '../../../lib/certifications';
 import { completeLesson, getProfile } from '../../../lib/progress';
 import AskBingo from '../../../components/AskBingo';
+import AppIcon from '../../../components/AppIcon';
+import Mascot from '../../../components/AfricanMascots';
 import { supabase } from '../../../lib/supabase';
 import { setLessonResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
@@ -91,8 +94,8 @@ export default function CertificationProject() {
 
   if (!project) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-lg text-slate-600">Project not found.</Text>
+      <View className="flex-1 items-center justify-center px-6">
+        <Text className="text-lg text-slate-600 dark:text-slate-400">Project not found.</Text>
         <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-slate-800 px-6 py-3">
           <Text className="font-bold text-white">Back to Path</Text>
         </Pressable>
@@ -167,35 +170,62 @@ export default function CertificationProject() {
   };
 
   return (
-    <View className="flex-1 bg-slate-100">
-    <ScrollView contentContainerClassName="bg-slate-100 px-4 pb-16 pt-12 md:px-6">
+    <View className="flex-1">
+    <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-xl self-center px-4 pb-24 pt-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
       <View className="w-full max-w-3xl self-center">
         <Pressable onPress={() => router.replace('/')} accessibilityRole="button" accessibilityLabel="Back to learning path">
-          <Text className="font-bold text-sky-600">‹ Back to Learn</Text>
+          <View className="flex-row items-center gap-0.5">
+            <AppIcon name="chevBack" size={16} color="#0284C7" />
+            <Text className="font-bold text-sky-600 dark:text-sky-400">Back to Learn</Text>
+          </View>
         </Pressable>
 
-        {/* FCC-style project header */}
-        <View className="mt-3 rounded-3xl bg-slate-900 p-6 shadow-lg">
+        {/* FCC-style project header — QD-OLED black with a magenta build glow. */}
+        <View className="mt-3 overflow-hidden rounded-3xl border border-[#1E1E2C] bg-[#06060A] p-6 shadow-lg">
+          <View pointerEvents="none" className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-[#FF2DAA]/15" />
+          <View pointerEvents="none" className="absolute -left-20 -bottom-24 h-52 w-52 rounded-full bg-[#00E5FF]/10" />
           <View className="flex-row items-center justify-between">
-            <Text className="text-xs font-extrabold uppercase tracking-widest text-orange-400">🏗️ Certification project</Text>
+            <View className="flex-row items-center gap-1.5">
+              <AppIcon name="folder" size={14} color="#FB923C" />
+              <Text className="text-xs font-extrabold uppercase tracking-widest text-orange-400">Certification project</Text>
+            </View>
             <View className="rounded-full bg-amber-400 px-3 py-1.5">
-              <Text className="text-xs font-extrabold text-slate-900">⭐ +{project.xp} XP</Text>
+              <View className="flex-row items-center gap-1">
+                <AppIcon name="star" size={13} color="#0F172A" />
+                <Text className="text-xs font-extrabold text-slate-900 dark:text-slate-100">+{project.xp} XP</Text>
+              </View>
             </View>
           </View>
           <Text className="mt-1 text-3xl font-extrabold text-white">{project.title}</Text>
           {project.brief.map((b, i) => (
-            <Text key={i} className="mt-2 text-base font-semibold leading-6 text-slate-300">
+            <Text key={i} className="mt-2 text-base font-semibold leading-6 text-slate-300 dark:text-slate-200">
               {b}
             </Text>
           ))}
         </View>
 
+        {/* Zora owns the build loop: the next failing story becomes a live hint. */}
+        <View className="mt-4 flex-row items-center rounded-2xl border-2 border-pink-200 bg-pink-50 p-3 dark:border-[#FF2DAA]/30 dark:bg-[#12000C]">
+          <Mascot character="zora" mood={allPass ? 'party' : 'happy'} size={56} />
+          <View className="ml-2 flex-1">
+            <Text className="text-xs font-extrabold uppercase tracking-widest text-pink-700 dark:text-[#FF2DAA]">Zora · Build coach</Text>
+            <Text className="mt-0.5 text-sm font-semibold text-slate-700 dark:text-slate-200">
+              {allPass
+                ? `All ${checks.length} stories pass. Ship it — submit for +${project.xp} XP.`
+                : `${shown.filter((c) => !c.pass).length} of ${shown.length} stories still failing. Next: ${shown.find((c) => !c.pass)?.hint ?? 'run the tests and read the first failing story.'}`}
+            </Text>
+          </View>
+        </View>
+
         {/* User stories — FCC lab checklist as status cards */}
-        <View className="mt-4 rounded-3xl border-2 border-slate-200 bg-white p-4 shadow-sm">
+        <View className="mt-4 rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
           <View className="flex-row items-center justify-between">
-            <Text className="text-base font-extrabold text-slate-900">✅ User stories</Text>
-            <View className={`rounded-full px-3 py-1 ${allPass ? 'bg-green-100' : 'bg-slate-100'}`}>
-              <Text className={`text-xs font-extrabold ${allPass ? 'text-green-700' : 'text-slate-500'}`}>
+            <View className="flex-row items-center gap-1.5">
+              <AppIcon name="checkCircle" size={18} color="#0F172A" />
+              <Text className="text-base font-extrabold text-slate-900 dark:text-slate-100">User stories</Text>
+            </View>
+            <View className={`rounded-full px-3 py-1 ${allPass ? 'bg-green-100 dark:bg-green-950' : 'bg-slate-100 dark:bg-slate-800'}`}>
+              <Text className={`text-xs font-extrabold ${allPass ? 'text-green-700 dark:text-green-300' : 'text-slate-500 dark:text-slate-400'}`}>
                 {shown.filter((c) => c.pass).length}/{shown.length} passing
               </Text>
             </View>
@@ -204,14 +234,14 @@ export default function CertificationProject() {
             {shown.map((c, i) => (
               <View
                 key={i}
-                className={`mt-2 flex-row items-start rounded-2xl border-2 p-3 ${c.pass ? 'border-green-200 bg-green-50' : 'border-slate-100 bg-slate-50'}`}
+                className={`mt-2 flex-row items-start rounded-2xl border-2 p-3 ${c.pass ? 'border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950' : 'border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900'}`}
               >
-                <Text className={`text-lg ${c.pass ? 'text-green-500' : 'text-slate-300'}`}>{c.pass ? '●' : '○'}</Text>
+                <Text className={`text-lg ${c.pass ? 'text-green-500' : 'text-slate-300 dark:text-slate-200'}`}>{c.pass ? '●' : '○'}</Text>
                 <View className="ml-2 flex-1">
-                  <Text className={`font-mono text-sm font-bold ${c.pass ? 'text-green-800' : 'text-slate-700'}`}>
+                  <Text className={`font-mono text-sm font-bold ${c.pass ? 'text-green-800 dark:text-green-200' : 'text-slate-700 dark:text-slate-300'}`}>
                     {c.label}
                   </Text>
-                  {!c.pass ? <Text className="mt-0.5 text-xs text-slate-400">Hint: {c.hint}</Text> : null}
+                  {!c.pass ? <Text className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">Hint: {c.hint}</Text> : null}
                 </View>
               </View>
             ))}
@@ -220,14 +250,17 @@ export default function CertificationProject() {
 
         {/* Tabbed editor with reset */}
         <View className="mt-4 flex-row items-center justify-between">
-          <Text className="text-sm font-extrabold uppercase tracking-widest text-slate-500">💻 Code editor</Text>
+          <View className="flex-row items-center gap-1.5">
+            <AppIcon name="code" size={16} color="#64748B" />
+            <Text className="text-sm font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">Code editor</Text>
+          </View>
           <Pressable
             onPress={reset}
             accessibilityRole="button"
             accessibilityLabel="Reset code to starter"
-            className="rounded-full border-2 border-slate-300 bg-white px-4 py-1.5 active:bg-slate-100"
+            className="rounded-full border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-1.5 active:bg-slate-100"
           >
-            <Text className="text-xs font-extrabold text-slate-600">↺ Reset</Text>
+            <Text className="text-xs font-extrabold text-slate-600 dark:text-slate-400">↺ Reset</Text>
           </Pressable>
         </View>
         <View className="mt-2 shadow-lg">
@@ -235,16 +268,19 @@ export default function CertificationProject() {
         </View>
 
         {/* Live preview */}
-        <Text className="mb-1 mt-4 text-sm font-extrabold uppercase tracking-widest text-slate-500">👀 Live preview</Text>
-        <View className="h-72 overflow-hidden rounded-2xl border-2 border-slate-200 bg-white shadow-sm">
+        <View className="mb-1 mt-4 flex-row items-center gap-1.5">
+          <AppIcon name="eye" size={16} color="#64748B" />
+          <Text className="text-sm font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">Live preview</Text>
+        </View>
+        <View className="h-72 overflow-hidden rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
           {Platform.OS === 'web' ? (
             <WebPreview html={previewDoc(doc)} />
           ) : NativeWebView ? (
             <NativeWebView originWhitelist={['*']} source={{ html: previewDoc(doc) }} style={{ flex: 1 }} />
           ) : (
-            <View className="flex-1 items-center justify-center bg-slate-50 p-4">
-              <Text className="text-center text-sm text-slate-500">
-                👀 Live preview needs the dev-build app — the editor and Run tests below work fully in Expo Go.
+            <View className="flex-1 items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+              <Text className="text-center text-sm text-slate-500 dark:text-slate-400">
+                Live preview needs the dev-build app — the editor and Run tests below work fully in Expo Go.
               </Text>
             </View>
           )}
@@ -257,7 +293,7 @@ export default function CertificationProject() {
           accessibilityRole="button"
           accessibilityLabel="Submit project for grading"
           className={`mt-4 items-center rounded-2xl border-b-4 py-4 shadow-lg active:translate-y-0.5 active:border-b-0 ${
-            allPass ? 'border-green-700 bg-green-500' : 'border-slate-300 bg-slate-300'
+            allPass ? 'border-green-700 bg-green-500' : 'border-slate-300 dark:border-slate-700 bg-slate-300 dark:bg-slate-700'
           }`}
         >
           <Text className="text-lg font-extrabold uppercase tracking-wide text-white">

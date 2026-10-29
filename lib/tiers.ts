@@ -42,9 +42,9 @@ export async function checkUploadAllowed(
   const words = textForSizing ? countWords(textForSizing) : 0;
 
   if (!p.is_premium) {
-    // Free: raw text only (no PDF/audio), ≤1000 words, device TTS on-device.
+    // Free: raw text only (no PDF/photo/audio), ≤1000 words, device TTS on-device.
     if (!isText) {
-      return { allowed: false, words: 0, reason: 'Free tier supports pasted text files only — upgrade to Premium for PDF & audio uploads.' };
+      return { allowed: false, words: 0, reason: 'Free tier supports pasted text files only — upgrade to Premium for PDF, photo Scan & audio uploads.' };
     }
     if (textForSizing && words > FREE_WORD_LIMIT) {
       return { allowed: false, words, reason: `Free tier caps uploads at ${FREE_WORD_LIMIT} words (this file: ~${words}). Trim it or upgrade to Premium.` };

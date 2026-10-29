@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { View, Text, Pressable, Animated } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { View, Pressable, Animated } from 'react-native';
+import Text from './ui/Text';
 import DuoButton from './DuoButton';
 import Reanimated, {
   useSharedValue,
@@ -9,16 +10,25 @@ import Reanimated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useAudioPlayer } from 'expo-audio';
-import * as Speech from 'expo-speech';
+import { playQuizCorrect, playWrong, preloadRewardCues } from '../lib/sfx';
 import * as Haptics from 'expo-haptics';
 // Hearts gate retired: wrong answers no longer consume hearts (unlimited learning).
 
 import { fetchExplanation } from '../lib/explain';
 import { getCourseLesson } from '../lib/courses';
 import { getLanguageLesson } from '../lib/languages';
+import {
+  APP_SPEECH,
+  languageForLesson,
+  phraseForQuestion,
+  promptSegments,
+  speakAs,
+  speakSegments,
+  stopSpeaking,
+} from '../lib/pronunciation';
 import HelpfulVote from './HelpfulVote';
-import { getSoundOn, getHapticsOn } from '../lib/preferences';
-import { CORRECT_CHIME, WRONG_BUZZ } from '../assets/sounds';
+import { getHapticsOn, getSoundOn } from '../lib/preferences';
+import AppIcon from './AppIcon';
 
 export interface CodeQuizData {
   prompt: string;
@@ -67,14 +77,15 @@ export default function GamifiedCodePlayer({
   onContinue,
   onAnswer,
 }: Props) {
-  void lessonId;
+  // Language courses get a native-locale phrase model (Livia) plus a character
+  // read of the question (Bingo); everything else keeps the normal narrator.
+  const language = getLanguageLesson(lessonId) ? languageForLesson(lessonId) : null;
+  const phrase = language ? phraseForQuestion(questionData, language) : null;
   const [selectedTokens, setSelectedTokens] = useState<string[]>([]);
   const [availableTokens, setAvailableTokens] = useState<string[]>(questionData.scrambledTokens);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [bar] = useState(() => new Animated.Value(0));
   const narration = useAudioPlayer(questionData.audioUrl ? { uri: questionData.audioUrl } : undefined);
-  const correctPlayer = useAudioPlayer({ uri: CORRECT_CHIME });
-  const wrongPlayer = useAudioPlayer({ uri: WRONG_BUZZ });
   // Elite voices (ElevenLabs/OpenAI) are premium; free tier hears the same
   // prompt through the phone's built-in robot voice ($0).
   const eliteLocked = !questionData.audioUrl;
@@ -84,6 +95,8 @@ export default function GamifiedCodePlayer({
   // Duolingo Max: personalized tutor explanation for this exact mistake.
   const [explain, setExplain] = useState<string | null>(null);
   const [explainLoading, setExplainLoading] = useState(false);
+  // Slow replay of the correct phrase after a miss (Duolingo-style correction).
+  const remedyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // freeCodeCamp-style test checklist. Labels stay generic on purpose: the
   // exact answer is never printed until the learner produces it (see the
@@ -130,6 +143,10 @@ export default function GamifiedCodePlayer({
   };
 
   useEffect(() => {
+    void preloadRewardCues();
+  }, []);
+
+  useEffect(() => {
     setSelectedTokens([]);
     setAvailableTokens(shuffle(questionData.scrambledTokens));
     setFeedback(null);
@@ -138,8 +155,32 @@ export default function GamifiedCodePlayer({
     setExplainLoading(false);
     pop.value = 1;
     shakeX.value = 0;
+    if (remedyTimer.current) clearTimeout(remedyTimer.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionData]);
+
+  // A language exercise opens with its phrase, like Duolingo's exercise audio.
+  useEffect(() => {
+    if (!language || !phrase) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      if (cancelled || !(await getSoundOn()) || cancelled) return;
+      void speakAs({ character: 'livia', text: phrase, language });
+    }, 420);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [language, phrase]);
+
+  // Never leave a character talking over the next screen.
+  useEffect(
+    () => () => {
+      if (remedyTimer.current) clearTimeout(remedyTimer.current);
+      void stopSpeaking();
+    },
+    []
+  );
 
   useEffect(() => {
     Animated.timing(bar, { toValue: progressPct, duration: 400, useNativeDriver: false }).start();
@@ -147,14 +188,47 @@ export default function GamifiedCodePlayer({
 
   const playNarration = () => {
     if (eliteLocked) {
-      setHint('Free voice \u{1F50A} — upgrade to Premium for soothing human-like audiobooks.');
-      Speech.stop();
-      Speech.speak(questionData.prompt.slice(0, 1000));
+      setHint('Free voice — upgrade to Premium for soothing human-like audiobooks.');
+      void speakAs({ character: 'bingo', text: questionData.prompt, language: APP_SPEECH });
       return;
     }
     setHint(null);
     narration.seekTo(0);
     narration.play();
+  };
+
+  const noteVoiceQuality = (result: { hasVoiceList: boolean; matchedVoice: boolean; approximate: boolean }) => {
+    if (!language || !result.hasVoiceList || result.matchedVoice) return;
+    setHint(
+      result.approximate
+        ? `Approximate ${language.label} — install a ${language.label} voice for native audio.`
+        : `No ${language.label} voice installed — add one in system settings for native audio.`
+    );
+  };
+
+  const speakLanguagePhrase = async (slow = false) => {
+    if (!language) return;
+    setHint(null);
+    const result = await speakAs({
+      character: 'livia',
+      text: phrase ?? questionData.prompt,
+      language,
+      slow,
+    });
+    if (!result.spoken) setHint('Speech is unavailable on this device.');
+    else noteVoiceQuality(result);
+  };
+
+  const readPromptAsBingo = async () => {
+    setHint(null);
+    // Mixed prompts are read in runs: English scaffolding in Bingo's voice,
+    // the target phrase in the language's own voice.
+    const results = await speakSegments(promptSegments(questionData.prompt, language ?? APP_SPEECH), {
+      character: 'bingo',
+    });
+    if (results.length === 0 || !results.some((r) => r.spoken)) {
+      setHint('Speech is unavailable on this device.');
+    }
   };
 
   const handleSelectToken = (token: string, index: number) => {
@@ -189,7 +263,7 @@ export default function GamifiedCodePlayer({
       correctAnswer: questionData.correctChain.join(' '),
       correct: isCorrect,
     });
-    const [soundOn, hapticsOn] = await Promise.all([getSoundOn(), getHapticsOn()]);
+    const hapticsOn = await getHapticsOn();
     if (isCorrect) {
       setFeedback('correct');
       // Playful bounce: overshoot then settle.
@@ -197,10 +271,7 @@ export default function GamifiedCodePlayer({
         withSpring(1.15, { damping: 6, stiffness: 300 }),
         withSpring(1, { damping: 10, stiffness: 250 })
       );
-      if (soundOn) {
-        correctPlayer.seekTo(0);
-        correctPlayer.play();
-      }
+      void playQuizCorrect();
       if (hapticsOn) {
         try {
           await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -216,9 +287,13 @@ export default function GamifiedCodePlayer({
         withTiming(-6, { duration: 50 }),
         withTiming(0, { duration: 60 })
       );
-      if (soundOn) {
-        wrongPlayer.seekTo(0);
-        wrongPlayer.play();
+      void playWrong();
+      // Correction: hear the right sentence slowly, once the cue has landed.
+      if (language && phrase) {
+        if (remedyTimer.current) clearTimeout(remedyTimer.current);
+        remedyTimer.current = setTimeout(() => {
+          void speakAs({ character: 'livia', text: phrase, language, slow: true });
+        }, 480);
       }
       if (hapticsOn) {
         try {
@@ -236,53 +311,90 @@ export default function GamifiedCodePlayer({
     <View className="flex-1">
       {/* Top HUD Row */}
       <View className="mb-4 flex-row items-center justify-between">
-        <View className="h-4 w-2/3 overflow-hidden rounded-full bg-slate-200">
+        <View className="h-4 w-2/3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
           <Animated.View className="h-full rounded-full bg-green-500" style={{ width: bar.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) }} />
         </View>
-        <Text className="text-xl font-bold text-red-500">{'\u2764\uFE0F'} {hearts}</Text>
+        <View className="flex-row items-center gap-1">
+          <AppIcon name="heart" size={20} color="#EF4444" />
+          <Text className="text-xl font-bold text-red-500 dark:text-red-400">{hearts}</Text>
+        </View>
       </View>
 
       {/* FCC-style instruction card + Duo challenge label */}
-      <View className="my-2 rounded-3xl border-2 border-slate-200 bg-white p-4">
+      <View className="my-2 rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
         <Text className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
           Challenge | {questionLabel}
         </Text>
-        <Text className="mb-1 font-duo text-xl font-bold text-slate-900">{questionData.prompt}</Text>
-        <Text className="text-sm text-slate-500">Assemble the tokens below, run the tests, then check your answer.</Text>
-        <Pressable
-          onPress={playNarration}
-          className={`flex-row items-center self-start rounded-full px-4 py-2 ${
-            eliteLocked ? 'bg-slate-700' : 'bg-indigo-600'
-          }`}
-        >
-          <Text className="font-semibold text-white">
-            {'\u{1F50A}'} {eliteLocked ? 'Listen (device voice)' : 'Listen to Audiobook Explainer'}
-          </Text>
-        </Pressable>
-        {hint ? <Text className="mt-1 text-xs text-slate-400">{hint}</Text> : null}
+        <Text className="mb-1 font-duo text-xl font-bold text-slate-900 dark:text-slate-100">{questionData.prompt}</Text>
+        <Text className="text-sm text-slate-500 dark:text-slate-400">Assemble the tokens below, run the tests, then check your answer.</Text>
+        {language ? (
+          <View className="mt-3 flex-row flex-wrap items-center gap-2">
+            <Pressable
+              onPress={() => void speakLanguagePhrase()}
+              accessibilityRole="button"
+              accessibilityLabel={`Hear Livia pronounce the ${language.label} phrase`}
+              className="flex-row items-center rounded-full bg-violet-600 px-4 py-2 active:bg-violet-700"
+            >
+              <AppIcon name="volume" size={16} color="#FFFFFF" />
+              <Text className="ml-1.5 font-semibold text-white">Hear Livia · {language.label}</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => void speakLanguagePhrase(true)}
+              accessibilityRole="button"
+              accessibilityLabel={`Hear Livia pronounce the ${language.label} phrase slowly`}
+              className="h-10 w-10 items-center justify-center rounded-full border border-violet-300 bg-violet-50 active:bg-violet-100 dark:border-violet-800 dark:bg-violet-950"
+            >
+              <Text style={{ fontSize: 17 }}>🐢</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => void readPromptAsBingo()}
+              accessibilityRole="button"
+              accessibilityLabel="Hear Bingo read the question"
+              className="flex-row items-center rounded-full border border-slate-300 bg-white px-4 py-2 active:bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
+            >
+              <AppIcon name="volume" size={16} color="#64748B" />
+              <Text className="ml-1.5 font-semibold text-slate-700 dark:text-slate-200">Bingo reads it</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <Pressable
+            onPress={playNarration}
+            className={`flex-row items-center self-start rounded-full px-4 py-2 ${
+              eliteLocked ? 'bg-slate-700' : 'bg-indigo-600'
+            }`}
+          >
+            <View className="flex-row items-center gap-1.5">
+              <AppIcon name="volume" size={16} color="#FFFFFF" />
+              <Text className="font-semibold text-white">
+                {eliteLocked ? 'Listen (device voice)' : 'Listen to Audiobook Explainer'}
+              </Text>
+            </View>
+          </Pressable>
+        )}
+        {hint ? <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">{hint}</Text> : null}
       </View>
 
       {/* FCC-style test console: live pass/fail per test */}
       <View className="mt-2 rounded-2xl bg-slate-950 p-4">
-        <Text className="text-xs font-extrabold uppercase tracking-widest text-slate-400">Tests {ranTests ? `· ${tests.filter((t) => t.pass(selectedTokens)).length}/${tests.length} passing` : ''}</Text>
+        <Text className="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Tests {ranTests ? `· ${tests.filter((t) => t.pass(selectedTokens)).length}/${tests.length} passing` : ''}</Text>
         {tests.map((t, i) => {
           const pass = selectedTokens.length > 0 && t.pass(selectedTokens);
           const show = ranTests || feedback !== null;
           return (
-            <Text key={i} className={`mt-1 font-mono text-sm ${!show ? 'text-slate-500' : pass ? 'text-green-400' : 'text-red-400'}`}>
+            <Text key={i} className={`mt-1 font-mono text-sm ${!show ? 'text-slate-500 dark:text-slate-400' : pass ? 'text-green-400' : 'text-red-400'}`}>
               {!show ? '○' : pass ? '● PASS' : '● FAIL'}  {t.label}
             </Text>
           );
         })}
-        <Text className="mt-2 font-mono text-xs text-slate-500">
+        <Text className="mt-2 font-mono text-xs text-slate-500 dark:text-slate-400">
           {'>'} preview: {selectedTokens.length > 0 ? selectedTokens.join(' ') : '(empty — tap tokens)'}
         </Text>
       </View>
 
       {/* Assembly drop zone */}
-      <View className="mt-4 min-h-24 w-full flex-row flex-wrap items-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-950 p-3">
+      <View className="mt-4 min-h-24 w-full flex-row flex-wrap items-center rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-950 p-3">
         {selectedTokens.length === 0 ? (
-          <Text className="p-1 font-mono text-sm text-slate-600">{'// tap tokens below to build...'}</Text>
+          <Text className="p-1 font-mono text-sm text-slate-600 dark:text-slate-400">{'// tap tokens below to build...'}</Text>
         ) : (
           selectedTokens.map((token, i) => (
             <Pressable
@@ -298,15 +410,15 @@ export default function GamifiedCodePlayer({
 
       {/* Token bank */}
       <View className="my-4">
-        <Text className="mb-2 text-sm text-slate-500">Tap tokens to assemble code:</Text>
+        <Text className="mb-2 text-sm text-slate-500 dark:text-slate-400">Tap tokens to assemble code:</Text>
         <View className="flex-row flex-wrap">
           {availableTokens.map((token, i) => (
             <Pressable
               key={`available-${i}`}
               onPress={() => handleSelectToken(token, i)}
-              className="m-1 rounded-xl border border-slate-300 bg-slate-100 px-3 py-2 active:bg-slate-200"
+              className="m-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 active:bg-slate-200"
             >
-              <Text className="font-mono font-semibold text-emerald-600">{token}</Text>
+              <Text className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">{token}</Text>
             </Pressable>
           ))}
         </View>
@@ -320,7 +432,7 @@ export default function GamifiedCodePlayer({
               onPress={() => setRanTests(true)}
               disabled={selectedTokens.length === 0}
               label="Run tests without submitting"
-              title="▶ Run"
+              title="Run"
             />
           </View>
           <View className="flex-[2]">
@@ -333,25 +445,31 @@ export default function GamifiedCodePlayer({
           </View>
         </View>
       ) : (
-        <Reanimated.View style={bannerStyle} className={`mb-8 rounded-3xl p-5 ${feedback === 'correct' ? 'bg-green-100' : 'bg-red-100'}`}>
-          <Text className={`font-duo text-xl font-extrabold ${feedback === 'correct' ? 'text-green-700' : 'text-red-600'}`}>
-            {feedback === 'correct' ? '\u{1F389} Correct! Great job! +10 XP' : '\u274C Incorrect Syntax'}
-          </Text>
-          <Text className="mt-1 text-slate-600">
+        <Reanimated.View style={bannerStyle} className={`mb-8 rounded-3xl p-5 ${feedback === 'correct' ? 'bg-green-100 dark:bg-green-950' : 'bg-red-100 dark:bg-red-950'}`}>
+          <View className="flex-row items-center gap-2">
+            <AppIcon name={feedback === 'correct' ? 'party' : 'xCircle'} size={24} color={feedback === 'correct' ? '#15803D' : '#DC2626'} />
+            <Text className={`font-duo text-xl font-extrabold ${feedback === 'correct' ? 'text-green-700 dark:text-green-300' : 'text-red-600 dark:text-red-400'}`}>
+              {feedback === 'correct' ? 'Correct! Great job! +10 XP' : 'Incorrect syntax'}
+            </Text>
+          </View>
+          <Text className="mt-1 text-slate-600 dark:text-slate-400">
             {feedback === 'correct'
               ? `Answer: ${questionData.correctChain.join(' ')}`
               : wrongHint}
           </Text>
           {feedback === 'correct' && questionData.explain ? (
-            <Text className="mt-1 text-sm text-slate-500">Why: {questionData.explain}</Text>
+            <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">Why: {questionData.explain}</Text>
           ) : null}
           {feedback === 'wrong' && questionData.explain ? (
-            <Text className="mt-1 text-sm text-slate-500">Why: {questionData.explain}</Text>
+            <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">Why: {questionData.explain}</Text>
           ) : null}
           {feedback === 'wrong' ? (
             explain ? (
-              <View className="mt-2 rounded-xl bg-violet-50 p-3">
-                <Text className="text-sm leading-5 text-violet-900">✨ {explain}</Text>
+              <View className="mt-2 rounded-xl bg-violet-50 dark:bg-violet-950 p-3">
+                <View className="flex-row items-start gap-1.5">
+                  <AppIcon name="sparkles" size={15} color="#7C3AED" />
+                  <Text className="flex-1 text-sm leading-5 text-violet-900 dark:text-violet-200">{explain}</Text>
+                </View>
                 <HelpfulVote
                   userId={userId}
                   lessonTitle={questionLabel}
@@ -366,10 +484,10 @@ export default function GamifiedCodePlayer({
                 disabled={explainLoading}
                 accessibilityRole="button"
                 accessibilityLabel="Explain my answer"
-                className="mt-2 items-center rounded-xl border-2 border-violet-200 bg-white py-2"
+                className="mt-2 items-center rounded-xl border-2 border-violet-200 dark:border-violet-900 bg-white dark:bg-slate-900 py-2"
               >
                 <Text className={`text-sm font-extrabold ${explainLoading ? 'text-slate-400' : 'text-violet-700'}`}>
-                  {explainLoading ? '✨ Asking the tutor…' : '✨ Explain my answer'}
+                  {explainLoading ? 'Asking the tutor…' : 'Explain my answer'}
                 </Text>
               </Pressable>
             )
@@ -382,10 +500,12 @@ export default function GamifiedCodePlayer({
       {/* First-mistake explainer: hearts introduced exactly when they matter. */}
       {showHeartsInfo ? (
         <View className="absolute inset-0 z-10 items-center justify-center bg-slate-900/70 px-6">
-          <View className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-xl">
-            <Text className="text-4xl">💔</Text>
-            <Text className="mt-2 text-xl font-extrabold text-slate-900">Wrong answers cost a heart</Text>
-            <Text className="mt-1 text-sm leading-5 text-slate-600">
+          <View className="w-full max-w-sm rounded-3xl bg-white dark:bg-slate-900 p-5 shadow-xl">
+            <View className="h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-950">
+              <AppIcon name="heart" size={30} color="#EF4444" />
+            </View>
+            <Text className="mt-2 text-xl font-extrabold text-slate-900 dark:text-slate-100">Wrong answers cost a heart</Text>
+            <Text className="mt-1 text-sm leading-5 text-slate-600 dark:text-slate-400">
               You have {hearts} {hearts === 1 ? 'heart' : 'hearts'} left. Hearts refill over time — or watch a short ad for +1. Tip: hit Run first to test your code for free!
             </Text>
             <View className="mt-4">
