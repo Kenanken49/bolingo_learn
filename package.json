@@ -63,7 +63,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
     "check:audio": "node scripts/check-celebration-duration.cjs",
-    "test": "node scripts/check-celebration-duration.cjs"
+    "check:results": "node scripts/check-results-celebration.cjs",
+    "test": "node scripts/check-celebration-duration.cjs && node scripts/check-results-celebration.cjs"
   },
   "private": true
 }

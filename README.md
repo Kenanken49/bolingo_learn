@@ -31,12 +31,20 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
 
 ```bash
 npm run typecheck   # TypeScript
-npm test            # celebration cue is exactly 5.000s
+npm test            # 5.000s cue + results celebration gate
 npm run lint        # ESLint (expo lint)
 ```
 
 The audio check reads the WAV header directly, so it also guards against a
 re-export silently changing the cue's sample rate or frame count.
+
+The results check ([scripts/check-results-celebration.cjs](scripts/check-results-celebration.cjs))
+executes the real `shouldCelebrate()` gate from [lib/resultsGate.ts](lib/resultsGate.ts)
+against a pass/fail matrix — 80% compared unrounded, a level-up still counts
+after a miss, an empty result scores 0 — and then asserts the screen's wiring:
+the burst is seeded from the gate and `<Celebration>` renders only behind
+`burst && celebrates`. Flip the gate's `>=` to `>` or drop the render guard and
+`npm test` fails.
 
 ## Edge Functions
 
@@ -104,7 +112,9 @@ and the screen hands straight over to [components/Celebration.tsx](components/Ce
 for the full `FULL_CELEBRATION_MS` ribbon storm — no overlap and no gap. The
 applause starts on that handoff frame rather than on the tap, so the five
 seconds of crowd sit exactly under the five seconds of ribbons. Results mount
-the storm directly; only the chest gets a ceremony in front of it.
+the storm directly, but only for a pass (80%+, unrounded) or a level-up — a
+failed run gets the review panel and no applause. Only the chest gets a
+ceremony in front of the storm.
 
 The storm is also frame-budgeted: after a 700ms settle (so the mount spike
 doesn't count) it samples its own frame times, and if more than half of a

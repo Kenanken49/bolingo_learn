@@ -5,6 +5,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { getLessonResult } from '../../lib/quizResults';
+import { PASS_PCT, resultsScore, shouldCelebrate } from '../../lib/resultsGate';
 import { levelProgress, xpForLevel } from '../../lib/levels';
 import { playCelebration } from '../../lib/sfx';
 import DuoButton from '../../components/DuoButton';
@@ -18,15 +19,12 @@ import { getPendingGuestResult, type PendingGuestResult } from '../../lib/onboar
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
 import { isProjectLesson } from '../../lib/courses';
 
-/** freeCodeCamp-style pass threshold. */
-const PASS_PCT = 80;
-
 export default function Results() {
   const result = getLessonResult();
-  const score = result && result.total > 0 ? (result.correctCount / result.total) * 100 : 0;
+  // Unrounded, so the banner and the reward agree on the same pass rule.
+  const score = result ? resultsScore(result) : 0;
   const pct = Math.round(score);
-  // Use the unrounded score for the reward, matching the quiz's pass rule.
-  const celebrates = !!result && (score >= PASS_PCT || !!result.leveledUp);
+  const celebrates = shouldCelebrate(result);
   // Profile-second upsell: guests see a save-progress card after winning XP.
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pending, setPending] = useState<PendingGuestResult | null>(null);
@@ -86,7 +84,7 @@ export default function Results() {
     );
   }
 
-  const passed = pct >= PASS_PCT;
+  const passed = score >= PASS_PCT;
   const missed = result.results.filter((r) => !r.correct);
   const block = blockByLessonId(result.lessonId);
   // Kiki v3 card: next-best challenge + live 40-dim profile summary.
@@ -117,7 +115,7 @@ export default function Results() {
         <Celebration duration={FULL_CELEBRATION_MS} onDone={() => setBurst(false)} />
       ) : null}
     <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-      {pct >= 80 ? (
+      {passed ? (
         <Mascot character="bingo" mood="party" size={110} />
       ) : pct >= 50 ? (
         <Mascot character="livia" mood="happy" size={110} />
@@ -125,7 +123,7 @@ export default function Results() {
         <Mascot character="bingo" mood="sad" size={110} />
       )}
       <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-        {pct >= 80 ? 'Bingo is dancing' : pct >= 50 ? 'Livia is proud' : 'Bingo believes in you'}
+        {passed ? 'Bingo is dancing' : pct >= 50 ? 'Livia is proud' : 'Bingo believes in you'}
       </Text>
       <Text className="mt-2 font-duo text-2xl font-extrabold text-slate-900 dark:text-slate-100">Lesson complete!</Text>
       <Text className="text-base text-slate-500 dark:text-slate-400">{result.title}</Text>
