@@ -337,4 +337,88 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'spanish-questions': {
+    id: 'spanish-questions',
+    title: 'Spanish Questions & Negation',
+    theory: [
+      'Spanish questions carry an opening ¿ and usually put the question word first: ¿Dónde está el baño? (Where is the bathroom?), ¿Cuándo llegas? (When do you arrive?), ¿Por qué estudias español? (Why do you study Spanish?).',
+      'A yes/no question can simply rise in pitch: ¿Hablas español? The subject can come before or after the verb — ¿Tú hablas español? and ¿Hablas tú español? both work.',
+      'Negation is no before the verb: No hablo francés. Double negatives are normal and emphatic: No veo nada (I see nothing), No hay nadie (there is nobody). Use tú with friends and usted in formal situations.',
+    ],
+    questions: [
+      MCQ(
+        'Which word means “where”?',
+        'dónde',
+        ['dónde', 'cuándo', 'quién', 'cómo'],
+        'Dónde = where, cuándo = when, quién = who, cómo = how.'
+      ),
+      BUILD(
+        'Ask “Where is the bathroom?”',
+        ['Dónde', 'está', 'el', 'baño'],
+        ['baño', 'Dónde', 'está', 'el', 'cuándo'],
+        '¿Dónde está…? + place. El baño = the bathroom; está = is (location).'
+      ),
+      MCQ(
+        '“No hablo francés” means…',
+        'I don’t speak French',
+        ['I don’t speak French', 'I speak French', 'I don’t study French', 'I want to learn French'],
+        'No before the verb negates the whole sentence: no hablo = I don’t speak.'
+      ),
+      BUILD(
+        'Say “I don’t have time”:',
+        ['No', 'tengo', 'tiempo'],
+        ['tiempo', 'No', 'tengo', 'tiene'],
+        'No + tengo + tiempo. Tiene is the usted/él form, not yo.'
+      ),
+      MCQ(
+        '“No veo nada” means…',
+        'I see nothing',
+        ['I see nothing', 'I don’t see the water', 'I see everything', 'I don’t want to see'],
+        'Spanish keeps both negatives: no + veo + nada. Literally “I don’t see nothing,” meaning I see nothing.'
+      ),
+    ],
+  },
+
+  'spanish-health': {
+    id: 'spanish-health',
+    title: 'Spanish Health & Emergencies',
+    theory: [
+      'Say what hurts with doler: Me duele la cabeza (I have a headache), Me duele el estómago (my stomach hurts). For plural body parts use duelen: Me duelen los pies.',
+      'Symptoms: Tengo fiebre (I have a fever), Tengo tos (I have a cough). Ask for help with Necesito un médico (I need a doctor), ¿Dónde está la farmacia? (where is the pharmacy?), or Llame a una ambulancia (call an ambulance — formal).',
+      'Allergies: Soy alérgico/a a los cacahuetes. Use ¿Puede ayudarme? for a polite “Can you help me?”.',
+    ],
+    questions: [
+      MCQ(
+        '“Me duele la cabeza” means…',
+        'I have a headache',
+        ['I have a headache', 'I have a stomach ache', 'My feet hurt', 'I am dizzy'],
+        'Me duele + singular body part: la cabeza = the head. Duelen is for plural parts.'
+      ),
+      BUILD(
+        'Say “I need a doctor”:',
+        ['Necesito', 'un', 'médico'],
+        ['médico', 'Necesito', 'un', 'médica'],
+        'Necesito = I need; un médico = a doctor. Médica is the feminine form of the profession.'
+      ),
+      MCQ(
+        '“Tengo fiebre” means…',
+        'I have a fever',
+        ['I have a fever', 'I have a cough', 'I am cold', 'I have a headache'],
+        'Tener + fiebre = to have a fever. Tos is a cough.'
+      ),
+      BUILD(
+        'Ask “Where is the pharmacy?”',
+        ['Dónde', 'está', 'la', 'farmacia'],
+        ['farmacia', 'Dónde', 'está', 'la', 'el'],
+        '¿Dónde está la farmacia? — farmacia is feminine, so la farmacia.'
+      ),
+      MCQ(
+        '“Soy alérgico a los cacahuetes” means…',
+        'Peanuts make me ill',
+        ['Peanuts make me ill', 'I love peanuts', 'I am carrying peanuts', 'Peanuts are expensive'],
+        'Alérgico/a a… names the trigger. Say it clearly before ordering food.'
+      ),
+    ],
+  },
 };

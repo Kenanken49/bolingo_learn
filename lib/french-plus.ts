@@ -337,4 +337,88 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'french-questions': {
+    id: 'french-questions',
+    title: 'French Questions & Negation',
+    theory: [
+      'French asks questions three ways: rising intonation (Tu parles français ?), est-ce que (Est-ce que tu parles français ?), or inversion (Parles-tu français ?). Inversion is the most formal; est-ce que is the safest everyday form.',
+      'Question words: où (where), quand (when), pourquoi (why), comment (how), qui (who), combien (how much/many), and qu’est-ce que (what). The question word comes first: Où est la gare ?',
+      'Negation wraps the verb in ne … pas: Je ne parle pas français. In speech the ne often disappears: Je parle pas français. Other pairs: ne … jamais (never), ne … rien (nothing). Use tu with friends and vous in formal situations.',
+    ],
+    questions: [
+      MCQ(
+        'Which is the formal way to ask “Do you speak French?”',
+        'Parlez-vous français ?',
+        ['Parlez-vous français ?', 'Tu parles français ?', 'Vous parlez français.', 'Parles-tu français ?'],
+        'Inversion with vous is formal: Parlez-vous…? Tu parles…? is informal; the third option is a statement.'
+      ),
+      BUILD(
+        'Ask “Where is the station?”',
+        ['Où', 'est', 'la', 'gare'],
+        ['gare', 'Où', 'est', 'la', 'combien'],
+        'Où est…? + place. La gare = the station; combien asks how much.'
+      ),
+      MCQ(
+        '“Je ne parle pas français” means…',
+        'I don’t speak French',
+        ['I don’t speak French', 'I speak French', 'I don’t study French', 'I want to learn French'],
+        'Ne … pas surrounds the verb: ne parle pas = don’t speak.'
+      ),
+      BUILD(
+        'Say “I don’t eat meat”:',
+        ['Je', 'ne', 'mange', 'pas', 'de', 'viande'],
+        ['viande', 'Je', 'ne', 'mange', 'pas', 'de', 'jamais'],
+        'Je ne mange pas de viande. After a negation, de replaces the article: pas de viande.'
+      ),
+      MCQ(
+        '“Je ne vois rien” means…',
+        'I see nothing',
+        ['I see nothing', 'I don’t see the water', 'I see everything', 'I don’t want to see'],
+        'Ne … rien is the “nothing” pair. French keeps both halves around the verb.'
+      ),
+    ],
+  },
+
+  'french-health': {
+    id: 'french-health',
+    title: 'French Health & Emergencies',
+    theory: [
+      'Say where it hurts with avoir mal à: J’ai mal à la tête (headache), J’ai mal au ventre (stomach ache). The preposition contracts: à + le = au, à + les = aux.',
+      'Symptoms: J’ai de la fièvre (I have a fever), je tousse (I cough). Ask for help with J’ai besoin d’un médecin (I need a doctor), Où est la pharmacie ?, or Appelez une ambulance (call an ambulance — formal).',
+      'Allergies: Je suis allergique aux arachides. For polite help say Pouvez-vous m’aider ?',
+    ],
+    questions: [
+      MCQ(
+        '“J’ai mal à la tête” means…',
+        'I have a headache',
+        ['I have a headache', 'I have a stomach ache', 'My feet hurt', 'I am dizzy'],
+        'Avoir mal à + body part: la tête = the head. Au ventre is the stomach.'
+      ),
+      BUILD(
+        'Say “I need a doctor”:',
+        ['J’ai', 'besoin', 'd’un', 'médecin'],
+        ['médecin', 'J’ai', 'besoin', 'd’un', 'pharmacie'],
+        'J’ai besoin de… = I need…; de + un contracts to d’un médecin.'
+      ),
+      MCQ(
+        '“J’ai de la fièvre” means…',
+        'I have a fever',
+        ['I have a fever', 'I have a cough', 'I am cold', 'I have a headache'],
+        'Avoir de la fièvre = to have a fever. Je tousse = I cough.'
+      ),
+      BUILD(
+        'Ask “Where is the pharmacy?”',
+        ['Où', 'est', 'la', 'pharmacie'],
+        ['pharmacie', 'Où', 'est', 'la', 'le'],
+        'Où est la pharmacie ? — pharmacie is feminine, so la pharmacie.'
+      ),
+      MCQ(
+        '“Je suis allergique aux arachides” means…',
+        'Peanuts make me ill',
+        ['Peanuts make me ill', 'I love peanuts', 'I am carrying peanuts', 'Peanuts are expensive'],
+        'Allergique à… names the trigger; à + les contracts to aux.'
+      ),
+    ],
+  },
 };

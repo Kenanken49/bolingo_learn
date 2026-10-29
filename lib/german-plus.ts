@@ -337,4 +337,88 @@ export const GERMAN_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'german-questions': {
+    id: 'german-questions',
+    title: 'German Questions & Negation',
+    theory: [
+      'W-questions put the question word first and the verb second: Wo wohnst du? (Where do you live?), Wann kommst du? (When are you coming?), Warum lernst du Deutsch? (Why are you learning German?).',
+      'Yes/no questions start with the verb: Sprichst du Deutsch? (Do you speak German?), Hast du Zeit? (Do you have time?). The verb keeps its second position even when the subject follows it.',
+      'Negation: nicht for verbs, adjectives and definite nouns (Das ist nicht mein Buch); kein/keine for indefinite nouns (Ich habe keine Zeit, Ich spreche kein Deutsch). Use du with friends and Sie in formal situations.',
+    ],
+    questions: [
+      MCQ(
+        'Which is the correct question for “Where do you live?”',
+        'Wo wohnst du?',
+        ['Wo wohnst du?', 'Wo du wohnst?', 'Wohnst wo du?', 'Du wohnst wo?'],
+        'Question word first, verb second: Wo + wohnst + du.'
+      ),
+      BUILD(
+        'Ask “Do you speak German?”',
+        ['Sprichst', 'du', 'Deutsch'],
+        ['Deutsch', 'Sprichst', 'du', 'sprechen'],
+        'Yes/no question: verb first, then subject. Sprichst du Deutsch?'
+      ),
+      MCQ(
+        '“Ich habe keine Zeit” means…',
+        'I have no time',
+        ['I have no time', 'I have lots of time', 'I am late', 'I don’t like time'],
+        'Keine negates the indefinite noun Zeit: keine Zeit = no time.'
+      ),
+      BUILD(
+        'Say “I don’t speak German”:',
+        ['Ich', 'spreche', 'kein', 'Deutsch'],
+        ['Deutsch', 'Ich', 'spreche', 'kein', 'keine'],
+        'Kein precedes the neuter noun Deutsch: kein Deutsch. Keine is for feminine/plural nouns.'
+      ),
+      MCQ(
+        '“Das ist nicht mein Buch” means…',
+        'That is not my book',
+        ['That is not my book', 'That is my book', 'That is no book', 'I don’t read that book'],
+        'Nicht negates the definite phrase mein Buch; kein would negate an indefinite noun.'
+      ),
+    ],
+  },
+
+  'german-health': {
+    id: 'german-health',
+    title: 'German Health & Emergencies',
+    theory: [
+      'Say what hurts with haben + a compound noun: Ich habe Kopfschmerzen (headache), Ich habe Bauchschmerzen (stomach ache). Also Ich habe Fieber (fever) and Ich huste (I cough).',
+      'Ask for help: Ich brauche einen Arzt (I need a doctor), Wo ist die Apotheke? (where is the pharmacy?), Rufen Sie einen Krankenwagen (call an ambulance — formal).',
+      'Allergies: Ich bin allergisch gegen Erdnüsse. For polite help say Können Sie mir helfen?',
+    ],
+    questions: [
+      MCQ(
+        '“Ich habe Kopfschmerzen” means…',
+        'I have a headache',
+        ['I have a headache', 'I have a stomach ache', 'My feet hurt', 'I am dizzy'],
+        'Kopf = head, Schmerzen = pain. Kopfschmerzen is the everyday headache.'
+      ),
+      BUILD(
+        'Say “I need a doctor”:',
+        ['Ich', 'brauche', 'einen', 'Arzt'],
+        ['Arzt', 'Ich', 'brauche', 'einen', 'Ärztin'],
+        'Brauchen takes einen Arzt (masculine accusative); Ärztin is the female doctor.'
+      ),
+      MCQ(
+        '“Ich habe Fieber” means…',
+        'I have a fever',
+        ['I have a fever', 'I have a cough', 'I am cold', 'I have a headache'],
+        'Fieber = fever. Ich huste = I cough.'
+      ),
+      BUILD(
+        'Ask “Where is the pharmacy?”',
+        ['Wo', 'ist', 'die', 'Apotheke'],
+        ['Apotheke', 'Wo', 'ist', 'die', 'der'],
+        'Wo ist die Apotheke? — Apotheke is feminine, so die Apotheke.'
+      ),
+      MCQ(
+        '“Ich bin allergisch gegen Erdnüsse” means…',
+        'Peanuts make me ill',
+        ['Peanuts make me ill', 'I love peanuts', 'I am carrying peanuts', 'Peanuts are expensive'],
+        'Allergisch gegen… names the trigger. Erdnüsse = peanuts.'
+      ),
+    ],
+  },
 };

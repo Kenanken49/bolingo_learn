@@ -89,10 +89,11 @@ OLED; light mode is the same system on quantum paper.
 Zora's build-coach surfaces now render the Figma-frame portrait
 (`assets/characters/zora-portrait.png`), not the old in-code vector.
 
-## Language courses (English & Swahili)
+## Language courses
 
-Both language paths now carry seventeen nodes. The newest lessons are original
-Bolingo material built around beginner survival topics:
+English and Swahili now carry seventeen nodes each; Spanish, French and German
+carry fifteen. The newest lessons are original Bolingo material built around
+beginner survival topics:
 
 - **Swahili** — [Questions & Negation](lib/swahili-plus.ts), [Adjectives &
   Agreement](lib/swahili-plus.ts), [Health & Emergencies](lib/swahili-plus.ts).
@@ -103,10 +104,24 @@ Bolingo material built around beginner survival topics:
   Comparing](lib/english-plus.ts), [Health & Emergencies](lib/english-plus.ts).
   They cover do/does/did, short answers, adjective order, `-er` vs `more`,
   `as … as`, `too`/`enough`, symptoms, and `should` advice.
+- **Spanish** — [Questions & Negation](lib/spanish-plus.ts), [Health &
+  Emergencies](lib/spanish-plus.ts). `¿Dónde está…?`, `no hablo`, double
+  negatives, `me duele`, `tengo fiebre`, and the pharmacy.
+- **French** — [Questions & Negation](lib/french-plus.ts), [Health &
+  Emergencies](lib/french-plus.ts). `Est-ce que` vs inversion, `ne … pas`,
+  `ne … jamais/rien`, `j’ai mal à…`, and `j’ai besoin d’un médecin`.
+- **German** — [Questions & Negation](lib/german-plus.ts), [Health &
+  Emergencies](lib/german-plus.ts). Verb-first questions, `nicht` vs
+  `kein/keine`, `Kopfschmerzen`, `einen Arzt`, and `die Apotheke`.
 
 Each lesson is five questions with a teaching note on every answer, and each is
 wired into [lib/curriculum.ts](lib/curriculum.ts) before the daily review and
 checkpoint, so completion, XP, chests and the final exam all work unchanged.
+
+Topic sequencing was checked against the public-domain FSI Basic Courses and
+publicly available beginner YouTube playlists; no third-party audio, captions or lesson
+text was copied. Sources and license notes:
+[docs/language-sources.md](docs/language-sources.md).
 
 **Where courses live.** Built-in courses are code-defined (`lib/*-plus.ts`) and
 merged into `LANGUAGE_COURSES`; they ship with the bundle and work offline.
