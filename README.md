@@ -98,15 +98,24 @@ Zora's build-coach surfaces now render the Figma-frame portrait
 
 ## Language courses
 
-English and Swahili now carry seventeen nodes each; Spanish, French and German
-carry fifteen. The newest lessons are original Bolingo material built around
-beginner survival topics:
+English carries seventeen nodes and Swahili twenty-one; Spanish, French and
+German carry fifteen. The newest lessons are original Bolingo material built
+around beginner survival topics:
 
 - **Swahili** — [Questions & Negation](lib/swahili-plus.ts), [Adjectives &
   Agreement](lib/swahili-plus.ts), [Health & Emergencies](lib/swahili-plus.ts).
   They cover `Je…?`, `wapi/nani/lini`, the present negative (`sipendi`,
   `hatuna`, `hakuna`), noun-class agreement (`mtoto mzuri`, `vitabu vikubwa`,
   `nyumba ndogo`), and `naumwa` / `nisaidie` / `daktari`.
+- **Swahili phrasebook** — [Politeness & Sympathy](lib/swahili-plus.ts),
+  [Introductions & Origins](lib/swahili-plus.ts), [Languages &
+  Understanding](lib/swahili-plus.ts), [Money & Bargaining](lib/swahili-plus.ts).
+  Drawn from the licensed Eko Languages phrase video (see
+  [docs/language-sources.md](docs/language-sources.md)): `samahani` / `pole
+  sana` / `karibu`, `Jina langu ni…` and `Nimetoka…`, `Unazungumza
+  Kiingereza?` / `sielewi` / `sema polepole`, and `Bei yake ni ngapi?` /
+  `punguza bei`, with colloquial market forms like `Uko na pesa?` labelled as
+  such.
 - **English** — [Questions & Negatives](lib/english-plus.ts), [Describing &
   Comparing](lib/english-plus.ts), [Health & Emergencies](lib/english-plus.ts).
   They cover do/does/did, short answers, adjective order, `-er` vs `more`,

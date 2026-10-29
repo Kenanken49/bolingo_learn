@@ -33,6 +33,33 @@ No video or audio was downloaded, transcribed, captioned or copied. The search
 was used to answer “what do beginners meet first?”, not “what should the lesson
 say?”.
 
+## Licensed Swahili phrase video
+
+The project owner confirmed on 29 October 2026 that permission has been obtained
+to use **“Learn Swahili While You Sleep — Most Important Swahili Phrases and
+Words”** by Eko Languages (YouTube, 2018;
+<https://www.youtube.com/watch?v=kUcbme3qSIg>) as source material for Swahili
+course development.
+
+What was used:
+
+- The eight-hour upload is a one-hour loop. The unique hour was read from the
+  video's own on-screen phrase cards (one frame every ten seconds, OCR), and the
+  first three minutes were transcribed with a local `faster-whisper` model to
+  cross-check the audio against the cards.
+- Only short Swahili/English phrase pairs informed vocabulary and topic choice.
+  The lessons, theory, prompts, distractors and explanations are original
+  Bolingo writing. No video, audio or transcript file is committed or shipped.
+- Spellings were normalised to standard Swahili where the cards or OCR were
+  inconsistent: `Kunradhi` → `Kumradhi`, `Asanti` → `Asante`, `Uhisipania` →
+  `Hispania`, `ljumaa` → `Ijumaa`. Colloquial forms (`Niko na…`, `Uko na pesa?`,
+  `Unaongea…`) are named as colloquial in the theory rather than taught as the
+  default.
+- Four lessons were added from the gaps the video covered: Politeness &
+  Sympathy, Introductions & Origins, Languages & Understanding, and Money &
+  Bargaining (`lib/swahili-plus.ts`), plus their path nodes in
+  `lib/curriculum.ts`.
+
 ## Provenance rules
 
 1. Prefer public-domain, CC-licensed or openly licensed material, and record

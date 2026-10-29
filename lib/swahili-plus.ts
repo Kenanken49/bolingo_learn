@@ -506,4 +506,168 @@ export const SWAHILI_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'swahili-politeness': {
+    id: 'swahili-politeness',
+    title: 'Swahili Politeness & Sympathy',
+    theory: [
+      'Swahili softens every request. Samahani (sorry / excuse me) opens one, Tafadhali (please) smooths it, and Asante (thank you) closes it. Karibu means welcome — the natural reply to Asante — and also “come in”.',
+      'Kumradhi is the formal “pardon me” heard in announcements and on phrase cards. Pole sana is sympathy, not an apology for a mistake: use it when someone is hurt or has bad news, and Samahani when you are the one who bumped, interrupted or arrived late. Hamna shida (or Hakuna shida) = no problem; Ni sawa = it’s fine.',
+    ],
+    questions: [
+      MCQ(
+        'You bump into someone in a crowd. What do you say?',
+        'Samahani',
+        ['Samahani', 'Asante', 'Karibu', 'Kwaheri'],
+        'Samahani = sorry / excuse me. Asante thanks them, Karibu welcomes them, Kwaheri says goodbye.'
+      ),
+      BUILD(
+        'Say “Please help me”:',
+        ['Nisaidie', 'tafadhali'],
+        ['tafadhali', 'Nisaidie', 'asante', 'pole'],
+        'Nisaidie = help me; tafadhali = please. Either order works — Tafadhali nisaidie is just as natural.'
+      ),
+      MCQ(
+        '“Asante sana” means…',
+        'Thank you very much',
+        ['Thank you very much', 'You are welcome', 'I am sorry', 'See you later'],
+        'Asante = thank you; sana = very. Asante sana is the warm, everyday thank-you.'
+      ),
+      BUILD(
+        'Reply “You’re welcome” to Asante:',
+        ['Karibu'],
+        ['Karibu', 'Tafadhali', 'Pole', 'Kwaheri'],
+        'Karibu is the standard reply to thanks. It also means welcome / come in.'
+      ),
+      MCQ(
+        'A friend tells you their grandmother died. Which reply fits?',
+        'Pole sana',
+        ['Pole sana', 'Tafadhali', 'Karibu', 'Asante sana'],
+        'Pole sana expresses sympathy. Samahani would suggest you were at fault.'
+      ),
+    ],
+  },
+
+  'swahili-introductions': {
+    id: 'swahili-introductions',
+    title: 'Swahili Introductions & Origins',
+    theory: [
+      'Ask a name formally with Jina lako ni nani? and casually with Unaitwaje? Answer Jina langu ni … or Ninaitwa …; Mimi ni … works in both registers.',
+      'Origin uses -toka: Umetoka wapi? (formal) / Unatoka wapi? Answer Nimetoka Kenya. Residence uses -ishi or -kaa: Unaishi wapi? / Unakaa wapi? — Naishi Nairobi. Close an introduction with Nimefurahi kukutana nawe (nice to meet you).',
+    ],
+    questions: [
+      MCQ(
+        'Which question is the casual way to ask someone’s name?',
+        'Unaitwaje?',
+        ['Unaitwaje?', 'Jina lako ni nani?', 'Umetoka wapi?', 'Unaishi wapi?'],
+        'Unaitwaje? = what are you called? Jina lako ni nani? is the formal version.'
+      ),
+      BUILD(
+        'Say “My name is Amina”:',
+        ['Jina', 'langu', 'ni', 'Amina'],
+        ['Amina', 'Jina', 'langu', 'ni', 'yako'],
+        'Jina = name, langu = my, ni = is. Jina langu ni Amina. Ninaitwa Amina says the same thing.'
+      ),
+      MCQ(
+        '“Umetoka wapi?” asks…',
+        'Where are you from?',
+        ['Where are you from?', 'Where do you live?', 'What is your name?', 'How old are you?'],
+        '-toka = come from. Answer Nimetoka Kenya (I am from Kenya). Residence uses -ishi instead.'
+      ),
+      BUILD(
+        'Say “I am from Kenya”:',
+        ['Nimetoka', 'Kenya'],
+        ['Nimetoka', 'Kenya', 'Naishi', 'Ujerumani'],
+        'Nimetoka = I have come from / I am from. Naishi is “I live”, not “I am from”.'
+      ),
+      MCQ(
+        'You live in Nairobi. Best answer to “Unaishi wapi?”',
+        'Naishi Nairobi',
+        ['Naishi Nairobi', 'Nimetoka Nairobi', 'Ninaitwa Nairobi', 'Nimefurahi Nairobi'],
+        'Naishi = I live. Nimetoka Nairobi would mean you come from Nairobi; the question asks where you live.'
+      ),
+    ],
+  },
+
+  'swahili-language': {
+    id: 'swahili-language',
+    title: 'Swahili Languages & Understanding',
+    theory: [
+      'Language names wear Ki-: Kiswahili, Kiingereza (English), Kiarabu (Arabic), Kijerumani (German), Kijapani (Japanese). Ask Unazungumza Kiingereza? — in the street you will also hear Unaongea Kiingereza?',
+      'When you are lost: Sielewi (I don’t understand), Sema polepole tafadhali (speak slowly, please), Unaweza kurudia? (can you repeat?). Naelewa = I understand; Kidogo tu = just a little.',
+    ],
+    questions: [
+      MCQ(
+        '“Sielewi” means…',
+        'I don’t understand',
+        ['I don’t understand', 'I don’t speak', 'I don’t know', 'I don’t want it'],
+        'Sielewi is the negative of naelewa (I understand) — the phrase for “it has not landed”.'
+      ),
+      BUILD(
+        'Ask “Do you speak English?” in standard Swahili:',
+        ['Unazungumza', 'Kiingereza'],
+        ['Kiingereza', 'Unazungumza', 'Unaongea', 'Kiarabu'],
+        'Unazungumza = you speak; Kiingereza = English. Unaongea Kiingereza? is the common colloquial variant.'
+      ),
+      MCQ(
+        'You need the speaker to slow down. Which sentence do you use?',
+        'Sema polepole tafadhali.',
+        ['Sema polepole tafadhali.', 'Sema haraka tafadhali.', 'Unaweza kurudia?', 'Naelewa.'],
+        'Polepole = slowly; sema = speak. Unaweza kurudia? asks for a repeat, not a slower pace.'
+      ),
+      BUILD(
+        'Say “I speak a little Swahili”:',
+        ['Nazungumza', 'Kiswahili', 'kidogo'],
+        ['kidogo', 'Nazungumza', 'Kiswahili', 'Kiingereza'],
+        'Nazungumza = I speak; kidogo = a little. Kidogo tu adds “just a little”.'
+      ),
+      MCQ(
+        '“Unaweza kurudia?” asks…',
+        'Can you repeat?',
+        ['Can you repeat?', 'Can you help me?', 'Can you write it?', 'Can you speak English?'],
+        'Kurudia = to repeat. Add tafadhali to keep it polite.'
+      ),
+    ],
+  },
+
+  'swahili-money': {
+    id: 'swahili-money',
+    title: 'Swahili Money & Bargaining',
+    theory: [
+      'Ask the price with Bei gani? or Bei yake ni ngapi? (How much is it?). Ghali = expensive, rahisi = cheap; Punguza bei = lower the price. Numbers: moja … kumi, elfu = thousand, mia = hundred.',
+      'Money talk: standard Swahili is Una pesa? (do you have money?); in the market you will hear the colloquial Uko na pesa? Sina pesa = I have no money. Zimetosha = that’s enough (for things), and Bas! stops a negotiation.',
+    ],
+    questions: [
+      MCQ(
+        '“Bei yake ni ngapi?” asks…',
+        'How much does it cost?',
+        ['How much does it cost?', 'Where is it?', 'What is it?', 'Do you have it?'],
+        'Bei = price, ngapi = how many / how much. Bei gani? asks the same thing.'
+      ),
+      BUILD(
+        'Say “It is very expensive”:',
+        ['Ni', 'ghali', 'sana'],
+        ['ghali', 'Ni', 'sana', 'rahisi'],
+        'Ni = it is, ghali = expensive, sana = very. Rahisi is the opposite: cheap.'
+      ),
+      MCQ(
+        'You say “Punguza bei.” The seller understands…',
+        'Lower the price',
+        ['Lower the price', 'I will take it', 'It is cheap', 'No change'],
+        'Punguza = reduce; bei = price. The friendly follow-up is “Punguza kidogo” — reduce it a little.'
+      ),
+      BUILD(
+        'Say “I don’t have money”:',
+        ['Sina', 'pesa'],
+        ['pesa', 'Sina', 'Nina', 'bei'],
+        'Sina = I don’t have; pesa = money. Uko na pesa? is the colloquial way a seller asks if you have any.'
+      ),
+      MCQ(
+        '“Shilingi elfu tano” is…',
+        '5,000 shillings',
+        ['5,000 shillings', '500 shillings', '50 shillings', '5 shillings'],
+        'Elfu = thousand, tano = five. Shilingi elfu tano = 5,000 shillings.'
+      ),
+    ],
+  },
 };
