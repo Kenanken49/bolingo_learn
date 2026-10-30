@@ -9,4 +9,16 @@
   body {
     font-family: 'Roboto', 'Roboto_400Regular', system-ui, sans-serif;
   }
+
+  /* Paint the QD-OLED canvas before the JS bundle mounts, so a refresh on
+     any route never flashes the browser's white. */
+  html,
+  body {
+    background-color: #F3F7EE;
+  }
+
+  html.dark,
+  html.dark body {
+    background-color: #010603;
+  }
 }

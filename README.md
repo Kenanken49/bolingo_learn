@@ -20,7 +20,16 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
    cp .env.example .env
    ```
    Get keys from your Supabase project dashboard (Project Settings → API).
-3. Create tables: run `supabase/schema.sql` in the Supabase SQL editor.
+3. Create tables: run `supabase/schema.sql` in the Supabase SQL editor, then
+   `supabase/migrations_language_catalog.sql` to seed the language catalog.
+   Existing projects also run `supabase/migrations_content_rights.sql` once to
+   add the audio/video rights-attestation columns,
+   `supabase/migrations_transcription.sql` to store consented transcripts, and
+   `supabase/migrations_uploaded_lessons.sql` once if the pre-existing
+   `lessons` table still has the legacy course columns as `NOT NULL` (without
+   it, `process-upload` cannot insert a generated lesson). Fresh installs get
+   all shapes from `schema.sql`. The migrations are idempotent; the app falls
+   back to its bundled lessons until the catalog migration has run.
 4. Start:
    ```bash
    npm start
@@ -31,9 +40,16 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
 
 ```bash
 npm run typecheck   # TypeScript
-npm test            # 5.000s cue + celebration gate + speak-back matcher
+npm test            # cue + benchmark + celebration + speak-back + catalog + drafts + content rights + transcription + roleplay
 npm run lint        # ESLint (expo lint)
+npm run audio:preflight                 # configured ElevenLabs voice is in the API key's workspace
+npm run verify:lesson-audio -- --list   # uploaded lessons available for full audio verification
 ```
+
+`verify:lesson-audio` is an operator command, not part of `npm test`: it
+synthesizes a real lesson's complete full mix and every segment with the
+configured ElevenLabs voice and therefore spends provider credits. See
+[docs/audiobook-voice.md](docs/audiobook-voice.md#verify-a-real-uploaded-lesson).
 
 The audio check reads the WAV header directly, so it also guards against a
 re-export silently changing the cue's sample rate or frame count.
@@ -53,16 +69,35 @@ in [lib/streak.ts](lib/streak.ts) — one missed day is covered and consumed, a
 longer gap still resets. Flip either gate or drop the render guard and `npm test`
 fails.
 
+The catalog check ([scripts/check-language-catalog.cjs](scripts/check-language-catalog.cjs))
+parses the generated migration, proves every question is solvable, confirms the
+seed matches the lesson banks and covers every language block on the path, and
+asserts the public-read policies and grants. It fails if a bank lesson was added
+without running `npm run catalog:sql`.
+
+The transcript check ([scripts/check-transcript-import.cjs](scripts/check-transcript-import.cjs))
+regenerates the draft lessons from the FSI Swahili transcript, validates every
+row with the app's `toCourseLesson()`, and fails if the committed draft JSON/SQL
+is stale, a draft is published, or a question is unsolvable. A second guard
+([scripts/check-subtitle-import.cjs](scripts/check-subtitle-import.cjs)) drives
+the SRT/VTT parser, sidecar manifests, translation fallback and draft output
+with temporary files. Both run inside `npm test`.
+
 ## Edge Functions
 
 - `supabase/functions/streak-reset` — reset stale streaks (schedule daily via cron).
 - `supabase/functions/premium-webhook` — toggle `profiles.is_premium` from a payment webhook.
+- `supabase/functions/roleplay-chat` — Livia/Bingo language tutors (ES/FR/DE) and the code/career scenarios.
+
+`npm run check:roleplay` keeps the persona/language catalogs, prompt contract,
+bilingual parser and screen/function wiring aligned; it runs inside `npm test`.
 
 Deploy with the Supabase CLI:
 
 ```bash
 supabase functions deploy streak-reset
 supabase functions deploy premium-webhook
+supabase functions deploy roleplay-chat
 ```
 
 ## Jungle expedition UI (QD-OLED)
@@ -139,17 +174,59 @@ assessed rather than only browsable — the checkpoint stays shorter than the
 final (9 and 9 for Swahili, 8 and 9 for English).
 
 Topic sequencing was checked against the public-domain FSI Basic Courses and
-publicly available beginner YouTube playlists; no third-party audio, captions or lesson
-text was copied. Sources and license notes:
-[docs/language-sources.md](docs/language-sources.md).
+publicly available beginner YouTube playlists; no third-party audio, captions or
+lesson text was copied into these published lesson banks. (The separate FSI
+Swahili transcript drafts reproduce short public-domain dialogues with
+attribution; see [docs/transcript-import.md](docs/transcript-import.md).)
+Sources and license notes: [docs/language-sources.md](docs/language-sources.md).
 
-**Where courses live.** Built-in courses are code-defined (`lib/*-plus.ts`) and
-merged into `LANGUAGE_COURSES`; they ship with the bundle and work offline.
-Supabase's `lessons` and `questions` tables hold *personalized uploads* and are
-row-level-secured per user — they are not the catalog. Adding a catalog lesson
-therefore means adding it to the bank, not running a migration; a DB-only row
-would never appear on the path. Content is original Bolingo writing, not a
-transcript or re-recording of third-party course audio.
+## Multilingual Roleplay (Livia & Bingo)
+
+`/roleplay` is now a language-tutor picker as well as the code/career chat.
+Choose **Spanish**, **French** or **German**, then choose the teaching style:
+**Livia** is the patient mentor who notices effort first, recasts one mistake
+at a time and invites a full sentence; **Bingo** is the playful partner who
+turns each turn into a tiny game or challenge. Every pairing has its own
+opening line and starter replies in [lib/roleplayPersonas.ts](lib/roleplayPersonas.ts).
+
+The server owns the actual teaching prompt and language rules in
+[supabase/functions/_shared/roleplayPersonas.ts](supabase/functions/_shared/roleplayPersonas.ts).
+It whitelists only Livia/Bingo × ES/FR/DE, keeps the learner at CEFR A1–A2,
+limits the tutor to one question per turn, and requires a target-language reply
+with an English gloss. The chat bubble shows the target line, the gloss sits
+under a divider, and an optional coaching note explains one correction. **Hear
+Livia / Hear Bingo** replays the target line through the existing on-device
+`speakAs()` voice path in the right locale. The code/career scenarios remain
+unchanged below the language picker. Roleplay is still Premium and still
+stateless; the API, prompt contract, deployment and limitations are in
+[docs/roleplay-personas.md](docs/roleplay-personas.md).
+
+**Where courses live.** The banks in `lib/*-plus.ts` are the build-time source
+and the offline fallback; at runtime [lib/languageCatalog.ts](lib/languageCatalog.ts)
+reads `public.language_lessons` first, validates every row, and merges it over
+the bundle. Editors can therefore fix wording, rewrite theory or replace a
+question in the Supabase dashboard and have it reach learners without an app
+release — the loader caches for five minutes. The generated migration
+[supabase/migrations_language_catalog.sql](supabase/migrations_language_catalog.sql)
+creates the tables and seeds all 86 built-in lessons (`npm run catalog:sql`
+regenerates it, `npm run check:catalog` guards it). The learning path itself —
+which lesson sits where — remains code in `lib/curriculum.ts`, so a brand-new
+lesson still needs a path block; see [docs/language-catalog.md](docs/language-catalog.md).
+Supabase's older `lessons` and `questions` tables hold *personalized uploads*
+and are row-level-secured per user — they are not this catalog. Published
+catalog content is original Bolingo writing, not a transcript or re-recording
+of third-party course audio.
+
+**Transcript drafts.** Public-domain or openly licensed source transcripts can
+be turned into unpublished lesson drafts with
+[scripts/import-language-transcripts.cjs](scripts/import-language-transcripts.cjs).
+The importer accepts the JSON transcript format as well as `.srt` and `.vtt`
+video subtitles; a subtitle import needs a small sidecar manifest for the
+licence, attribution and lesson boundaries. The first committed set comes from
+the 1963 FSI Swahili Basic Course; the rows are seeded with `published = false`,
+carry their attribution in the theory, and stay off the learning path until
+reviewed. Format, subtitle conventions, commands and the review lifecycle are in
+[docs/transcript-import.md](docs/transcript-import.md).
 
 ## Pronunciation (Livia & Bingo)
 
@@ -252,11 +329,21 @@ The shared clock is never touched, so trimming can't shorten the five seconds
 or desync the applause, and because each ribbon is seeded by index, dropping the
 tail never makes the survivors jump.
 
+**Benchmarking the storm.** Development builds expose
+`/dev/celebration-benchmark`, linked from the bottom of Settings. It mounts the
+real `Celebration` at `FULL_CELEBRATION_MS`, discards the first 700ms of mount
+cost, ignores gaps of 200ms or more, and samples requestAnimationFrame deltas
+until `onDone`. The screen shows **p50**, **p95**, mean, max, frame count and
+average FPS; run it with the app foregrounded and use a profile/release build
+for representative device numbers. The route redirects to `/` outside `__DEV__`,
+so it cannot run in a shipped build. `npm run check:benchmark` exercises the
+percentile logic and verifies the route still measures the real component.
+
 ## Core loop (Path Map ➔ Quiz Player ➔ Loss Aversion)
 
 Expo Router (`src/app/`) drives the habit loop:
 
-1. **Path Map** (`/`): Duolingo-style winding track of circular nodes — 🔥 streak / ⭐ XP / ❤ hearts top bar; completed nodes turn gold 🏆, the active node pulses, locked nodes are greyed 🔒 (sequential unlock once signed in). The **🧠 AI Sandbox** FAB opens an upload panel (books, PDFs, audio via the system picker → `user-materials` → pipeline); each finished upload renders a **My Custom Revision** node, with in-flight uploads shown as ⏳ nodes and live statuses.
+1. **Path Map** (`/`): Duolingo-style winding track of circular nodes — 🔥 streak / ⭐ XP / ❤ hearts top bar; completed nodes turn gold 🏆, the active node pulses, locked nodes are greyed 🔒 (sequential unlock once signed in). The **🧠 AI Sandbox** FAB opens an upload panel (text, PDFs and photos via the system picker → `user-materials` → pipeline); each finished upload renders a **My Custom Revision** node, with in-flight uploads shown as ⏳ nodes and live statuses.
 2. **Quiz Player** (`/quiz/[lessonId]` + [components/GamifiedCodePlayer.tsx](components/GamifiedCodePlayer.tsx)): the reusable core game engine — tap-token assembly (`correctChain` vs `scrambledTokens`), animated top progress bar, hearts via `progress.ts`, cheerful/soft correction chimes from [assets/sounds.ts](assets/sounds.ts) on `expo-audio`, and the 🔊 audiobook anchor (plays the generated narration URL when present, premium-locked hint otherwise). The screen is a thin wrapper: loads demo or Supabase questions (multiple-choice collapses to one token, drag-and-drop splits the stored answer chain), attaches signed segment URLs as `audioUrl`, and handles completion/streak.
 3. **Loss-Aversion Screen** (`/refill`, modal): real AdMob rewarded video (+1 heart only on `EARNED_REWARD`, [lib/ads.ts](lib/ads.ts) unit config with Google test ids in dev), live 4-hour countdown from `hearts_refilled_at`, Premium upgrade (honest placeholder — RevenueCat/Stripe plugs in here). Meta Audience Network skipped (deprecated); AdMob serves iOS + Android.
 
@@ -295,7 +382,7 @@ After `eas init`, replace `your-eas-project-id` in `app.config.js` (`updates.url
 AI/TTS burn is fenced behind Premium ($7.70/mo — wire RevenueCat/Stripe where the upgrade buttons point):
 
 - **Free:** raw text files only (picker filters to `text/*`), ≤1,000 words per upload (client pre-check in `lib/tiers.ts` + authoritative Edge Function enforcement), and no server TTS — Listen mode and quiz narration use the phone's built-in robot voice via `expo-speech` ([lib/voice.ts](lib/voice.ts)), $0.
-- **Premium:** PDF/audio uploads, smart LLM compilation, elite ElevenLabs/OpenAI voices, and a 100,000-word monthly ceiling (`profiles.ai_words_used` / `ai_words_reset_at`, 30-day rolling reset; a 500-page book bills past the cap and is rejected). Server enforces everything — the client check is UX only.
+- **Premium:** PDF, photo-scan and consented audio/video uploads, smart LLM compilation, elite ElevenLabs/OpenAI voices, and a 100,000-word monthly ceiling (`profiles.ai_words_used` / `ai_words_reset_at`, 30-day rolling reset; a 500-page book bills past the cap and is rejected). Server enforces everything — the client check is UX only. Audio/video is transcribed by Deepgram (signed URL, recommended) or an OpenAI-compatible endpoint before curation; see [docs/transcription.md](docs/transcription.md). See [docs/audiobook-voice.md](docs/audiobook-voice.md) for ElevenLabs setup, voice-consent requirements and the exact free/premium playback behavior.
 
 ## Listen to Audiobook Mode
 
@@ -312,21 +399,30 @@ Tapping **🎧 Listen to Audiobook Mode** on the home screen loads the newest us
 User Uploads ➔ Storage (private `user-materials` bucket) ➔ `process-upload` Edge Function (fires on upload) ➔ LLM (DeepSeek default, GPT-4o supported) curates JSON quiz ➔ TTS (ElevenLabs default, OpenAI supported) generates the audiobook.
 
 1. Client uploads via `uploadRawFile()` in [lib/uploads.ts](lib/uploads.ts) — file lands at `<user_id>/<file_name>`, a `user_uploads` row is created (`processing`), and `process-upload` is invoked.
-2. **AI Curation Engine:** the function downloads the file and extracts text — Text/Markdown parsed directly as a string, PDFs via the lightweight `pdf-parse` wrapper (`npm:pdf-parse` in the Deno runtime); audio transcription stays a Phase 2 extension point. It sends the text to a cost-effective LLM (DeepSeek-V3 default via `LLM_MODEL=deepseek-chat`, or GPT-4o-mini via `LLM_BASE_URL`/`LLM_MODEL`) with strict instructions — top 2–3 concepts, 4–5 quiz elements, JSON schema `[{ type: multiple-choice | drag-and-drop, prompt, options, answer }]`, nothing but valid JSON. The payload is schema-validated, then inserted as one `lessons` row (`is_user_generated = true`, tagged to the user, linked via `upload_source_id`) plus one `questions` row per element.
-3. **Audiobook engine:** it synthesizes narration audio and stores it in the same bucket — one full-mix `<user_id>/audio/<lesson_id>.mp3` plus one segment MP3 per quiz element (`<user_id>/audio/<lesson_id>/<n>.mp3`, failures non-fatal) — records the segment manifest in the lesson, and flips the upload to `ready` (or `failed` on error). Voice knobs: `TTS_PROVIDER=elevenlabs|openai`, `TTS_MODEL_ID` (`eleven_multilingual_v2` for emotional nuance/breathing, `eleven_turbo_v2_5` for speed), `TTS_VOICE_ID` (ElevenLabs voice), `TTS_VOICE` (`alloy|shimmer|onyx` for OpenAI `tts-1`).
+2. **AI Curation Engine:** the function extracts text — Text/Markdown parsed directly as a string, PDFs via the lightweight `pdf-parse` wrapper (`npm:pdf-parse` in the Deno runtime), photos via vision OCR, and audio/video via the consented transcription path (Deepgram signed URL, or an OpenAI-compatible Whisper endpoint for clips under 25 MB). The transcript is cached on the upload row before curation, so a retry does not pay the provider twice; see [docs/transcription.md](docs/transcription.md). It sends the text to a cost-effective LLM (DeepSeek-V3 default via `LLM_MODEL=deepseek-chat`, or GPT-4o-mini via `LLM_BASE_URL`/`LLM_MODEL`) with strict instructions — top 2–3 concepts, 4–5 quiz elements, JSON schema `[{ type: multiple-choice | drag-and-drop, prompt, options, answer }]`, nothing but valid JSON. The payload is schema-validated, then inserted as one `lessons` row (`is_user_generated = true`, tagged to the user, linked via `upload_source_id`) plus one `questions` row per element.
+3. **Audiobook engine:** it synthesizes narration audio and stores it in the same bucket — one full-mix `<user_id>/audio/<lesson_id>.mp3` plus one segment MP3 per quiz element (`<user_id>/audio/<lesson_id>/<n>.mp3`, failures non-fatal) — records the segment manifest in the lesson, and flips the upload to `ready` (or `failed` on error). Voice knobs are validated in one shared module (`TTS_PROVIDER`, `TTS_MODEL_ID`, `TTS_VOICE_ID`, `TTS_VOICE`, `TTS_OUTPUT_FORMAT` and the ElevenLabs voice settings); `npm run audio:voice` validates them without spending a token, and `npm run audio:preview` verifies the configured voice with a read-only lookup, then writes a short full-mix sample plus a segment sample. See [docs/audiobook-voice.md](docs/audiobook-voice.md).
 
 ### Names, characters and training
 
 The curator prompt tells the model to use **Livia, Bingo, or Zora** when it invents an example learner or character. It must preserve the name of a real author, historical figure, public person, or anyone named in the source, and must never attribute invented words or actions to them. Renaming a real person would make the lesson factually false; that is why the policy is “characters for invented examples, real names stay.”
 
-There is **no fine-tuning or shared-model training** in this project. The LLM is called per upload, and uploads/lessons are scoped to the signed-in user by row-level security. The app does not feed them into a shared training corpus. Video/audio transcription is still a Phase 2 extension point, so an uploaded `.webm`/`.mp3` fails with a clear error rather than being silently ingested. Do not upload third-party course video or audiobook audio without written permission from the rights holder.
+The transcript importer applies that policy deterministically for curated sources: an optional top-level `nameMap` lists the only generic example names that may be swapped for Livia, Bingo or Zora. It affects lesson titles, summaries, speakers and dialogue, never source metadata or attribution; unmapped names are untouched. See [docs/transcript-import.md](docs/transcript-import.md#generic-example-names).
+
+Audio and video uploads are gated by a content-rights checklist before storage and re-checked by `process-upload`; see [docs/content-rights.md](docs/content-rights.md) for the four declarations, attestation columns and migration. The consented transcription path, providers, limits and failure messages are documented in [docs/transcription.md](docs/transcription.md).
+
+There is **no fine-tuning or shared-model training** in this project. The LLM is called per upload, and uploads/lessons are scoped to the signed-in user by row-level security. The app does not feed them into a shared training corpus. A transcription provider receives the recording only after the rights attestation is stored, and the transcript is kept on the learner's private upload row. Do not upload third-party course video or audiobook audio without written permission from the rights holder.
 
 Edge Function secrets (Supabase dashboard → Edge Functions → Secrets):
 
 ```bash
 supabase secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
  supabase secrets set LLM_API_KEY=... TTS_API_KEY=...
-# Optional: LLM_BASE_URL LLM_MODEL TTS_PROVIDER=elevenlabs|openai TTS_VOICE_ID OPENAI_BASE_URL
+# Audio/video transcription (pick one):
+#   supabase secrets set DEEPGRAM_API_KEY=...          # signed URL, long audio + video
+#   supabase secrets set TRANSCRIBE_API_KEY=...        # OpenAI-compatible, ≤25 MB
+# Optional: LLM_BASE_URL LLM_MODEL TTS_PROVIDER=elevenlabs|openai TTS_VOICE_ID TTS_OUTPUT_FORMAT
+# Optional: TTS_STABILITY TTS_SIMILARITY_BOOST TTS_STYLE TTS_SPEAKER_BOOST OPENAI_BASE_URL
+# Optional: TRANSCRIBE_PROVIDER TRANSCRIBE_MODEL TRANSCRIBE_BASE_URL TRANSCRIBE_LANGUAGE
 ```
 
 Deploy with `supabase functions deploy process-upload` (plus `streak-reset`, `premium-webhook`).

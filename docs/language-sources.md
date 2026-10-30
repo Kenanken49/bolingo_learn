@@ -15,7 +15,24 @@ material in the public domain, hosted by the Live Lingua Project:
 They were used to confirm the order of beginner topics — greetings and
 politeness, numbers and time, food, travel, family, present verbs, past
 stories, then questions and practical health language. No FSI lesson text is
-reproduced in the app.
+reproduced in the **published** app for those languages.
+
+## Public-domain Swahili transcript drafts
+
+The 1963 **FSI Swahili Basic Course** is also a US government work in the public
+domain, hosted by the Internet Archive:
+
+- Item: https://archive.org/details/swahilibasiccour00fore
+- Normalized transcript: [`content/transcripts/swahili/fsi-swahili-basic-course.json`](../content/transcripts/swahili/fsi-swahili-basic-course.json)
+- Licence note: https://www.fsi-language-courses.org/swahili/
+
+Five short dialogues (Units 1–4 and 8) were read from the archive's OCR and
+normalized for OCR spacing and obvious errors. They are imported as draft
+lessons by [`scripts/import-language-transcripts.cjs`](../scripts/import-language-transcripts.cjs);
+see [docs/transcript-import.md](transcript-import.md). The summaries and quiz
+questions are original Bolingo writing. The rows carry the attribution in their
+theory. `swahili-fsi-01` was reviewed and published on 30 October 2026; the
+remaining four drafts stay invisible until an editor publishes them.
 
 ## YouTube and channel listings
 

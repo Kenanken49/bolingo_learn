@@ -1,8 +1,11 @@
 // Supabase Edge Function: process-upload
 //
 // Async pipeline: User Uploads -> Storage (user-materials) -> this function
-//   1. Download the raw file from the `user-materials` bucket.
-//   2. Extract text (plain text now; PDF/audio are extension points).
+//   1. Resolve the raw file in the `user-materials` bucket. Audio/video rows
+//      must carry the content-rights attestation before this happens.
+//   2. Extract text — plain text, PDF, photo OCR, or consented audio/video
+//      transcription (Deepgram signed URL, or an OpenAI-compatible Whisper
+//      endpoint for clips under 25 MB).
 //   3. AI Curation Engine: send the text to a cost-effective LLM (DeepSeek-V3
 //      default, GPT-4o-mini supported) with strict instructions to output a
 //      JSON array of quiz elements (multiple-choice | drag-and-drop).
@@ -11,9 +14,9 @@
 //   5. Synthesize the lesson into an audiobook (ElevenLabs or OpenAI TTS)
 //      and store the MP3 back in Storage.
 //   6. Freemium gate: free tier = text ≤1000 words + no elite TTS (the app
-//      falls back to device-native expo-speech, $0); premium unlocks
-//      PDF/audio, smart compilation, and elite voices, capped at
-//      100k billed words/month.
+//      falls back to device-native expo-speech, $0); premium unlocks PDF,
+//      photo scan, audio/video transcription, smart compilation, and elite
+//      voices, capped at 100k billed words/month.
 //   7. Flip user_uploads.status to `ready` (or `failed` with a logged error).
 //
 // Reliability model (big-book hardened):
@@ -33,13 +36,33 @@
 //
 // Required secrets: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, LLM_API_KEY,
 //   TTS_API_KEY. Optional: LLM_BASE_URL (default DeepSeek), LLM_MODEL,
+//   DEEPGRAM_API_KEY (recommended transcription provider; fetches a signed
+//     URL, so long audio/video needs no download), or TRANSCRIBE_API_KEY for
+//     an OpenAI-compatible /audio/transcriptions endpoint (≤25 MB). Optional:
+//   TRANSCRIBE_PROVIDER (deepgram|openai), TRANSCRIBE_MODEL,
+//   TRANSCRIBE_BASE_URL, TRANSCRIBE_LANGUAGE, TRANSCRIBE_MAX_BYTES,
+//   TRANSCRIBE_TIMEOUT_MS. See docs/transcription.md.
 //   TTS_PROVIDER (elevenlabs|openai, default elevenlabs),
 //   TTS_MODEL_ID (eleven_multilingual_v2 for emotional nuance | eleven_turbo_v2_5 for speed),
-//   TTS_VOICE_ID (ElevenLabs voice id), TTS_VOICE (OpenAI alloy|shimmer|onyx),
-//   OPENAI_BASE_URL.
+//   TTS_VOICE_ID (ElevenLabs voice id), TTS_VOICE (OpenAI alloy|echo|fable|onyx|nova|shimmer),
+//   TTS_OUTPUT_FORMAT, TTS_STABILITY, TTS_SIMILARITY_BOOST, TTS_STYLE,
+//   TTS_SPEAKER_BOOST, OPENAI_BASE_URL. The values are validated by
+//   ../_shared/audiobookVoice.ts; see docs/audiobook-voice.md.
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { audiobookVoiceFromEnv, buildSpeechRequest } from '../_shared/audiobookVoice.ts';
+import {
+  CONTENT_RIGHTS_REQUIRED_MESSAGE,
+  hasValidContentRightsAttestation,
+  isMediaUpload,
+} from '../_shared/contentRights.ts';
+import {
+  transcribeMedia,
+  transcriptionConfigFromEnv,
+  type TranscriptionResult,
+  type TranscriptionSource,
+} from '../_shared/transcription.ts';
 
 // Browser (web export) invocations are cross-origin — answer preflights.
 const corsHeaders = {
@@ -49,9 +72,6 @@ const corsHeaders = {
 
 const LLM_BASE_URL = Deno.env.get('LLM_BASE_URL') ?? 'https://api.deepseek.com/chat/completions';
 const LLM_MODEL = Deno.env.get('LLM_MODEL') ?? 'deepseek-chat';
-const TTS_PROVIDER = Deno.env.get('TTS_PROVIDER') ?? 'elevenlabs';
-const TTS_MODEL_ID = Deno.env.get('TTS_MODEL_ID') ?? 'eleven_turbo_v2_5';
-const TTS_VOICE = Deno.env.get('TTS_VOICE') ?? 'alloy';
 const OPENAI_BASE_URL = Deno.env.get('OPENAI_BASE_URL') ?? 'https://api.openai.com/v1';
 
 // Big-book bounds: full PDFs go through pdf-parse (memory-heavy), so cap the
@@ -114,10 +134,11 @@ async function extractText(fileName: string, bytes: Uint8Array): Promise<string>
   if (/\.(heic|heif)$/.test(lower)) {
     throw new Error('iPhone HEIC photos are not supported — open the photo, save/share it as JPG first, then scan it.');
   }
-  // Phase 2 extension point: transcribe audio (e.g. Whisper) before the LLM
-  // step. Failing loudly keeps uploads honest.
-  if (/\.(mp3|wav|m4a|ogg|webm)$/.test(lower)) {
-    throw new Error('Audio transcription is not wired up yet (Phase 2). Upload .txt/.md/.pdf for now.');
+  // Media never reaches this function: processUpload routes it through
+  // transcribeUpload() so the content-rights gate and transcript cache apply.
+  // This branch is defensive, e.g. a link to a media file with no extension.
+  if (/\.(mp3|wav|m4a|ogg|oga|opus|aac|flac|webm|mp4|m4v|mov|mkv|avi|wmv|flv|3gp)$/.test(lower)) {
+    throw new Error('Audio/video must be transcribed before text extraction.');
   }
   throw new Error(`Unsupported file type: ${fileName}`);
 }
@@ -219,30 +240,107 @@ const countWords = (text: string): number => text.trim().split(/\s+/).filter(Boo
 async function synthesizeAudio(narration: string): Promise<Uint8Array> {
   const apiKey = Deno.env.get('TTS_API_KEY') ?? '';
   if (!apiKey) throw new Error('Missing TTS_API_KEY secret.');
-  if (TTS_PROVIDER === 'openai') {
-    const res = await fetch(`${OPENAI_BASE_URL}/audio/speech`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: 'tts-1', input: narration.slice(0, 4000), voice: TTS_VOICE }),
-      signal: AbortSignal.timeout(60_000),
-    });
-    if (!res.ok) throw new Error(`OpenAI TTS failed: ${res.status} ${await res.text()}`);
-    return new Uint8Array(await res.arrayBuffer());
-  }
-  // Default: ElevenLabs.
-  const voiceId = Deno.env.get('TTS_VOICE_ID') ?? '21m00Tcm4TlvDq8ikWAM';
-  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+  // Parse on every job so a bad deployment secret fails this TTS step with a
+  // precise message, while the already-ready quiz stays usable.
+  const config = audiobookVoiceFromEnv(Deno.env.toObject());
+  const request = buildSpeechRequest(config, narration, { apiKey, baseUrl: OPENAI_BASE_URL });
+  const res = await fetch(request.url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'xi-api-key': apiKey,
-      Accept: 'audio/mpeg',
-    },
-    body: JSON.stringify({ text: narration.slice(0, 4000), model_id: TTS_MODEL_ID }),
+    headers: request.headers,
+    body: JSON.stringify(request.body),
     signal: AbortSignal.timeout(60_000),
   });
-  if (!res.ok) throw new Error(`ElevenLabs TTS failed: ${res.status} ${await res.text()}`);
+  if (!res.ok) throw new Error(`${config.provider} TTS failed: ${res.status} ${await res.text()}`);
   return new Uint8Array(await res.arrayBuffer());
+}
+
+const MEDIA_CONTENT_TYPES: Record<string, string> = {
+  mp3: 'audio/mpeg',
+  wav: 'audio/wav',
+  m4a: 'audio/mp4',
+  ogg: 'audio/ogg',
+  oga: 'audio/ogg',
+  opus: 'audio/ogg',
+  aac: 'audio/aac',
+  flac: 'audio/flac',
+  webm: 'video/webm',
+  mp4: 'video/mp4',
+  m4v: 'video/mp4',
+  mov: 'video/quicktime',
+  mkv: 'video/x-matroska',
+  avi: 'video/x-msvideo',
+  wmv: 'video/x-ms-wmv',
+  flv: 'video/x-flv',
+  '3gp': 'video/3gpp',
+};
+
+function mediaContentType(fileName: string): string {
+  const ext = fileName.toLowerCase().split('.').pop() ?? '';
+  return MEDIA_CONTENT_TYPES[ext] ?? 'application/octet-stream';
+}
+
+/**
+ * Transcribe one consented media upload. The transcript is persisted on the
+ * upload row before the LLM sees it, so a retry after an LLM/TTS failure does
+ * not pay the provider a second time and produces the same text. Deepgram gets
+ * a one-hour signed URL (no download of a multi-GB video); OpenAI-compatible
+ * endpoints get the bytes and are bounded by their 25 MB limit.
+ */
+async function transcribeUpload(
+  supabase: ReturnType<typeof createClient>,
+  upload: Record<string, unknown>,
+  filePath: string,
+): Promise<{ text: string; result: TranscriptionResult | null }> {
+  const cached = typeof upload.transcript === 'string' ? upload.transcript.trim() : '';
+  if (cached) {
+    console.log(`Reusing stored transcript for ${String(upload.file_name)} (${cached.length} chars).`);
+    return { text: cached, result: null };
+  }
+
+  const config = transcriptionConfigFromEnv(Deno.env.toObject());
+  const fileName = String(upload.file_name ?? 'upload');
+  let source: TranscriptionSource;
+
+  if (config.provider === 'deepgram') {
+    const { data: signed, error: signError } = await supabase.storage
+      .from('user-materials')
+      .createSignedUrl(filePath, 3600);
+    if (signError || !signed?.signedUrl) {
+      throw new Error(
+        `Could not create a temporary media link for transcription: ${signError?.message ?? 'unknown error'}`,
+      );
+    }
+    source = { kind: 'url', url: signed.signedUrl };
+  } else {
+    const { data: file, error: dlError } = await supabase.storage
+      .from('user-materials')
+      .download(filePath);
+    if (dlError || !file) throw new Error(`Download failed for ${filePath}: ${dlError?.message}`);
+    source = {
+      kind: 'file',
+      bytes: new Uint8Array(await file.arrayBuffer()),
+      fileName,
+      contentType: mediaContentType(fileName),
+    };
+  }
+
+  const result = await transcribeMedia(config, source);
+  const { error: persistError } = await supabase
+    .from('user_uploads')
+    .update({
+      transcript: result.text,
+      transcript_provider: result.provider,
+      transcript_model: result.model,
+      transcript_language: result.language,
+      transcript_duration_seconds: result.durationSeconds,
+      transcribed_at: new Date().toISOString(),
+    })
+    .eq('id', upload.id);
+  if (persistError) console.warn('Transcript cache write skipped:', persistError.message);
+  console.log(
+    `Transcribed ${fileName}: ${result.text.length} chars via ${result.provider}/${result.model}`,
+  );
+  return { text: result.text, result };
 }
 
 type ProcessResult =
@@ -263,9 +361,14 @@ async function processUpload(
       .single();
     if (fetchError || !upload) throw new Error(`Upload not found: ${uploadId}`);
 
+    // Server-side gate: a media row must carry the same checklist attestation
+    // the client collects. This also covers a storage webhook or a row inserted
+    // directly into the table, not just the in-app upload button.
+    if (isMediaUpload(upload.file_name) && !hasValidContentRightsAttestation(upload.rights_attestation)) {
+      throw new Error(CONTENT_RIGHTS_REQUIRED_MESSAGE);
+    }
+
     const filePath = `${upload.user_id}/${upload.file_name}`;
-    const { data: file, error: dlError } = await supabase.storage.from('user-materials').download(filePath);
-    if (dlError || !file) throw new Error(`Download failed for ${filePath}: ${dlError?.message}`);
 
     const { data: owner } = await supabase
       .from('profiles')
@@ -288,10 +391,26 @@ async function processUpload(
     const lower = upload.file_name.toLowerCase();
     const isText = lower.endsWith('.txt') || lower.endsWith('.md') || lower.endsWith('.csv');
     if (!isPremium && !isText) {
-      throw new Error('Free tier supports text files only — upgrade to Premium for PDF, photo Scan & audio.');
+      throw new Error(
+        'Free tier supports text files only — upgrade to Premium for PDF, photo Scan, audio and video.',
+      );
     }
 
-    const text = await extractText(upload.file_name, new Uint8Array(await file.arrayBuffer()));
+    const media = isMediaUpload(upload.file_name);
+    let text: string;
+    let transcript: TranscriptionResult | null = null;
+    if (media) {
+      // Consent was re-checked above; transcription only runs after this point.
+      const transcribed = await transcribeUpload(supabase, upload, filePath);
+      text = transcribed.text;
+      transcript = transcribed.result;
+    } else {
+      const { data: file, error: dlError } = await supabase.storage
+        .from('user-materials')
+        .download(filePath);
+      if (dlError || !file) throw new Error(`Download failed for ${filePath}: ${dlError?.message}`);
+      text = await extractText(upload.file_name, new Uint8Array(await file.arrayBuffer()));
+    }
     const words = countWords(text);
     if (!isPremium && words > FREE_WORD_LIMIT) {
       throw new Error(`Free tier caps uploads at ${FREE_WORD_LIMIT} words (this file: ~${words}).`);
@@ -312,8 +431,29 @@ async function processUpload(
     // lessons.id is INTEGER (pre-existing table) — lesson.id flows through
     // as a number into questions.lesson_id, storage paths, and responses.
     const title = upload.file_name.replace(/\.[^.]+$/, '');
+    // Keep the lesson's provenance with the lesson itself: a media lesson
+    // records which provider/model produced its transcript, its language and
+    // duration. The full transcript stays on the upload row.
+    const transcriptInfo = media
+      ? {
+          chars: text.length,
+          language: (upload.transcript_language as string | null) ?? transcript?.language ?? null,
+          duration_seconds:
+            (upload.transcript_duration_seconds as number | null) ??
+            transcript?.durationSeconds ??
+            null,
+          provider: (upload.transcript_provider as string | null) ?? transcript?.provider ?? null,
+          model: (upload.transcript_model as string | null) ?? transcript?.model ?? null,
+        }
+      : null;
     // Bite-sized: 4–5 questions ≈ 2–5 min dead-time session (matches curriculum minutes).
-    const lessonContent = { title, question_count: quiz.length, questions: quiz, estimated_minutes: Math.max(2, Math.min(5, Math.ceil(quiz.length * 0.8))) };
+    const lessonContent = {
+      title,
+      question_count: quiz.length,
+      questions: quiz,
+      estimated_minutes: Math.max(2, Math.min(5, Math.ceil(quiz.length * 0.8))),
+      ...(transcriptInfo ? { transcript: transcriptInfo } : {}),
+    };
     const { data: lesson, error: lessonError } = await supabase
       .from('lessons')
       .insert({

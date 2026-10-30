@@ -12,7 +12,7 @@ import { supabase, toDbLessonId } from '../../../lib/supabase';
 import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
-import { getLanguageLesson } from '../../../lib/languages';
+import { getLanguageLessonAsync, isLanguageLessonId } from '../../../lib/languageCatalog';
 import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
 import { gradeCard, getDueItems } from '../../../lib/srs';
@@ -49,8 +49,12 @@ interface DbQuestion {
 export default function QuizPlayer() {
   const { lessonId, title } = useLocalSearchParams<{ lessonId: string; title?: string }>();
   // Role split: Zora introduces code/design lessons; Livia introduces languages.
-  const isLanguageLesson = typeof lessonId === 'string' && Boolean(getLanguageLesson(lessonId));
+  const isLanguageLesson = typeof lessonId === 'string' && isLanguageLessonId(lessonId);
   const [questions, setQuestions] = useState<CodeQuizData[] | null>(null);
+  // Title and theory come from the loaded catalog, not the route param: a
+  // dashboard edit must reach the header and Bingo/Zora's grounding too.
+  const [lessonTitle, setLessonTitle] = useState(typeof title === 'string' ? title : 'Lesson');
+  const [lessonTheory, setLessonTheory] = useState<string | undefined>(undefined);
   const [index, setIndex] = useState(0);
   const [hearts, setHearts] = useState(MAX_HEARTS);
   const [userId, setUserId] = useState<string | null>(null);
@@ -104,8 +108,11 @@ export default function QuizPlayer() {
     // Bite-sized cap: every session stays 2–5 min (3–6 questions max).
     let baseQuestions: CodeQuizData[] = [];
     let baseKeys: string[] = [];
-    const course = getCourseLesson(lessonId);
+    // Language rows may have been edited in Supabase; code lessons stay bundled.
+    const course = (await getLanguageLessonAsync(lessonId)) ?? getCourseLesson(lessonId);
     if (course) {
+      setLessonTitle(course.title);
+      setLessonTheory(course.theory.slice(0, 2).join(' ').slice(0, 900));
       baseQuestions = course.questions.map((q) => ({
         prompt: q.prompt,
         correctChain: q.correctChain,
@@ -223,7 +230,7 @@ export default function QuizPlayer() {
   if (questions.length === 0 || !q) {
     return (
       <View className="flex-1 items-center justify-center px-6">
-        <Text className="text-lg text-slate-600 dark:text-slate-400">No questions in this lesson yet.</Text>
+        <Text onPhoto className="text-lg text-slate-600 dark:text-slate-200">No questions in this lesson yet.</Text>
         <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-slate-800 px-6 py-3">
           <Text className="font-bold text-white">Back to Path</Text>
         </Pressable>
@@ -237,7 +244,7 @@ export default function QuizPlayer() {
     const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0) => {
       setLessonResult({
         lessonId,
-        title: String(title ?? 'Lesson'),
+        title: lessonTitle,
         xpEarned,
         streak: streakCount,
         correctCount,
@@ -264,7 +271,7 @@ export default function QuizPlayer() {
       void markOnboarded();
       void savePendingGuestResult({
         lessonId,
-        title: String(title ?? 'Lesson'),
+        title: lessonTitle,
         xpEarned,
         at: Date.now(),
       });
@@ -294,7 +301,8 @@ export default function QuizPlayer() {
           userId={userId}
           lessonId={lessonId}
           questionData={q}
-          questionLabel={`${String(title ?? 'Lesson')} • Q${index + 1}/${questions.length}`}
+          theory={lessonTheory}
+          questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
           progressPct={Math.round(((index + 1) / questions.length) * 100)}
           hearts={hearts}
           onHeartsChange={setHearts}
@@ -321,7 +329,7 @@ export default function QuizPlayer() {
                 prompt: q.prompt,
                 correctChain: q.correctChain,
                 options: q.scrambledTokens,
-                lessonTitle: String(title ?? 'Lesson'),
+                lessonTitle,
               });
             }
           }}
@@ -367,10 +375,10 @@ export default function QuizPlayer() {
       ) : null}
       {/* Super Intelligent help: Bingo answers stuck learners in context, grounded in lesson theory. */}
       <AskBingo
-        lessonTitle={String(title ?? 'Lesson')}
+        lessonTitle={lessonTitle}
         prompt={q?.prompt}
-        theory={getCourseLesson(typeof lessonId === 'string' ? lessonId : '')?.theory.slice(0, 2).join(' ').slice(0, 900)}
-        strongFirst={typeof lessonId === 'string' && !!getLanguageLesson(lessonId)}
+        theory={lessonTheory}
+        strongFirst={isLanguageLesson}
         userId={userId}
       />
       <StatusBar style="auto" />

@@ -137,7 +137,7 @@ export default function Leaderboard() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       <Text className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">Weekly Leagues</Text>
-      <Text className="text-base text-slate-500 dark:text-slate-400">Top 30 per league — resets Monday</Text>
+      <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">Top 30 per league — resets Monday</Text>
 
       {/* Leagues | Friends tabs — Duolingo social pattern. */}
       <View className="mt-4 w-full max-w-sm flex-row gap-2">
@@ -244,7 +244,7 @@ export default function Leaderboard() {
         </View>
       ) : mates.length === 0 ? (
         <View className="mt-8 w-full max-w-sm items-center rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5">
-          <Text className="text-4xl">Seed league</Text>
+          <Text className="text-4xl text-slate-900 dark:text-slate-100">Seed league</Text>
           <Text className="mt-2 text-center text-base text-slate-600 dark:text-slate-400">
             {userId
               ? 'Finish a lesson to earn weekly XP and join a league of 30.'
@@ -291,7 +291,7 @@ export default function Leaderboard() {
       )}
 
       <Pressable onPress={() => router.replace('/')} className="mt-6 items-center">
-        <Text className="font-bold text-slate-400 dark:text-slate-500">Back to Path</Text>
+        <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
       </Pressable>
       <StatusBar style="auto" />
     </ScrollView>

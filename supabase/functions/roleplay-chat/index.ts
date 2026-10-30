@@ -1,7 +1,10 @@
 // Supabase Edge Function: roleplay-chat (Duolingo Max "Roleplay").
 //
-// Conversational AI wrappers around the curriculum: pick a scenario, chat
-// turn-by-turn. Stateless — the client sends the recent history each turn.
+// Conversational AI wrappers around the curriculum: pick a scenario or a
+// multilingual tutor persona, then chat turn-by-turn. Stateless — the client
+// sends the recent history each turn. Language personas answer in the target
+// language (TARGET/ENGLISH/TIP), so the client can show a gloss beside the
+// spoken line.
 //
 // Primary brain = self-hosted VPS model (free, unlimited). Optional
 // LLM_FALLBACK_URL / LLM_FALLBACK_KEY / LLM_FALLBACK_MODEL secrets route
@@ -12,6 +15,12 @@
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import {
+  buildRoleplaySystemPrompt,
+  isRoleplayLanguageId,
+  isRoleplayPersonaId,
+  parseLanguageRoleplayReply,
+} from '../_shared/roleplayPersonas.ts';
 
 const LLM_BASE_URL = Deno.env.get('LLM_BASE_URL') ?? 'https://api.deepseek.com/chat/completions';
 const LLM_MODEL = Deno.env.get('LLM_MODEL') ?? 'deepseek-chat';
@@ -119,12 +128,36 @@ serve(async (req: Request) => {
         console.warn('Premium gate check skipped:', gateErr);
       }
     }
-    const { scenarioId, history } = (await req.json()) as {
+    const { scenarioId, personaId, languageId, history } = (await req.json()) as {
       scenarioId?: string;
+      personaId?: string;
+      languageId?: string;
       history?: Array<{ role?: string; content?: string }>;
     };
-    const system = scenarioId ? SCENARIOS[scenarioId] : undefined;
-    if (!system) return json({ error: 'Unknown scenario. Pick senior-dev, debug-duck, or interview.' }, 400);
+
+    // Language mode is explicit: sending either field opts into a persona, and
+    // both must be valid. This prevents a typo from silently falling through to
+    // a tech scenario or an unrestricted prompt.
+    const languageMode = personaId !== undefined || languageId !== undefined;
+    let system: string | null | undefined;
+    if (languageMode) {
+      if (!isRoleplayPersonaId(personaId) || !isRoleplayLanguageId(languageId)) {
+        return json(
+          { error: 'Pick Livia or Bingo and Spanish, French or German to start a language roleplay.' },
+          400
+        );
+      }
+      system = buildRoleplaySystemPrompt(personaId, languageId);
+      if (!system) return json({ error: 'That tutor and language are not available.' }, 400);
+    } else {
+      system = scenarioId ? SCENARIOS[scenarioId] : undefined;
+      if (!system) {
+        return json(
+          { error: 'Unknown roleplay. Pick Livia or Bingo, or a coding scenario.' },
+          400
+        );
+      }
+    }
     const turns = (history ?? [])
       .filter((m) => (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
       .slice(-20)
@@ -133,12 +166,16 @@ serve(async (req: Request) => {
       return json({ error: 'History must end with a user message.' }, 400);
     }
 
-    const { text: reply, via } = await chatComplete(
+    const { text, via } = await chatComplete(
       [{ role: 'system', content: system }, ...turns],
-      600,
+      languageMode ? 450 : 600,
       0.7
     );
-    return json({ reply, via });
+    if (languageMode) {
+      const parsed = parseLanguageRoleplayReply(text);
+      return json({ ...parsed, via });
+    }
+    return json({ reply: text, via });
   } catch (e) {
     console.error('roleplay-chat failed:', e);
     return json({ error: String(e) }, 500);

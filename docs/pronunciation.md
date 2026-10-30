@@ -6,11 +6,17 @@ Duolingo-grade delivery: each word is pronounced by a voice native to the
 language being taught, and the character only changes *how* it is delivered, not
 *what* is delivered.
 
-Everything runs on-device through `expo-speech`: no API key, no per-play cost,
-and it keeps working offline once a system voice is installed. These are the
-operating system's own voices, so the app cannot fine-tune or clone them.
-"Tuning" here means casting the right installed voice, matching the locale,
-normalizing the text, and shaping pace and intonation — not training a model.
+Spanish, French, German and English run on-device through `expo-speech`: no API
+key, no per-play cost, and it keeps working offline once a system voice is
+installed. These are the operating system's own voices, so the app cannot
+fine-tune or clone them. "Tuning" here means casting the right installed voice,
+matching the locale, normalizing the text, and shaping pace and intonation — not
+training a model.
+
+The three new Swahili phrase lessons also ship optional pre-generated Fliki
+takes (see [fliki-swahili.md](fliki-swahili.md)). Those are bundled assets, not a
+runtime cloud call: no key is in the app, playback is offline, and any phrase
+without a clip falls back to the device voice described below.
 
 ## Swahili specifics
 
@@ -30,6 +36,12 @@ lessons sound right:
 English uses `en-US → en-GB → en-KE → en-AU → en`; the Kenyan English voice is
 third in line so East African learners still hear a familiar accent when it is
 installed.
+
+When the Fliki clip set has been generated, `lib/naturalLessonAudio.ts` plays
+Livia's take before any TTS work starts. The lookup is by normalized phrase, so
+punctuation and capitalisation do not matter. A missing clip is a normal
+fallback, never an error: the lesson still speaks with the installed Swahili
+voice, and the hint can still explain when that voice is only approximate.
 
 ## Why pitch is fixed at 1.0
 
@@ -54,33 +66,38 @@ pacing carries the difference.
 
 ## Voice selection
 
-`resolveVoice()` builds a ranked list per language:
+Casting is deterministic: **Livia, Bingo, Zora**, in that order, are all assigned
+in one pass by `planVoiceCast()` in [lib/voiceCasting.ts](../lib/voiceCasting.ts).
+The plan is cached per language, so a Settings audition and a lesson read the
+same assignment; the order in which characters are heard can never change who
+gets which voice.
 
 1. Voices whose base locale matches the target (`es`, `fr`, `de`, `sw`, `en`),
    ordered by the preset's regional preference (`es-MX` → `es-US` → `es-ES`).
-2. `VoiceQuality.Enhanced`, names containing `enhanced|premium|neural|natural|wavenet|studio`,
-   and Android/cloud voices (`-network`, `online`) score higher. Network voices
-   are the neural ones on most Android phones; the compact `-local` fallback is
-   penalised, as are the classic robotic engines (`eSpeak`, `Pico`, `SAPI`,
-   `Eloquence`). Known good voices (Google, Microsoft, Siri, Samantha… ) get a
-   small bonus.
+2. Enhanced voices, neural/network names (`enhanced|premium|neural|natural|wavenet|studio`,
+   Android `-network`/`online`) score higher; compact `-local` engines and the
+   classic robotic synthesizers (`eSpeak`, `Pico`, `SAPI`, `Eloquence`) score
+   lower. Known good voices (Google, Microsoft, Siri, Samantha…) get a small
+   bonus.
 3. Novelty voices (Whisper, Zarvox, Bells, Bad News…) are excluded — they are
    never acceptable for teaching pronunciation.
-4. If no native voice exists, a **related** voice may stand in: Swahili uses the
+4. Ties are broken by locale, then name, then identifier, so the platform
+   returning the same voices in a different order cannot remap the cast.
+5. If no native voice exists, a **related** voice may stand in: Swahili uses the
    same five pure vowels as Italian and Spanish, so those voices land far closer
    than an English voice reading "Habari". The UI labels this as approximate.
-5. If the platform exposes no voice list at all (common on web before
+6. If the platform exposes no voice list at all (common on web before
    `voiceschanged`), the engine still asks for the right locale and lets the OS
    choose, rather than defaulting to the UI language.
 
-Casting is explicit: **Livia and Zora are women, Bingo is a man.** `pickBest()`
-first keeps the native voices whose platform name reads as the character's
-gender (Samantha, Zira, Paulina… for the women; David, Daniel, Jorge… for
-Bingo), and only then ranks them by quality. If no voice of that gender is
-installed, it falls back to the full native pool — an unnamed Android voice or a
-single installed voice still gets used, because a character with the wrong
-voice is better than a silent lesson. The name lists live next to
-`CHARACTER_GENDER` in [lib/pronunciation.ts](../lib/pronunciation.ts).
+Casting is explicit: **Livia and Zora are women, Bingo is a man.** Within the
+unused native voices, each character first takes one whose platform name reads
+as their gender (Samantha, Zira, Paulina… for the women; David, Daniel, Jorge…
+for Bingo), then the best remaining voice. If that gender pool is exhausted, the
+character still takes an unused native voice; if every voice is already assigned
+(single-voice devices), everyone shares the best one rather than falling silent.
+The name lists and character genders live in
+[lib/voiceCasting.ts](../lib/voiceCasting.ts).
 
 Presets live at the top of the file. Adding a language means adding one
 `LanguagePreset` and a `PRESETS` entry — `languageForLesson()` keys off the
@@ -89,11 +106,19 @@ lesson id prefix (`spanish-*`, `french-*`, …).
 Settings → **Voice cast** is the on-device check: it runs the same engine per
 character in both English and Kiswahili and prints the locale and voice the
 platform actually chose, flagging when a related-language voice (Italian or
-Spanish for Swahili) is standing in. A platform that never returns a voice list
+Spanish for Swahili) is standing in. **Play all six** runs Livia, Bingo and Zora
+back to back — English first, then Kiswahili — and leaves a six-row report, so a
+new device can be checked in one pass before a lesson depends on it. Tapping a
+single character still auditions just that voice in the selected language. A platform that never returns a voice list
 reports **voice list unavailable** rather than "no voice installed" — the sample
 still plays through the engine by locale, but the card cannot claim to know what
 is installed. Confirm a device reports a native Swahili voice there before
 trusting a language lesson's pronunciation.
+
+For the Swahili question/adjective/health lessons, a development build also has
+`/dev/swahili-voice-audit`. It runs every phrase in those three lessons through
+Livia and records the locale, voice name and native/approximate result, so a
+device can be checked phrase by phrase rather than with one sample line.
 
 ## Human delivery
 
@@ -169,11 +194,14 @@ unmounts.
 - The target phrase plays automatically when a language exercise opens
   (respecting the sound preference), like Duolingo's exercise audio.
 - **Hear Livia** speaks the model phrase; the 🐢 button replays it slowly.
+- For a Swahili phrase with a bundled Fliki take, all three paths play that
+  natural clip first (pitch-corrected when slow) and only fall back to device
+  TTS when the clip is absent.
 - **Bingo reads it** reads mixed prompts segment by segment.
 - A wrong answer is followed by Livia saying the correct phrase slowly once the
   wrong-answer cue has landed.
-- Starting any playback stops the previous utterance, and leaving the screen
-  stops speech entirely.
+- Starting any playback stops the previous utterance or clip, and leaving the
+  screen stops both speech and natural audio entirely.
 
 ## Speak-back practice
 
@@ -236,12 +264,15 @@ explains it and the lesson stays playable.
 
 ## What this deliberately does not do
 
-- No recorded native audio per sentence. Duolingo ships studio recordings; this
-  app ships system voices, so quality depends on the voice packs installed on
-  the device. The fallbacks exist to degrade gracefully, not to match a studio.
-- No cloud TTS in the free path. `/roleplay`, narration and the audiobook
-  explainer use their own premium paths (`lib/audiobook.ts`,
-  `supabase/functions/process-upload`).
+- No recorded native audio for Spanish, French, German or English. Duolingo
+  ships studio recordings; those courses ship system voices, so quality depends
+  on the voice packs installed on the device. The fallbacks exist to degrade
+  gracefully, not to match a studio. The Swahili phrase lessons are the one
+  exception, and only for phrases in the generated Fliki set.
+- No **runtime** cloud TTS in the free path. `/roleplay`, narration and the
+  audiobook explainer use their own premium paths (`lib/audiobook.ts`,
+  `supabase/functions/process-upload`); Swahili clips are generated at build
+  time and bundled, so playback itself never calls Fliki.
 - No pitch tricks for character identity, for the reason above.
 
 ## QA checklist
@@ -259,14 +290,18 @@ explains it and the lesson stays playable.
 4. Open `/project/rwd-cat-photo` and tap the speaker beside Zora's hint: a
    feminine voice should read the line with the HTML tags stripped.
 5. Answer a question wrong: after the cue, Livia repeats the correct phrase slowly.
-6. Speak-back: `node scripts/check-speak-back.cjs` (also in `npm test`). In a
+6. Fliki Swahili clips: `npm run check:fliki` (also in `npm test`), then open
+   `/quiz/swahili-questions?title=Swahili%20Questions` on a device. The opening
+   phrase, **Hear Livia** and 🐢 must use the natural clip; remove one key from
+   the typed map temporarily to confirm the device-voice fallback still speaks.
+7. Speak-back: `node scripts/check-speak-back.cjs` (also in `npm test`). In a
    development build, open a language lesson, tap **Say it back**, say the
    phrase, and confirm the score and coloured words. Then confirm **Your
    attempt** replays your recording, **Hear Livia** pauses it, the label returns
    to *Your attempt* when playback ends, and **Try again** replaces it with the
    new take. On Android 12 or older the replay button should be absent. Deny the
    microphone permission once to see the explanation card.
-7. Sweep the banks: every question must resolve to a non-empty phrase with no
+8. Sweep the banks: every question must resolve to a non-empty phrase with no
    `___`, quotes, glosses or markup. A temporary `/pronounce-check` route was
    used for this during development (314 questions, 0 issues); recreate it from
    `phraseForQuestion()` if the banks change substantially.

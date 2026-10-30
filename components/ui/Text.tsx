@@ -6,6 +6,7 @@ import {
   type TextProps,
   type TextStyle,
 } from 'react-native';
+import { useNatural } from '../../lib/natural';
 
 /**
  * The platform speaks one typeface: Roboto.
@@ -23,7 +24,16 @@ export const ROBOTO_SEMIBOLD = 'Roboto_600SemiBold';
 export const ROBOTO_BOLD = 'Roboto_700Bold';
 export const ROBOTO_EXTRABOLD = 'Roboto_800ExtraBold';
 
-type Props = TextProps & { className?: string };
+type Props = TextProps & { className?: string; onPhoto?: boolean };
+
+type BaseProps = Props & { halo?: TextStyle };
+
+/** A dark halo for labels that sit directly on the expedition photograph. */
+const PHOTO_HALO: TextStyle = {
+  textShadowColor: 'rgba(0, 0, 0, 0.92)',
+  textShadowOffset: { width: 0, height: 0 },
+  textShadowRadius: 7,
+};
 
 function faceForWeight(weight: TextStyle['fontWeight'] | undefined): string {
   switch (weight) {
@@ -54,25 +64,43 @@ function weightFor(styleWeight: TextStyle['fontWeight'] | undefined, className?:
   return undefined;
 }
 
-const Text = forwardRef<ComponentRef<typeof RNText>, Props>(function Text(
-  { style, className, ...rest },
+const BaseText = forwardRef<ComponentRef<typeof RNText>, BaseProps>(function BaseText(
+  { style, className, halo, onPhoto: _onPhoto, ...rest },
   ref,
 ) {
   const flat = StyleSheet.flatten(style as StyleProp<TextStyle>) as TextStyle | undefined;
   const classes = ` ${className ?? ''} `;
   // Monospace is intentional: code, diffs and chips keep their own face.
   if (flat?.fontFamily || classes.includes(' font-mono ')) {
-    return <RNText ref={ref} className={className} style={style} {...rest} />;
+    return <RNText ref={ref} className={className} style={[style, halo]} {...rest} />;
   }
   const face = faceForWeight(weightFor(flat?.fontWeight, className));
   return (
     <RNText
       ref={ref}
       className={className}
-      style={[style, { fontFamily: face, fontWeight: '400' }]}
+      style={[style, { fontFamily: face, fontWeight: '400' }, halo]}
       {...rest}
     />
   );
+});
+
+/**
+ * Text that floats directly on the expedition photograph. It picks up a dark
+ * halo in dark mode so dim labels survive bright foliage; the light canvas
+ * washes the photo to paper, so it needs no halo there.
+ */
+const PhotoText = forwardRef<ComponentRef<typeof RNText>, Props>(function PhotoText(
+  { onPhoto: _onPhoto, ...rest },
+  ref,
+) {
+  const p = useNatural();
+  return <BaseText ref={ref} {...rest} halo={p.isDark ? PHOTO_HALO : undefined} />;
+});
+
+const Text = forwardRef<ComponentRef<typeof RNText>, Props>(function Text({ onPhoto, ...rest }, ref) {
+  if (onPhoto) return <PhotoText ref={ref} {...rest} />;
+  return <BaseText ref={ref} {...rest} />;
 });
 
 export default Text;

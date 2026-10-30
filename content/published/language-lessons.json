@@ -1,0 +1,17 @@
+{
+  "kind": "published-language-lessons",
+  "lessons": [
+    {
+      "id": "swahili-fsi-01",
+      "courseId": "swahili",
+      "title": "FSI 1 · Morning greetings",
+      "sourceId": "fsi-swahili-basic-course",
+      "draftFile": "content/drafts/fsi-swahili-basic-course.drafts.json",
+      "position": 101,
+      "published": true,
+      "onPath": true,
+      "reviewedAt": "2026-10-30",
+      "reviewNotes": "Reviewed against the FSI dialogue. Rewrote Q2 to remove the ambiguous Habari distractor; confirmed the opening greeting, morning question, reply and source attribution."
+    }
+  ]
+}

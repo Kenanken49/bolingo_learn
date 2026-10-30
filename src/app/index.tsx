@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { View, Pressable, ScrollView, Modal, ActivityIndicator, Platform, Alert } from 'react-native';
+import { View, Pressable, ScrollView, Modal, ActivityIndicator, Platform, Alert, useWindowDimensions } from 'react-native';
 import Text from '../../components/ui/Text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router, useFocusEffect } from 'expo-router';
@@ -11,6 +11,14 @@ import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../lib/supabase';
 import { getProfile, getCompletedLessonIds, getTodayCompletionCount, completeLesson, MAX_HEARTS, type Profile } from '../../lib/progress';
 import { uploadRawFile, waitForUploadReady } from '../../lib/uploads';
+import {
+  CONTENT_RIGHTS_ITEMS,
+  CONTENT_RIGHTS_REQUIRED_MESSAGE,
+  buildContentRightsAttestation,
+  isMediaUpload,
+  type ContentRightsChecks,
+  type ContentRightsItemId,
+} from '../../lib/contentRights';
 import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
@@ -383,6 +391,7 @@ export default function PathMap() {
   const [sandboxOpen, setSandboxOpen] = useState(false);
   const [picked, setPicked] = useState<{ uri: string; name: string; mime: string } | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [rightsChecks, setRightsChecks] = useState<ContentRightsChecks>({});
   const [sandboxMsg, setSandboxMsg] = useState<string | null>(null);
   const [audiobook, setAudiobook] = useState<Audiobook | null>(null);
   const [listening, setListening] = useState(false);
@@ -413,6 +422,9 @@ export default function PathMap() {
   const [courseId, setCourseIdState] = useState<string | null>(null);
   // Natural OLED palette + soothing ambience (paused off-screen and during narration).
   const p = useNatural();
+  const { width: screenWidth } = useWindowDimensions();
+  // Narrow phones drop the wordmark and XP chip rather than crushing them.
+  const compactHud = screenWidth < 360;
   const [ambientOn, setAmbientOnState] = useState(false);
   const [screenFocused, setScreenFocused] = useState(true);
   const { error: ambientError, play: playAmbient } = useAmbient(ambientOn && screenFocused && !listening);
@@ -470,17 +482,29 @@ export default function PathMap() {
     (l.upload_source_id ? statusByUpload.get(l.upload_source_id) : undefined) ?? 'ready';
 
   const isPremium = profile?.is_premium === true;
+  const pickedIsMedia = picked ? isMediaUpload(picked.name, picked.mime) : false;
+  const rightsComplete =
+    !pickedIsMedia || CONTENT_RIGHTS_ITEMS.every((item) => rightsChecks[item.id] === true);
+
+  const toggleRightsItem = (id: ContentRightsItemId) => {
+    setRightsChecks((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const pickFile = async () => {
     try {
       const res = await DocumentPicker.getDocumentAsync({
-        // Free tier: raw text only. Premium unlocks PDF + photo Scan + audio.
-        type: isPremium ? ['application/pdf', 'text/*', 'audio/*', 'image/*'] : ['text/*'],
+        // Free tier: raw text only. Premium unlocks PDF, text, CSV, photo Scan
+        // and consented audio/video transcription.
+        type: isPremium
+          ? ['application/pdf', 'text/*', 'image/*', 'audio/*', 'video/*']
+          : ['text/*'],
         copyToCacheDirectory: true,
       });
       if (res.canceled) return;
       const a = res.assets[0];
-      setPicked({ uri: a.uri, name: a.name ?? 'upload', mime: a.mimeType ?? 'application/octet-stream' });
+      const next = { uri: a.uri, name: a.name ?? 'upload', mime: a.mimeType ?? 'application/octet-stream' };
+      setPicked(next);
+      setRightsChecks({});
       setSandboxMsg(null);
     } catch (e) {
       setSandboxMsg(String(e instanceof Error ? e.message : e));
@@ -522,7 +546,13 @@ export default function PathMap() {
       return;
     }
     if (!picked) {
-      setSandboxMsg('Pick a book, PDF, or audio file first.');
+      setSandboxMsg('Pick a PDF, text file, or photo first.');
+      return;
+    }
+    const media = isMediaUpload(picked.name, picked.mime);
+    const attestation = media ? buildContentRightsAttestation(rightsChecks) : null;
+    if (media && !attestation) {
+      setSandboxMsg(CONTENT_RIGHTS_REQUIRED_MESSAGE);
       return;
     }
     setUploading(true);
@@ -537,14 +567,21 @@ export default function PathMap() {
         const b64 = await readAsStringAsync(picked.uri, { encoding: EncodingType.Base64 });
         bytes = new Uint8Array(decode(b64));
       }
-      const upload = await uploadRawFile(bytes, picked.name, picked.mime);
+      const upload = await uploadRawFile(bytes, picked.name, picked.mime, {
+        rightsAttestation: attestation,
+      });
       setPicked(null);
+      setRightsChecks({});
       setSandboxMsg('Uploaded! The AI is generating your custom path node…');
       refresh();
       // Wait for the pipeline, then surface the finished node.
       waitForUploadReady(upload.id)
-        .then(() => {
-          setSandboxMsg('Your custom revision node is ready!');
+        .then((finished) => {
+          setSandboxMsg(
+            finished.status === 'failed'
+              ? finished.error ?? 'Generation hit an error — check the node status below.'
+              : 'Your custom revision node is ready!'
+          );
           refresh();
         })
         .catch(() => setSandboxMsg('Generation hit an error — check the node status below.'));
@@ -849,7 +886,7 @@ export default function PathMap() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Go premium"
-            style={({ pressed }) => ({
+            style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
@@ -858,8 +895,7 @@ export default function PathMap() {
               backgroundColor: p.honey,
               paddingHorizontal: 12,
               paddingVertical: 11,
-              opacity: pressed ? 0.9 : 1,
-            })}
+            }}
           >
             <AppIcon name="crown" size={16} color="#241806" />
             <Text style={{ fontSize: 11.5, fontWeight: '800', color: '#241806' }}>
@@ -896,12 +932,14 @@ export default function PathMap() {
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 1 }}>
             <AppIcon name="leaf" size={17} color={p.moss} />
-            <Text
-              numberOfLines={1}
-              style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: p.ink }}
-            >
-              Bolingo
-            </Text>
+            {!compactHud ? (
+              <Text
+                numberOfLines={1}
+                style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: p.ink }}
+              >
+                Bolingo
+              </Text>
+            ) : null}
             <View
               style={{
                 borderRadius: 99,
@@ -922,12 +960,14 @@ export default function PathMap() {
               {streak}
             </Text>
           </View>
-          <View accessibilityLabel={`${xp} experience points`} style={hudChip}>
-            <AppIcon name="gem" size={13} color={p.moss} />
-            <Text style={{ fontSize: 12.5, fontWeight: '800', color: p.ink }}>
-              {xp.toLocaleString()}
-            </Text>
-          </View>
+          {!compactHud ? (
+            <View accessibilityLabel={`${xp} experience points`} style={hudChip}>
+              <AppIcon name="gem" size={13} color={p.moss} />
+              <Text style={{ fontSize: 12.5, fontWeight: '800', color: p.ink }}>
+                {xp.toLocaleString()}
+              </Text>
+            </View>
+          ) : null}
           <View accessibilityLabel={`${hearts} hearts remaining`} style={hudChip}>
             <AppIcon name="heart" size={13} color={p.berry} />
             <Text
@@ -1509,7 +1549,7 @@ export default function PathMap() {
                 <ExploreTile
                   icon="chat"
                   title="AI tutors"
-                  sub="Roleplay · Explain my answer"
+                  sub="Livia & Bingo · ES · FR · DE"
                   tone={p.clay}
                   badge={isPremium ? undefined : 'Premium'}
                   onPress={() => router.push('/roleplay')}
@@ -1664,6 +1704,20 @@ export default function PathMap() {
               />
             )
           )}
+          {!listening && !isPremium ? (
+            <Text
+              style={{
+                marginTop: 8,
+                maxWidth: 340,
+                textAlign: 'center',
+                fontSize: 11.5,
+                lineHeight: 16,
+                color: p.muted,
+              }}
+            >
+              Free narration uses your device voice over the question prompts. Premium adds one consistent narrator, a continuous full mix and a clip for every question.
+            </Text>
+          ) : null}
           {audioMsg && !listening ? (
             <Text style={{ marginTop: 8, fontSize: 12, color: p.muted }}>{audioMsg}</Text>
           ) : null}
@@ -1706,7 +1760,7 @@ export default function PathMap() {
             >
               <AppIcon name="crown" size={17} color="#241806" />
               <Text style={{ fontSize: 12.5, fontWeight: '800', color: '#241806' }}>
-                Go Premium ({PREMIUM_PRICE_LABEL}) — PDF, audio, elite voices
+                Go Premium ({PREMIUM_PRICE_LABEL}) — PDF, note scans, elite voices
               </Text>
             </Pressable>
           )}
@@ -1782,36 +1836,36 @@ export default function PathMap() {
         </View>
       </View>
 
-      <View className="absolute bottom-24 self-center md:bottom-8">
-      <Pressable
-        onPress={() => {
-          setSandboxOpen(true);
-          setSandboxMsg(null);
-        }}
-        accessibilityRole="button"
-        accessibilityLabel="Open AI Sandbox"
-        style={({ pressed }) => ({
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 7,
-          borderRadius: 99,
-          borderWidth: 1,
-          borderColor: p.isDark ? '#6B573A' : '#A8712F',
-          backgroundColor: p.honey,
-          paddingHorizontal: 20,
-          paddingVertical: 12,
-          shadowColor: '#000',
-          shadowOpacity: 0.35,
-          shadowRadius: 18,
-          shadowOffset: { width: 0, height: 8 },
-          elevation: 8,
-          transform: [{ translateY: pressed ? 2 : 0 }, { scale: pressed ? 0.98 : 1 }],
-        })}
-      >
-        <AppIcon name="brain" size={18} color="#241806" />
-        <Text style={{ fontSize: 14, fontWeight: '800', color: '#241806' }}>AI Sandbox</Text>
-      </Pressable>
-      </View>
+      {!compactHud && !(!profile && !onboarded) ? (
+        <View style={{ position: 'absolute', right: 16, bottom: 92, zIndex: 20 }}>
+          <Pressable
+            onPress={() => {
+              setSandboxOpen(true);
+              setSandboxMsg(null);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Open AI Sandbox"
+            style={({ pressed }) => ({
+              width: 54,
+              height: 54,
+              borderRadius: 27,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderWidth: 1,
+              borderColor: p.isDark ? '#6B573A' : '#A8712F',
+              backgroundColor: p.honey,
+              shadowColor: '#000',
+              shadowOpacity: 0.35,
+              shadowRadius: 18,
+              shadowOffset: { width: 0, height: 8 },
+              elevation: 8,
+              transform: [{ translateY: pressed ? 2 : 0 }, { scale: pressed ? 0.96 : 1 }],
+            })}
+          >
+            <AppIcon name="brain" size={22} color="#241806" />
+          </Pressable>
+        </View>
+      ) : null}
 
       {/* AI Sandbox panel */}
       <Modal visible={sandboxOpen} animationType="slide" transparent onRequestClose={() => setSandboxOpen(false)}>
@@ -1850,8 +1904,8 @@ export default function PathMap() {
               </View>
               <Text style={{ marginTop: 8, fontSize: 12.5, lineHeight: 18, fontWeight: '600', color: p.muted }}>
                 {isPremium
-                  ? 'Drop a book, PDF, photo, or audio file — or scan your notes above — and Bingo builds a custom revision node on your map.'
-                  : `Free tier: paste-style text files up to ${FREE_WORD_LIMIT} words with the device voice. Premium (${PREMIUM_PRICE_LABEL}) unlocks PDF/audio, smart compilation, and elite voices.`}
+                  ? 'Pick a PDF, text file, photo, or audio/video recording — or scan your notes above — and Bingo builds a custom revision node on your map.'
+                  : `Free tier: text files up to ${FREE_WORD_LIMIT} words with the device voice. Premium (${PREMIUM_PRICE_LABEL}) adds PDFs, note scans, audio/video transcription, smart compilation, and elite voices.`}
               </Text>
 
               <Pressable
@@ -1871,7 +1925,7 @@ export default function PathMap() {
                 <AppIcon name="upload" size={32} color={p.stone} />
                 <Text style={{ marginTop: 6, fontSize: 13, fontWeight: '800', color: p.ink }}>Tap to pick a file</Text>
                 <Text style={{ marginTop: 1, fontSize: 10.5, fontWeight: '600', color: p.muted }}>
-                  {isPremium ? 'PDF · TXT · Markdown · Photo · Audio' : 'TXT · Markdown only (Free)'}
+                  {isPremium ? 'PDF · TXT · Photo · Audio · Video' : 'TXT · MD · CSV (Free)'}
                 </Text>
               </Pressable>
 
@@ -1953,7 +2007,11 @@ export default function PathMap() {
                   }}
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <AppIcon name={picked.mime.startsWith('image/') ? 'image' : 'doc'} size={17} color={p.ink} />
+                    <AppIcon
+                      name={picked.mime.startsWith('image/') ? 'image' : pickedIsMedia ? 'music' : 'doc'}
+                      size={17}
+                      color={p.ink}
+                    />
                     <Text numberOfLines={1} style={{ flex: 1, fontSize: 12.5, fontWeight: '700', color: p.ink }}>
                       {picked.name}
                     </Text>
@@ -1962,9 +2020,87 @@ export default function PathMap() {
                 </View>
               )}
 
+              {pickedIsMedia ? (
+                <View
+                  style={{
+                    marginTop: 10,
+                    borderRadius: 16,
+                    borderWidth: 1,
+                    borderColor: p.line,
+                    backgroundColor: p.surfaceAlt,
+                    padding: 12,
+                  }}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                    <AppIcon name="shield" size={17} color={p.honey} />
+                    <Text style={{ flex: 1, fontSize: 12.5, fontWeight: '800', color: p.ink }}>
+                      Content rights
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 9.5,
+                        fontWeight: '800',
+                        letterSpacing: 0.4,
+                        color: rightsComplete ? p.moss : p.berry,
+                      }}
+                    >
+                      {rightsComplete ? 'CONFIRMED' : 'REQUIRED'}
+                    </Text>
+                  </View>
+                  <Text style={{ marginTop: 4, fontSize: 10.5, lineHeight: 15, fontWeight: '600', color: p.muted }}>
+                    Audio and video need confirmed rights before the AI can transcribe and narrate them. The recording is transcribed on our servers; the transcript stays private to your account.
+                  </Text>
+                  {CONTENT_RIGHTS_ITEMS.map((item) => {
+                    const checked = rightsChecks[item.id] === true;
+                    return (
+                      <Pressable
+                        key={item.id}
+                        onPress={() => toggleRightsItem(item.id)}
+                        accessibilityRole="checkbox"
+                        accessibilityLabel={item.label}
+                        accessibilityState={{ checked }}
+                        style={({ pressed }) => ({
+                          marginTop: 8,
+                          flexDirection: 'row',
+                          alignItems: 'flex-start',
+                          gap: 8,
+                          opacity: pressed ? 0.8 : 1,
+                        })}
+                      >
+                        <View
+                          style={{
+                            marginTop: 1,
+                            width: 18,
+                            height: 18,
+                            borderRadius: 5,
+                            borderWidth: 1.5,
+                            borderColor: checked ? p.moss : p.line,
+                            backgroundColor: checked ? p.moss : 'transparent',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          {checked ? (
+                            <AppIcon name="check" size={12} color={p.isDark ? '#0D120B' : '#FFFDF8'} />
+                          ) : null}
+                        </View>
+                        <Text style={{ flex: 1, fontSize: 10.8, lineHeight: 15, fontWeight: '600', color: p.ink }}>
+                          {item.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                  {!rightsComplete ? (
+                    <Text style={{ marginTop: 8, fontSize: 10, fontWeight: '700', color: p.berry }}>
+                      Confirm every item to unlock upload.
+                    </Text>
+                  ) : null}
+                </View>
+              ) : null}
+
               <Pressable
                 onPress={uploadPicked}
-                disabled={uploading}
+                disabled={uploading || (pickedIsMedia && !rightsComplete)}
                 style={({ pressed }) => ({
                   marginTop: 14,
                   flexDirection: 'row',
@@ -1974,7 +2110,13 @@ export default function PathMap() {
                   borderRadius: 16,
                   backgroundColor: p.honey,
                   paddingVertical: 14,
-                  opacity: uploading ? 0.5 : pressed ? 0.92 : 1,
+                  opacity: uploading
+                    ? 0.5
+                    : pickedIsMedia && !rightsComplete
+                      ? 0.45
+                      : pressed
+                        ? 0.92
+                        : 1,
                   transform: [{ translateY: pressed && !uploading ? 2 : 0 }],
                 })}
               >
@@ -1982,9 +2124,13 @@ export default function PathMap() {
                   <ActivityIndicator color="#241806" />
                 ) : (
                   <>
-                    <AppIcon name="sparkles" size={19} color="#241806" />
+                    <AppIcon
+                      name={pickedIsMedia && !rightsComplete ? 'lock' : 'sparkles'}
+                      size={19}
+                      color="#241806"
+                    />
                     <Text style={{ fontSize: 15, fontWeight: '800', color: '#241806' }}>
-                      Generate my node
+                      {pickedIsMedia && !rightsComplete ? 'Confirm rights to upload' : 'Generate my node'}
                     </Text>
                   </>
                 )}

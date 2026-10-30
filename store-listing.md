@@ -29,11 +29,11 @@ Audible-style.
 Running low on hearts? Watch a short ad, wait for a refill, or go Premium.
 
 **🧠 AI SANDBOX (Premium)**
-Upload your own books, PDFs, or audio. The AI curates them into a custom
+Upload your own text, PDFs, or note scans. The AI curates them into a custom
 quiz path — "My Custom Revision" — with natural human-like narration.
 
 **👑 PREMIUM ($7.70/mo)**
-- PDF & audio uploads with ultra-smart AI lesson compilation
+- PDF & note-scan uploads with ultra-smart AI lesson compilation
 - Soothing ElevenLabs/OpenAI audiobook voices
 - Unlimited hearts, 100k AI words/month, no ads
 - Payment via Google Play / App Store. Cancel anytime in store settings.

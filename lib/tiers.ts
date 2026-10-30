@@ -44,7 +44,7 @@ export async function checkUploadAllowed(
   if (!p.is_premium) {
     // Free: raw text only (no PDF/photo/audio), ≤1000 words, device TTS on-device.
     if (!isText) {
-      return { allowed: false, words: 0, reason: 'Free tier supports pasted text files only — upgrade to Premium for PDF, photo Scan & audio uploads.' };
+      return { allowed: false, words: 0, reason: 'Free tier supports text files only (.txt, .md, .csv) — upgrade for PDF and note-scan uploads.' };
     }
     if (textForSizing && words > FREE_WORD_LIMIT) {
       return { allowed: false, words, reason: `Free tier caps uploads at ${FREE_WORD_LIMIT} words (this file: ~${words}). Trim it or upgrade to Premium.` };
@@ -52,7 +52,7 @@ export async function checkUploadAllowed(
     return { allowed: true, words };
   }
 
-  // Premium: everything allowed, subject to the monthly ceiling.
+  // Premium: all supported formats, subject to the monthly ceiling.
   // Estimate unparsed files generously (a 500-page book ≈ 150k words > cap).
   const billable = words > 0 ? words : 5000;
   if (used + billable > PREMIUM_MONTHLY_WORD_CAP) {

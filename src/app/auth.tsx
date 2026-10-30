@@ -306,7 +306,7 @@ export default function Auth() {
           <Text className="font-bold text-white">Sign out</Text>
         </Pressable>
         <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
-          <Text className="font-bold text-slate-400 dark:text-slate-500">Back to Path</Text>
+          <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
         </Pressable>
         <StatusBar style="auto" />
       </ScrollView>
@@ -320,7 +320,7 @@ export default function Auth() {
         <AppIcon name="lock" size={30} color="#FFFFFF" />
       </View>
       <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">{mode === 'in' ? 'Welcome back' : 'Create account'}</Text>
-      <Text className="mt-1 text-center text-base text-slate-500 dark:text-slate-400">
+      <Text onPhoto className="mt-1 text-center text-base text-slate-600 dark:text-slate-200">
         Sign in to sync XP, upload study material, and keep your streak on every device.
       </Text>
 
@@ -386,7 +386,7 @@ export default function Auth() {
       </Pressable>
 
       <Pressable onPress={() => router.replace('/')} className="mt-4 items-center">
-        <Text className="font-bold text-slate-400 dark:text-slate-500">Continue as guest →</Text>
+        <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Continue as guest →</Text>
       </Pressable>
       <StatusBar style="auto" />
     </ScrollView>

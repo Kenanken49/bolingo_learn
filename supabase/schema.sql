@@ -57,10 +57,27 @@ create table if not exists public.user_uploads (
   file_url text not null,
   status varchar(50) not null default 'processing',
   error text,
+  rights_attestation jsonb,
+  rights_attested_at timestamptz,
+  transcript text,
+  transcript_provider text,
+  transcript_model text,
+  transcript_language text,
+  transcript_duration_seconds numeric,
+  transcribed_at timestamptz,
   created_at timestamptz not null default now()
 );
 
 alter table public.user_uploads add column if not exists error text;
+alter table public.user_uploads
+  add column if not exists rights_attestation jsonb,
+  add column if not exists rights_attested_at timestamptz,
+  add column if not exists transcript text,
+  add column if not exists transcript_provider text,
+  add column if not exists transcript_model text,
+  add column if not exists transcript_language text,
+  add column if not exists transcript_duration_seconds numeric,
+  add column if not exists transcribed_at timestamptz;
 
 alter table public.user_uploads enable row level security;
 
@@ -81,6 +98,26 @@ alter table public.lessons
   add column if not exists upload_source_id uuid references public.user_uploads (id),
   add column if not exists user_id uuid references public.profiles (id) on delete cascade,
   add column if not exists is_user_generated boolean not null default false;
+
+-- Legacy course-importer columns are NOT NULL on pre-existing installs and
+-- `created_at` has no default there, which made every process-upload lesson
+-- insert fail. Generated lessons have no legacy course/material link. Fresh
+-- installs never create those legacy columns, so relax only the ones present.
+do $$
+declare
+  legacy_column text;
+begin
+  foreach legacy_column in array array['course_id', 'material_id', 'ord', 'generator', 'payload'] loop
+    if exists (
+      select 1 from information_schema.columns
+      where table_schema = 'public' and table_name = 'lessons' and column_name = legacy_column
+    ) then
+      execute format('alter table public.lessons alter column %I drop not null', legacy_column);
+    end if;
+  end loop;
+end $$;
+
+alter table public.lessons alter column created_at set default now();
 
 -- Delete flow: removing an upload must remove its generated lesson nodes
 -- (questions cascade from lessons). The bare REFERENCES default blocks the

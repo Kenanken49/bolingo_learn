@@ -1,6 +1,43 @@
 import { View, type StyleProp, type TextStyle } from 'react-native';
 import Text from './ui/Text';
 import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+import { useNatural } from '../lib/natural';
+
+/**
+ * Legacy call sites still pass the pre-QD-OLED inks (slate navy icons meant
+ * for white cards). On true black those vanish, so in dark mode they resolve
+ * to the palette ink/muted/accent of the same role instead of going unreadable.
+ */
+type LegacyRole = 'ink' | 'muted' | 'moss' | 'honey' | 'teal' | 'berry';
+
+const LEGACY_DARK_INK: Record<string, LegacyRole> = {
+  '#0F172A': 'ink',
+  '#111827': 'ink',
+  '#1E293B': 'ink',
+  '#334155': 'ink',
+  '#475569': 'ink',
+  '#64748B': 'muted',
+  '#94A3B8': 'muted',
+  '#CBD5E1': 'muted',
+  '#0284C7': 'moss',
+  '#0EA5E9': 'moss',
+  '#059669': 'moss',
+  '#22C55E': 'moss',
+  '#16A34A': 'moss',
+  '#15803D': 'moss',
+  '#EF4444': 'berry',
+  '#DC2626': 'berry',
+  '#B91C1C': 'berry',
+  '#991B1B': 'berry',
+  '#F97316': 'honey',
+  '#F59E0B': 'honey',
+  '#D97706': 'honey',
+  '#B45309': 'honey',
+  '#FB923C': 'honey',
+  '#78350F': 'honey',
+  '#7C3AED': 'teal',
+  '#8B5CF6': 'teal',
+};
 
 /**
  * Bolingo Learn icon system — flat Duolingo-style vector glyphs.
@@ -226,6 +263,14 @@ const ART_ICON: Record<string, AppIconName> = {
   '⏱': 'time',
 };
 
+/** Resolve a legacy light-mode ink against the live palette. */
+function useLegacyInk(color: string): string {
+  const p = useNatural();
+  if (!p.isDark) return color;
+  const role = LEGACY_DARK_INK[color.toUpperCase()];
+  return role ? p[role] : color;
+}
+
 /** Course/unit art without a single emoji. */
 export function ContentMark({
   emoji,
@@ -238,13 +283,17 @@ export function ContentMark({
   color?: string;
   badgeBg?: string;
 }) {
+  const p = useNatural();
+  const paint = useLegacyInk(color);
+  // A navy badge on true black is invisible; lift it to the raised panel.
+  const badge = p.isDark && LEGACY_DARK_INK[badgeBg.toUpperCase()] ? p.surfaceAlt : badgeBg;
   const code = FLAG_BADGE[emoji];
   if (code) {
     return (
-      <AppIconNameBadge code={code} size={size} color={color} badgeBg={badgeBg} />
+      <AppIconNameBadge code={code} size={size} color={paint} badgeBg={badge} />
     );
   }
-  return <AppIcon name={ART_ICON[emoji] ?? 'star'} size={size} color={color} />;
+  return <AppIcon name={ART_ICON[emoji] ?? 'star'} size={size} color={paint} />;
 }
 
 function AppIconNameBadge({
@@ -286,8 +335,9 @@ export default function AppIcon({
   color?: string;
   style?: StyleProp<TextStyle>;
 }) {
+  const paint = useLegacyInk(color);
   const m = MAP[name];
-  if (m.lib === 'mci') return <MaterialCommunityIcons name={m.glyph as never} size={size} color={color} style={style} />;
-  if (m.lib === 'fa') return <FontAwesome name={m.glyph as never} size={size} color={color} style={style} />;
-  return <Ionicons name={m.glyph as never} size={size} color={color} style={style} />;
+  if (m.lib === 'mci') return <MaterialCommunityIcons name={m.glyph as never} size={size} color={paint} style={style} />;
+  if (m.lib === 'fa') return <FontAwesome name={m.glyph as never} size={size} color={paint} style={style} />;
+  return <Ionicons name={m.glyph as never} size={size} color={paint} style={style} />;
 }

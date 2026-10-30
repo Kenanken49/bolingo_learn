@@ -1,5 +1,11 @@
 import * as Speech from 'expo-speech';
-import { VoiceQuality, type Voice } from 'expo-speech';
+import type { Voice } from 'expo-speech';
+import { Platform } from 'react-native';
+import {
+  planVoiceCast,
+  type CastAssignment,
+  type MentorId,
+} from './voiceCasting';
 
 /**
  * Character pronunciation for language courses.
@@ -23,7 +29,7 @@ import { VoiceQuality, type Voice } from 'expo-speech';
  * On-device only: no API key, no per-play cost, still works offline.
  */
 
-export type Mentor = 'livia' | 'bingo' | 'zora';
+export type Mentor = MentorId;
 
 export interface LanguagePreset {
   base: 'es' | 'fr' | 'de' | 'sw' | 'en';
@@ -94,6 +100,11 @@ export const APP_SPEECH = ENGLISH;
 /** The Swahili preset, exported so Settings can check a device's Swahili voice. */
 export const SWAHILI_SPEECH = SWAHILI;
 
+/** Target-language presets for Roleplay's Livia and Bingo tutors. */
+export const SPANISH_SPEECH = SPANISH;
+export const FRENCH_SPEECH = FRENCH;
+export const GERMAN_SPEECH = GERMAN;
+
 export function languageForLesson(lessonId: string): LanguagePreset | null {
   const prefix = lessonId.toLowerCase().split('-')[0];
   return PRESETS[prefix] ?? null;
@@ -129,44 +140,6 @@ const ANY_DETERMINER = new Set([
   ...GERMAN.determiners,
   ...ENGLISH.determiners,
 ]);
-
-/**
- * Casting. Livia and Zora are women, Bingo is a man, and the platforms that
- * name their voices (Apple, Windows, Google's cloud voices) give us enough to
- * pick accordingly. Android often exposes no name at all, so this can only
- * ever be a preference: with one voice installed, everyone shares it rather
- * than a character falling silent.
- */
-type VoiceGender = 'feminine' | 'masculine';
-
-const CHARACTER_GENDER: Record<Mentor, VoiceGender> = {
-  livia: 'feminine',
-  zora: 'feminine',
-  bingo: 'masculine',
-};
-
-const FEMININE_VOICE =
-  /\b(samantha|ava|allison|susan|karen|moira|tessa|serena|victoria|zira|aria|jenny|sonia|natasha|libby|michelle|paulina|monica|marisol|lucia|laura|carmen|elena|isabel|paula|sofia|valentina|camila|marta|amelie|audrey|celine|anna|petra|katja|yelda|milena|joana|amelia)\b/i;
-
-const MASCULINE_VOICE =
-  /\b(alex|aaron|arthur|daniel|david|diego|carlos|pablo|jorge|raul|enrique|javier|manuel|pedro|miguel|andres|fernando|fred|tom|guy|ryan|george|james|liam|thomas|mark|markus|stefan|hans|klaus|oliver|gordon|rishi|male|hombre)\b/i;
-
-function voiceGender(voice: Voice): VoiceGender | null {
-  if (FEMININE_VOICE.test(voice.name)) return 'feminine';
-  if (MASCULINE_VOICE.test(voice.name)) return 'masculine';
-  return null;
-}
-
-const NOVELTY_VOICE =
-  /whisper|novelty|zarvox|albert|bad news|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|wobble|bahh|deranged|hysterical|pipe organ|grandma|grandpa|rocko|shelley|flo|sandy|eddy|reed|junior|ralph|fred/i;
-
-function normalizeLocale(locale: string): string {
-  return locale.toLowerCase().replace('_', '-');
-}
-
-function baseLocale(locale: string): string {
-  return normalizeLocale(locale).split('-')[0];
-}
 
 function hasLetters(text: string): boolean {
   return /\p{L}/u.test(text);
@@ -517,15 +490,26 @@ export function promptSegments(prompt: string, preset: LanguagePreset): SpeechSe
  * ------------------------------------------------------------------ */
 
 let voicesPromise: Promise<Voice[]> | null = null;
-const voiceCache = new Map<string, Voice | null>();
-const usedIdentifiers = new Set<string>();
+type CastPlan = Record<MentorId, CastAssignment<Voice>>;
+// One settled plan per language. The plan contains every character, so an
+// audition and a lesson read the exact same assignment regardless of who spoke
+// first.
+const castPlans = new Map<string, Promise<CastPlan>>();
 
-/** Voices can arrive late on web; never block a tap for more than 1.2s. */
+/**
+ * Voices can arrive late. Browsers need a short cap so a tap never hangs, but a
+ * cold Android TTS engine can take several seconds to enumerate its voices.
+ * Giving up at 1.2s made the first phrase of a session speak with the engine
+ * default instead of the installed Swahili voice, so native gets more room.
+ * Only the first call pays this cost; the resolved list is cached afterwards.
+ */
+const VOICE_LIST_TIMEOUT_MS = Platform.OS === 'web' ? 1200 : 4000;
+
 function loadVoices(): Promise<Voice[]> {
   if (!voicesPromise) {
     const pending = Promise.race([
       Speech.getAvailableVoicesAsync().catch(() => [] as Voice[]),
-      new Promise<Voice[]>((resolve) => setTimeout(() => resolve([]), 1200)),
+      new Promise<Voice[]>((resolve) => setTimeout(() => resolve([]), VOICE_LIST_TIMEOUT_MS)),
     ]);
     voicesPromise = pending;
     // A timeout is not an answer. Browsers populate `speechSynthesis.getVoices()`
@@ -539,108 +523,29 @@ function loadVoices(): Promise<Voice[]> {
   return voicesPromise;
 }
 
-function voiceScore(voice: Voice, preset: LanguagePreset, character: Mentor): number {
-  const locale = normalizeLocale(voice.language);
-  const preferred = preset.locales.findIndex((candidate) => normalizeLocale(candidate) === locale);
-  let score = preferred >= 0 ? 100 - preferred * 5 : 60;
-  if (voice.quality === VoiceQuality.Enhanced) score += 30;
-  // Android surfaces neural/enhanced quality in the name, not the enum.
-  if (/(enhanced|premium|neural|natural|wavenet|studio)/i.test(voice.name)) score += 20;
-  // Android names its cloud voices "-network" and its compact on-device ones
-  // "-local"; the network voice is the one that sounds like a person.
-  const id = `${voice.name} ${voice.identifier}`;
-  if (/network|online/i.test(id)) score += 18;
-  if (/compact|espeak|pico|sapi|eloquence/i.test(id)) score -= 22;
-  if (/(google|microsoft|siri|samantha|ava|allison|karen|moira|tessa|serena|paulina|monica|marisol|jorge|diego|amelie|audrey|thomas|anna|petra|markus|aria|jenny|sonia|natasha|libby|ryan)/i.test(voice.name))
-    score += 6;
-  if (NOVELTY_VOICE.test(voice.name)) score -= 200;
-  return score;
+function resolveCast(preset: LanguagePreset): Promise<CastPlan> {
+  const key = preset.base;
+  const cached = castPlans.get(key);
+  if (cached) return cached;
+
+  const pending = (async () => {
+    const voices = await loadVoices();
+    const plan = planVoiceCast(voices, preset);
+    // An empty list is "voices have not arrived yet", not an answer. Do not
+    // cache it; the next tap should ask the platform again.
+    if (voices.length === 0) castPlans.delete(key);
+    return plan;
+  })();
+  castPlans.set(key, pending);
+  return pending;
 }
 
-interface ResolvedVoice {
-  voice: Voice | null;
-  locale: string;
-  hasVoiceList: boolean;
-  matchedVoice: boolean;
-  approximate: boolean;
-}
-
-function pickBest(
-  voices: Voice[],
-  base: string,
+async function resolveVoice(
   preset: LanguagePreset,
-  avoid: Set<string>,
   character: Mentor
-): Voice | null {
-  const candidates = voices.filter((v) => !NOVELTY_VOICE.test(v.name));
-  const native = candidates.filter((v) => baseLocale(v.language) === base);
-  if (native.length === 0) return null;
-  // Cast the part before ranking the voices: a character never takes a voice
-  // that reads as the other gender when one that reads as theirs is installed.
-  // Unnamed voices stay eligible as the fallback pool, which is what Android
-  // needs, and never outrank a correctly cast voice when both exist.
-  const wanted = CHARACTER_GENDER[character];
-  const cast = native.filter((v) => voiceGender(v) === wanted);
-  const pool = cast.length > 0 ? cast : native;
-  const ranked = [...pool].sort((a, b) => voiceScore(b, preset, character) - voiceScore(a, preset, character));
-  // Distinct character voices: the narrator avoids the model's voice when a
-  // second acceptable voice exists.
-  return ranked.find((v) => !avoid.has(v.identifier)) ?? ranked[0] ?? null;
-}
-
-async function resolveVoice(preset: LanguagePreset, character: Mentor): Promise<ResolvedVoice> {
-  // Every character speaks the whole course, so each gets its own lane: the
-  // best voice for the first of them, the next acceptable one for the others.
-  // Characters that sound like different people is the difference between a
-  // conversation and one robot changing speed.
-  const key = `${preset.base}:${character}`;
-  if (voiceCache.has(key)) {
-    const cached = voiceCache.get(key) ?? null;
-    return {
-      voice: cached,
-      locale: cached?.language ?? preset.locales[0] ?? preset.base,
-      hasVoiceList: true,
-      matchedVoice: !!cached,
-      approximate: false,
-    };
-  }
-
-  const voices = await loadVoices();
-  if (voices.length === 0) {
-    // No usable list (common on web before voices load): let the engine choose
-    // by locale. Still far better than speaking Spanish with `en-US`.
-    return {
-      voice: null,
-      locale: preset.locales[0] ?? preset.base,
-      hasVoiceList: false,
-      matchedVoice: false,
-      approximate: false,
-    };
-  }
-
-  const native = pickBest(voices, preset.base, preset, new Set(usedIdentifiers), character);
-  if (native) {
-    voiceCache.set(key, native);
-    usedIdentifiers.add(native.identifier);
-    return { voice: native, locale: native.language, hasVoiceList: true, matchedVoice: true, approximate: false };
-  }
-
-  for (const related of preset.related) {
-    const fallback = pickBest(voices, related, preset, new Set<string>(), character);
-    if (fallback) {
-      voiceCache.set(key, fallback);
-      return { voice: fallback, locale: fallback.language, hasVoiceList: true, matchedVoice: false, approximate: true };
-    }
-  }
-
-  voiceCache.set(key, null);
-  return {
-    voice: null,
-    locale: preset.locales[0] ?? preset.base,
-    hasVoiceList: true,
-    matchedVoice: false,
-    approximate: false,
-  };
+): Promise<CastAssignment<Voice>> {
+  const plan = await resolveCast(preset);
+  return plan[character];
 }
 
 /* ------------------------------------------------------------------ *

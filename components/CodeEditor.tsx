@@ -48,9 +48,9 @@ function highlight(lang: CodeLang, code: string, keyPrefix: string) {
     if (lang === 'html') {
       cls = tok.startsWith('<!--') ? 'text-slate-500 dark:text-slate-400' : tok.startsWith('"') ? 'text-amber-300' : 'text-sky-400';
     } else if (lang === 'css') {
-      cls = tok.startsWith('/*') ? 'text-slate-500 dark:text-slate-400' : tok.startsWith('"') ? 'text-amber-300' : /[:;{]/.test(tok) ? 'text-slate-200' : 'text-fuchsia-400';
+      cls = tok.startsWith('/*') ? 'text-slate-500 dark:text-slate-400' : tok.startsWith('"') ? 'text-amber-300' : /[:;{]/.test(tok) ? 'text-slate-200' : 'text-pink-300';
     } else {
-      cls = tok.startsWith('//') || tok.startsWith('/*') ? 'text-slate-500 dark:text-slate-400' : /^["']/.test(tok) || /^\d+$/.test(tok) ? 'text-amber-300' : 'text-fuchsia-400';
+      cls = tok.startsWith('//') || tok.startsWith('/*') ? 'text-slate-500 dark:text-slate-400' : /^["']/.test(tok) || /^\d+$/.test(tok) ? 'text-amber-300' : 'text-pink-300';
     }
     push(tok, cls);
     last = idx + tok.length;
@@ -109,7 +109,7 @@ function GutteredInput({
             textAlignVertical="top"
             selectionColor="#22c55e"
             placeholder={tab === 'html' ? '<h1>Start here…' : tab === 'css' ? '/* style here… */' : '// script here…'}
-            placeholderTextColor="#475569"
+            placeholderTextColor="#74748A"
             style={{
               position: 'absolute',
               top: 16,

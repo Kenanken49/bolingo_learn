@@ -38,6 +38,7 @@ yarn-error.*
 
 # tooling noise
 *.lnk
+.preview-audio/
 package.json.*
 supabase/.temp/
 

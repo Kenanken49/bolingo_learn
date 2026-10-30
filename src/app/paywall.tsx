@@ -153,7 +153,7 @@ export default function Paywall() {
         if (webEntitled(customerInfo)) {
           await supabase.from('profiles').update({ is_premium: true }).eq('id', user.id);
           setIsPremium(true);
-          Alert.alert('Welcome to Premium', 'PDF/audio uploads, elite voices, and unlimited hearts are yours.');
+          Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited hearts are yours.');
           router.replace('/');
         }
       } catch (e: unknown) {
@@ -178,7 +178,7 @@ export default function Paywall() {
         return;
       }
       if (res.entitled) {
-        await afterChange();Alert.alert('Welcome to Premium', 'PDF/audio uploads, elite voices, and unlimited hearts are yours.');
+        await afterChange();Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited hearts are yours.');
           router.replace('/');
       } else {
         Alert.alert('Purchase finished', 'The store finished but Premium is not active yet — tap Restore purchases.');
@@ -259,8 +259,8 @@ export default function Paywall() {
         <AppIcon name="crown" size={40} color="#FFFFFF" />
       </View>
       <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">Go Premium</Text>
-      <Text className="mt-1 text-center text-base text-slate-500 dark:text-slate-400">
-        PDF & audio uploads, ultra-smart AI lessons, soothing human-like audiobooks.
+      <Text onPhoto className="mt-1 text-center text-base text-slate-600 dark:text-slate-200">
+        PDF & note-scan uploads, elite voices, soothing human-like audiobooks.
       </Text>
 
       {/* Free vs Premium — the Duolingo Super-comparison pattern. */}
@@ -272,13 +272,14 @@ export default function Paywall() {
             <AppIcon name="crown" size={13} color="#D97706" />
             <Text className="text-xs font-extrabold text-amber-600 dark:text-amber-400">PRO</Text>
           </View>
-        </View>        {(
+        </View>
+        {(
           [
-            ['heart', 'Hearts', '5 / day', 'Unlimited'],
-            ['doc', 'Uploads', 'Text files', 'PDF + audio'],
+            ['heart', 'Hearts', '5, regen 4h', 'Unlimited'],
+            ['doc', 'Uploads', 'Text ≤1k', 'All formats'],
             ['camera', 'Scan notes', '—', 'Included'],
-            ['volume', 'Voices', 'Device voice', 'Elite voices'],
-            ['robot', 'AI words', '1k / day', '100k / month'],
+            ['headset', 'Audiobook', 'Device voice', 'Generated'],
+            ['robot', 'AI words', '1k / file', '100k / 30d'],
             ['chat', 'Roleplay', 'Locked', 'Included'],
           ] as Array<[AppIconName, string, string, string]>
         ).map(([icon, label, free, pro]) => (
@@ -289,6 +290,9 @@ export default function Paywall() {
             <Text className="w-16 text-center text-xs font-extrabold text-slate-800 dark:text-slate-200">{pro}</Text>
           </View>
         ))}
+        <Text className="mt-3 border-t border-slate-100 pt-2 text-xs leading-4 text-slate-500 dark:border-slate-800 dark:text-slate-400">
+          Free narration uses your device voice over the question prompts. Premium generates one consistent narrator, a continuous full mix and a clip for every question. Livia, Bingo and Zora stay on-device on both plans.
+        </Text>
       </View>
 
       {storeError && !isPremium ? (
@@ -341,7 +345,7 @@ export default function Paywall() {
           <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">Premium Monthly</Text>
           <Text className="mt-1 text-3xl font-extrabold text-slate-900 dark:text-slate-100">{price}</Text>
           <Text className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-            • PDF & audio uploads{'\n'}• Scan notes — Bingo curates revision nodes{'\n'}• Elite ElevenLabs/OpenAI voices{'\n'}• 100k AI words/month{'\n'}• Unlimited hearts
+            • PDF uploads{'\n'}• Note scans — Bingo curates revision nodes{'\n'}• Elite ElevenLabs/OpenAI voices{'\n'}• 100k AI words / 30 days{'\n'}• Unlimited hearts
           </Text>
           <Pressable
             onPress={buy}
@@ -358,7 +362,7 @@ export default function Paywall() {
 
       {__DEV__ && (
         <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700 p-4">
-          <Text className="text-sm font-bold text-slate-500 dark:text-slate-400">
+          <Text onPhoto className="text-sm font-bold text-slate-600 dark:text-slate-200">
             Device-test backdoor {DEBUG_PREMIUM_UNLOCK ? '(env enabled)' : '(env off — toggle below is local only)'}
           </Text>
           <Pressable onPress={toggleDebug} className="mt-2 items-center rounded-2xl bg-slate-800 py-3">

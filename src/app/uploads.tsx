@@ -5,6 +5,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { supabase } from '../../lib/supabase';
 import { getProfile, type Profile } from '../../lib/progress';
+import { isMediaUpload } from '../../lib/contentRights';
 import AppIcon from '../../components/AppIcon';
 
 interface Upload {
@@ -163,7 +164,7 @@ export default function Uploads() {
         <AppIcon name="book" size={26} color="#0F172A" />
         <Text className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">My uploads</Text>
       </View>
-      <Text className="text-base text-slate-500 dark:text-slate-400">Every file you've sent to the AI Sandbox.</Text>
+      <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">Every file you've sent to the AI Sandbox.</Text>
       {uploads.some((x) => x.status === 'failed') && (
         <Pressable onPress={clearFailed} disabled={clearing} className="mt-3 rounded-2xl bg-red-50 dark:bg-red-950 px-4 py-2">
           <View className="flex-row items-center justify-center gap-1.5">
@@ -178,8 +179,8 @@ export default function Uploads() {
       ) : !profile ? (
         <View className="mt-6 w-full max-w-sm items-center rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5">
           <Text className="text-base text-slate-600 dark:text-slate-400">Sign in to see your upload history.</Text>
-          <Pressable onPress={() => router.push('/auth')} className="mt-3 rounded-2xl bg-slate-900 px-6 py-3">
-            <Text className="font-bold text-white">Sign in</Text>
+          <Pressable onPress={() => router.push('/auth')} className="mt-3 rounded-2xl bg-green-500 px-6 py-3">
+            <Text className="font-bold text-[#03130A]">Sign in</Text>
           </Pressable>
         </View>
       ) : uploads.length === 0 ? (
@@ -195,6 +196,8 @@ export default function Uploads() {
         <View className="mt-4 w-full max-w-sm">
           {uploads.map((u) => {
             const s = STATUS_STYLE[u.status];
+            const statusLabel =
+              u.status === 'processing' && isMediaUpload(u.file_name) ? 'transcribing…' : s.label;
             return (
               <View key={u.id} className="mb-3 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
                 <View className="flex-row items-center">
@@ -202,7 +205,7 @@ export default function Uploads() {
                   <Text className="ml-2 flex-1 text-base font-bold text-slate-800 dark:text-slate-200" numberOfLines={1}>
                     {u.file_name}
                   </Text>
-                  <Text className={`text-xs font-bold ${s.text}`}>● {s.label}</Text>
+                  <Text className={`text-xs font-bold ${s.text}`}>● {statusLabel}</Text>
                 </View>
                 <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">{new Date(u.created_at).toLocaleString()}</Text>
                 {u.status === 'failed' && u.error ? (                  <View className="mt-1 flex-row items-start gap-1">
@@ -249,7 +252,7 @@ export default function Uploads() {
       )}
 
       <Pressable onPress={() => router.replace('/')} className="mt-4 items-center">
-        <Text className="font-bold text-slate-400 dark:text-slate-500">Back to Path</Text>
+        <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
       </Pressable>
       <StatusBar style="auto" />
     </ScrollView>

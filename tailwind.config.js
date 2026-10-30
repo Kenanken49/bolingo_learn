@@ -1,4 +1,33 @@
 /** @type {import('tailwindcss').Config} */
+// Quantum-dot ramps. Legacy screens still name their classes `green`, `sky`,
+// `emerald`, `blue`… — those names now resolve to the QD accents so every
+// route wears the same palette as the hand-styled home screen.
+const QD_CYAN = {
+  50: '#E6FBFF',
+  100: '#C2F5FF',
+  200: '#85EAFF',
+  300: '#7DF9FF',
+  400: '#00E5FF',
+  500: '#00A9CC',
+  600: '#0089A8',
+  700: '#006A82',
+  800: '#005A73',
+  900: '#003D4D',
+  950: '#00232E',
+};
+const QD_VIOLET = {
+  50: '#F3ECFF',
+  100: '#E4D3FF',
+  200: '#CBA8FF',
+  300: '#B07AFF',
+  400: '#9B5CFF',
+  500: '#8B5CFF',
+  600: '#6D35E6',
+  700: '#541FBF',
+  800: '#3D1499',
+  900: '#260A66',
+  950: '#160538',
+};
 module.exports = {
   // Class-driven dark mode: the app toggles `dark` itself (Settings →
   // Appearance), so QD-OLED flips instantly without a reload.
@@ -30,20 +59,15 @@ module.exports = {
           900: '#08080E',
           950: '#000000',
         },
-        // Quantum-dot accents: saturated primaries that read on black.
-        green: {
-          50: '#E8FFF3',
-          100: '#C7FFE2',
-          200: '#8FFFC5',
-          300: '#4DFF9F',
-          400: '#00F58C',
-          500: '#00A85A',
-          600: '#008A4A',
-          700: '#006B39',
-          800: '#007A38',
-          900: '#004D24',
-          950: '#002E16',
-        },
+        // Quantum accents: `green` is the product primary (QD cyan), `sky` the
+        // secondary (QD violet). Old class names keep their old roles.
+        green: QD_CYAN,
+        emerald: QD_CYAN,
+        cyan: QD_CYAN,
+        sky: QD_VIOLET,
+        blue: QD_VIOLET,
+        indigo: QD_VIOLET,
+        purple: QD_VIOLET,
         amber: {
           50: '#FFF9E5',
           100: '#FFF0BF',
@@ -56,19 +80,6 @@ module.exports = {
           800: '#7A5500',
           900: '#4D3600',
           950: '#2B1F00',
-        },
-        sky: {
-          50: '#E5FAFF',
-          100: '#C2F4FF',
-          200: '#85E9FF',
-          300: '#47DDFF',
-          400: '#00D1FF',
-          500: '#0089A8',
-          600: '#007A96',
-          700: '#006A82',
-          800: '#005A73',
-          900: '#003D4D',
-          950: '#00232E',
         },
         pink: {
           50: '#FFE8F5',

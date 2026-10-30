@@ -75,7 +75,7 @@ export default function Results() {
     return (
       <View className="flex-1 items-center justify-center px-6">
         <AppIcon name="map" size={44} color="#CBD5E1" />
-        <Text className="mt-2 text-lg text-slate-600 dark:text-slate-400">No results yet — finish a lesson first.</Text>
+        <Text onPhoto className="mt-2 text-lg text-slate-600 dark:text-slate-100">No results yet — finish a lesson first.</Text>
         <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-green-500 px-6 py-3">
           <Text className="font-bold text-white">Back to Path</Text>
         </Pressable>
@@ -138,7 +138,7 @@ export default function Results() {
         </View>
       </Animated.View>
       {/* Duo-style XP / accuracy / streak stat bar */}
-      <View className="mt-1 w-full max-w-sm flex-row justify-between rounded-3xl bg-slate-900 px-5 py-4">
+      <View className="mt-1 w-full max-w-sm flex-row justify-between rounded-3xl border border-slate-800 bg-slate-900 px-5 py-4">
         <View className="items-center">
           <Text className="text-2xl font-extrabold text-white">+{result.xpEarned}</Text>
           <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">XP</Text>

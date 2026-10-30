@@ -28,6 +28,7 @@ import {
 } from '../lib/pronunciation';
 import HelpfulVote from './HelpfulVote';
 import { getHapticsOn, getSoundOn } from '../lib/preferences';
+import { playNaturalSwahili, stopNaturalSwahili } from '../lib/naturalLessonAudio';
 import AppIcon from './AppIcon';
 import SpeakBack from './SpeakBack';
 
@@ -54,6 +55,13 @@ interface Props {
   onCorrect: () => void;
   onContinue: () => void;
   onAnswer?: (r: { prompt: string; yourAnswer: string; correctAnswer: string; correct: boolean }) => void;
+  /**
+   * Resolved lesson theory (already trimmed) from the catalog the screen loaded.
+   * Passed in because language lessons can be edited in Supabase without an
+   * app release; the bundled lookup below would otherwise ground the tutor in
+   * stale text.
+   */
+  theory?: string;
 }
 
 const shuffle = <T,>(arr: T[]): T[] =>
@@ -77,6 +85,7 @@ export default function GamifiedCodePlayer({
   onCorrect,
   onContinue,
   onAnswer,
+  theory: theoryOverride,
 }: Props) {
   // Language courses get a native-locale phrase model (Livia) plus a character
   // read of the question (Bingo); everything else keeps the normal narrator.
@@ -129,7 +138,7 @@ export default function GamifiedCodePlayer({
         selectedTokens.join(' '),
         questionData.correctChain.join(' '),
         {
-          theory: getCourseLesson(lessonId)?.theory.slice(0, 2).join(' ').slice(0, 900),
+          theory: theoryOverride ?? getCourseLesson(lessonId)?.theory.slice(0, 2).join(' ').slice(0, 900),
           reference: questionData.explain,
           // Language banks: 1.5B misnames terms even grounded — strong brain first.
           strongFirst: !!getLanguageLesson(lessonId),
@@ -166,6 +175,13 @@ export default function GamifiedCodePlayer({
     let cancelled = false;
     const timer = setTimeout(async () => {
       if (cancelled || !(await getSoundOn()) || cancelled) return;
+      await stopNaturalSwahili();
+      await stopSpeaking();
+      if (cancelled) return;
+      // Livia's Swahili model phrase is a bundled Fliki take when one exists;
+      // device TTS remains the fallback for unsupported or missing clips.
+      if (language.base === 'sw' && (await playNaturalSwahili(phrase))) return;
+      if (cancelled) return;
       void speakAs({ character: 'livia', text: phrase, language });
     }, 420);
     return () => {
@@ -178,6 +194,7 @@ export default function GamifiedCodePlayer({
   useEffect(
     () => () => {
       if (remedyTimer.current) clearTimeout(remedyTimer.current);
+      void stopNaturalSwahili();
       void stopSpeaking();
     },
     []
@@ -188,6 +205,7 @@ export default function GamifiedCodePlayer({
   }, [progressPct, bar]);
 
   const playNarration = () => {
+    void stopNaturalSwahili();
     if (eliteLocked) {
       setHint('Free voice — upgrade to Premium for soothing human-like audiobooks.');
       void speakAs({ character: 'bingo', text: questionData.prompt, language: APP_SPEECH });
@@ -210,18 +228,18 @@ export default function GamifiedCodePlayer({
   const speakLanguagePhrase = async (slow = false) => {
     if (!language) return;
     setHint(null);
-    const result = await speakAs({
-      character: 'livia',
-      text: phrase ?? questionData.prompt,
-      language,
-      slow,
-    });
+    await stopNaturalSwahili();
+    await stopSpeaking();
+    const text = phrase ?? questionData.prompt;
+    if (language.base === 'sw' && (await playNaturalSwahili(text, { slow }))) return;
+    const result = await speakAs({ character: 'livia', text, language, slow });
     if (!result.spoken) setHint('Speech is unavailable on this device.');
     else noteVoiceQuality(result);
   };
 
   const readPromptAsBingo = async () => {
     setHint(null);
+    await stopNaturalSwahili();
     // Mixed prompts are read in runs: English scaffolding in Bingo's voice,
     // the target phrase in the language's own voice.
     const results = await speakSegments(promptSegments(questionData.prompt, language ?? APP_SPEECH), {
@@ -293,7 +311,12 @@ export default function GamifiedCodePlayer({
       if (language && phrase) {
         if (remedyTimer.current) clearTimeout(remedyTimer.current);
         remedyTimer.current = setTimeout(() => {
-          void speakAs({ character: 'livia', text: phrase, language, slow: true });
+          void (async () => {
+            await stopNaturalSwahili();
+            await stopSpeaking();
+            if (language.base === 'sw' && (await playNaturalSwahili(phrase, { slow: true }))) return;
+            await speakAs({ character: 'livia', text: phrase, language, slow: true });
+          })();
         }, 480);
       }
       if (hapticsOn) {
@@ -323,7 +346,7 @@ export default function GamifiedCodePlayer({
 
       {/* FCC-style instruction card + Duo challenge label */}
       <View className="my-2 rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
-        <Text className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
+        <Text className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
           Challenge | {questionLabel}
         </Text>
         <Text className="mb-1 font-duo text-xl font-bold text-slate-900 dark:text-slate-100">{questionData.prompt}</Text>

@@ -1,7 +1,7 @@
 import '../../global.css';
 import { useEffect } from 'react';
 import { View } from 'react-native';
-import { Stack, usePathname } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { setAudioModeAsync } from 'expo-audio';
 import {
@@ -62,6 +62,23 @@ export default function RootLayout() {
     void ensureReminderScheduled();
   }, []);
   if (!fontsLoaded) return null;
+  const dark = theme === 'dark';
+  // React Navigation paints its scene container with the navigation theme's
+  // background — left on the stock light #F2F2F2 it covered the OLED canvas
+  // (and the expedition backdrop) on every route except the hand-styled home.
+  const navTheme = {
+    ...(dark ? DarkTheme : DefaultTheme),
+    dark,
+    colors: {
+      ...(dark ? DarkTheme : DefaultTheme).colors,
+      background: 'transparent',
+      card: dark ? '#06060A' : '#FFFFFF',
+      text: dark ? '#F7F7FF' : '#0B0B14',
+      border: dark ? '#1E1E2C' : '#DCDDE9',
+      primary: dark ? '#00E5FF' : '#0089A8',
+      notification: dark ? '#FF2DAA' : '#D6008A',
+    },
+  };
   return (
     <View
       className="flex-1 bg-[#F4F5FA] dark:bg-black"
@@ -71,6 +88,7 @@ export default function RootLayout() {
       {/* The expedition is one continuous place: every route swaps the bird,
           accents and canopy layout behind the content. */}
       <ExpeditionBackdrop screen={habitat.key} />
+    <ThemeProvider value={navTheme}>
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="quiz/[lessonId]" />
@@ -86,7 +104,9 @@ export default function RootLayout() {
       <Stack.Screen name="certifications" />
       <Stack.Screen name="design" />
       <Stack.Screen name="roleplay" />
+      {__DEV__ ? <Stack.Screen name="dev/celebration-benchmark" /> : null}
     </Stack>
+    </ThemeProvider>
     </View>
   );
 }

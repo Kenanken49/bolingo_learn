@@ -41,14 +41,14 @@ export default function DictionaryScreen() {
         <Pressable onPress={() => router.back()} className="mb-2 self-start">
           <View className="flex-row items-center gap-0.5">
             <AppIcon name="chevBack" size={16} color="#94A3B8" />
-            <Text className="font-bold text-slate-400 dark:text-slate-500">Back to Path</Text>
+            <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
           </View>
         </Pressable>
         <View className="flex-row items-center gap-2">
           <AppIcon name="book" size={30} color="#0F172A" />
           <Text className="text-3xl font-black text-slate-800 dark:text-slate-200">Kamusi</Text>
         </View>
-        <Text className="mt-1 text-base text-slate-500 dark:text-slate-400">
+        <Text onPhoto className="mt-1 text-base text-slate-600 dark:text-slate-200">
           Offline dictionary — works with no network and no AI. 2,273 Swahili headwords · 12,000 English words.
         </Text>
 

@@ -887,6 +887,16 @@ export const CURRICULUM: CurriculumUnit[] = [
         lessonTitle: 'Swahili Greetings & Replies',
       },
       {
+        id: 'sw-fsi-morning',
+        kind: 'workshop',
+        title: 'FSI morning greetings',
+        blurb: 'Read a real FSI dialogue: Jambo, bwana → Habari za asubuhi? → Njema.',
+        minutes: 4,
+        xp: 20,
+        lessonId: 'swahili-fsi-01',
+        lessonTitle: 'FSI 1 · Morning greetings',
+      },
+      {
         id: 'sw-numbers',
         kind: 'workshop',
         title: 'Numbers & money',

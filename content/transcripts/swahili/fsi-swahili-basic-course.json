@@ -1,0 +1,159 @@
+{
+  "source": {
+    "id": "fsi-swahili-basic-course",
+    "title": "FSI Swahili Basic Course",
+    "publisher": "Foreign Service Institute (U.S.)",
+    "year": 1963,
+    "url": "https://archive.org/details/swahilibasiccour00fore",
+    "transcriptUrl": "https://archive.org/download/swahilibasiccour00fore/swahilibasiccour00fore_djvu.txt",
+    "license": "Public domain (U.S. Government work)",
+    "licenseUrl": "https://www.fsi-language-courses.org/swahili/",
+    "attribution": "Foreign Service Institute (U.S.), Swahili Basic Course, 1963.",
+    "courseId": "swahili",
+    "language": "sw",
+    "retrieved": "2026-10-29",
+    "normalization": "Dialogue lines were read from the Internet Archive OCR of the printed course and normalized for OCR spacing and obvious character errors. Only the short public-domain dialogues are reproduced; summaries and quiz questions are original Bolingo writing."
+  },
+  "lessons": [
+    {
+      "id": "swahili-fsi-01",
+      "title": "FSI 1 · Morning greetings",
+      "summary": "Two men greet each other in the morning. Jambo works at any hour; Habari za asubuhi? asks specifically for the morning's news, and Njema answers that all is well.",
+      "dialogue": [
+        {
+          "speaker": "Mutisya",
+          "sw": "Jambo, bwana.",
+          "en": "Hello, sir."
+        },
+        {
+          "speaker": "Sangai",
+          "sw": "Jambo.",
+          "en": "Hello."
+        },
+        {
+          "speaker": "Mutisya",
+          "sw": "Habari za asubuhi?",
+          "en": "How are you this morning?"
+        },
+        {
+          "speaker": "Sangai",
+          "sw": "Njema.",
+          "en": "Fine."
+        }
+      ]
+    },
+    {
+      "id": "swahili-fsi-02",
+      "title": "FSI 2 · Daytime greetings",
+      "summary": "The daytime greeting swaps Jambo for Hujambo? — literally “do you have no trouble?” — and answers Sijambo, “I have no trouble.” Habari za mchana? asks after the day's news.",
+      "dialogue": [
+        {
+          "speaker": "Sangai",
+          "sw": "Hujambo, bwana.",
+          "en": "Hello, sir."
+        },
+        {
+          "speaker": "Mutisya",
+          "sw": "Sijambo.",
+          "en": "I am fine."
+        },
+        {
+          "speaker": "Sangai",
+          "sw": "Habari za mchana?",
+          "en": "How are you today?"
+        },
+        {
+          "speaker": "Mutisya",
+          "sw": "Njema.",
+          "en": "Fine."
+        }
+      ]
+    },
+    {
+      "id": "swahili-fsi-03",
+      "title": "FSI 3 · Evening greetings",
+      "summary": "Evening greetings follow the same pattern with Habari za jioni? (How is the evening?) or Habari za usiku? (How is the night?). Habari njema answers “the news is good”.",
+      "dialogue": [
+        {
+          "speaker": "Sangai",
+          "sw": "Jambo, bwana.",
+          "en": "Hello, sir."
+        },
+        {
+          "speaker": "Mirambo",
+          "sw": "Jambo, bwana.",
+          "en": "Hello, sir."
+        },
+        {
+          "speaker": "Sangai",
+          "sw": "Habari za jioni?",
+          "en": "How are you this evening?"
+        },
+        {
+          "speaker": "Mirambo",
+          "sw": "Habari njema.",
+          "en": "The news is good."
+        }
+      ]
+    },
+    {
+      "id": "swahili-fsi-04",
+      "title": "FSI 4 · Greeting a lady",
+      "summary": "A man greets an older woman as mama (ma'am, mother), and she answers Sijambo. The morning question and answer stay the same, so only the address changes.",
+      "dialogue": [
+        {
+          "speaker": "Hamisi",
+          "sw": "Hujambo, mama.",
+          "en": "Hello, ma'am."
+        },
+        {
+          "speaker": "Mrs. Kirambo",
+          "sw": "Sijambo.",
+          "en": "I am fine."
+        },
+        {
+          "speaker": "Hamisi",
+          "sw": "Habari za asubuhi?",
+          "en": "How are you this morning?"
+        },
+        {
+          "speaker": "Mrs. Kirambo",
+          "sw": "Njema.",
+          "en": "Fine."
+        }
+      ]
+    },
+    {
+      "id": "swahili-fsi-05",
+      "title": "FSI 8 · Breakfast at the hotel",
+      "summary": "At a hotel breakfast, the waiter asks Je, unataka chakula? (Would you like food?). Kuna chakula gani? asks what is available, and Tafadhali, niletee mayai orders eggs politely.",
+      "dialogue": [
+        {
+          "speaker": "Waiter",
+          "sw": "Je, unataka chakula?",
+          "en": "Would you like some food?"
+        },
+        {
+          "speaker": "Aramian",
+          "sw": "Ndiyo, bwana.",
+          "en": "Yes, sir."
+        },
+        {
+          "speaker": "Aramian",
+          "sw": "Kuna chakula gani?",
+          "en": "What food is there?"
+        },
+        {
+          "speaker": "Waiter",
+          "sw": "Kuna matunda na uji na mayai.",
+          "en": "There is fruit, porridge, and eggs."
+        },
+        {
+          "speaker": "Aramian",
+          "sw": "Tafadhali, niletee mayai.",
+          "en": "Please bring me eggs."
+        }
+      ]
+    }
+  ]
+}

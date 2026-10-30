@@ -1,5 +1,11 @@
 import { supabase } from './supabase';
 import { checkUploadAllowed } from './tiers';
+import {
+  CONTENT_RIGHTS_REQUIRED_MESSAGE,
+  hasValidContentRightsAttestation,
+  isMediaUpload,
+  type ContentRightsAttestation,
+} from './contentRights';
 
 export type UploadStatus = 'processing' | 'ready' | 'failed';
 
@@ -19,17 +25,29 @@ export interface UserUpload {
  *
  * Storage path is `<user_id>/<file_name>` to match the Storage RLS policies.
  * File picking (e.g. expo-document-picker) is left to the caller — pass the
- * bytes you already have.
+ * bytes you already have. Audio/video also require the content-rights
+ * attestation collected by the AI Sandbox; text/PDF/photo callers can omit it.
  */
+export interface UploadOptions {
+  /** Required for audio/video; ignored for text, PDF and photo uploads. */
+  rightsAttestation?: ContentRightsAttestation | null;
+}
+
 export async function uploadRawFile(
   data: ArrayBuffer | Uint8Array,
   fileName: string,
-  contentType: string
+  contentType: string,
+  options: UploadOptions = {}
 ): Promise<UserUpload> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error('Must be signed in to upload.');
+
+  const media = isMediaUpload(fileName, contentType);
+  if (media && !hasValidContentRightsAttestation(options.rightsAttestation)) {
+    throw new Error(CONTENT_RIGHTS_REQUIRED_MESSAGE);
+  }
 
   // Pre-flight tier check for text (binary files are sized server-side —
   // the Edge Function enforces the same rules authoritatively).
@@ -49,9 +67,19 @@ export async function uploadRawFile(
     .upload(path, data, { contentType, upsert: true });
   if (storageError) throw storageError;
 
+  const row: Record<string, unknown> = {
+    user_id: user.id,
+    file_name: fileName,
+    file_url: path,
+  };
+  if (media) {
+    row.rights_attestation = options.rightsAttestation;
+    row.rights_attested_at = new Date().toISOString();
+  }
+
   const { data: upload, error: rowError } = await supabase
     .from('user_uploads')
-    .insert({ user_id: user.id, file_name: fileName, file_url: path })
+    .insert(row)
     .select()
     .single();
   if (rowError || !upload) throw rowError ?? new Error('Failed to create upload record.');

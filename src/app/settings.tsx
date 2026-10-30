@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { View, Pressable, ScrollView, Switch, Alert, Platform } from 'react-native';
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import Text from '../../components/ui/Text';
 import { router, useFocusEffect } from 'expo-router';
 import BrandMark from '../../components/BrandMark';
@@ -18,8 +19,9 @@ import {
 import { useTheme } from '../../lib/theme';
 import { playCelebration, playQuizCorrect, playWrong, stopRewardCues } from '../../lib/sfx';
 import Mascot from '../../components/AfricanMascots';
-import { stopSpeaking, type Mentor } from '../../lib/pronunciation';
+import { stopSpeaking, type Mentor, type PronounceResult } from '../../lib/pronunciation';
 import { VOICE_CAST, auditionVoice, castMember, type CastLanguage } from '../../lib/voiceCast';
+import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import {
   getSoundOn,
   setSoundOn as persistSoundOn,
@@ -38,6 +40,19 @@ import {
   setWeeklyDays,
   WEEKLY_DAYS_OPTIONS,
 } from '../../lib/preferences';
+
+interface CastCapture {
+  character: Mentor;
+  language: CastLanguage;
+  result: PronounceResult;
+}
+
+type AudiobookPreviewTrack = 'full' | 'segment';
+
+/** One pass over every teaching voice in both course languages. */
+const CAST_STEPS = (['en', 'sw'] as const).flatMap((language) =>
+  VOICE_CAST.map((member) => ({ character: member.id, language }))
+);
 
 export default function Settings() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -69,6 +84,20 @@ export default function Settings() {
     hasVoiceList: boolean;
   } | null>(null);
   const auditionToken = useRef(0);
+  // The six-sample device check: index while it runs, captures after each line.
+  const [castStep, setCastStep] = useState<number | null>(null);
+  const [castCaptures, setCastCaptures] = useState<CastCapture[]>([]);
+  // Latest generated audiobook, loaded on focus so the audition uses the same
+  // signed private-bucket URLs as Audiobook Mode.
+  const [audiobook, setAudiobook] = useState<Audiobook | null>(null);
+  const [audiobookLoading, setAudiobookLoading] = useState(true);
+  const [audiobookNotice, setAudiobookNotice] = useState<string | null>(null);
+  const [audiobookTrack, setAudiobookTrack] = useState<AudiobookPreviewTrack | null>(null);
+  const audiobookLoadToken = useRef(0);
+  // 1s status updates are enough for play/pause labels; 500ms re-renders the
+  // whole Settings screen twice as often while a preview is playing.
+  const audiobookPlayer = useAudioPlayer(null, { updateInterval: 1000 });
+  const audiobookStatus = useAudioPlayerStatus(audiobookPlayer);
 
   const refresh = useCallback(async () => {
     try {
@@ -87,19 +116,52 @@ export default function Settings() {
     }
   }, []);
 
+  const loadAudiobookPreview = useCallback(async () => {
+    const token = audiobookLoadToken.current + 1;
+    audiobookLoadToken.current = token;
+    setAudiobookLoading(true);
+    audiobookPlayer.pause();
+    setAudiobookTrack(null);
+    try {
+      const book = await loadLatestAudiobook();
+      if (token !== audiobookLoadToken.current) return;
+      setAudiobook(book);
+      setAudiobookNotice(
+        book
+          ? null
+          : 'No generated audiobook yet. Premium uploads include the narrator, full mix and per-question clips.'
+      );
+    } catch (e) {
+      if (token !== audiobookLoadToken.current) return;
+      setAudiobook(null);
+      setAudiobookNotice(
+        e instanceof Error && /signed in/i.test(e.message)
+          ? 'Sign in to preview generated audiobooks.'
+          : 'Could not load the latest audiobook. Check your connection and try again.'
+      );
+    } finally {
+      if (token === audiobookLoadToken.current) setAudiobookLoading(false);
+    }
+  }, [audiobookPlayer]);
+
   useFocusEffect(
     useCallback(() => {
       configureReminderHandler();
       // Reconcile a resumed/updated app before painting the switch.
       ensureReminderScheduled().then(refresh).catch(() => refresh());
-      // Leaving Settings must not leave a character mid-sentence on the path.
+      void loadAudiobookPreview();
+      // Leaving Settings must not leave a character or audiobook playing.
       return () => {
+        audiobookLoadToken.current += 1;
+        audiobookPlayer.pause();
+        setAudiobookTrack(null);
         auditionToken.current += 1;
         setAuditioning(null);
         setVoiceCheck(null);
+        setCastStep(null);
         void stopSpeaking();
       };
-    }, [refresh])
+    }, [audiobookPlayer, loadAudiobookPreview, refresh])
   );
 
   const toggleReminders = async (v: boolean) => {
@@ -145,11 +207,17 @@ export default function Settings() {
     auditionToken.current += 1;
     setAuditioning(null);
     setVoiceCheck(null);
+    setCastStep(null);
     setCastLanguage(language);
     void stopSpeaking();
   };
 
+  const pauseAudiobookPreview = () => {
+    audiobookPlayer.pause();
+  };
+
   const auditionCast = async (character: Mentor) => {
+    pauseAudiobookPreview();
     const token = auditionToken.current + 1;
     auditionToken.current = token;
     // Tapping the character who is already speaking hangs up; tapping another
@@ -193,12 +261,105 @@ export default function Settings() {
     }
   };
 
+  /**
+   * One tap, six lines: every character in English, then every character in
+   * Kiswahili, through the same `speakAs()` a lesson uses. The report is built
+   * from what the engine actually returned, not from what the device claims to
+   * have, so "native", "approximate" and "not installed" are honest labels.
+   */
+  const runCastCheck = async () => {
+    pauseAudiobookPreview();
+    if (castStep !== null) {
+      auditionToken.current += 1;
+      setCastStep(null);
+      setAuditioning(null);
+      await stopSpeaking();
+      return;
+    }
+    const token = auditionToken.current + 1;
+    auditionToken.current = token;
+    await stopRewardCues();
+    setVoiceCheck(null);
+    setCastCaptures([]);
+    try {
+      for (let i = 0; i < CAST_STEPS.length; i += 1) {
+        if (token !== auditionToken.current) return;
+        const step = CAST_STEPS[i]!;
+        setCastStep(i);
+        setAuditioning(step.character);
+        const result = await auditionVoice(step.character, step.language);
+        if (token !== auditionToken.current) return;
+        setCastCaptures((current) => [...current, { ...step, result }]);
+      }
+    } catch {
+      if (token === auditionToken.current) {
+        Alert.alert(
+          'Could not finish the check',
+          'A device voice failed to start. Try again in a moment, or audition one character at a time.'
+        );
+      }
+    } finally {
+      if (token === auditionToken.current) {
+        setAuditioning(null);
+        setCastStep(null);
+      }
+    }
+  };
+
+  const castSummary = {
+    native: castCaptures.filter((capture) => capture.result.matchedVoice).length,
+    approximate: castCaptures.filter((capture) => !capture.result.matchedVoice && capture.result.approximate).length,
+    missing: castCaptures.filter((capture) => !capture.result.matchedVoice && !capture.result.approximate).length,
+  };
+
+  const castSummaryLine =
+    castCaptures.length === CAST_STEPS.length
+      ? castSummary.native === CAST_STEPS.length
+        ? 'Every character has its own native voice on this device.'
+        : [
+            `${castSummary.native}/${CAST_STEPS.length} native`,
+            castSummary.approximate > 0 ? `${castSummary.approximate} approximate` : '',
+            castSummary.missing > 0 ? `${castSummary.missing} missing` : '',
+          ]
+            .filter(Boolean)
+            .join(' · ')
+      : '';
+
   const previewCue = async (kind: 'correct' | 'celebration' | 'wrong') => {
+    pauseAudiobookPreview();
     // One at a time: the celebration is 5s, so a second tap must not stack.
     await stopRewardCues();
     if (kind === 'correct') await playQuizCorrect();
     else if (kind === 'celebration') await playCelebration();
     else await playWrong();
+  };
+
+  const toggleAudiobookPreview = async (track: AudiobookPreviewTrack) => {
+    const uri = track === 'full' ? audiobook?.full_audio_url : audiobook?.segments[0]?.url;
+    if (!uri) return;
+    if (audiobookTrack === track && audiobookStatus.playing) {
+      audiobookPlayer.pause();
+      return;
+    }
+    if (audiobookTrack && audiobookTrack !== track) audiobookPlayer.pause();
+    // The audiobook and the character/reward auditions must never overlap.
+    auditionToken.current += 1;
+    setAuditioning(null);
+    setVoiceCheck(null);
+    setCastStep(null);
+    await stopSpeaking();
+    await stopRewardCues();
+    if (
+      audiobookTrack === track &&
+      audiobookStatus.currentTime > 0 &&
+      !audiobookStatus.didJustFinish
+    ) {
+      audiobookPlayer.play();
+      return;
+    }
+    audiobookPlayer.replace({ uri });
+    audiobookPlayer.play();
+    setAudiobookTrack(track);
   };
 
   const toggleAmbient = async (v: boolean) => {
@@ -224,6 +385,23 @@ export default function Settings() {
     }
   };
 
+  const isPremium = profile?.is_premium === true;
+  const audiobookFullUrl = audiobook?.full_audio_url ?? null;
+  const audiobookSegmentUrl = audiobook?.segments[0]?.url ?? null;
+  const fullPreviewActive = audiobookTrack === 'full';
+  const segmentPreviewActive = audiobookTrack === 'segment';
+  const fullPreviewPlaying = fullPreviewActive && audiobookStatus.playing;
+  const segmentPreviewPlaying = segmentPreviewActive && audiobookStatus.playing;
+  const audiobookPlaybackText = audiobookStatus.error
+    ? 'Could not play the preview. Try again.'
+    : audiobookStatus.playing && audiobookTrack
+      ? `Playing ${audiobookTrack === 'full' ? 'the full mix' : 'one segment'}…`
+      : audiobookTrack
+        ? audiobookStatus.didJustFinish
+          ? 'Finished — tap a sample to replay.'
+          : 'Paused — tap the same sample to resume.'
+        : 'Tap a sample to hear it on this device.';
+
   const row = (icon: AppIconName, title: string, sub: string, onPress?: () => void, right?: React.ReactNode) => (
     <Pressable
       onPress={onPress}
@@ -243,7 +421,7 @@ export default function Settings() {
   return (
     <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
       <Text className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">Settings</Text>
-      <Text className="text-base text-slate-500 dark:text-slate-400">
+      <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">
         {profile ? (profile.is_premium ? 'Premium' : 'Free tier') : 'Playing as guest'}
       </Text>
 
@@ -370,7 +548,7 @@ export default function Settings() {
         {row(
           'crown',
           'Go Premium',
-          `PDF/audio uploads, elite voices (${PREMIUM_PRICE_LABEL})`,
+          `PDF & note-scan uploads, elite voices (${PREMIUM_PRICE_LABEL})`,
           () => router.push('/paywall')
         )}
         {row('trophy', 'Leaderboard', 'Weekly leagues of 30', () => router.push('/leaderboard'))}
@@ -504,6 +682,25 @@ export default function Settings() {
           <Text className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
             Switch language, then tap a character to check that installed voice.
           </Text>
+          <Pressable
+            onPress={() => void runCastCheck()}
+            accessibilityRole="button"
+            accessibilityLabel={
+              castStep !== null
+                ? 'Stop the device voice check'
+                : 'Play Livia, Bingo and Zora in English and Kiswahili'
+            }
+            className={`mt-2 w-full flex-row items-center justify-center gap-2 rounded-xl border-2 py-2.5 ${
+              castStep !== null
+                ? 'border-emerald-500 bg-emerald-50 dark:border-emerald-400 dark:bg-[#00251C]'
+                : 'border-dashed border-emerald-300 bg-emerald-50/60 dark:border-emerald-800 dark:bg-[#001B15]'
+            }`}
+          >
+            <AppIcon name={castStep !== null ? 'pause' : 'play'} size={15} color="#059669" />
+            <Text className="text-xs font-extrabold text-emerald-700 dark:text-emerald-300">
+              {castStep !== null ? `Stop check · ${castStep + 1} of ${CAST_STEPS.length}` : 'Play all six · English + Kiswahili'}
+            </Text>
+          </Pressable>
           <View className="mt-3 gap-2">
             {VOICE_CAST.map((member) => {
               const active = auditioning === member.id;
@@ -511,14 +708,15 @@ export default function Settings() {
                 <Pressable
                   key={member.id}
                   onPress={() => void auditionCast(member.id)}
+                  disabled={castStep !== null}
                   accessibilityRole="button"
-                  accessibilityState={{ selected: active }}
+                  accessibilityState={{ selected: active, disabled: castStep !== null }}
                   accessibilityLabel={`${active ? 'Stop' : 'Play'} ${member.name}'s ${castLanguageLabel(castLanguage)} sample line`}
                   className={`flex-row items-center gap-2.5 rounded-xl border-2 p-2.5 ${
                     active
                       ? 'border-emerald-500 bg-emerald-50 dark:border-emerald-400 dark:bg-[#00251C]'
                       : 'border-slate-200 bg-white dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
-                  }`}
+                  } ${castStep !== null ? 'opacity-50' : ''}`}
                 >
                   <View className="h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-50 dark:bg-[#00251C]">
                     <Mascot character={member.id} size={38} />
@@ -548,6 +746,80 @@ export default function Settings() {
               );
             })}
           </View>
+          {castStep !== null || castCaptures.length > 0 ? (
+            <View
+              className="mt-2 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-[#1E1E2C] dark:bg-[#0E0E16]"
+              accessibilityLiveRegion="polite"
+            >
+              <View className="flex-row items-center justify-between">
+                <Text className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                  Device check
+                </Text>
+                <Text className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                  {castStep !== null
+                    ? `${castStep + 1} of ${CAST_STEPS.length}`
+                    : `${castSummary.native}/${CAST_STEPS.length} native`}
+                </Text>
+              </View>
+              {castSummaryLine ? (
+                <Text className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">{castSummaryLine}</Text>
+              ) : null}
+              <View className="mt-2 gap-1.5">
+                {CAST_STEPS.map((step, i) => {
+                  const capture = castCaptures[i];
+                  const playing = castStep === i;
+                  const label = playing
+                    ? 'Playing…'
+                    : !capture
+                      ? 'Queued'
+                      : capture.result.matchedVoice
+                        ? 'Native voice'
+                        : capture.result.approximate
+                          ? 'Approximate'
+                          : capture.result.hasVoiceList
+                            ? 'Not installed'
+                            : 'Engine default';
+                  const good = !!capture?.result.matchedVoice;
+                  return (
+                    <View key={`${step.character}-${step.language}`} className="flex-row items-center gap-2">
+                      <AppIcon
+                        name={playing ? 'volume' : good ? 'checkCircle' : capture ? 'alert' : 'mic'}
+                        size={12}
+                        color={playing ? '#059669' : good ? '#059669' : capture ? '#B45309' : '#94A3B8'}
+                      />
+                      <Text className="w-14 text-[11px] font-extrabold text-slate-700 dark:text-slate-200">
+                        {castMember(step.character).name}
+                      </Text>
+                      <Text className="w-16 text-[10px] font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                        {step.language === 'sw' ? 'Kiswahili' : 'English'}
+                      </Text>
+                      <Text
+                        numberOfLines={1}
+                        className={`flex-1 text-[11px] font-bold ${
+                          good
+                            ? 'text-emerald-700 dark:text-emerald-300'
+                            : capture
+                              ? 'text-amber-700 dark:text-amber-300'
+                              : 'text-slate-400 dark:text-slate-500'
+                        }`}
+                      >
+                        {label}
+                        {capture ? ` · ${capture.result.locale}` : ''}
+                        {capture?.result.voiceName ? ` · ${capture.result.voiceName}` : ''}
+                        {capture && !capture.result.spoken ? ' · no sound' : ''}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+              {castStep === null && castSummary.missing > 0 ? (
+                <Text className="mt-1 text-[10px] text-slate-500 dark:text-slate-400">
+                  Missing voices still play through the closest engine match — install the language in your device settings for
+                  accurate vowels.
+                </Text>
+              ) : null}
+            </View>
+          ) : null}
           {voiceCheck ? (
             <View
               className={`mt-2 rounded-xl border px-3 py-2 ${
@@ -605,6 +877,182 @@ export default function Settings() {
           </Text>
         </View>
 
+        {/* Audiobook narration is a separate voice path from the character
+            cast above: Free stays on-device, Premium generates one narrator. */}
+        <View className="w-full max-w-sm rounded-2xl border-2 border-amber-200 bg-white p-4 dark:border-amber-900 dark:bg-[#06060A]">
+          <View className="flex-row items-center gap-1.5">
+            <AppIcon name="headset" size={20} color="#B45309" />
+            <Text className="text-base font-extrabold text-slate-800 dark:text-slate-100">Audiobook voice</Text>
+            <View
+              className={`ml-auto rounded-full px-2 py-0.5 ${
+                isPremium ? 'bg-amber-100 dark:bg-amber-950' : 'bg-slate-100 dark:bg-slate-800'
+              }`}
+            >
+              <Text
+                className={`text-[9px] font-extrabold uppercase tracking-widest ${
+                  isPremium ? 'text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'
+                }`}
+              >
+                {isPremium ? 'Premium' : 'Free'}
+              </Text>
+            </View>
+          </View>
+          <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            The narrator for your uploaded lessons depends on your plan.
+          </Text>
+
+          <View
+            className={`mt-3 rounded-xl border p-3 ${
+              isPremium
+                ? 'border-slate-200 bg-slate-50 dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+                : 'border-amber-300 bg-amber-50 dark:border-amber-800 dark:bg-amber-950'
+            }`}
+          >
+            <View className="flex-row items-center gap-1.5">
+              <AppIcon name="phone" size={15} color={isPremium ? '#64748B' : '#B45309'} />
+              <Text
+                className={`text-xs font-extrabold uppercase tracking-wide ${
+                  isPremium ? 'text-slate-500 dark:text-slate-400' : 'text-amber-800 dark:text-amber-200'
+                }`}
+              >
+                Free · Device voice
+              </Text>
+              {!isPremium ? (
+                <Text className="ml-auto text-[9px] font-extrabold uppercase tracking-widest text-amber-700 dark:text-amber-300">
+                  Current
+                </Text>
+              ) : null}
+            </View>
+            <Text className="mt-1 text-xs leading-4 text-slate-500 dark:text-slate-400">
+              Your phone reads the question prompts with a voice already installed on the device. No full audiobook or per-question clips are generated.
+            </Text>
+          </View>
+
+          <View
+            className={`mt-2 rounded-xl border p-3 ${
+              isPremium
+                ? 'border-amber-300 bg-amber-50 dark:border-amber-800 dark:bg-amber-950'
+                : 'border-slate-200 bg-slate-50 dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+            }`}
+          >
+            <View className="flex-row items-center gap-1.5">
+              <AppIcon name="sparkles" size={15} color="#B45309" />
+              <Text
+                className={`text-xs font-extrabold uppercase tracking-wide ${
+                  isPremium ? 'text-amber-800 dark:text-amber-200' : 'text-slate-600 dark:text-slate-300'
+                }`}
+              >
+                Premium · Audiobook narrator
+              </Text>
+              {isPremium ? (
+                <Text className="ml-auto text-[9px] font-extrabold uppercase tracking-widest text-amber-700 dark:text-amber-300">
+                  Current
+                </Text>
+              ) : null}
+            </View>
+            <Text className="mt-1 text-xs leading-4 text-slate-500 dark:text-slate-400">
+              One configured narrator reads a continuous full mix and a clip for every question. It is separate from the Livia, Bingo and Zora character voices above.
+            </Text>
+          </View>
+
+          <View className="mt-3 border-t border-amber-100 pt-3 dark:border-amber-900">
+            <Text className="text-xs font-extrabold uppercase tracking-widest text-amber-700 dark:text-amber-300">
+              Hear it on this device
+            </Text>
+            {audiobookLoading ? (
+              <Text className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                Loading the latest audiobook…
+              </Text>
+            ) : audiobook ? (
+              <>
+                <Text numberOfLines={1} className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  Latest: {audiobook.title}
+                </Text>
+                <View className="mt-2 flex-row gap-2">
+                  <Pressable
+                    onPress={() => void toggleAudiobookPreview('full')}
+                    disabled={!audiobookFullUrl}
+                    accessibilityRole="button"
+                    accessibilityLabel="Play or pause the latest audiobook full mix"
+                    accessibilityState={{ disabled: !audiobookFullUrl }}
+                    className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border-2 py-2 ${
+                      fullPreviewActive
+                        ? 'border-amber-400 bg-amber-100 dark:border-amber-500 dark:bg-amber-950'
+                        : 'border-slate-200 bg-white dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+                    } ${!audiobookFullUrl ? 'opacity-40' : ''}`}
+                  >
+                    <AppIcon
+                      name={fullPreviewPlaying ? 'pause' : 'play'}
+                      size={14}
+                      color={fullPreviewPlaying ? '#B45309' : '#64748B'}
+                    />
+                    <Text
+                      className={`text-xs font-extrabold ${
+                        fullPreviewActive ? 'text-amber-700 dark:text-amber-300' : 'text-slate-600 dark:text-slate-300'
+                      }`}
+                    >
+                      Full mix
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => void toggleAudiobookPreview('segment')}
+                    disabled={!audiobookSegmentUrl}
+                    accessibilityRole="button"
+                    accessibilityLabel="Play or pause one segment from the latest audiobook"
+                    accessibilityState={{ disabled: !audiobookSegmentUrl }}
+                    className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border-2 py-2 ${
+                      segmentPreviewActive
+                        ? 'border-amber-400 bg-amber-100 dark:border-amber-500 dark:bg-amber-950'
+                        : 'border-slate-200 bg-white dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+                    } ${!audiobookSegmentUrl ? 'opacity-40' : ''}`}
+                  >
+                    <AppIcon
+                      name={segmentPreviewPlaying ? 'pause' : 'play'}
+                      size={14}
+                      color={segmentPreviewPlaying ? '#B45309' : '#64748B'}
+                    />
+                    <Text
+                      className={`text-xs font-extrabold ${
+                        segmentPreviewActive ? 'text-amber-700 dark:text-amber-300' : 'text-slate-600 dark:text-slate-300'
+                      }`}
+                    >
+                      One segment
+                    </Text>
+                  </Pressable>
+                </View>
+                <Text className="mt-2 text-[11px] leading-4 text-slate-500 dark:text-slate-400">
+                  {audiobookPlaybackText}
+                </Text>
+                {audiobook.segments.length > 1 ? (
+                  <Text className="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500">
+                    {audiobook.segments.length} question clips in this lesson.
+                  </Text>
+                ) : null}
+              </>
+            ) : (
+              <Text className="mt-1 text-xs leading-4 text-slate-500 dark:text-slate-400">
+                {audiobookNotice ?? 'No generated audiobook yet.'}
+              </Text>
+            )}
+          </View>
+
+          {!isPremium ? (
+            <Pressable
+              onPress={() => router.push('/paywall')}
+              accessibilityRole="button"
+              accessibilityLabel="Compare free and premium audiobook narration"
+              className="mt-3 flex-row items-center justify-center gap-1 rounded-xl bg-amber-500 py-2.5"
+            >
+              <Text className="text-sm font-extrabold text-white">See what Premium changes</Text>
+              <AppIcon name="chevRight" size={16} color="#FFFFFF" />
+            </Pressable>
+          ) : (
+            <Text className="mt-2 text-[11px] text-amber-700 dark:text-amber-300">
+              Premium narration is generated for new uploads. Character voices still come from your device.
+            </Text>
+          )}
+        </View>
+
         {row('volume', 'Ambient tune', ambientOn ? 'Grove loop · soft focus' : 'Ambient tune OFF', undefined, (
           <Switch value={ambientOn} onValueChange={toggleAmbient} />
         ))}
@@ -612,6 +1060,20 @@ export default function Settings() {
           <Switch value={hapticsOn} onValueChange={toggleHaptics} />
         ))}
         {__DEV__ && row('heart', 'Debug: refill', 'Dev builds only — remove before release', refillHearts)}
+        {__DEV__ &&
+          row(
+            'time',
+            'Celebration benchmark',
+            'Dev builds only · p50/p95 frame times',
+            () => router.push('/dev/celebration-benchmark')
+          )}
+        {__DEV__ &&
+          row(
+            'volume',
+            'Swahili voice audit',
+            'Dev builds only · every new lesson phrase',
+            () => router.push('/dev/swahili-voice-audit')
+          )}
       </View>
 
       <View className="mt-6 items-center">
@@ -619,7 +1081,7 @@ export default function Settings() {
         <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">v1.0.0 | Made for learners</Text>
       </View>
       <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
-        <Text className="font-bold text-slate-400 dark:text-slate-500">Back to Path</Text>
+        <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
       </Pressable>
       <StatusBar style="auto" />
     </ScrollView>

@@ -30,7 +30,7 @@ export default function CurriculumUnit() {
   if (!unit) {
     return (
       <View className="flex-1 items-center justify-center px-6">
-        <Text className="text-lg text-slate-600 dark:text-slate-400">Unit not found.</Text>
+        <Text onPhoto className="text-lg text-slate-600 dark:text-slate-200">Unit not found.</Text>
         <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-slate-800 px-6 py-3">
           <Text className="font-bold text-white">Back to Path</Text>
         </Pressable>
