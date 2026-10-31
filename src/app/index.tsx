@@ -426,6 +426,8 @@ export default function PathMap() {
   const { width: screenWidth } = useWindowDimensions();
   // Narrow phones drop the wordmark and XP chip rather than crushing them.
   const compactHud = screenWidth < 360;
+  // "Bolingo Learn" plus the three chips and the avatar need ~410dp of HUD.
+  const showWordmark = screenWidth >= 420;
   const [ambientOn, setAmbientOnState] = useState(false);
   const [screenFocused, setScreenFocused] = useState(true);
   const { error: ambientError, play: playAmbient } = useAmbient(ambientOn && screenFocused && !listening);
@@ -933,12 +935,12 @@ export default function PathMap() {
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 1 }}>
             <AppIcon name="leaf" size={17} color={p.moss} />
-            {!compactHud ? (
+            {showWordmark ? (
               <Text
                 numberOfLines={1}
                 style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: p.ink }}
               >
-                Bolingo
+                Bolingo Learn
               </Text>
             ) : null}
             <View

@@ -24,7 +24,7 @@ export const CONTENT_RIGHTS_ITEMS = [
   },
   {
     id: 'responsibility',
-    label: 'I understand I am responsible for these rights and Bolingo may remove content if they are disputed.',
+    label: 'I understand I am responsible for these rights and Bolingo Learn may remove content if they are disputed.',
   },
 ] as const;
 

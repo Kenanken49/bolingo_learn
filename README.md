@@ -215,7 +215,7 @@ Zora's build-coach surfaces now render the Figma-frame portrait
 ## Language courses
 
 English carries seventeen nodes and Swahili twenty-one; Spanish, French and
-German carry fifteen. The newest lessons are original Bolingo material built
+German carry fifteen. The newest lessons are original Bolingo Learn material built
 around beginner survival topics:
 
 - **Swahili** — [Questions & Negation](lib/swahili-plus.ts), [Adjectives &
@@ -300,7 +300,7 @@ which lesson sits where — remains code in `lib/curriculum.ts`, so a brand-new
 lesson still needs a path block; see [docs/language-catalog.md](docs/language-catalog.md).
 Supabase's older `lessons` and `questions` tables hold *personalized uploads*
 and are row-level-secured per user — they are not this catalog. Published
-catalog content is original Bolingo writing, not a transcript or re-recording
+catalog content is original Bolingo Learn writing, not a transcript or re-recording
 of third-party course audio.
 
 **Transcript drafts.** Public-domain or openly licensed source transcripts can

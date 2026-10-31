@@ -26,7 +26,7 @@ Two tables:
 
 ## One-time setup
 
-The hosted Bolingo project already has this migration applied (6 courses, 86
+The hosted Bolingo Learn project already has this migration applied (6 courses, 86
 built-in lessons, plus the published FSI transcript lesson `swahili-fsi-01`).
 These steps are for a fresh environment or after rebuilding the database.
 

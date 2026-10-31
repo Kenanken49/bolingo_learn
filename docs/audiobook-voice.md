@@ -124,7 +124,7 @@ Use a voice only when you have the rights to it:
   usage limits before shipping.
 - **Custom or professional clone:** obtain explicit written consent from the
   speaker before creating the clone. The consent should cover synthetic
-  narration, the Bolingo app and its marketing, territory, duration and
+  narration, the Bolingo Learn app and its marketing, territory, duration and
   compensation. ElevenLabs' Professional Voice Cloning flow also requires the
   speaker's verified consent; complete that in the provider account.
 - **Minors:** obtain guardian consent and never use a child's voice for adult

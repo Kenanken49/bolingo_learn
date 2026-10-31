@@ -705,8 +705,8 @@ function buildTheory(source, lesson) {
   }
   const provenance =
     source.mediaType === 'video'
-      ? 'The dialogue is reproduced from the licensed video transcript; summaries and quiz questions are original Bolingo writing.'
-      : 'The dialogue is reproduced from the public-domain course transcript; summaries and quiz questions are original Bolingo writing.';
+      ? 'The dialogue is reproduced from the licensed video transcript; summaries and quiz questions are original Bolingo Learn writing.'
+      : 'The dialogue is reproduced from the public-domain course transcript; summaries and quiz questions are original Bolingo Learn writing.';
   theory.push(`Source: ${source.attribution} — ${source.license}. ${provenance}`);
   return theory;
 }

@@ -1,6 +1,6 @@
 # Curriculum standards
 
-Bolingo paths are no longer measured by “I clicked through the node.” Every
+Bolingo Learn paths are no longer measured by “I clicked through the node.” Every
 quiz-shaped session now has a written standard for scaffolding, attempt policy,
 and mastery. The rules live in
 [`lib/learningStandards.ts`](../lib/learningStandards.ts) and are enforced by

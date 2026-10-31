@@ -535,7 +535,7 @@ function buildDigest(
 ): OwnerEmail {
   const findings = Array.isArray(report.findings) ? report.findings : [];
   const lines = [
-    `Bolingo engineer audit — ${health.status.toUpperCase()} (${health.score}/100)`,
+    `Bolingo Learn engineer audit — ${health.status.toUpperCase()} (${health.score}/100)`,
     '',
     report.summary,
     '',
@@ -554,7 +554,7 @@ function buildDigest(
     'Open the app → Settings → Quality & Operations to approve, reject or inspect the raw run.',
   ];
   const html = [
-    `<h2>Bolingo engineer audit — ${escapeHtml(health.status)} (${health.score}/100)</h2>`,
+    `<h2>Bolingo Learn engineer audit — ${escapeHtml(health.status)} (${health.score}/100)</h2>`,
     `<p>${escapeHtml(report.summary)}</p>`,
     '<h3>Findings</h3><ol>',
     ...findings.map(
@@ -574,7 +574,7 @@ function buildDigest(
   return {
     kind: 'engineer_report',
     to: settings.notify_email,
-    subject: `[Bolingo] Engineer audit: ${health.status}, ${approvals.length} approval${approvals.length === 1 ? '' : 's'} waiting`,
+    subject: `[Bolingo Learn] Engineer audit: ${health.status}, ${approvals.length} approval${approvals.length === 1 ? '' : 's'} waiting`,
     text: lines.join('\n'),
     html,
     reportId: report.id,

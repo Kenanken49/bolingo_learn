@@ -408,7 +408,7 @@ export default function Paywall() {
           </View>
           <Text className="mt-2 text-center text-sm text-slate-300 dark:text-slate-200">
             Web checkout isn’t enabled yet (no RevenueCat Web Billing key). The App Store / Play Store handle
-            billing — open Bolingo in the Android/iOS app or dev build to subscribe.
+            billing — open Bolingo Learn in the Android/iOS app or dev build to subscribe.
           </Text>
         </View>
       ) : (

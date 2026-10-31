@@ -64,8 +64,8 @@ module.exports = ({ config }) => ({
     [
       'expo-speech-recognition',
       {
-        microphonePermission: 'Bolingo uses the microphone so you can practise speaking a phrase.',
-        speechRecognitionPermission: 'Bolingo uses speech recognition to check the words you said.',
+        microphonePermission: 'Bolingo Learn uses the microphone so you can practise speaking a phrase.',
+        speechRecognitionPermission: 'Bolingo Learn uses speech recognition to check the words you said.',
         androidSpeechServicePackages: ['com.google.android.googlequicksearchbox'],
       },
     ],

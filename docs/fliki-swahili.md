@@ -159,7 +159,7 @@ the client.
 
 ## Rights, consent and privacy
 
-- Use only Fliki output your plan licenses for commercial use in Bolingo, and
+- Use only Fliki output your plan licenses for commercial use in Bolingo Learn, and
   keep the plan/voice record outside the repository.
 - Do not use a voice to impersonate a real person or imply an endorsement. A
   custom/cloned voice needs the speaker's explicit written consent covering

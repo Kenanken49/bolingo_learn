@@ -1,7 +1,7 @@
 # Language content sources
 
 The Spanish, French and German expansion adds original lessons on questions,
-negation and health/emergencies. The material was written for Bolingo; the
+negation and health/emergencies. The material was written for Bolingo Learn; the
 sources below informed topic order and vocabulary only.
 
 ## Public-domain course outlines
@@ -30,7 +30,7 @@ Five short dialogues (Units 1–4 and 8) were read from the archive's OCR and
 normalized for OCR spacing and obvious errors. They are imported as draft
 lessons by [`scripts/import-language-transcripts.cjs`](../scripts/import-language-transcripts.cjs);
 see [docs/transcript-import.md](transcript-import.md). The summaries and quiz
-questions are original Bolingo writing. The rows carry the attribution in their
+questions are original Bolingo Learn writing. The rows carry the attribution in their
 theory. `swahili-fsi-01` was reviewed and published on 30 October 2026; the
 remaining four drafts stay invisible until an editor publishes them.
 
@@ -66,7 +66,7 @@ What was used:
   cross-check the audio against the cards.
 - Only short Swahili/English phrase pairs informed vocabulary and topic choice.
   The lessons, theory, prompts, distractors and explanations are original
-  Bolingo writing. No video, audio or transcript file is committed or shipped.
+  Bolingo Learn writing. No video, audio or transcript file is committed or shipped.
 - Spellings were normalised to standard Swahili where the cards or OCR were
   inconsistent: `Kunradhi` → `Kumradhi`, `Asanti` → `Asante`, `Uhisipania` →
   `Hispania`, `ljumaa` → `Ijumaa`. Colloquial forms (`Niko na…`, `Uko na pesa?`,

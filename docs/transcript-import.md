@@ -9,7 +9,7 @@ keeping a human review step between the source and the learning path.
 The first transcript is the 1963 **FSI Swahili Basic Course**, a US government
 work in the public domain. Its dialogues are reproduced from the Internet
 Archive OCR and normalized; summaries, quiz prompts, distractors and
-explanations are original Bolingo writing.
+explanations are original Bolingo Learn writing.
 
 ## Pipeline at a glance
 

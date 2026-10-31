@@ -45,7 +45,7 @@ in [audiobook-voice.md](audiobook-voice.md#cloned-voice-consent-record).
 | Created on | |
 | Last reviewed on | |
 | Status | `Draft` / `Signed` / `Active` / `Suspended` / `Revoked` |
-| Project / surface | Bolingo audiobook narration |
+| Project / surface | Bolingo Learn audiobook narration |
 | Voice ID | |
 | Deployment environment | `staging` / `production` / both |
 
@@ -88,9 +88,9 @@ Check every use the speaker has approved. Leave unchecked anything that was not
 explicitly approved.
 
 - [ ] Create and store a cloned synthetic voice from the speaker's recordings.
-- [ ] Generate synthetic narration for Bolingo lessons and audiobooks.
-- [ ] Use the voice in the Bolingo app, web player, and downloaded audio.
-- [ ] Use the voice in Bolingo marketing, app-store listings, and demos.
+- [ ] Generate synthetic narration for Bolingo Learn lessons and audiobooks.
+- [ ] Use the voice in the Bolingo Learn app, web player, and downloaded audio.
+- [ ] Use the voice in Bolingo Learn marketing, app-store listings, and demos.
 - [ ] Modify pacing, pronunciation, and mixing for lesson playback.
 - [ ] Use the voice in the listed languages: ______________________________.
 - [ ] Use the voice in the listed territories: _____________________________.

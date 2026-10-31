@@ -179,7 +179,7 @@ export async function sendTestReminder(): Promise<boolean> {
     await ensureChannel();
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: 'Bolingo reminder test 🔔',
+        title: 'Bolingo Learn reminder test 🔔',
         body: "This is the nudge you'll get every evening at 7:00. Your streak is safe with Bingo.",
         sound: 'default',
         data: { kind: TEST_KIND },

@@ -8,7 +8,7 @@ checklist must be confirmed before the file is stored and the server re-checks
 it before transcription.
 
 This is an audit gate, not a legal determination. The learner remains
-responsible for the rights they claim, and Bolingo may remove disputed content.
+responsible for the rights they claim, and Bolingo Learn may remove disputed content.
 
 ## The checklist
 
@@ -23,7 +23,7 @@ Every item must be checked:
 3. **No third-party material** — this is not a commercial audiobook, course,
    podcast or other third-party recording without documented rights.
 4. **Responsibility** — I understand I am responsible for these rights and
-   Bolingo may remove content if they are disputed.
+   Bolingo Learn may remove content if they are disputed.
 
 The version is `2026-10-29`. Bump it in both files when the checklist changes;
 an old attestation is not accepted.

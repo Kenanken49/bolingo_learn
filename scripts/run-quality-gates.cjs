@@ -67,7 +67,7 @@ const branch = runGit(['rev-parse', '--abbrev-ref', 'HEAD']) || 'unknown';
 const environment = process.env.QUALITY_ENV || (process.env.CI ? 'ci' : 'local');
 
 console.log('');
-console.log(`Bolingo quality gate · ${environment} · ${branch}${commitSha ? ` @ ${commitSha.slice(0, 8)}` : ''}`);
+console.log(`Bolingo Learn quality gate · ${environment} · ${branch}${commitSha ? ` @ ${commitSha.slice(0, 8)}` : ''}`);
 console.log(`${gates.length} gates · required failures block the release`);
 console.log('');
 

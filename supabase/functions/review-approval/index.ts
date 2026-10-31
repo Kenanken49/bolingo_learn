@@ -129,7 +129,7 @@ serve(async (req: Request) => {
     const delivery = await sendOwnerEmail(admin, {
       kind: 'approval_decision',
       to: recipient,
-      subject: `[Bolingo] Approval ${status}: ${approval.title}`,
+      subject: `[Bolingo Learn] Approval ${status}: ${approval.title}`,
       text: [
         `Decision: ${decision}`,
         `Approval: ${approval.title}`,
