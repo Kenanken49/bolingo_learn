@@ -4,6 +4,8 @@ export interface QuestionResult {
   yourAnswer: string;
   correctAnswer: string;
   correct: boolean;
+  /** Assessment sessions keep the first response; this records whether it was right. */
+  firstTryCorrect?: boolean;
 }
 
 export interface LessonResult {
@@ -14,6 +16,10 @@ export interface LessonResult {
   correctCount: number;
   total: number;
   results: QuestionResult[];
+  /** Whether the counted score cleared the session's mastery standard. */
+  mastered?: boolean;
+  /** First-try correct count, useful when guided retries are allowed. */
+  firstTryCorrect?: number;
   /** Level-up celebration: set when the lesson's XP crossed a threshold. */
   leveledUp?: boolean;
   newLevel?: number;

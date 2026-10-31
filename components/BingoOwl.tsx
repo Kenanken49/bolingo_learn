@@ -77,10 +77,7 @@ export default function BingoOwl({ mood = 'happy', size = 96 }: { mood?: OwlMood
 
   // Blink only the neutral face; sad/party hold their expression.
   useEffect(() => {
-    if (mood !== 'happy') {
-      setBlinking(false);
-      return;
-    }
+    if (mood !== 'happy') return;
     let timer: ReturnType<typeof setTimeout>;
     const loop = () => {
       setBlinking(true);
@@ -97,7 +94,8 @@ export default function BingoOwl({ mood = 'happy', size = 96 }: { mood?: OwlMood
     transform: [{ translateY: bob.value + jump.value }, { rotate: `${sway.value}deg` }],
   }));
 
-  const source = mood === 'sad' ? SAD : mood === 'party' ? PARTY : blinking ? BLINK : HAPPY;
+  const blinkingNow = mood === 'happy' && blinking;
+  const source = mood === 'sad' ? SAD : mood === 'party' ? PARTY : blinkingNow ? BLINK : HAPPY;
   const label =
     mood === 'sad' ? 'Bingo the owl looking sad' : mood === 'party' ? 'Bingo the owl celebrating' : 'Bingo the owl';
 

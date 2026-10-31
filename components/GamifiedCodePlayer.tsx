@@ -31,6 +31,9 @@ import { getHapticsOn, getSoundOn } from '../lib/preferences';
 import { playNaturalSwahili, stopNaturalSwahili } from '../lib/naturalLessonAudio';
 import AppIcon from './AppIcon';
 import SpeakBack from './SpeakBack';
+import type { CodeExercise, GuidedLab, QuestionKind, TerminalExercise, TextAnswerSpec } from '../lib/quizBank';
+import type { BlockKind } from '../lib/curriculum';
+import { sessionInstruction, sessionStandard } from '../lib/learningStandards';
 
 export interface CodeQuizData {
   prompt: string;
@@ -41,6 +44,16 @@ export interface CodeQuizData {
   /** Premium narration: signed playback URL for a generated audiobook segment. */
   audioUrl?: string;
   isPremium?: boolean;
+  /** Exercise kind. Absent means token assembly (the classic player). */
+  kind?: QuestionKind;
+  /** Present when kind === 'code': runnable JS with per-question assertions. */
+  code?: CodeExercise;
+  /** Present when kind === 'text': accepted answers + misconception reteach. */
+  text?: TextAnswerSpec;
+  /** Present when kind === 'terminal': the runnable Git lab to attach. */
+  terminal?: TerminalExercise;
+  /** Present when kind === 'guided': a read-only walkthrough for no-runtime labs. */
+  guided?: GuidedLab;
 }
 
 interface Props {
@@ -50,6 +63,7 @@ interface Props {
   questionLabel: string;
   progressPct: number;
   hearts: number;
+  sessionKind?: BlockKind;
   onHeartsChange: (hearts: number) => void;
   onOutOfHearts: () => void;
   onCorrect: () => void;
@@ -64,9 +78,6 @@ interface Props {
   theory?: string;
 }
 
-const shuffle = <T,>(arr: T[]): T[] =>
-  arr.map((v) => ({ v, r: Math.random() })).sort((a, b) => a.r - b.r).map((o) => o.v);
-
 /**
  * Core game engine: token-assembly quiz with hearts, animated progress,
  * juicy bounce/shake feedback + haptics + chimes, and optional premium
@@ -79,9 +90,7 @@ export default function GamifiedCodePlayer({
   questionData,
   questionLabel,
   progressPct,
-  hearts,
-  onHeartsChange,
-  onOutOfHearts,
+  sessionKind,
   onCorrect,
   onContinue,
   onAnswer,
@@ -91,6 +100,8 @@ export default function GamifiedCodePlayer({
   // read of the question (Bingo); everything else keeps the normal narrator.
   const language = getLanguageLesson(lessonId) ? languageForLesson(lessonId) : null;
   const phrase = language ? phraseForQuestion(questionData, language) : null;
+  const standard = sessionStandard(sessionKind);
+  const liveChecklist = standard.scaffolds;
   const [selectedTokens, setSelectedTokens] = useState<string[]>([]);
   const [availableTokens, setAvailableTokens] = useState<string[]>(questionData.scrambledTokens);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
@@ -100,8 +111,9 @@ export default function GamifiedCodePlayer({
   // prompt through the phone's built-in robot voice ($0).
   const eliteLocked = !questionData.audioUrl;
   const [hint, setHint] = useState<string | null>(null);
-  // Micro-onboarding: hearts explainer appears on the first-ever mistake.
-  const [showHeartsInfo, setShowHeartsInfo] = useState(false);
+  // Retry tracking: assessment mastery is fixed by the first response, so a
+  // successful retry must say so instead of implying a fresh full score.
+  const [attemptCount, setAttemptCount] = useState(0);
   // Duolingo Max: personalized tutor explanation for this exact mistake.
   const [explain, setExplain] = useState<string | null>(null);
   const [explainLoading, setExplainLoading] = useState(false);
@@ -156,18 +168,9 @@ export default function GamifiedCodePlayer({
     void preloadRewardCues();
   }, []);
 
-  useEffect(() => {
-    setSelectedTokens([]);
-    setAvailableTokens(shuffle(questionData.scrambledTokens));
-    setFeedback(null);
-    setRanTests(false);
-    setExplain(null);
-    setExplainLoading(false);
-    pop.value = 1;
-    shakeX.value = 0;
+  useEffect(() => () => {
     if (remedyTimer.current) clearTimeout(remedyTimer.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [questionData]);
+  }, []);
 
   // A language exercise opens with its phrase, like Duolingo's exercise audio.
   useEffect(() => {
@@ -275,6 +278,7 @@ export default function GamifiedCodePlayer({
 
   const checkAnswer = async () => {
     if (selectedTokens.length === 0 || feedback) return;
+    setAttemptCount((n) => n + 1);
     const isCorrect = JSON.stringify(selectedTokens) === JSON.stringify(questionData.correctChain);
     onAnswer?.({
       prompt: questionData.prompt,
@@ -286,10 +290,7 @@ export default function GamifiedCodePlayer({
     if (isCorrect) {
       setFeedback('correct');
       // Playful bounce: overshoot then settle.
-      pop.value = withSequence(
-        withSpring(1.15, { damping: 6, stiffness: 300 }),
-        withSpring(1, { damping: 10, stiffness: 250 })
-      );
+      pop.set(withSequence(withSpring(1.15, { damping: 6, stiffness: 300 }), withSpring(1, { damping: 10, stiffness: 250 })));
       void playQuizCorrect();
       if (hapticsOn) {
         try {
@@ -300,11 +301,13 @@ export default function GamifiedCodePlayer({
     } else {
       setFeedback('wrong');
       // Shake: quick left-right jitter that settles at 0.
-      shakeX.value = withSequence(
-        withTiming(-10, { duration: 50 }),
-        withTiming(10, { duration: 50 }),
-        withTiming(-6, { duration: 50 }),
-        withTiming(0, { duration: 60 })
+      shakeX.set(
+        withSequence(
+          withTiming(-10, { duration: 50 }),
+          withTiming(10, { duration: 50 }),
+          withTiming(-6, { duration: 50 }),
+          withTiming(0, { duration: 60 })
+        )
       );
       void playWrong();
       // Correction: hear the right sentence slowly, once the cue has landed.
@@ -325,9 +328,7 @@ export default function GamifiedCodePlayer({
         } catch {}
       }
       // Unlimited learning: mistakes never cost hearts and never end the
-      // lesson — learners can complete as much as they want. (The hearts
-      // HUD stays visible; the refill gate is retired.)
-      onHeartsChange(hearts);
+      // lesson. The player is a practice space, not a paywall.
     }
   };
 
@@ -339,18 +340,18 @@ export default function GamifiedCodePlayer({
           <Animated.View className="h-full rounded-full bg-green-500" style={{ width: bar.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) }} />
         </View>
         <View className="flex-row items-center gap-1">
-          <AppIcon name="heart" size={20} color="#EF4444" />
-          <Text className="text-xl font-bold text-red-500 dark:text-red-400">{hearts}</Text>
+          <AppIcon name="checkCircle" size={18} color="#0EA5E9" />
+          <Text onPhoto className="text-sm font-extrabold text-sky-600 dark:text-sky-300">{standard.masteryPct}% mastery</Text>
         </View>
       </View>
 
       {/* FCC-style instruction card + Duo challenge label */}
       <View className="my-2 rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
         <Text className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
-          Challenge | {questionLabel}
+          {standard.badge} | {questionLabel}
         </Text>
         <Text className="mb-1 font-duo text-xl font-bold text-slate-900 dark:text-slate-100">{questionData.prompt}</Text>
-        <Text className="text-sm text-slate-500 dark:text-slate-400">Assemble the tokens below, run the tests, then check your answer.</Text>
+        <Text className="text-sm text-slate-500 dark:text-slate-400">{sessionInstruction(sessionKind)}</Text>
         {language ? (
           <>
             <View className="mt-3 flex-row flex-wrap items-center gap-2">
@@ -401,22 +402,31 @@ export default function GamifiedCodePlayer({
         {hint ? <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">{hint}</Text> : null}
       </View>
 
-      {/* FCC-style test console: live pass/fail per test */}
-      <View className="mt-2 rounded-2xl bg-slate-950 p-4">
-        <Text className="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Tests {ranTests ? `· ${tests.filter((t) => t.pass(selectedTokens)).length}/${tests.length} passing` : ''}</Text>
-        {tests.map((t, i) => {
-          const pass = selectedTokens.length > 0 && t.pass(selectedTokens);
-          const show = ranTests || feedback !== null;
-          return (
-            <Text key={i} className={`mt-1 font-mono text-sm ${!show ? 'text-slate-500 dark:text-slate-400' : pass ? 'text-green-400' : 'text-red-400'}`}>
-              {!show ? '○' : pass ? '● PASS' : '● FAIL'}  {t.label}
-            </Text>
-          );
-        })}
-        <Text className="mt-2 font-mono text-xs text-slate-500 dark:text-slate-400">
-          {'>'} preview: {selectedTokens.length > 0 ? selectedTokens.join(' ') : '(empty — tap tokens)'}
-        </Text>
-      </View>
+      {/* Live checklist: guided sessions see it immediately; labs and exams
+          only see failed tests after committing an answer. */}
+      {liveChecklist || feedback !== null ? (
+        <View className="mt-2 rounded-2xl bg-slate-950 p-4">
+          <Text className="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">Tests {ranTests ? `· ${tests.filter((t) => t.pass(selectedTokens)).length}/${tests.length} passing` : ''}</Text>
+          {tests.map((t, i) => {
+            const pass = selectedTokens.length > 0 && t.pass(selectedTokens);
+            const show = ranTests || feedback !== null;
+            return (
+              <Text key={i} className={`mt-1 font-mono text-sm ${!show ? 'text-slate-500 dark:text-slate-400' : pass ? 'text-green-400' : 'text-red-400'}`}>
+                {!show ? '○' : pass ? '● PASS' : '● FAIL'}  {t.label}
+              </Text>
+            );
+          })}
+          <Text className="mt-2 font-mono text-xs text-slate-500 dark:text-slate-400">
+            {'>'} preview: {selectedTokens.length > 0 ? selectedTokens.join(' ') : '(empty — tap tokens)'}
+          </Text>
+        </View>
+      ) : (
+        <View className="mt-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950">
+          <Text className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            Live checklist hidden — {standard.mode === 'assessment' ? 'this is a mastery check' : 'this is independent practice'}. Commit an answer, then the failing steps appear.
+          </Text>
+        </View>
+      )}
 
       {/* Assembly drop zone */}
       <View className="mt-4 min-h-24 w-full flex-row flex-wrap items-center rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-950 p-3">
@@ -427,9 +437,12 @@ export default function GamifiedCodePlayer({
             <Pressable
               key={`selected-${i}`}
               onPress={() => handleRemoveToken(token, i)}
+              accessibilityRole="button"
+              accessibilityLabel={`Remove token ${token}`}
               className="m-1 rounded-xl bg-sky-500 px-3 py-2 shadow active:scale-95"
+              style={{ maxWidth: '100%' }}
             >
-              <Text className="font-mono font-bold text-white">{token}</Text>
+              <Text className="font-mono font-bold text-white" style={{ flexShrink: 1 }}>{token}</Text>
             </Pressable>
           ))
         )}
@@ -437,15 +450,18 @@ export default function GamifiedCodePlayer({
 
       {/* Token bank */}
       <View className="my-4">
-        <Text className="mb-2 text-sm text-slate-500 dark:text-slate-400">Tap tokens to assemble code:</Text>
+        <Text onPhoto className="mb-2 text-sm font-semibold text-slate-600 dark:text-slate-200">Tap tokens to assemble code:</Text>
         <View className="flex-row flex-wrap">
           {availableTokens.map((token, i) => (
             <Pressable
               key={`available-${i}`}
               onPress={() => handleSelectToken(token, i)}
+              accessibilityRole="button"
+              accessibilityLabel={`Add token ${token}`}
               className="m-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 active:bg-slate-200"
+              style={{ maxWidth: '100%' }}
             >
-              <Text className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">{token}</Text>
+              <Text className="font-mono font-semibold text-emerald-600 dark:text-emerald-400" style={{ flexShrink: 1 }}>{token}</Text>
             </Pressable>
           ))}
         </View>
@@ -453,16 +469,18 @@ export default function GamifiedCodePlayer({
 
       {feedback === null ? (
         <View className="mb-8 mt-4 flex-row gap-2">
-          <View className="flex-1">
-            <DuoButton
-              color="blue"
-              onPress={() => setRanTests(true)}
-              disabled={selectedTokens.length === 0}
-              label="Run tests without submitting"
-              title="Run"
-            />
-          </View>
-          <View className="flex-[2]">
+          {liveChecklist ? (
+            <View className="flex-1">
+              <DuoButton
+                color="blue"
+                onPress={() => setRanTests(true)}
+                disabled={selectedTokens.length === 0}
+                label="Run tests without submitting"
+                title="Run"
+              />
+            </View>
+          ) : null}
+          <View className={liveChecklist ? 'flex-[2]' : 'flex-1'}>
             <DuoButton
               onPress={checkAnswer}
               disabled={selectedTokens.length === 0}
@@ -476,7 +494,11 @@ export default function GamifiedCodePlayer({
           <View className="flex-row items-center gap-2">
             <AppIcon name={feedback === 'correct' ? 'party' : 'xCircle'} size={24} color={feedback === 'correct' ? '#15803D' : '#DC2626'} />
             <Text className={`font-duo text-xl font-extrabold ${feedback === 'correct' ? 'text-green-700 dark:text-green-300' : 'text-red-600 dark:text-red-400'}`}>
-              {feedback === 'correct' ? 'Correct! Great job! +10 XP' : 'Incorrect syntax'}
+              {feedback === 'correct'
+                ? attemptCount > 1
+                  ? 'Correct on retry'
+                  : 'Correct!'
+                : 'Not quite yet'}
             </Text>
           </View>
           <Text className="mt-1 text-slate-600 dark:text-slate-400">
@@ -484,6 +506,11 @@ export default function GamifiedCodePlayer({
               ? `Answer: ${questionData.correctChain.join(' ')}`
               : wrongHint}
           </Text>
+          {feedback === 'correct' && attemptCount > 1 && standard.firstAttemptCounts ? (
+            <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              Practice rep complete — your first try is what counts toward mastery.
+            </Text>
+          ) : null}
           {feedback === 'correct' && questionData.explain ? (
             <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">Why: {questionData.explain}</Text>
           ) : null}
@@ -520,32 +547,14 @@ export default function GamifiedCodePlayer({
             )
           ) : null}
           <View className="mt-3">
-            <DuoButton onPress={onContinue} label="Continue to next question" title="Continue" />
+            {feedback === 'wrong' ? (
+              <DuoButton color="blue" onPress={() => setFeedback(null)} label="Try again" title="Try again" />
+            ) : (
+              <DuoButton onPress={onContinue} label="Continue to next question" title="Continue" />
+            )}
           </View>
         </Reanimated.View>
       )}
-      {/* First-mistake explainer: hearts introduced exactly when they matter. */}
-      {showHeartsInfo ? (
-        <View className="absolute inset-0 z-10 items-center justify-center bg-slate-900/70 px-6">
-          <View className="w-full max-w-sm rounded-3xl bg-white dark:bg-slate-900 p-5 shadow-xl">
-            <View className="h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-950">
-              <AppIcon name="heart" size={30} color="#EF4444" />
-            </View>
-            <Text className="mt-2 text-xl font-extrabold text-slate-900 dark:text-slate-100">Wrong answers cost a heart</Text>
-            <Text className="mt-1 text-sm leading-5 text-slate-600 dark:text-slate-400">
-              You have {hearts} {hearts === 1 ? 'heart' : 'hearts'} left. Hearts refill over time — or watch a short ad for +1. Tip: hit Run first to test your code for free!
-            </Text>
-            <View className="mt-4">
-              <DuoButton
-                color="red"
-                onPress={() => setShowHeartsInfo(false)}
-                label="Dismiss hearts explanation"
-                title="Got it — I'll be careful"
-              />
-            </View>
-          </View>
-        </View>
-      ) : null}
     </View>
   );
 }

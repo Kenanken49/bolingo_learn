@@ -8,6 +8,33 @@
 > signed agreement or legal review. Check the current provider terms and the law
 > in the speaker's market before deploying the voice.
 
+## Machine-readable companion
+
+The `audio:preflight` consent gate reads JSON, not this Markdown file. Create a
+companion `voice-consent.json` next to the signed record, outside this
+repository, and pass its path with `--consent` or `TTS_CONSENT_RECORD`.
+
+| Field | Required | Value |
+| --- | --- | --- |
+| `templateVersion` | Yes | `2026-10-30` |
+| `recordId` | Yes | The Record ID from the summary below |
+| `status` | Yes | `Active` |
+| `completed` | Yes | `true` only after sections 1–8 are complete |
+| `provider` | Yes | `ElevenLabs` |
+| `voiceId` | Yes | The deployed voice ID |
+| `workspaceId` | Yes | The provider workspace that owns the voice |
+| `voiceType` | Yes | A clone type, e.g. `Professional Voice Clone` |
+| `speaker` | Yes | Speaker's legal name (not printed by the preflight) |
+| `signedOn` | Yes | Speaker signature date, `YYYY-MM-DD` |
+| `reviewDueOn` | No | Review/renewal date, `YYYY-MM-DD`; a past date fails |
+| `approvedBy` | Yes | Operator who approved the deployment |
+| `approvedOn` | Yes | Approval date, `YYYY-MM-DD` |
+
+The preflight checks the record against the live voice and workspace and rejects
+a Draft, Suspended or Revoked record, an incomplete record, a past review date,
+and a record for another voice or workspace. The full example and commands are
+in [audiobook-voice.md](audiobook-voice.md#cloned-voice-consent-record).
+
 ## Record summary
 
 | Field | Value |
@@ -138,6 +165,8 @@ Do not set or deploy `TTS_VOICE_ID` for this voice until every item is complete.
 Record the date and operator for each check.
 
 - [ ] This record is signed and its status is `Active`.
+- [ ] The machine-readable JSON companion matches this record and is available
+      to the preflight; it is stored outside this repository.
 - [ ] The voice ID and provider workspace match the deployed key.
 - [ ] The provider consent verification is complete and stored securely.
 - [ ] `npm run audio:preflight` passes for this voice ID.

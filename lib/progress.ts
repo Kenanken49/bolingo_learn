@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { advanceStreak } from './streak';
+import { track } from './telemetry';
 
 export const MAX_HEARTS = 5;
 export const REFILL_WAIT_MS = 4 * 3600 * 1000;
@@ -18,6 +19,8 @@ export interface Profile {
   streak_freezes: number;
   ai_words_used: number;
   ai_words_reset_at: string;
+  /** Owner console only; absent until migrations_quality_ops.sql is applied. */
+  is_admin?: boolean;
 }
 
 const DEFAULTS = {
@@ -154,7 +157,7 @@ export async function getTodayCompletionCount(userId: string): Promise<number> {
       .eq('user_id', userId)
       .gte('completed_at', start.toISOString());
     if (error) return 0;
-    return ((data as Array<{ lesson_id: string }> | null) ?? []).length;
+    return ((data as { lesson_id: string }[] | null) ?? []).length;
   } catch {
     return 0;
   }
@@ -164,7 +167,7 @@ export async function getTodayCompletionCount(userId: string): Promise<number> {
 export async function getCompletedLessonIds(userId: string): Promise<Set<string>> {
   const { data, error } = await supabase.from('lesson_completions').select('lesson_id').eq('user_id', userId);
   if (error) throw error;
-  return new Set(((data as Array<{ lesson_id: string }> | null) ?? []).map((r) => r.lesson_id));
+  return new Set(((data as { lesson_id: string }[] | null) ?? []).map((r) => r.lesson_id));
 }
 
 /** Log XP into xp_events for the weekly leaderboard (best-effort, never blocks). */
@@ -230,6 +233,13 @@ export async function completeLesson(
   if (upError || !data) throw upError ?? new Error('Could not save progress.');
   if (lessonId) {
     await supabase.from('lesson_completions').upsert({ user_id: userId, lesson_id: lessonId });
+    track('lesson_completed', {
+      lessonId,
+      xp: Math.max(0, xpEarned),
+      streak: advance.streak,
+      gems: gainedGems,
+      freezes: gainedFreezes,
+    });
   }
   void logXpEvent(userId, Math.max(0, xpEarned));
   return data as Profile;

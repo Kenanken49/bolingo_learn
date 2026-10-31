@@ -21,7 +21,10 @@ npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
 ```
 
-Run lint and typecheck before declaring any task done.
+Run lint and typecheck before declaring any task done. The authoritative
+release bar is `npm run gate` (every required check); CI runs the same command.
+New user-visible behavior needs a gate or a test in an existing gate. See
+`docs/quality-operations.md`.
 
 ## Navigation & Routing
 
@@ -40,3 +43,4 @@ Docs: https://docs.expo.dev/eas/index.md
 - Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
 - Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
 - Never speak target-language text with a bare `expo-speech` call: the default voice is the UI language. Route it through `lib/pronunciation.ts` (`speakAs`, `speakSegments`), which resolves the right locale and voice. See `docs/pronunciation.md`.
+- A lab either runs on the device or states plainly that it cannot. Never fake a terminal, grade matched text instead of real state, or leave a `code`/`terminal` question without its exercise — `npm run check:sandbox`, `check:vm` and `check:guided` block it. See `docs/hands-on-labs.md`.

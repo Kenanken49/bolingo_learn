@@ -5,7 +5,7 @@
  * clock needs every earlier idea). All original.
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MCQ, BUILD, CODE, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_FED: Record<string, CourseLesson> = {
   'fed-react-components': {
@@ -490,6 +490,21 @@ export const TRACK_FED: Record<string, CourseLesson> = {
         ],
         'Borrow like subtraction: wrap, then decrement.'
       ),
+      CODE(
+        'Write formatClock(totalSeconds) returning mm:ss, zero-padded. 1500 → "25:00", 59 → "00:59".',
+        {
+          language: 'js',
+          starter: 'function formatClock(totalSeconds) {\n  // Return mm:ss\n}\n',
+          tests: [
+            { id: 'start', label: 'formatClock(1500) returns "25:00"', run: "formatClock(1500) === '25:00'", hint: 'Minutes are Math.floor(seconds / 60); seconds are the remainder.' },
+            { id: 'under', label: 'formatClock(59) returns "00:59"', run: "formatClock(59) === '00:59'", hint: 'Pad both parts to two digits with String(...).padStart(2, "0").' },
+            { id: 'zero', label: 'formatClock(0) returns "00:00"', run: "formatClock(0) === '00:00'", hint: 'Zero must still render as 00:00, not an empty string.' },
+            { id: 'minute', label: 'formatClock(61) returns "01:01"', run: "formatClock(61) === '01:01'", hint: 'Handle minutes and seconds independently.' },
+          ],
+        },
+        'function formatClock(totalSeconds) {\n  const safe = Math.max(0, Math.floor(totalSeconds));\n  const minutes = Math.floor(safe / 60);\n  const seconds = safe % 60;\n  return String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");\n}',
+        'The timer display is a pure function: clamp, split into minutes and seconds, pad each half. Keeping it pure makes the countdown testable without waiting a real second.'
+      ),
     ],
   },
 
@@ -535,6 +550,12 @@ export const TRACK_FED: Record<string, CourseLesson> = {
         'Beep, then flip session to break (or back)',
         ['Beep, then flip session to break (or back)', 'Reset silently to 25:00', 'Delete the beep element', 'Freeze until reload'],
         'Signal first, then transition.'
+      ),
+      TEXT(
+        'Type the React state setter call that increments count by one, using the functional updater.',
+        ['setCount(c => c + 1)', 'setCount((c) => c + 1)', 'setCount(prev => prev + 1)'],
+        'Use the updater when the next state depends on the previous state: setCount(c => c + 1). React batches updates, so reading count directly can go stale.',
+        { misconceptions: { 'setCount(count + 1)': 'That reads a possibly stale count under batching. Use the updater form: setCount(c => c + 1).' } }
       ),
     ],
   },

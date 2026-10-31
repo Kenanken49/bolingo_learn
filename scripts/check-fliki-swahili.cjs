@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+
+/* global Buffer -- Node CJS globals. */
 'use strict';
 
 /**

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { View, Pressable, ScrollView, Alert, ActivityIndicator, Platform, Linking } from 'react-native';
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import Text from '../../components/ui/Text';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { supabase } from '../../lib/supabase';
 import {
@@ -19,6 +20,11 @@ import {
 } from '../../lib/purchases';
 import BrandMark from '../../components/BrandMark';
 import AppIcon, { type AppIconName } from '../../components/AppIcon';
+import { useExperiment } from '../../lib/featureFlags';
+import { track } from '../../lib/telemetry';
+import { PREMIUM_NARRATOR_SAMPLE } from '../../assets/narrator';
+import PremiumNarratorSample from '../../components/PremiumNarratorSample';
+import { narratorAuditRequested, useNarratorSampleProbe } from '../../lib/narratorSample';
 
 const isWebBilling = Platform.OS === 'web';
 const WEB_BILLING_KEY = process.env.EXPO_PUBLIC_REVENUECAT_WEB_KEY ?? '';
@@ -44,12 +50,26 @@ function webEntitled(info: any): boolean {
 }
 
 export default function Paywall() {
+  // Dev-only device test hook; see lib/narratorSample.ts.
+  const { narratorAudit } = useLocalSearchParams<{ narratorAudit?: string }>();
+  // One controlled framing experiment: control sees the existing plan card;
+  // value_badge also gets a factual four-outcome badge. Exposure is logged
+  // once by useExperiment, conversion by the checkout events below.
+  const { variant: paywallVariant, ready: paywallReady } = useExperiment('paywall_value_badge');
+  const experimentProps = { experiment: 'paywall_value_badge', variant: paywallVariant };
   const [pkg, setPkg] = useState<any>(null);
   const [price, setPrice] = useState(PREMIUM_PRICE_LABEL);
   const [busy, setBusy] = useState(false);
   const [storeError, setStoreError] = useState<string | null>(null);
   const [isPremium, setIsPremium] = useState(false);
   const [debugOn, setDebugOn] = useState(false);
+  // Free learners can audition the licensed narrator here with no sign-in,
+  // network request or TTS spend.
+  const narratorPlayer = useAudioPlayer(PREMIUM_NARRATOR_SAMPLE, { updateInterval: 250 });
+  const narratorStatus = useAudioPlayerStatus(narratorPlayer);
+  useNarratorSampleProbe('paywall', narratorStatus);
+
+  useEffect(() => () => narratorPlayer.pause(), [narratorPlayer]);
 
   const sync = useCallback(async () => {
     const {
@@ -116,15 +136,17 @@ export default function Paywall() {
     setIsPremium(await refreshPremiumStatus(user.id).catch(() => false));
   }, []);
 
-  useEffect(() => {
-    sync();
-  }, [sync]);
-
   useFocusEffect(
     useCallback(() => {
       sync();
     }, [sync])
   );
+
+  useEffect(() => {
+    if (!paywallReady) return;
+    track('paywall_viewed', experimentProps);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paywallReady, paywallVariant]);
 
   const afterChange = async () => {
     const {
@@ -134,6 +156,8 @@ export default function Paywall() {
   };
 
   const buy = async () => {
+    track('premium_checkout_started', experimentProps);
+    track('experiment_converted', experimentProps);
     if (isWebBilling && WEB_BILLING_KEY) {
       if (!pkg) {
         Alert.alert('Store not ready', 'Connect RevenueCat Web Billing first (see README), or use the debug unlock below.');
@@ -153,12 +177,14 @@ export default function Paywall() {
         if (webEntitled(customerInfo)) {
           await supabase.from('profiles').update({ is_premium: true }).eq('id', user.id);
           setIsPremium(true);
+          track('premium_activated', experimentProps);
           Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited hearts are yours.');
           router.replace('/');
         }
       } catch (e: unknown) {
         const msg = String((e as Error)?.message ?? e);
         if (/cancel/i.test(msg)) return;
+        track('premium_purchase_failed', { ...experimentProps, reason: 'web_checkout' });
         Alert.alert('Purchase failed', msg);
       } finally {
         setBusy(false);
@@ -174,13 +200,17 @@ export default function Paywall() {
       const res = await purchasePackageSafe(pkg);
       if (res.cancelled) return;
       if (res.error) {
+        track('premium_purchase_failed', { ...experimentProps, reason: 'store_error' });
         Alert.alert('Purchase failed', res.error);
         return;
       }
       if (res.entitled) {
-        await afterChange();Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited hearts are yours.');
+        await afterChange();
+        track('premium_activated', experimentProps);
+        Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited hearts are yours.');
           router.replace('/');
       } else {
+        track('premium_purchase_failed', { ...experimentProps, reason: 'not_entitled' });
         Alert.alert('Purchase finished', 'The store finished but Premium is not active yet — tap Restore purchases.');
       }
     } finally {
@@ -239,6 +269,28 @@ export default function Paywall() {
     }
   };
 
+  const toggleNarratorSample = async () => {
+    if (narratorStatus.playing) {
+      narratorPlayer.pause();
+      return;
+    }
+    if (narratorStatus.didJustFinish) await narratorPlayer.seekTo(0);
+    narratorPlayer.play();
+  };
+
+  // The on-device test asks the real screen to start the sample. This is the
+  // same handler the Play button calls and is disabled outside development.
+  useEffect(() => {
+    if (!narratorAuditRequested(narratorAudit)) return;
+    const timer = setTimeout(() => {
+      void toggleNarratorSample();
+    }, 900);
+    return () => clearTimeout(timer);
+    // Route params are fixed for the mounted screen; the timer needs the
+    // current handler, not a stale copy from the first render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [narratorAudit]);
+
   const toggleDebug = async () => {
     const next = !debugOn;
     setDebugOn(next);
@@ -263,6 +315,17 @@ export default function Paywall() {
         PDF & note-scan uploads, elite voices, soothing human-like audiobooks.
       </Text>
 
+      {!isPremium && paywallReady && paywallVariant === 'value_badge' ? (
+        <View className="mt-3 w-full max-w-sm rounded-2xl border-2 border-amber-300 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950">
+          <View className="flex-row items-start gap-2">
+            <AppIcon name="sparkles" size={16} color="#B45309" />
+            <Text className="flex-1 text-xs leading-5 text-amber-900 dark:text-amber-100">
+              One subscription: import any file, hear one human-like narrator, unlock roleplay, and never wait for a heart.
+            </Text>
+          </View>
+        </View>
+      ) : null}
+
       {/* Free vs Premium — the Duolingo Super-comparison pattern. */}
       <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
         <View className="flex-row">
@@ -281,7 +344,7 @@ export default function Paywall() {
             ['headset', 'Audiobook', 'Device voice', 'Generated'],
             ['robot', 'AI words', '1k / file', '100k / 30d'],
             ['chat', 'Roleplay', 'Locked', 'Included'],
-          ] as Array<[AppIconName, string, string, string]>
+          ] as [AppIconName, string, string, string][]
         ).map(([icon, label, free, pro]) => (
           <View key={label} className="mt-1.5 flex-row items-center border-t border-slate-100 dark:border-slate-800 pt-1.5">
             <AppIcon name={icon} size={16} color="#64748B" />
@@ -294,6 +357,14 @@ export default function Paywall() {
           Free narration uses your device voice over the question prompts. Premium generates one consistent narrator, a continuous full mix and a clip for every question. Livia, Bingo and Zora stay on-device on both plans.
         </Text>
       </View>
+
+      {!isPremium ? (
+        <PremiumNarratorSample
+          playing={narratorStatus.playing}
+          onToggle={toggleNarratorSample}
+          className="mt-4 w-full max-w-sm"
+        />
+      ) : null}
 
       {storeError && !isPremium ? (
         <View className="mt-4 w-full max-w-sm rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4">
@@ -336,7 +407,7 @@ export default function Paywall() {
             <Text className="text-center text-lg font-extrabold text-white">Subscribe in the mobile app</Text>
           </View>
           <Text className="mt-2 text-center text-sm text-slate-300 dark:text-slate-200">
-            Web checkout isn't enabled yet (no RevenueCat Web Billing key). The App Store / Play Store handle
+            Web checkout isn’t enabled yet (no RevenueCat Web Billing key). The App Store / Play Store handle
             billing — open Bolingo in the Android/iOS app or dev build to subscribe.
           </Text>
         </View>

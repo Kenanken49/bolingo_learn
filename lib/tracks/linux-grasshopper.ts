@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: GPL-3.0-only (this file).
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
   'linux-getting-started-1': {
@@ -376,11 +376,20 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['pwd', 'cd', 'ls', 'touch'],
         'As the lesson puts it: “To see where you are, you can use the pwd command, this command means “print working directory” and it just shows you which directory you are in, note the path stems fro…”'
       ),
-      BUILD(
-        'Type the command taught in ‘Pwd Command’',
+      TEXT(
+        'Type the exact command that prints the current working directory.',
         ['pwd'],
-        ['pwd', 'cd', 'ls', 'touch'],
-        'Just pwd — the whole command is its name.'
+        'pwd means print working directory — it prints the full path of where you are, starting at the root.',
+        {
+          placeholder: 'Type the command…',
+          misconceptions: {
+            'print working directory': 'That is what the command means — type the command itself.',
+            ls: 'ls lists what is here; you need the command that reports where “here” is.',
+            cd: 'cd changes directory — this command only reports the current one.',
+            whereami: 'Close in spirit — the real command is three letters.',
+            'pwd -l': 'Just the command on its own — pwd needs no arguments.',
+          },
+        }
       ),
       MCQ(
         'The lesson says: “To see where you are, you can use the pwd command, this command means “print working directory” and it just shows you which directory you are in, note the path stems fro…” — which command is being described?',

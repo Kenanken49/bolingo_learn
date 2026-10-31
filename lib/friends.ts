@@ -22,8 +22,6 @@ export interface UserSearchHit {
   username: string;
 }
 
-const WEEK_MS = 7 * 86400 * 1000;
-
 /** Monday 00:00 UTC — matches the weekly-league reset. */
 export function weekStartISO(now = new Date()): string {
   const d = new Date(now);
@@ -79,7 +77,7 @@ export async function sendKudos(me: string, friendId: string): Promise<void> {
 export async function getFriendsBoard(me: string): Promise<FriendRow[]> {
   const { data, error } = await supabase.rpc('get_friends');
   if (error || !data) throw error ?? new Error('Friends unavailable.');
-  const base = data as Array<{ user_id: string; username: string; kudos_count: number | string }>;
+  const base = data as { user_id: string; username: string; kudos_count: number | string }[];
   if (base.length === 0) return [];
   const ids = base.map((f) => f.user_id);
   const { data: xp } = await supabase
@@ -88,7 +86,7 @@ export async function getFriendsBoard(me: string): Promise<FriendRow[]> {
     .in('user_id', ids)
     .gte('created_at', weekStartISO());
   const sums = new Map<string, number>();
-  for (const row of (xp as Array<{ user_id: string; xp: number }> | null) ?? []) {
+  for (const row of (xp as { user_id: string; xp: number }[] | null) ?? []) {
     sums.set(row.user_id, (sums.get(row.user_id) ?? 0) + Number(row.xp));
   }
   void me;

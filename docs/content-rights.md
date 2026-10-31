@@ -59,8 +59,12 @@ existing row-level-security policy. Deploy `process-upload` after applying the
 migrations so the server-side re-check and transcription path are live:
 
 ```bash
-supabase functions deploy process-upload
+npm run deploy:process-upload
 ```
+
+That command runs the audiobook voice preflight first. A cloned/professional
+voice needs `TTS_CONSENT_RECORD`; see
+[audiobook-voice.md](audiobook-voice.md#cloned-voice-consent-record).
 
 ## Checks
 

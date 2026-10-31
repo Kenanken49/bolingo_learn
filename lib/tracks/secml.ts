@@ -5,7 +5,7 @@
  * classification last. All original.
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MCQ, BUILD, CODE, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_SECML: Record<string, CourseLesson> = {
   'sec-http-helmet': {
@@ -373,6 +373,23 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
         ],
         'Replies bump; sorting rides it.'
       ),
+      CODE(
+        'Write isStrongPassword(password): at least 12 characters, with an uppercase letter, a lowercase letter, a digit and a symbol. Return a boolean.',
+        {
+          language: 'js',
+          starter: 'function isStrongPassword(password) {\n  // Return true only when every rule passes\n}\n',
+          tests: [
+            { id: 'strong', label: 'A long mixed password passes', run: "isStrongPassword('LongEnough1!') === true", hint: 'Check every rule with a separate test and combine with &&.' },
+            { id: 'short', label: 'Eleven characters fail', run: "isStrongPassword('Short1!abcd') === false", hint: 'The length check comes before the character checks.' },
+            { id: 'upper', label: 'A missing uppercase letter fails', run: "isStrongPassword('longenough1!') === false", hint: 'Use /[A-Z]/ for the uppercase rule.' },
+            { id: 'digit', label: 'A missing digit fails', run: "isStrongPassword('LongEnough!!') === false", hint: 'Use /[0-9]/ for digits.' },
+            { id: 'symbol', label: 'A missing symbol fails', run: "isStrongPassword('LongEnough11') === false", hint: 'A symbol is anything outside letters and digits: /[^A-Za-z0-9]/.' },
+            { id: 'boolean', label: 'The result is always a boolean', run: "typeof isStrongPassword('x') === 'boolean'", hint: 'Return the combined boolean, never the matched string.' },
+          ],
+        },
+        'function isStrongPassword(password) {\n  if (typeof password !== "string" || password.length < 12) return false;\n  return /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password);\n}',
+        'Password strength is a policy, not a feeling. Each rule is independent and testable; the length floor makes brute force expensive, and character classes widen the search space. In production, also hash with a slow KDF such as bcrypt or Argon2 — never store the plaintext.'
+      ),
     ],
   },
 
@@ -460,6 +477,21 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
           '21 houses perfect',
         ],
         'MAE speaks the target units.'
+      ),
+      CODE(
+        'Write meanAbsoluteError(predicted, actual): return the average absolute difference, 0 for two empty arrays, and null for mismatched lengths.',
+        {
+          language: 'js',
+          starter: 'function meanAbsoluteError(predicted, actual) {\n  // Validate lengths, then average the absolute errors\n}\n',
+          tests: [
+            { id: 'basic', label: '[1,2,3] vs [2,2,2] gives 2/3', run: "Math.abs(meanAbsoluteError([1,2,3],[2,2,2]) - 2/3) < 1e-9", hint: 'Sum |p - a| and divide by the number of examples.' },
+            { id: 'units', label: '[10,20] vs [12,17] gives 2.5', run: "meanAbsoluteError([10,20],[12,17]) === 2.5", hint: 'Absolute value removes the sign before averaging.' },
+            { id: 'empty', label: 'Two empty arrays return 0', run: "meanAbsoluteError([], []) === 0", hint: 'Guard the empty case before dividing.' },
+            { id: 'mismatch', label: 'Mismatched lengths return null', run: "meanAbsoluteError([1,2],[1]) === null", hint: 'Silent truncation hides a data bug — reject mismatched lengths.' },
+          ],
+        },
+        'function meanAbsoluteError(predicted, actual) {\n  if (predicted.length !== actual.length) return null;\n  if (predicted.length === 0) return 0;\n  let total = 0;\n  for (let i = 0; i < predicted.length; i++) total += Math.abs(predicted[i] - actual[i]);\n  return total / predicted.length;\n}',
+        'MAE is the average size of the miss, in the target’s own units. Rejecting mismatched lengths prevents a silent data-alignment bug from producing a flattering score.'
       ),
     ],
   },
@@ -555,6 +587,12 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
         'A 0–1 spam probability',
         ['A 0–1 spam probability', 'Double speed', 'Double vocabulary', 'English sentences'],
         'Near 1 spam.'
+      ),
+      TEXT(
+        'Type the scikit-learn helper that splits data into training and test sets.',
+        ['train_test_split', 'train_test_split()'],
+        'train_test_split shuffles and splits X and y while keeping their rows aligned. Always hold out data before judging a model.',
+        { misconceptions: { split: 'The helper is train_test_split, and it keeps features and labels aligned.' } }
       ),
     ],
   },

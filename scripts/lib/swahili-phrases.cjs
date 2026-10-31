@@ -1,3 +1,5 @@
+/* global __dirname -- Node CJS globals. */
+
 'use strict';
 
 /**

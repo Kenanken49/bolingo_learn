@@ -49,7 +49,7 @@ export async function loadLatestAudiobook(): Promise<Audiobook | null> {
 
   const content = (lesson.content ?? {}) as {
     audio_url?: string;
-    segments?: Array<{ question_id: string; prompt: string; audio_url: string }>;
+    segments?: { question_id: string; prompt: string; audio_url: string }[];
   };
 
   const segments: AudioSegment[] = [];

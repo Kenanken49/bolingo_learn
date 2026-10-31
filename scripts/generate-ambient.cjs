@@ -1,3 +1,5 @@
+/* global Buffer, __dirname -- Node CJS globals. */
+
 /**
  * Generates assets/audio/ambient-grove.wav — a seamless, low-volume
  * ambient pad for the home screen. Natural palette in sound form:

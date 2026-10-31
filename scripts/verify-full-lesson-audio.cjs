@@ -31,7 +31,7 @@
 
 'use strict';
 
-/* global __dirname, Buffer, fetch -- Node 18+ provides these. */
+/* global __dirname, Buffer -- Node provides these; fetch is standard since 18. */
 
 const crypto = require('node:crypto');
 const fs = require('node:fs');

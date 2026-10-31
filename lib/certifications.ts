@@ -10,11 +10,19 @@
  * XP awards, streaks, and results flow work unchanged.
  */
 
+import { supabase } from './supabase';
+
 export interface CertStory {
   label: string;
-  /** Tested against the raw code with new RegExp(pattern, 'i'). */
+  /** Offline fallback: tested against the raw code with new RegExp(pattern, 'i'). */
   pattern: string;
   hint: string;
+  /**
+   * Live-DOM assertion: a JS expression evaluated inside the rendered project
+   * (e.g. document.querySelector('h1')?.textContent). When present the runner
+   * executes it in a sandbox and the verdict beats the regex.
+   */
+  check?: string;
 }
 
 export interface CertProject {
@@ -36,7 +44,12 @@ export interface CertTrack {
   projects: CertProject[];
 }
 
-const P = (label: string, pattern: string, hint: string): CertStory => ({ label, pattern, hint });
+const P = (label: string, pattern: string, hint: string, check?: string): CertStory => ({
+  label,
+  pattern,
+  hint,
+  check,
+});
 
 /* ------------------------------------------------------------------ */
 /* 1 · Responsive Web Design                                           */
@@ -51,9 +64,24 @@ const rwdCatPhoto: CertProject = {
   ],
   starterCode: '<h1>CatPhotoApp</h1>\n<p>Everyone loves cute cats online.</p>\n',
   stories: [
-    P('A single <h1> names the app', '<h1>[^<]*cat[^<]*</h1>', 'Add one <h1>CatPhotoApp</h1>.'),
-    P('A link to cat photos', '<a[^>]*href[^>]*>.*?</a>', 'Add <a href="https://catphotos">See cats</a>.'),
-    P('An image with alt text', '<img[^>]*alt\\s*=\\s*"[^"]+"[^>]*>', 'Add <img src="cat.jpg" alt="A cute cat">.'),
+    P(
+      'A single <h1> names the app',
+      '<h1>[^<]*cat[^<]*</h1>',
+      'Add one <h1>CatPhotoApp</h1>.',
+      "document.querySelectorAll('h1').length === 1 && /cat/i.test(document.querySelector('h1').textContent)"
+    ),
+    P(
+      'A link to cat photos',
+      '<a[^>]*href[^>]*>.*?</a>',
+      'Add <a href="https://catphotos">See cats</a>.',
+      "Array.from(document.querySelectorAll('a')).some(function (a) { return !!a.getAttribute('href') && a.textContent.trim().length > 0; })"
+    ),
+    P(
+      'An image with alt text',
+      '<img[^>]*alt\\s*=\\s*"[^"]+"[^>]*>',
+      'Add <img src="cat.jpg" alt="A cute cat">.',
+      "Array.from(document.images).some(function (img) { return img.alt.trim().length > 0; })"
+    ),
   ],
   xp: 50,
 };
@@ -68,10 +96,30 @@ const rwdSurvey: CertProject = {
   ],
   starterCode: '<h1>Survey</h1>\n<p>Tell us about yourself.</p>\n',
   stories: [
-    P('A form element wraps the controls', '<form[^>]*>[\\s\\S]*</form>', 'Wrap everything in <form>…</form>.'),
-    P('Labeled text input', '<label[^>]*>[\\s\\S]*<input[^>]*>', 'Add <label>Name <input type="text"></label>.'),
-    P('A submit button', '<(button[^>]*type\\s*=\\s*"submit"|input[^>]*type\\s*=\\s*"submit")[^>]*>', 'Add <button type="submit">Submit</button>.'),
-    P('CSS centers the heading', 'h1\\s*\\{[^}]*text-align\\s*:\\s*center', 'Add a style block: h1 { text-align: center; }.'),
+    P(
+      'A form element wraps the controls',
+      '<form[^>]*>[\\s\\S]*</form>',
+      'Wrap everything in <form>…</form>.',
+      "(function () { var f = document.querySelector('form'); return !!f && f.querySelectorAll('input, button, select, textarea').length > 0; })()"
+    ),
+    P(
+      'Labeled text input',
+      '<label[^>]*>[\\s\\S]*<input[^>]*>',
+      'Add <label>Name <input type="text"></label>.',
+      "Array.from(document.querySelectorAll('input[type=\"text\"]')).some(function (i) { return (i.labels && i.labels.length > 0) || !!i.closest('label'); })"
+    ),
+    P(
+      'A submit button',
+      '<(button[^>]*type\\s*=\\s*"submit"|input[^>]*type\\s*=\\s*"submit")[^>]*>',
+      'Add <button type="submit">Submit</button>.',
+      "!!document.querySelector('button[type=\"submit\"], input[type=\"submit\"], form button')"
+    ),
+    P(
+      'CSS centers the heading',
+      'h1\\s*\\{[^}]*text-align\\s*:\\s*center',
+      'Add a style block: h1 { text-align: center; }.',
+      "(function () { var h = document.querySelector('h1'); return !!h && getComputedStyle(h).textAlign === 'center'; })()"
+    ),
   ],
   xp: 50,
 };
@@ -86,9 +134,24 @@ const rwdTechDoc: CertProject = {
   ],
   starterCode: '<h1>Docs</h1>\n<p>How the thing works.</p>\n',
   stories: [
-    P('A nav with anchor links', '<nav[^>]*>[\\s\\S]*<a[^>]*href\\s*=\\s*"#[^"]+"[^>]*>[\\s\\S]*</nav>', 'Add <nav><a href="#intro">Intro</a></nav>.'),
-    P('At least two content sections', '<section[\\s\\S]*<section', 'Add two <section> blocks with headings.'),
-    P('A responsive media query', '@media[^{]*\\{', 'Add @media (max-width: 600px) { … }.'),
+    P(
+      'A nav with anchor links',
+      '<nav[^>]*>[\\s\\S]*<a[^>]*href\\s*=\\s*"#[^"]+"[^>]*>[\\s\\S]*</nav>',
+      'Add <nav><a href="#intro">Intro</a></nav>.',
+      "(function () { var n = document.querySelector('nav'); return !!n && !!n.querySelector('a[href^=\"#\"]'); })()"
+    ),
+    P(
+      'At least two content sections',
+      '<section[\\s\\S]*<section',
+      'Add two <section> blocks with headings.',
+      "document.querySelectorAll('section').length >= 2"
+    ),
+    P(
+      'A responsive media query',
+      '@media[^{]*\\{',
+      'Add @media (max-width: 600px) { … }.',
+      "Array.from(document.styleSheets).some(function (s) { try { return Array.from(s.cssRules).some(function (r) { return r.type === 4; }); } catch (e) { return false; } })"
+    ),
   ],
   xp: 50,
 };
@@ -103,9 +166,24 @@ const rwdPortfolio: CertProject = {
   ],
   starterCode: '<h1>My Portfolio</h1>\n<p>Projects I built.</p>\n',
   stories: [
-    P('A projects section with links', '<section[^>]*>[\\s\\S]*<a[^>]*href[^>]*>[\\s\\S]*</section>', 'Add <section><a href="#p1">Project 1</a></section>.'),
-    P('Flexbox or grid layout', 'display\\s*:\\s*(flex|grid)', 'Style the grid: .grid { display: grid; }.'),
-    P('A contact link', '<a[^>]*href\\s*=\\s*"(mailto:|#contact)[^"]*"[^>]*>', 'Add <a href="mailto:me@mail.com">Contact</a>.'),
+    P(
+      'A projects section with links',
+      '<section[^>]*>[\\s\\S]*<a[^>]*href[^>]*>[\\s\\S]*</section>',
+      'Add <section><a href="#p1">Project 1</a></section>.',
+      "(function () { var s = document.querySelector('section'); return !!s && !!s.querySelector('a[href]'); })()"
+    ),
+    P(
+      'Flexbox or grid layout',
+      'display\\s*:\\s*(flex|grid)',
+      'Style the grid: .grid { display: grid; }.',
+      "Array.from(document.querySelectorAll('*')).some(function (e) { var d = getComputedStyle(e).display; return d === 'flex' || d === 'grid' || d === 'inline-flex' || d === 'inline-grid'; })"
+    ),
+    P(
+      'A contact link',
+      '<a[^>]*href\\s*=\\s*"(mailto:|#contact)[^"]*"[^>]*>',
+      'Add <a href="mailto:me@mail.com">Contact</a>.',
+      "!!document.querySelector('a[href^=\"mailto:\"], a[href=\"#contact\"], a[href*=\"contact\"]')"
+    ),
   ],
   xp: 50,
 };
@@ -120,10 +198,30 @@ const rwdLanding: CertProject = {
   ],
   starterCode: '<h1>Our Product</h1>\n<p>It solves everything.</p>\n',
   stories: [
-    P('A headline naming the product', '<h1>[^<]+</h1>', 'Add one <h1>Product Name</h1>.'),
-    P('A feature list', '<(ul|ol)>[\\s\\S]*<li>[^<]+</li>[\\s\\S]*</(ul|ol)>', 'Add <ul><li>Fast</li></ul>.'),
-    P('An email signup form', '<form[^>]*>[\\s\\S]*<input[^>]*type\\s*=\\s*"email"[^>]*>[\\s\\S]*</form>', 'Add a form with <input type="email">.'),
-    P('Responsive + flexible layout', '@media[^{]*\\{|display\\s*:\\s*(flex|grid)', 'Add flex/grid plus one @media query.'),
+    P(
+      'A headline naming the product',
+      '<h1>[^<]+</h1>',
+      'Add one <h1>Product Name</h1>.',
+      "(function () { var h = document.querySelector('h1'); return !!h && h.textContent.trim().length > 0; })()"
+    ),
+    P(
+      'A feature list',
+      '<(ul|ol)>[\\s\\S]*<li>[^<]+</li>[\\s\\S]*</(ul|ol)>',
+      'Add <ul><li>Fast</li></ul>.',
+      "Array.from(document.querySelectorAll('ul, ol')).some(function (l) { return l.querySelectorAll('li').length > 0; })"
+    ),
+    P(
+      'An email signup form',
+      '<form[^>]*>[\\s\\S]*<input[^>]*type\\s*=\\s*"email"[^>]*>[\\s\\S]*</form>',
+      'Add a form with <input type="email">.',
+      "Array.from(document.querySelectorAll('form input')).some(function (i) { return i.type === 'email'; })"
+    ),
+    P(
+      'Responsive + flexible layout',
+      '@media[^{]*\\{|display\\s*:\\s*(flex|grid)',
+      'Add flex/grid plus one @media query.',
+      "(function () { var flex = Array.from(document.querySelectorAll('*')).some(function (e) { var d = getComputedStyle(e).display; return d === 'flex' || d === 'grid'; }); var mq = Array.from(document.styleSheets).some(function (s) { try { return Array.from(s.cssRules).some(function (r) { return r.type === 4; }); } catch (e) { return false; } }); return flex && mq; })()"
+    ),
   ],
   xp: 50,
 };
@@ -136,14 +234,29 @@ const jsPalindrome: CertProject = {
   title: 'Palindrome Checker',
   skills: ['Variables', 'Loops', 'RegEx'],
   brief: [
-    'Write a palindrome checker: strip non-alphanumerics, reverse, compare. Logic lives in the JS tab.',
+    'Write a palindrome checker: strip non-alphanumerics, reverse, compare. Expose it as a global function palindrome(str) that returns true or false.',
     'Pass all automated tests, then submit. Project 1 of 5 for the JavaScript certification.',
   ],
   starterCode: '<h1>Palindrome Checker</h1>\n<p>Type a word to test.</p>\n',
   stories: [
-    P('A result element for output', '<(p|div)[^>]*id\\s*=\\s*"result"[^>]*>', 'Add <p id="result"></p> for the verdict.'),
-    P('Normalization with regex', '/[^/]+/[a-z]*\\.?(replace|test|match)', 'Use .replace(/[^a-z0-9]/gi, "") to clean input.'),
-    P('A reversal or loop comparison', '(split\\s*\\(\\s*""\\s*\\)\\.reverse|for\\s*\\(|while\\s*\\()', 'Reverse with split("").reverse() or compare in a loop.'),
+    P(
+      'A result element for output',
+      '<(p|div)[^>]*id\\s*=\\s*"result"[^>]*>',
+      'Add <p id="result"></p> for the verdict.',
+      "!!document.getElementById('result')"
+    ),
+    P(
+      'palindrome() ignores case, spaces, and punctuation',
+      '/[^/]+/[a-z]*\\.?(replace|test|match)',
+      'Expose palindrome(str); "A man, a plan, a canal: Panama" must return true, "race a car" false.',
+      "typeof palindrome === 'function' && palindrome('A man, a plan, a canal: Panama') === true && palindrome('race a car') === false"
+    ),
+    P(
+      'palindrome() answers for reversed input',
+      '(split\\s*\\(\\s*""\\s*\\)\\.reverse|for\\s*\\(|while\\s*\\()',
+      'Reverse with split("").reverse() or compare in a loop; palindrome("hello") must return false.',
+      "typeof palindrome === 'function' && palindrome('12321') === true && palindrome('hello') === false"
+    ),
   ],
   xp: 50,
 };
@@ -153,13 +266,23 @@ const jsRoman: CertProject = {
   title: 'Roman Numeral Converter',
   skills: ['Variables', 'Loops', 'Functional Programming'],
   brief: [
-    'Write a converter: given 1–3999, emit the Roman numeral using a value map.',
+    'Write a converter: given 1–3999, emit the Roman numeral using a value map. Expose it as a global function convertToRoman(num) that returns the numeral string.',
     'Pass all automated tests, then submit. Project 2 of 5 for the JavaScript certification.',
   ],
   starterCode: '<h1>Roman Numerals</h1>\n<p>Enter a number.</p>\n',
   stories: [
-    P('A numeral value map', '(1000|\\bM\\b[\\s\\S]*\\bCM\\b|[\\{\\[][^\\]]*1000)', 'Define a map/table including 1000→M, 900→CM, 500→D, 100→C, 90→XC, 50→L, 40→XL, 10→X, 9→IX, 5→V, 4→IV, 1→I.'),
-    P('A conversion loop', '(for\\s*\\(|while\\s*\\(|\\.map\\s*\\(|\\.reduce\\s*\\()', 'Loop over the map subtracting values.'),
+    P(
+      'A numeral value map',
+      '(1000|\\bM\\b[\\s\\S]*\\bCM\\b|[\\{\\[][^\\]]*1000)',
+      'Define a map/table including 1000→M, 900→CM, 500→D, 100→C, 90→XC, 50→L, 40→XL, 10→X, 9→IX, 5→V, 4→IV, 1→I. convertToRoman(2) must return "II".',
+      "typeof convertToRoman === 'function' && convertToRoman(2) === 'II' && convertToRoman(1000) === 'M'"
+    ),
+    P(
+      'A conversion loop',
+      '(for\\s*\\(|while\\s*\\(|\\.map\\s*\\(|\\.reduce\\s*\\()',
+      'Loop over the map subtracting values. convertToRoman(1994) must return "MCMXCIV".',
+      "typeof convertToRoman === 'function' && convertToRoman(1994) === 'MCMXCIV' && convertToRoman(3999) === 'MMMCMXCIX'"
+    ),
     P('Output wired to the page', '(getElementById|querySelector|textContent|innerText)', 'Write the result with textContent or getElementById.'),
   ],
   xp: 50,
@@ -170,13 +293,23 @@ const jsCash: CertProject = {
   title: 'Cash Register Game',
   skills: ['OOP', 'Functional Programming', 'DOM Manipulation'],
   brief: [
-    'Build a cash register: given price, cash, and drawer, return change and status (OPEN/CLOSED/INSUFFICIENT_FUNDS).',
+    'Build a cash register: given price, cash, and drawer, return change and status (OPEN/CLOSED/INSUFFICIENT_FUNDS). Expose it as a global function checkCashRegister(price, cash, cid) returning { status, change }.',
     'Pass all automated tests, then submit. Project 3 of 5 for the JavaScript certification.',
   ],
   starterCode: '<h1>Cash Register</h1>\n<p>Enter payment details.</p>\n',
   stories: [
-    P('Drawer state as data', '(cid|drawer)\\s*(=|:\\s*\\[)', 'Model the drawer: const cid = [["PENNY", 1.01], …].'),
-    P('Status logic for all three cases', '(INSUFFICIENT_FUNDS[\\s\\S]*CLOSED[\\s\\S]*OPEN|OPEN[\\s\\S]*CLOSED[\\s\\S]*INSUFFICIENT_FUNDS)', 'Handle OPEN, CLOSED, and INSUFFICIENT_FUNDS statuses.'),
+    P(
+      'Drawer state as data',
+      '(cid|drawer)\\s*(=|:\\s*\\[)',
+      'Model the drawer: const cid = [["PENNY", 1.01], …]. checkCashRegister(19.5, 20, fullDrawer) must return status "OPEN" with a single QUARTER of change.',
+      "typeof checkCashRegister === 'function' && (function () { var r = checkCashRegister(19.5, 20, [['PENNY', 1.01], ['NICKEL', 2.05], ['DIME', 3.1], ['QUARTER', 4.25], ['ONE', 90], ['FIVE', 55], ['TEN', 20], ['TWENTY', 60], ['ONE HUNDRED', 100]]); return !!r && r.status === 'OPEN' && Array.isArray(r.change) && r.change.length === 1 && r.change[0][0] === 'QUARTER'; })()"
+    ),
+    P(
+      'Status logic for all three cases',
+      '(INSUFFICIENT_FUNDS[\\s\\S]*CLOSED[\\s\\S]*OPEN|OPEN[\\s\\S]*CLOSED[\\s\\S]*INSUFFICIENT_FUNDS)',
+      'Handle OPEN, CLOSED, and INSUFFICIENT_FUNDS statuses. A drawer of exactly $0.50 cannot make $0.50 change → CLOSED; a nearly empty drawer → INSUFFICIENT_FUNDS.',
+      "(function () { if (typeof checkCashRegister !== 'function') return false; function d(p, n, di, q, o, f, t, tw, h) { return [['PENNY', p], ['NICKEL', n], ['DIME', di], ['QUARTER', q], ['ONE', o], ['FIVE', f], ['TEN', t], ['TWENTY', tw], ['ONE HUNDRED', h]]; } var closed = checkCashRegister(19.5, 20, d(0.5, 0, 0, 0, 0, 0, 0, 0, 0)); var poor = checkCashRegister(19.5, 20, d(0.01, 0, 0, 0, 0, 0, 0, 0, 0)); var open = checkCashRegister(19.5, 20, d(1.01, 2.05, 3.1, 4.25, 90, 55, 20, 60, 100)); return !!closed && closed.status === 'CLOSED' && !!poor && poor.status === 'INSUFFICIENT_FUNDS' && !!open && open.status === 'OPEN'; })()"
+    ),
     P('Change rendered to the DOM', '(getElementById|querySelector|textContent|innerHTML)', 'Render the change breakdown on the page.'),
   ],
   xp: 50,
@@ -187,14 +320,29 @@ const jsCipher: CertProject = {
   title: "Caesars Cipher",
   skills: ['Loops', 'RegEx', 'Functional Programming'],
   brief: [
-    'Write a ROT13 decoder: shift every letter 13 places, leaving symbols untouched.',
+    'Write a ROT13 decoder: shift every letter 13 places, leaving symbols untouched. Expose it as a global function rot13(str) that returns the decoded string.',
     'Pass all automated tests, then submit. Project 4 of 5 for the JavaScript certification.',
   ],
   starterCode: '<h1>ROT13 Decoder</h1>\n<p>Paste a secret message.</p>\n',
   stories: [
-    P('Character-code shifting', '(charCodeAt|fromCharCode)', 'Shift letters with charCodeAt / fromCharCode.'),
-    P('Regex guards letters only', '/\\[A-Z', 'Test /[A-Z]/ before shifting so symbols survive.'),
-    P('A decode function', 'function\\s+\\w*(rot|decod|cipher|shift)\\w*|const\\s+\\w*(rot|decod|cipher)\\w*\\s*=', 'Define a rot13/decode function.'),
+    P(
+      'Character-code shifting',
+      '(charCodeAt|fromCharCode)',
+      'Shift letters with charCodeAt / fromCharCode. rot13("SERR PBQR PNZC") must return "FREE CODE CAMP".',
+      "typeof rot13 === 'function' && rot13('SERR PBQR PNZC') === 'FREE CODE CAMP'"
+    ),
+    P(
+      'Regex guards letters only',
+      '/\\[A-Z',
+      'Test /[A-Z]/ before shifting so symbols survive. rot13("SERR CVMMN!") must return "FREE PIZZA!".',
+      "typeof rot13 === 'function' && rot13('SERR CVMMN!') === 'FREE PIZZA!'"
+    ),
+    P(
+      'A decode function',
+      'function\\s+\\w*(rot|decod|cipher|shift)\\w*|const\\s+\\w*(rot|decod|cipher)\\w*\\s*=',
+      'Define a rot13/decode function.',
+      "typeof rot13 === 'function' && rot13('GUR DHVPX OEBJA SBK WHZCF BIRE GUR YNML QBT.') === 'THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.'"
+    ),
   ],
   xp: 50,
 };
@@ -204,13 +352,23 @@ const jsPhone: CertProject = {
   title: 'Telephone Validator',
   skills: ['RegEx', 'DOM Manipulation'],
   brief: [
-    'Write a US phone validator accepting the standard formats and rejecting the rest.',
+    'Write a US phone validator accepting the standard formats and rejecting the rest. Expose it as a global function telephoneCheck(str) that returns true or false.',
     'Pass all automated tests, then submit. Project 5 of 5 — finish this to earn the certification.',
   ],
   starterCode: '<h1>Phone Validator</h1>\n<p>Enter a US number.</p>\n',
   stories: [
-    P('A validation regex', '/[^/]*\\\\d[^/]*/', 'Write a regex matching US formats like 555-555-5555 and (555) 555-5555.'),
-    P('Boolean verdict logic', '(test\\s*\\(|\\.match\\s*\\(|true[\\s\\S]*false|false[\\s\\S]*true)', 'Return true/false via .test() or .match().'),
+    P(
+      'A validation regex',
+      '/[^/]*\\\\d[^/]*/',
+      'Write a regex matching US formats like 555-555-5555 and (555) 555-5555. telephoneCheck("(555) 555-5555") must return true.',
+      "typeof telephoneCheck === 'function' && telephoneCheck('(555) 555-5555') === true && telephoneCheck('1 555 555 5555') === true"
+    ),
+    P(
+      'Boolean verdict logic',
+      '(test\\s*\\(|\\.match\\s*\\(|true[\\s\\S]*false|false[\\s\\S]*true)',
+      'Return true/false via .test() or .match(). "5555555555" is valid; "123-abc-7890" and "55555555555" are not.',
+      "typeof telephoneCheck === 'function' && telephoneCheck('5555555555') === true && telephoneCheck('123-abc-7890') === false && telephoneCheck('55555555555') === false"
+    ),
     P('Verdict shown on the page', '(getElementById|querySelector|textContent|innerText)', 'Show valid/invalid with textContent.'),
   ],
   xp: 50,
@@ -229,10 +387,10 @@ const fedQuote: CertProject = {
   ],
   starterCode: '<h1>Quotes</h1>\n<p>Wisdom on demand.</p>\n',
   stories: [
-    P('A quote display element', 'id\\s*=\\s*"text"', 'Add id="text" to the quote element.'),
-    P('An author element', 'id\\s*=\\s*"author"', 'Add id="author" for the author.'),
-    P('A new-quote control', 'id\\s*=\\s*"new-quote"', 'Add id="new-quote" to the button.'),
-    P('A tweet link', 'id\\s*=\\s*"tweet-quote"', 'Add id="tweet-quote" linking to the tweet intent.'),
+    P('A quote display element', 'id\\s*=\\s*"text"', 'Add id="text" to the quote element.', "!!document.getElementById('text') && document.getElementById('text').textContent.trim().length > 0"),
+    P('An author element', 'id\\s*=\\s*"author"', 'Add id="author" for the author.', "!!document.getElementById('author') && document.getElementById('author').textContent.trim().length > 0"),
+    P('A new-quote control', 'id\\s*=\\s*"new-quote"', 'Add id="new-quote" to the button.', "!!document.getElementById('new-quote') && /^(button|a)$/.test(document.getElementById('new-quote').tagName.toLowerCase())"),
+    P('A tweet link', 'id\\s*=\\s*"tweet-quote"', 'Add id="tweet-quote" linking to the tweet intent.', "!!(document.getElementById('tweet-quote') && document.getElementById('tweet-quote').getAttribute('href'))"),
   ],
   xp: 60,
 };
@@ -247,9 +405,9 @@ const fedMarkdown: CertProject = {
   ],
   starterCode: '<h1>Markdown</h1>\n<p>Write on the left, read on the right.</p>\n',
   stories: [
-    P('An editor textarea', 'id\\s*=\\s*"editor"', 'Add <textarea id="editor">.'),
-    P('A preview pane', 'id\\s*=\\s*"preview"', 'Add <div id="preview">.'),
-    P('Live rendering wired up', '(oninput|onchange|addEventListener|useState|marked|DOMPurify)', 'Re-render preview on input (marked/DOMPurify or own parser).'),
+    P('An editor textarea', 'id\\s*=\\s*"editor"', 'Add <textarea id="editor">.', "document.getElementById('editor') ? document.getElementById('editor').tagName.toLowerCase() === 'textarea' : false"),
+    P('A preview pane', 'id\\s*=\\s*"preview"', 'Add <div id="preview">.', "!!document.getElementById('preview')"),
+    P('Live rendering wired up', '(oninput|onchange|addEventListener|useState|marked|DOMPurify)', 'Re-render preview on input (marked/DOMPurify or own parser). Typing # Hello must put that text (or an <h1>) into the preview.', "(async function () { var e = document.getElementById('editor'); var p = document.getElementById('preview'); if (!e || !p) return false; var set = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set; set.call(e, '# Hello'); e.dispatchEvent(new Event('input', { bubbles: true })); e.dispatchEvent(new Event('change', { bubbles: true })); await new Promise(function (r) { setTimeout(r, 150); }); return p.textContent.toLowerCase().indexOf('hello') !== -1 || !!p.querySelector('h1'); })()"),
   ],
   xp: 60,
 };
@@ -264,9 +422,14 @@ const fedDrum: CertProject = {
   ],
   starterCode: '<h1>Drums</h1>\n<p>Hit the pads.</p>\n',
   stories: [
-    P('A drum-machine container', 'id\\s*=\\s*"drum-machine"', 'Add id="drum-machine" wrapper.'),
-    P('A display element', 'id\\s*=\\s*"display"', 'Add id="display" showing the last hit.'),
-    P('Nine pads with clips', 'class\\s*=\\s*"[^"]*drum-pad[^"]*"', 'Add 9 .drum-pad elements each wrapping an <audio>.'),
+    P('A drum-machine container', 'id\\s*=\\s*"drum-machine"', 'Add id="drum-machine" wrapper.', "!!document.getElementById('drum-machine')"),
+    P('A display element', 'id\\s*=\\s*"display"', 'Add id="display" showing the last hit.', "!!document.getElementById('display')"),
+    P(
+      'Nine pads with clips',
+      'class\\s*=\\s*"[^"]*drum-pad[^"]*"',
+      'Add 9 .drum-pad elements each wrapping an <audio>. Clicking one must write its name to the display.',
+      "(async function () { var pads = document.querySelectorAll('.drum-pad'); var d = document.getElementById('display'); if (pads.length !== 9 || !d) return false; for (var i = 0; i < pads.length; i++) { if (!pads[i].querySelector('audio')) return false; } var before = d.textContent; pads[0].click(); await new Promise(function (r) { setTimeout(r, 150); }); return d.textContent.trim().length > 0 && d.textContent !== before; })()"
+    ),
     P('Keyboard triggering', '(keydown|keyCode|key\\s*===|onKey)', 'Play the clip on keydown for Q/W/E/A/S/D/Z/X/C.'),
   ],
   xp: 60,
@@ -282,9 +445,19 @@ const fedCalc: CertProject = {
   ],
   starterCode: '<h1>Calculator</h1>\n<p>Do the math.</p>\n',
   stories: [
-    P('A display element', 'id\\s*=\\s*"display"', 'Add id="display" defaulting to 0.'),
-    P('Digit + operator buttons', 'id\\s*=\\s*"(zero|one|add|subtract|multiply|divide|equals|clear)"', 'Add buttons with fCC ids (zero…nine, add, subtract, multiply, divide, equals, clear, decimal).'),
-    P('Expression evaluation', '(eval\\s*\\(|Function\\s*\\(|parseFloat|Number\\s*\\()', 'Evaluate the expression chain on equals.'),
+    P('A display element', 'id\\s*=\\s*"display"', 'Add id="display" defaulting to 0.', "!!document.getElementById('display')"),
+    P(
+      'Digit + operator buttons',
+      'id\\s*=\\s*"(zero|one|add|subtract|multiply|divide|equals|clear)"',
+      'Add buttons with fCC ids (zero…nine, add, subtract, multiply, divide, equals, clear, decimal).',
+      "['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'add', 'subtract', 'multiply', 'divide', 'equals', 'clear', 'decimal'].every(function (id) { return !!document.getElementById(id); })"
+    ),
+    P(
+      'Expression evaluation',
+      '(eval\\s*\\(|Function\\s*\\(|parseFloat|Number\\s*\\()',
+      'Evaluate the expression chain on equals. 1 + 2 = must display 3.',
+      "(async function () { var d = document.getElementById('display'); var b = function (id) { return document.getElementById(id); }; if (!d || !b('one') || !b('add') || !b('two') || !b('equals')) return false; if (b('clear')) b('clear').click(); b('one').click(); b('add').click(); b('two').click(); b('equals').click(); await new Promise(function (r) { setTimeout(r, 150); }); return d.textContent.trim().replace(/^0+(?=\\d)/, '') === '3'; })()"
+    ),
   ],
   xp: 60,
 };
@@ -299,10 +472,10 @@ const fedPomodoro: CertProject = {
   ],
   starterCode: '<h1>Focus Clock</h1>\n<p>Work in sprints.</p>\n',
   stories: [
-    P('Break and session controls', 'id\\s*=\\s*"break-(increment|decrement)"[\\s\\S]*id\\s*=\\s*"session-(increment|decrement)"', 'Add break/session length controls with those ids.'),
-    P('A time-left display', 'id\\s*=\\s*"time-left"', 'Add id="time-left" in mm:ss.'),
-    P('Start/stop + reset', 'id\\s*=\\s*"start_stop"[\\s\\S]*id\\s*=\\s*"reset"', 'Add start_stop and reset controls.'),
-    P('A beep at zero', 'id\\s*=\\s*"beep"|<audio', 'Add <audio id="beep"> played at 00:00.'),
+    P('Break and session controls', 'id\\s*=\\s*"break-(increment|decrement)"[\\s\\S]*id\\s*=\\s*"session-(increment|decrement)"', 'Add break/session length controls with those ids.', "!!(document.getElementById('break-increment') && document.getElementById('break-decrement') && document.getElementById('session-increment') && document.getElementById('session-decrement'))"),
+    P('A time-left display', 'id\\s*=\\s*"time-left"', 'Add id="time-left" in mm:ss.', "(function () { var t = document.getElementById('time-left'); return !!t && /\\d{1,3}:\\d{2}/.test(t.textContent.trim()); })()"),
+    P('Start/stop + reset', 'id\\s*=\\s*"start_stop"[\\s\\S]*id\\s*=\\s*"reset"', 'Add start_stop and reset controls.', "!!(document.getElementById('start_stop') && document.getElementById('reset'))"),
+    P('A beep at zero', 'id\\s*=\\s*"beep"|<audio', 'Add <audio id="beep"> played at 00:00.', "!!(document.getElementById('beep') || document.querySelector('audio'))"),
   ],
   xp: 60,
 };
@@ -741,8 +914,6 @@ export function getCertTrack(id: string): CertTrack | undefined {
 // cleanly it takes over, so a new track inserted into Supabase appears in
 // the app with zero client changes. Any validation failure fails CLOSED
 // back to the bundle — a malformed row can never blank the screen.
-import { supabase } from './supabase';
-
 function validStory(s: unknown): s is CertStory {
   if (!s || typeof s !== 'object') return false;
   const o = s as Record<string, unknown>;
@@ -843,7 +1014,7 @@ export async function fetchRemoteProject(id: string): Promise<CertProject | null
 
 /** Grade learner code against a project's stories (shared by client + tests). */
 export function gradeProject(
-  project: { stories: Array<{ label: string; pattern: string; hint: string }> },
+  project: { stories: { label: string; pattern: string; hint: string }[] },
   code: string,
 ) {
   return project.stories.map((s) => {

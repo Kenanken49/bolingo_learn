@@ -8,6 +8,8 @@
  *     forgot `npm run catalog:sql`);
  *   - a question is unsolvable (a chain token missing from its token bank);
  *   - a path block points at a language lesson the migration never seeds;
+ *   - a published transcript lesson has no valid offline snapshot, so its path
+ *     node cannot open without a catalog read;
  *   - the public-read policies/grants are missing.
  *
  * Runs as part of `npm test`. It parses the committed SQL instead of compiling
@@ -41,6 +43,7 @@ require.extensions['.ts'] = (module, filename) => {
 };
 
 const { mergeLessonCatalogs, toCourseLesson } = require('../lib/languageCatalogRows.ts');
+const { normalizeAnswer } = require('../lib/quizBank.ts');
 const sqlPath = path.join(root, 'supabase', 'migrations_language_catalog.sql');
 const sql = fs.readFileSync(sqlPath, 'utf8');
 
@@ -178,12 +181,32 @@ for (const lesson of lessons) {
       fail(`${at}: empty correctChain.`);
       return;
     }
+    if (typeof question.explain !== 'string' || question.explain.trim().length === 0) {
+      fail(`${at}: missing explain.`);
+    }
+    // Free-response rows are graded by accepted answers, not by a token bank.
+    if (question.kind === 'text') {
+      const answers = question.text?.answers;
+      if (!Array.isArray(answers) || answers.length === 0 || answers.some((a) => typeof a !== 'string' || !a.trim())) {
+        fail(`${at}: text exercise needs non-empty accepted answers.`);
+        return;
+      }
+      const accepted = answers.map(normalizeAnswer);
+      if (new Set(accepted).size !== accepted.length) fail(`${at}: duplicate accepted answer.`);
+      if (normalizeAnswer(question.correctChain[0]) !== accepted[0]) {
+        fail(`${at}: correctChain[0] must match the first accepted answer.`);
+      }
+      return;
+    }
+    if (question.kind === 'code') {
+      if (!question.code?.starter || !Array.isArray(question.code?.tests) || question.code.tests.length === 0) {
+        fail(`${at}: code exercise needs a starter and at least one test.`);
+      }
+      return;
+    }
     if (!Array.isArray(question.scrambledTokens)) {
       fail(`${at}: scrambledTokens missing.`);
       return;
-    }
-    if (typeof question.explain !== 'string' || question.explain.trim().length === 0) {
-      fail(`${at}: missing explain.`);
     }
     const bank = [...question.scrambledTokens];
     for (const token of question.correctChain) {
@@ -287,6 +310,183 @@ for (const entry of publishedManifest.lessons ?? []) {
   }
 }
 
+/* ---- Offline snapshot: published transcript lessons open without a read ---- */
+const offlineSnapshotPath = path.join(root, 'content', 'published', 'language-lessons.offline.json');
+let offlineManifest = { lessons: [] };
+const offlineById = new Map();
+if (!fs.existsSync(offlineSnapshotPath)) {
+  fail('content/published/language-lessons.offline.json is missing — published transcript lessons cannot open offline.');
+} else {
+  try {
+    offlineManifest = JSON.parse(fs.readFileSync(offlineSnapshotPath, 'utf8'));
+  } catch (error) {
+    fail(`language-lessons.offline.json is not valid JSON: ${error.message}`);
+  }
+  if (offlineManifest.kind !== 'published-language-lessons-offline') {
+    fail('language-lessons.offline.json has an unexpected kind.');
+  }
+  for (const entry of offlineManifest.lessons ?? []) {
+    const label = entry.id ?? '(missing id)';
+    if (typeof entry.id !== 'string' || typeof entry.courseId !== 'string') {
+      fail(`${label}: offline snapshot needs id and courseId.`);
+      continue;
+    }
+    if (!entry.id.startsWith(`${entry.courseId}-`)) {
+      fail(`${label}: offline snapshot id does not start with its course prefix.`);
+    }
+    if (lessonIds.has(entry.id)) {
+      fail(`${label}: offline snapshot shadows a built-in seed row.`);
+    }
+    if (!publishedIds.has(entry.id)) {
+      fail(`${label}: offline snapshot is not registered in content/published/language-lessons.json.`);
+    }
+    if (offlineById.has(entry.id)) fail(`${label}: appears twice in the offline snapshot.`);
+    const lesson = toCourseLesson(entry);
+    if (!lesson) {
+      fail(`${label}: offline snapshot is rejected by toCourseLesson().`);
+    } else {
+      offlineById.set(entry.id, lesson);
+    }
+    const registered = (publishedManifest.lessons ?? []).find((candidate) => candidate.id === entry.id);
+    if (registered) {
+      if (entry.title !== registered.title) {
+        fail(`${label}: offline snapshot title does not match the published manifest.`);
+      }
+      if (registered.position !== undefined && entry.position !== registered.position) {
+        fail(`${label}: offline snapshot position does not match the published manifest.`);
+      }
+    }
+  }
+}
+
+for (const entry of publishedManifest.lessons ?? []) {
+  if (!offlineById.has(entry.id)) {
+    fail(
+      `${entry.id}: published transcript lesson has no bundled offline snapshot` +
+        (entry.onPath ? ' — its path node cannot open without a catalog read.' : '.')
+    );
+  }
+}
+for (const id of offlineById.keys()) {
+  if (!publishedIds.has(id)) fail(`${id}: stale offline snapshot; remove it or register it as published.`);
+}
+
+// Exercise the module the quiz loader imports, not a re-implementation.
+let offlineLessons = null;
+try {
+  offlineLessons = require(path.join(root, 'lib', 'publishedTranscriptLessons.ts'));
+} catch (error) {
+  fail(`the offline transcript module cannot load: ${error.message}`);
+}
+if (offlineLessons) {
+  for (const id of publishedIds) {
+    if (!offlineLessons.getPublishedTranscriptLesson(id)) {
+      fail(`${id}: not resolvable from the bundled offline transcript snapshot.`);
+    }
+  }
+  for (const id of pathLessonIds) {
+    if (publishedIds.has(id) && !offlineLessons.getPublishedTranscriptLesson(id)) {
+      fail(`${id}: path node has no offline lesson content.`);
+    }
+  }
+  const shippedOfflineIds = new Set(offlineLessons.PUBLISHED_TRANSCRIPT_LESSON_IDS);
+  for (const id of shippedOfflineIds) {
+    if (!publishedIds.has(id)) fail(`${id}: stale offline snapshot in lib/publishedTranscriptLessons.ts.`);
+  }
+}
+
+const catalogLoader = fs.readFileSync(path.join(root, 'lib', 'languageCatalog.ts'), 'utf8');
+if (!catalogLoader.includes("from './publishedTranscriptLessons'")) {
+  fail('languageCatalog.ts does not import the bundled published transcript snapshot.');
+}
+if (!catalogLoader.includes('mergeLessonCatalogs(LANGUAGE_COURSES, PUBLISHED_TRANSCRIPT_LESSONS)')) {
+  fail('the builtin catalog does not merge the offline published transcript snapshot.');
+}
+
+/* ---- Offline resolution: the real loader opens the path lesson ---- */
+async function checkOfflineCatalog() {
+  const Module = require('node:module');
+  // Make the loader believe Supabase is configured, then answer the query the
+  // way an offline device does: an error result, not a rejected promise.
+  process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://offline.invalid';
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'offline-anon-key';
+  let remoteResult = { data: null, error: new Error('network unavailable') };
+  const offlineQuery = {
+    select() {
+      return this;
+    },
+    eq() {
+      return this;
+    },
+    order() {
+      return Promise.resolve(remoteResult);
+    },
+  };
+
+  const originalLoad = Module._load;
+  Module._load = function load(request, parent, isMain) {
+    if (
+      request === './supabase' &&
+      String(parent && parent.filename).endsWith('languageCatalog.ts')
+    ) {
+      return { supabase: { from: () => offlineQuery } };
+    }
+    return originalLoad.call(this, request, parent, isMain);
+  };
+
+  try {
+    const catalog = require(path.join(root, 'lib', 'languageCatalog.ts'));
+    const snapshot = await catalog.loadLanguageCatalog({ force: true });
+    if (snapshot.source !== 'builtin') {
+      fail('an unreadable catalog did not fall back to the bundled catalog.');
+    }
+    if (!snapshot.lessons['swahili-fsi-01']) {
+      fail('the bundled catalog is missing the published transcript snapshot.');
+    }
+    const lesson = await catalog.getLanguageLessonAsync('swahili-fsi-01');
+    if (!lesson) {
+      fail('swahili-fsi-01: path node cannot resolve without a catalog read.');
+    } else {
+      if (lesson.title !== 'FSI 1 · Morning greetings') {
+        fail('swahili-fsi-01: offline lesson title does not match the path block.');
+      }
+      if (lesson.questions.length !== 5) {
+        fail('swahili-fsi-01: offline lesson no longer has its five reviewed questions.');
+      }
+    }
+
+    // A successful remote read stays authoritative: if the transcript row is
+    // unpublished (absent from the response), the offline snapshot must not
+    // resurrect it online.
+    const bundled = snapshot.lessons['swahili-basics'];
+    if (!bundled) {
+      fail('the bundled catalog is missing swahili-basics for the online comparison.');
+      return;
+    }
+    remoteResult = {
+      data: [
+        {
+          id: bundled.id,
+          title: bundled.title,
+          theory: bundled.theory,
+          questions: bundled.questions,
+        },
+      ],
+      error: null,
+    };
+    catalog.resetLanguageCatalogCache();
+    const online = await catalog.loadLanguageCatalog({ force: true });
+    if (online.source !== 'remote') {
+      fail('a successful remote read was not treated as remote.');
+    }
+    if (await catalog.getLanguageLessonAsync('swahili-fsi-01')) {
+      fail('an unpublished transcript lesson reappeared online from the offline snapshot.');
+    }
+  } finally {
+    Module._load = originalLoad;
+  }
+}
+
 /* ---- Security: public read, no public write ---- */
 for (const required of [
   'alter table public.language_courses enable row level security',
@@ -301,17 +501,25 @@ if (/grant\s+(insert|update|delete)[^;]*\bto\s+(anon|authenticated)\b/i.test(sql
   fail('Migration grants write access to anon/authenticated — edits must go through the dashboard or service role.');
 }
 
-if (failures.length > 0) {
-  console.error('Language catalog check failed:');
-  for (const failure of failures) console.error(`  ✗ ${failure}`);
-  process.exit(1);
-}
+(async () => {
+  try {
+    await checkOfflineCatalog();
+  } catch (error) {
+    fail(`offline catalog resolution crashed: ${error.message}`);
+  }
 
-const summary = Object.entries(perCourse)
-  .map(([course, count]) => `${course} ${count}`)
-  .join(' · ');
-console.log(`Language catalog OK — ${lessons.length} lessons across ${courses.length} courses (${summary}).`);
-console.log(`Path blocks covered: ${pathLessonIds.size}.`);
-if (publishedIds.size > 0) {
-  console.log(`Published transcript lessons outside the seed: ${[...publishedIds].join(' · ')}.`);
-}
+  if (failures.length > 0) {
+    console.error('Language catalog check failed:');
+    for (const failure of failures) console.error(`  ✗ ${failure}`);
+    process.exit(1);
+  }
+
+  const summary = Object.entries(perCourse)
+    .map(([course, count]) => `${course} ${count}`)
+    .join(' · ');
+  console.log(`Language catalog OK — ${lessons.length} lessons across ${courses.length} courses (${summary}).`);
+  console.log(`Path blocks covered: ${pathLessonIds.size}.`);
+  if (publishedIds.size > 0) {
+    console.log(`Published transcript lessons outside the seed: ${[...publishedIds].join(' · ')} (offline snapshot bundled).`);
+  }
+})();

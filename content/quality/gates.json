@@ -1,0 +1,190 @@
+{
+  "version": 1,
+  "policy": "Every merge to main must clear every required gate. A failed required gate blocks CI, and the failure is published to the owner dashboard.",
+  "gates": [
+    {
+      "id": "typecheck",
+      "label": "TypeScript",
+      "category": "static",
+      "command": "npx tsc --noEmit",
+      "timeoutSeconds": 300,
+      "required": true
+    },
+    {
+      "id": "lint",
+      "label": "ESLint",
+      "category": "static",
+      "command": "npx expo lint",
+      "timeoutSeconds": 300,
+      "required": true
+    },
+    {
+      "id": "quality-ops",
+      "label": "Quality system self-check",
+      "category": "platform",
+      "command": "node scripts/check-quality-ops.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "curriculum",
+      "label": "Curriculum standards",
+      "category": "curriculum",
+      "command": "node scripts/check-curriculum-quality.cjs",
+      "timeoutSeconds": 180,
+      "required": true
+    },
+    {
+      "id": "solutions",
+      "label": "Exercise solutions",
+      "category": "curriculum",
+      "command": "node scripts/check-exercise-solutions.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "catalog",
+      "label": "Language catalog",
+      "category": "language",
+      "command": "node scripts/check-language-catalog.cjs",
+      "timeoutSeconds": 180,
+      "required": true
+    },
+    {
+      "id": "transcripts",
+      "label": "Transcript import",
+      "category": "language",
+      "command": "node scripts/check-transcript-import.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "subtitles",
+      "label": "SRT/VTT import",
+      "category": "language",
+      "command": "node scripts/check-subtitle-import.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "rights",
+      "label": "Content rights gate",
+      "category": "safety",
+      "command": "node scripts/check-content-rights.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "transcription",
+      "label": "Transcription pipeline",
+      "category": "safety",
+      "command": "node scripts/check-transcription-pipeline.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "roleplay",
+      "label": "Roleplay personas",
+      "category": "curriculum",
+      "command": "node scripts/check-roleplay-personas.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "labex",
+      "label": "Lab exercises",
+      "category": "curriculum",
+      "command": "node scripts/check-labex.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "sandbox-labs",
+      "label": "Runnable sandbox exercises",
+      "category": "curriculum",
+      "command": "node scripts/check-labex-sandbox.cjs",
+      "timeoutSeconds": 300,
+      "required": true
+    },
+    {
+      "id": "vm-labs",
+      "label": "Runnable Git labs",
+      "category": "curriculum",
+      "command": "node scripts/check-vm.cjs",
+      "timeoutSeconds": 300,
+      "required": true
+    },
+    {
+      "id": "guided-labs",
+      "label": "Guided lab coverage",
+      "category": "curriculum",
+      "command": "node scripts/check-guided.cjs",
+      "timeoutSeconds": 300,
+      "required": true
+    },
+    {
+      "id": "celebration",
+      "label": "Celebration timing",
+      "category": "experience",
+      "command": "node scripts/check-celebration-duration.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "celebration-benchmark",
+      "label": "Low-end frame budget",
+      "category": "experience",
+      "command": "node scripts/check-celebration-benchmark.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "results",
+      "label": "Results celebration gate",
+      "category": "experience",
+      "command": "node scripts/check-results-celebration.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "speakback",
+      "label": "Speak-back scoring",
+      "category": "experience",
+      "command": "node scripts/check-speak-back.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "voice-casting",
+      "label": "Deterministic voice casting",
+      "category": "voice",
+      "command": "node scripts/check-voice-casting.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "cold-tts",
+      "label": "Cold TTS Swahili voice",
+      "category": "voice",
+      "command": "node scripts/check-cold-tts-session.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "fliki",
+      "label": "Licensed Swahili clips",
+      "category": "voice",
+      "command": "node scripts/check-fliki-swahili.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "audiobook-voice",
+      "label": "Audiobook voice identity",
+      "category": "voice",
+      "command": "node scripts/check-audiobook-voice.cjs",
+      "timeoutSeconds": 180,
+      "required": true
+    }
+  ]
+}

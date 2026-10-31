@@ -1,3 +1,5 @@
+/* global __dirname -- Node CJS globals. */
+
 /**
  * Kiki v3.2 tuning harness — locks the PER-TYPE guess rates (MCQ vs BUILD).
  *

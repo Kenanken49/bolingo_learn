@@ -1,3 +1,5 @@
+/* global __dirname -- Node CJS globals. */
+
 /**
  * Kiki v3 analytics — calibration report from live learner data.
  *

@@ -4,7 +4,7 @@
  * beginner-French syllabi. Merged into LANGUAGE_COURSES in
  * lib/languages.ts — quiz, SRS, and guidebook work unchanged.
  */
-import { MCQ, BUILD, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
 
 export const FRENCH_PLUS: Record<string, CourseLesson> = {
   'french-greetings': {
@@ -334,6 +334,23 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         ['Où', 'est', 'la', 'gare'],
         ['gare', 'Où', 'est', 'la', 'combien'],
         'Où est…? + place. La gare = the station.'
+      ),
+      MCQ(
+        'You are at a boulangerie. You want two croissants and need to pay. Which is most natural?',
+        'Deux croissants, s’il vous plaît. Je peux payer ?',
+        [
+          'Deux croissants, s’il vous plaît. Je peux payer ?',
+          'Deux croissants je payer.',
+          'Je veux deux croissants maintenant.',
+          'Croissants deux, payer oui.',
+        ],
+        'S’il vous plaît makes the order polite; “Je peux payer ?” asks to pay without demanding.'
+      ),
+      TEXT(
+        'Type the French for “I don’t understand.”',
+        ['Je ne comprends pas.'],
+        'Je ne comprends pas wraps the verb in ne … pas. In casual speech you may hear “Je comprends pas,” but the full form is the standard.',
+        { misconceptions: { 'Je ne comprende pas': 'Comprendre is an -re verb: the first person is je comprends, not je comprende.' } }
       ),
     ],
   },

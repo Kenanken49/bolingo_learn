@@ -5,6 +5,10 @@
  * lesson bank in lib/courses.ts — no demo placeholders.
  */
 
+import { LINUX_UNITS } from './linuxCurriculum';
+import { LINUX_ASSESSMENT_BLOCKS } from './linuxAssessments';
+import { TRACK_UNITS } from './trackUnits';
+
 export type BlockKind = 'lesson' | 'workshop' | 'lab' | 'review' | 'quiz' | 'project';
 
 export interface CurriculumBlock {
@@ -34,14 +38,14 @@ export interface CurriculumUnit {
 /** freeCodeCamp-catalog pattern: difficulty + workload on every course card. */
 export type CourseDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 
-export const COURSES_META: Array<{
+export const COURSES_META: {
   id: string;
   name: string;
   icon: string;
   blurb: string;
   difficulty: CourseDifficulty;
   hours: string;
-}> = [
+}[] = [
   { id: 'html', name: 'Course 1 · Complete HTML', icon: '\u{1F310}', blurb: 'Duolingo path style — bite-sized 2–5 min nodes, streaks, chests.', difficulty: 'Beginner', hours: '~4h' },
   { id: 'rwd', name: 'Course 2 · Responsive Web Design', icon: '\u{1F4D0}', blurb: 'freeCodeCamp style — bite-sized 2–5 min lessons, workshops, labs, exam.', difficulty: 'Beginner', hours: '~12h' },
   { id: 'design', name: 'Course 3 · UI/UX Design for Developers', icon: '\u{1F3A8}', blurb: 'Design ecosystem — bite-sized theory, Figma masterclasses, guides hub.', difficulty: 'Beginner', hours: '~20h' },
@@ -168,6 +172,26 @@ export const CURRICULUM: CurriculumUnit[] = [
         xp: 30,
         lessonId: 'html-quiz-2',
         lessonTitle: 'Elements quiz',
+      },
+      {
+        id: 'hf-final',
+        kind: 'quiz',
+        title: 'HTML final exam',
+        blurb: 'Prove the whole course: structure, attributes, accessibility, links, images, and lists.',
+        minutes: 4,
+        xp: 40,
+        lessonId: 'html-final',
+        lessonTitle: 'HTML Final Exam',
+      },
+      {
+        id: 'hf-project',
+        kind: 'project',
+        title: 'Capstone: recipe card',
+        blurb: 'Build a real recipe page with a title, image, ingredients, steps, and a source link.',
+        minutes: 10,
+        xp: 50,
+        lessonId: 'html-project',
+        lessonTitle: 'Recipe Card Project',
       },
     ],
   },
@@ -1355,12 +1379,17 @@ export const CURRICULUM: CurriculumUnit[] = [
 
 /* Course 5 (leveled certification tracks) lives in lib/trackUnits.ts — appended
    here so the Path renders all 7 tracks with the same sequential unlock. */
-import { TRACK_UNITS } from './trackUnits';
 CURRICULUM.push(...TRACK_UNITS);
 
 /* Course 6 (Linux Journey) lives in lib/linuxCurriculum.ts — generated from
    the imported banks so ids/titles can never drift from the lessons. */
-import { LINUX_UNITS } from './linuxCurriculum';
+// Insert each unit's lab + final before its review node so the path ends with
+// practice, proof, then spaced retrieval — never a reading list with no gate.
+for (const unit of LINUX_UNITS) {
+  const extra = LINUX_ASSESSMENT_BLOCKS[unit.id] ?? [];
+  const reviewAt = unit.blocks.findIndex((block) => block.lessonId.startsWith('srs-review'));
+  unit.blocks.splice(reviewAt === -1 ? unit.blocks.length : reviewAt, 0, ...extra);
+}
 CURRICULUM.push(...LINUX_UNITS);
 
 /** Flatten all blocks for progress lookups. */

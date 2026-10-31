@@ -11,7 +11,7 @@ export interface CodeDoc {
   js: string;
 }
 
-const TABS: Array<{ id: CodeLang; label: string; color: string }> = [
+const TABS: { id: CodeLang; label: string; color: string }[] = [
   { id: 'html', label: 'index.html', color: 'bg-orange-500' },
   { id: 'css', label: 'styles.css', color: 'bg-sky-500' },
   { id: 'js', label: 'script.js', color: 'bg-amber-400' },
@@ -135,11 +135,18 @@ function GutteredInput({
 export default function CodeEditor({
   initial,
   onChange,
+  languages,
+  defaultTab,
 }: {
   initial: CodeDoc;
   onChange: (doc: CodeDoc) => void;
+  /** Restrict the visible files; defaults to the full three-tab project. */
+  languages?: CodeLang[];
+  /** Open on this file when it is visible (a CSS lab should not start on HTML). */
+  defaultTab?: CodeLang;
 }) {
-  const [tab, setTab] = useState<CodeLang>('html');
+  const tabs = languages && languages.length > 0 ? TABS.filter((t) => languages.includes(t.id)) : TABS;
+  const [tab, setTab] = useState<CodeLang>(defaultTab && tabs.some((t) => t.id === defaultTab) ? defaultTab : tabs[0].id);
   const [doc, setDoc] = useState<CodeDoc>(initial);
 
   const set = (lang: CodeLang, value: string) => {
@@ -155,7 +162,7 @@ export default function CodeEditor({
     <View className="overflow-hidden rounded-2xl border-2 border-slate-800 bg-slate-950">
       {/* File tabs */}
       <View className="flex-row border-b border-slate-800 bg-slate-900">
-        {TABS.map((t) => {
+        {tabs.map((t) => {
           const active = tab === t.id;
           return (
             <Pressable

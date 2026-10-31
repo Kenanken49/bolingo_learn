@@ -5,7 +5,7 @@
  * habits throughout. All original.
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_DB: Record<string, CourseLesson> = {
   'db-tables-keys': {
@@ -358,6 +358,15 @@ export const TRACK_DB: Record<string, CourseLesson> = {
         ],
         'Columns, filter, sort — read it in clause order.'
       ),
+      TEXT(
+        'Write the SQL that returns the name column for characters with volume greater than 5, sorted A to Z.',
+        [
+          'SELECT name FROM characters WHERE volume > 5 ORDER BY name;',
+          'SELECT name FROM characters WHERE volume > 5 ORDER BY name ASC;',
+        ],
+        'Clause order is fixed: SELECT the column, FROM the table, WHERE the row filter, ORDER BY the sort. ASC is the default, so both queries are equivalent.',
+        { placeholder: 'Type the full query', misconceptions: { 'SELECT * FROM characters ORDER BY name': 'That returns every column and never filters volume > 5.' } }
+      ),
     ],
   },
 
@@ -535,6 +544,12 @@ export const TRACK_DB: Record<string, CourseLesson> = {
         'Reject — never concatenate input into SQL',
         ['Reject — never concatenate input into SQL', 'Accept as international', 'Trim and store it', 'Book every service'],
         'Hostile input, safe refusal.'
+      ),
+      TEXT(
+        'Type the SQL clause that sorts students by grade, highest first.',
+        ['ORDER BY grade DESC'],
+        'ORDER BY sorts the result; DESC puts the highest grade first. Parameterize the input, but the clause itself is static SQL.',
+        { misconceptions: { 'ORDER BY grade ASC': 'ASC is lowest first. Use DESC for highest first.' } }
       ),
     ],
   },

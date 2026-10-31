@@ -25,8 +25,10 @@ sent to a transcription provider.
    - **Deepgram (recommended):** the function creates a one-hour signed URL for
      the private object and posts it to `POST /v1/listen`. Deepgram fetches the
      object itself, so no multi-GB video is downloaded into the Edge Function.
-   - **OpenAI-compatible:** the function downloads the bytes and posts
-     multipart to `/audio/transcriptions`. Limited to 25 MB per request.
+   - **OpenAI-compatible:** the function reads the object's size from Storage
+     metadata first, so an oversized recording fails with the limit instead of
+     being downloaded, then posts the bytes multipart to
+     `/audio/transcriptions`. Limited to 25 MB per request.
 5. The transcript is written to the upload row (`transcript`,
    `transcript_provider`, `transcript_model`, `transcript_language`,
    `transcript_duration_seconds`, `transcribed_at`) **before** curation. A
@@ -102,11 +104,15 @@ not require ffmpeg in this project.
    supabase secrets set TRANSCRIBE_API_KEY=<key> TRANSCRIBE_BASE_URL=https://api.groq.com/openai/v1 TRANSCRIBE_MODEL=whisper-large-v3
    ```
 
-3. Deploy the function:
+3. Deploy the function with the voice preflight gate:
 
    ```bash
-   supabase functions deploy process-upload
+   npm run deploy:process-upload
    ```
+
+   If the configured audiobook voice is a cloned/professional voice, set
+   `TTS_CONSENT_RECORD` to a completed, active record first; see
+   [audiobook-voice.md](audiobook-voice.md#cloned-voice-consent-record).
 
 4. In the app, sign in as Premium, open **AI Sandbox**, pick an owned clip,
    tick all four rights items and upload. The uploads screen shows
@@ -138,6 +144,7 @@ stubs: Deepgram signed-URL requests (model, smart formatting, language
 detection, `Token` auth, JSON URL body), OpenAI multipart requests (file, model,
 `verbose_json`), success parsing, 401 and size-limit failures, empty
 transcripts, provider inference and missing-key config errors. It also asserts
-the Edge Function gates attestation before transcription, caches the transcript
-columns, and that the UI, schema, migration, env example and this document
-stay wired together. No network call is made and no credits are spent.
+the Edge Function gates attestation before transcription, checks the object
+size before downloading for the 25 MB path, caches the transcript columns, and
+that the UI, schema, migration, env example and this document stay wired
+together. No network call is made and no credits are spent.

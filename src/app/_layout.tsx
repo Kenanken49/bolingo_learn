@@ -11,14 +11,21 @@ import {
   Roboto_700Bold,
   Roboto_800ExtraBold,
 } from '@expo-google-fonts/roboto';
-import { useColorScheme } from 'nativewind';
+import { cssInterop, useColorScheme } from 'nativewind';
+import Animated from 'react-native-reanimated';
 import { initTheme, useTheme } from '../../lib/theme';
 import { configureReminderHandler, ensureReminderScheduled } from '../../lib/reminders';
 import { themeForPath } from '../../lib/jungle';
 import ExpeditionBackdrop from '../../components/jungle/ExpeditionBackdrop';
+import { initTelemetry, trackScreen } from '../../lib/telemetry';
 
 // Hold the splash until Roboto is ready — no FOUT swap from the OS face.
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+// Reanimated's views skip NativeWind's automatic interop, which silently drops
+// className backgrounds on every Animated.View (combo banner, quiz feedback,
+// level-up card). Register the mapping once at startup.
+cssInterop(Animated.View, { className: 'style' });
 
 /** Pushes the persisted appearance (light/dark) into NativeWind's class
  *  strategy, so every `dark:` variant flips the instant Settings changes. */
@@ -61,6 +68,14 @@ export default function RootLayout() {
     configureReminderHandler();
     void ensureReminderScheduled();
   }, []);
+  // Anonymous, privacy-bounded product diagnostics for the owner console.
+  // The Settings opt-out clears the queue immediately (lib/telemetry.ts).
+  useEffect(() => {
+    void initTelemetry();
+  }, []);
+  useEffect(() => {
+    trackScreen(pathname);
+  }, [pathname]);
   if (!fontsLoaded) return null;
   const dark = theme === 'dark';
   // React Navigation paints its scene container with the navigation theme's
@@ -97,6 +112,7 @@ export default function RootLayout() {
       <Stack.Screen name="auth" options={{ presentation: 'modal' }} />
       <Stack.Screen name="uploads" />
       <Stack.Screen name="settings" />
+      <Stack.Screen name="admin" />
       <Stack.Screen name="results" />
       <Stack.Screen name="leaderboard" />
       <Stack.Screen name="curriculum/[unitId]" />

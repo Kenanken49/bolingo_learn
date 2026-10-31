@@ -305,3 +305,9 @@ explains it and the lesson stays playable.
    `___`, quotes, glosses or markup. A temporary `/pronounce-check` route was
    used for this during development (314 questions, 0 issues); recreate it from
    `phraseForQuestion()` if the banks change substantially.
+9. Cold TTS session: `npm run check:cold-tts` (also in `npm test`). It runs the
+   real `speakAs` path against an Android voice list that arrives 2.5 s late and
+   asserts the **first** of the 15 phrases in the three new Swahili lessons uses
+   Livia's native `sw-*` voice, then the remaining 14 reuse it. Shortening the
+   native cold-start budget below 2.5 s fails the check — that is the regression
+   it guards, so the first phrase never falls back to the engine's default voice.

@@ -22,6 +22,7 @@ import {
 import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
+import { LABEX_COUNT } from '../../lib/labex';
 import { GOALS, firstBlockForGoal, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
 import { getDailyMinutes, setDailyMinutes, DAILY_MINUTES_OPTIONS, outcomeForMinutes, getSelectedCourse, setSelectedCourse, getWeeklyDays, getAmbientOn, setAmbientOn } from '../../lib/preferences';
 import { levelForXp } from '../../lib/levels';
@@ -546,7 +547,7 @@ export default function PathMap() {
       return;
     }
     if (!picked) {
-      setSandboxMsg('Pick a PDF, text file, or photo first.');
+      setSandboxMsg('Pick a file first — PDF, text, photo, audio or video.');
       return;
     }
     const media = isMediaUpload(picked.name, picked.mime);
@@ -1345,6 +1346,50 @@ export default function PathMap() {
             </View>
           ) : (
             <View style={{ marginBottom: 30, width: '100%', maxWidth: 384 }}>
+              {/* Licensed LabEx corpus: hundreds of hands-on labs, kept out of
+                  the path itself so the map stays a curated course. */}
+              <Pressable
+                onPress={() => router.push('/labs')}
+                accessibilityRole="button"
+                accessibilityLabel={`Open Labs: ${LABEX_COUNT} licensed hands-on labs`}
+                style={({ pressed }) => ({
+                  marginBottom: 20,
+                  width: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderRadius: 22,
+                  borderWidth: 1,
+                  borderColor: p.line,
+                  backgroundColor: p.surface,
+                  padding: 14,
+                  opacity: pressed ? 0.96 : 1,
+                })}
+              >
+                <View
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 16,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: p.teal,
+                  }}
+                >
+                  <AppIcon name="flask" size={22} color={p.isDark ? '#0D120B' : '#FFFDF8'} />
+                </View>
+                <View style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Text style={{ fontSize: 14.5, fontWeight: '800', color: p.ink }}>Open Labs</Text>
+                    <View style={{ borderRadius: 99, backgroundColor: p.honey, paddingHorizontal: 6, paddingVertical: 1 }}>
+                      <Text style={{ fontSize: 8.5, fontWeight: '800', letterSpacing: 0.6, color: '#0D120B' }}>NEW</Text>
+                    </View>
+                  </View>
+                  <Text style={{ marginTop: 3, fontSize: 11.5, fontWeight: '600', color: p.muted }} numberOfLines={2}>
+                    {LABEX_COUNT.toLocaleString()} licensed hands-on labs · CSS, JS, Python, Rust, Go, data science
+                  </Text>
+                </View>
+                <AppIcon name="chevRight" size={20} color={p.stone} />
+              </Pressable>
               <Text style={{ fontSize: 20, fontWeight: '800', color: p.ink }}>
                 Your courses
               </Text>

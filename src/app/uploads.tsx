@@ -83,7 +83,7 @@ export default function Uploads() {
     const paths = [u.file_url ?? `${userId}/${u.file_name}`];
     try {
       const { data: linked } = await supabase.from('lessons').select('id').eq('upload_source_id', u.id);
-      for (const row of ((linked as Array<{ id: number }> | null) ?? [])) {
+      for (const row of ((linked as { id: number }[] | null) ?? [])) {
         paths.push(`${userId}/audio/${row.id}.mp3`);
         const { data: segs } = await supabase.storage.from('user-materials').list(`${userId}/audio/${row.id}`);
         for (const f of segs ?? []) paths.push(`${userId}/audio/${row.id}/${f.name}`);
@@ -164,7 +164,7 @@ export default function Uploads() {
         <AppIcon name="book" size={26} color="#0F172A" />
         <Text className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">My uploads</Text>
       </View>
-      <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">Every file you've sent to the AI Sandbox.</Text>
+      <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">Every file you’ve sent to the AI Sandbox.</Text>
       {uploads.some((x) => x.status === 'failed') && (
         <Pressable onPress={clearFailed} disabled={clearing} className="mt-3 rounded-2xl bg-red-50 dark:bg-red-950 px-4 py-2">
           <View className="flex-row items-center justify-center gap-1.5">
@@ -208,7 +208,8 @@ export default function Uploads() {
                   <Text className={`text-xs font-bold ${s.text}`}>● {statusLabel}</Text>
                 </View>
                 <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">{new Date(u.created_at).toLocaleString()}</Text>
-                {u.status === 'failed' && u.error ? (                  <View className="mt-1 flex-row items-start gap-1">
+                {u.status === 'failed' && u.error ? (
+                  <View className="mt-1 flex-row items-start gap-1">
                     <AppIcon name="alert" size={13} color="#EF4444" />
                     <Text className="flex-1 text-xs leading-4 text-red-500 dark:text-red-400" numberOfLines={3}>
                       {u.error}

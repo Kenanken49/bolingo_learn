@@ -4,7 +4,7 @@
  * beginner-German (A1) syllabi. Merged into LANGUAGE_COURSES in
  * lib/languages.ts — quiz, SRS, and guidebook work unchanged.
  */
-import { MCQ, BUILD, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
 
 export const GERMAN_PLUS: Record<string, CourseLesson> = {
   'german-greetings': {
@@ -334,6 +334,23 @@ export const GERMAN_PLUS: Record<string, CourseLesson> = {
         ['Wo', 'ist', 'Bahnhof'],
         ['Bahnhof', 'Wo', 'der', 'ist'],
         'Wo ist…? + place. Der Bahnhof = the station.'
+      ),
+      MCQ(
+        'At a Berlin ticket machine, you need one ticket to the city centre. Which is most natural?',
+        'Eine Fahrkarte ins Zentrum, bitte. Was kostet das?',
+        [
+          'Eine Fahrkarte ins Zentrum, bitte. Was kostet das?',
+          'Ich Fahrkarte Zentrum.',
+          'Fahrkarte bitte billig.',
+          'Wo ist die Fahrkarte?',
+        ],
+        'Name the ticket, add bitte, then ask Was kostet das? — the everyday polite pattern.'
+      ),
+      TEXT(
+        'Type the German for “I don’t understand.”',
+        ['Ich verstehe nicht.'],
+        'The verb goes second in a main clause: Ich verstehe nicht. Nicht follows the verb it negates.',
+        { misconceptions: { 'Ich nicht verstehe': 'German keeps the verb in second position: Ich verstehe nicht.' } }
       ),
     ],
   },

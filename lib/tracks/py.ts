@@ -4,7 +4,7 @@
  * stack, then dates and strings, and formatting/validation last. All original.
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_PY: Record<string, CourseLesson> = {
   'py-basics': {
@@ -328,6 +328,17 @@ export const TRACK_PY: Record<string, CourseLesson> = {
         ],
         'self carries the instance state.'
       ),
+      TEXT(
+        'Write the Python expression that totals item["amount"] for every record in self.ledger.',
+        [
+          'sum(item["amount"] for item in self.ledger)',
+          "sum(item['amount'] for item in self.ledger)",
+          'sum([item["amount"] for item in self.ledger])',
+          "sum([item['amount'] for item in self.ledger])",
+        ],
+        'sum() takes any iterable; a generator expression keeps the ledger in memory and adds each amount as it goes. The list-comprehension variants are equivalent, just eager.',
+        { placeholder: 'Type one Python expression', misconceptions: { 'sum(self.ledger)': 'Each record is a dict, not a number — sum would fail on the dicts.' } }
+      ),
     ],
   },
 
@@ -549,6 +560,12 @@ export const TRACK_PY: Record<string, CourseLesson> = {
         'Return the too-many error, arrange nothing',
         ['Return the too-many error, arrange nothing', 'Arrange 5 silently', 'Squeeze narrower', 'Ask the user'],
         'Validate first.'
+      ),
+      TEXT(
+        'Type the Python list comprehension that doubles every number in nums.',
+        ['[n * 2 for n in nums]', '[n*2 for n in nums]'],
+        'A list comprehension puts the expression first, then the loop: [n * 2 for n in nums]. It preserves order and returns a new list.',
+        { misconceptions: { '[for n in nums: n * 2]': 'The expression comes before the loop; a colon belongs to a regular for-loop.' } }
       ),
     ],
   },

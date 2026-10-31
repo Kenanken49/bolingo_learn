@@ -1,0 +1,54 @@
+{
+  "kind": "published-language-lessons-offline",
+  "note": "Release snapshot of reviewed transcript lessons. This is the offline fallback used when the language catalog cannot be read; Supabase remains authoritative when it answers. Update this file when a transcript lesson is published or its reviewed content changes.",
+  "lessons": [
+    {
+      "id": "swahili-fsi-01",
+      "courseId": "swahili",
+      "title": "FSI 1 · Morning greetings",
+      "position": 101,
+      "sourceId": "fsi-swahili-basic-course",
+      "reviewedAt": "2026-10-30",
+      "theory": [
+        "Two men greet each other in the morning. Jambo works at any hour; Habari za asubuhi? asks specifically for the morning's news, and Njema answers that all is well.",
+        "Mutisya: “Jambo, bwana.” — Hello, sir.",
+        "Sangai: “Jambo.” — Hello.",
+        "Mutisya: “Habari za asubuhi?” — How are you this morning?",
+        "Sangai: “Njema.” — Fine.",
+        "Source: Foreign Service Institute (U.S.), Swahili Basic Course, 1963. — Public domain (U.S. Government work). The dialogue is reproduced from the public-domain course transcript; summaries and quiz questions are original Bolingo writing."
+      ],
+      "questions": [
+        {
+          "prompt": "What does “Jambo, bwana.” mean?",
+          "correctChain": ["Hello, sir."],
+          "scrambledTokens": ["Hello, sir.", "Hello.", "How are you this morning?", "Fine."],
+          "explain": "“Jambo, bwana.” means “Hello, sir”."
+        },
+        {
+          "prompt": "Mutisya says “_____, bwana.” Which word completes his greeting?",
+          "correctChain": ["Jambo"],
+          "scrambledTokens": ["Jambo", "Habari", "Njema", "za"],
+          "explain": "Mutisya opens with “Jambo, bwana.” — Hello, sir. Habari is also a greeting, but it is not the word in this line."
+        },
+        {
+          "prompt": "Which line answers “Habari za asubuhi?” in this dialogue?",
+          "correctChain": ["Njema."],
+          "scrambledTokens": ["Njema.", "Jambo, bwana.", "Jambo.", "Habari za asubuhi?"],
+          "explain": "In the dialogue, “Habari za asubuhi?” is answered by “Njema.” — Fine."
+        },
+        {
+          "prompt": "What does “Habari za asubuhi?” mean?",
+          "correctChain": ["How are you this morning?"],
+          "scrambledTokens": ["How are you this morning?", "Hello, sir.", "Hello.", "Fine."],
+          "explain": "“Habari za asubuhi?” means “How are you this morning”."
+        },
+        {
+          "prompt": "Say “Fine.” in Swahili:",
+          "correctChain": ["Njema"],
+          "scrambledTokens": ["Njema", "Jambo", "bwana", "Habari"],
+          "explain": "“Njema.” — Fine."
+        }
+      ]
+    }
+  ]
+}

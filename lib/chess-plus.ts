@@ -5,7 +5,7 @@
  * tactics, and positional strategy. Merged into LANGUAGE_COURSES in
  * lib/languages.ts — quiz, SRS, and guidebook work unchanged.
  */
-import { MCQ, BUILD, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
 
 export const CHESS_PLUS: Record<string, CourseLesson> = {
   'chess-openings': {
@@ -253,6 +253,23 @@ export const CHESS_PLUS: Record<string, CourseLesson> = {
         ['Edge'],
         ['Center', 'Edge', 'Corner square only', 'Back rank'],
         'Push to the rim and finish. Technique beats hope.'
+      ),
+      MCQ(
+        'You have a passed pawn on the seventh rank and rooks on the board. What is the strongest plan?',
+        'Support promotion with your rook behind the pawn.',
+        [
+          'Support promotion with your rook behind the pawn.',
+          'Trade rooks immediately and race the king.',
+          'Move the pawn sideways to safety.',
+          'Offer a draw before promoting.',
+        ],
+        'A passed pawn on the seventh is a winning threat: put the rook behind it, escort it, and force the defender to give way.'
+      ),
+      TEXT(
+        'Type the notation for queenside castling.',
+        ['O-O-O', '0-0-0'],
+        'Queenside castling is O-O-O (three symbols); kingside is O-O. Use letter O, not zero, in standard notation.',
+        { misconceptions: { 'O-O': 'O-O is kingside castling. Queenside has three symbols: O-O-O.' } }
       ),
     ],
   },

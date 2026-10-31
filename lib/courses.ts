@@ -7,7 +7,7 @@
  * `explain` shows in the feedback banner so every answer teaches.
  */
 
-import { MCQ, BUILD, validateBank, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, CODE, validateBank, type CourseLesson } from './quizBank';
 import { LANGUAGE_COURSES } from './languages';
 import { TRACK_RWD } from './tracks/rwd';
 import { TRACK_JS } from './tracks/js';
@@ -19,6 +19,7 @@ import { TRACK_SECML } from './tracks/secml';
 import { TRACK_LINUX_GRASSHOPPER } from './tracks/linux-grasshopper';
 import { TRACK_LINUX_JOURNEYMAN } from './tracks/linux-journeyman';
 import { TRACK_LINUX_NETWORKING } from './tracks/linux-networking';
+import { LINUX_ASSESSMENTS } from './linuxAssessments';
 
 export type { CourseQuestion, CourseLesson } from './quizBank';
 
@@ -141,6 +142,45 @@ export const COURSES: Record<string, CourseLesson> = {
         ['<p>', 'Come back soon', '</p>', '<h2>', '</h2>'],
         'Pages stack as many <p> blocks as the story needs.'
       ),
+      CODE(
+        'Build the whole lab page in index.html: one h1 reading “My Site”, an h2 reading “About”, a paragraph containing “Welcome here”, and a bullet list with three items.',
+        {
+          language: 'html',
+          starter: '<h1>My Site</h1>\n<!-- Add the h2, paragraph and list below. -->\n',
+          tests: [
+            {
+              id: 'h1',
+              label: 'Exactly one h1 reads “My Site”',
+              run: "document.querySelectorAll('h1').length === 1 && document.querySelector('h1').textContent.trim() === 'My Site'",
+              hint: 'Keep one top-level heading; the page title belongs there.',
+              pattern: '<h1[^>]*>\\s*My Site\\s*</h1>',
+            },
+            {
+              id: 'h2',
+              label: 'An h2 reads “About”',
+              run: "Array.from(document.querySelectorAll('h2')).some(function (h) { return h.textContent.trim() === 'About'; })",
+              hint: 'Add <h2>About</h2> under the main heading.',
+              pattern: '<h2[^>]*>\\s*About\\s*</h2>',
+            },
+            {
+              id: 'paragraph',
+              label: 'A paragraph contains “Welcome here”',
+              run: "Array.from(document.querySelectorAll('p')).some(function (p) { return p.textContent.indexOf('Welcome here') !== -1; })",
+              hint: 'Wrap the sentence in a <p> element.',
+              pattern: '<p[^>]*>[^<]*Welcome here',
+            },
+            {
+              id: 'list',
+              label: 'A ul contains at least three li items',
+              run: "Array.from(document.querySelectorAll('ul')).some(function (ul) { return ul.querySelectorAll('li').length >= 3; })",
+              hint: 'One <ul> with three <li> children.',
+              pattern: '<ul[\\s\\S]*<li[\\s\\S]*<li[\\s\\S]*<li',
+            },
+          ],
+        },
+        '<h1>My Site</h1>\n<h2>About</h2>\n<p>Welcome here</p>\n<ul><li>Fast</li><li>Friendly</li><li>Free</li></ul>',
+        'This is the same page the token steps described — now every element is in one document, checked by a real DOM. One h1 names the page, h2 sections it, p carries prose, and ul > li groups scannable facts.'
+      ),
     ],
   },
 
@@ -178,6 +218,38 @@ export const COURSES: Record<string, CourseLesson> = {
         '<p>',
         ['<p>', '<pg>', '<para>', '<div>'],
         '<p> is the paragraph element. <div> is a generic container.'
+      ),
+      CODE(
+        'Build a small article: one h1 “Field Notes”, a paragraph with at least 20 characters, and a link whose href starts with https://.',
+        {
+          language: 'html',
+          starter: '<h1>Field Notes</h1>\n<!-- Add a paragraph and a real link. -->\n',
+          tests: [
+            {
+              id: 'heading',
+              label: 'Exactly one h1 reads “Field Notes”',
+              run: "document.querySelectorAll('h1').length === 1 && document.querySelector('h1').textContent.trim() === 'Field Notes'",
+              hint: 'One page, one top heading.',
+              pattern: '<h1[^>]*>\\s*Field Notes\\s*</h1>',
+            },
+            {
+              id: 'prose',
+              label: 'A paragraph has at least 20 characters',
+              run: "Array.from(document.querySelectorAll('p')).some(function (p) { return p.textContent.trim().length >= 20; })",
+              hint: 'Write a real sentence, not a placeholder.',
+              pattern: '<p[^>]*>[^<]{20,}</p>',
+            },
+            {
+              id: 'link',
+              label: 'A link has an https destination and visible text',
+              run: "Array.from(document.querySelectorAll('a')).some(function (a) { return /^https:\\/\\//.test(a.getAttribute('href') || '') && a.textContent.trim().length > 0; })",
+              hint: 'Use <a href="https://…">Read more</a>.',
+              pattern: '<a[^>]*href\\s*=\\s*"https://[^"]+"[^>]*>[^<]+</a>',
+            },
+          ],
+        },
+        '<h1>Field Notes</h1>\n<p>Three things I learned while building this page today.</p>\n<a href="https://developer.mozilla.org">Read more</a>',
+        'Structure, prose, and a real destination: the heading names the page, the paragraph carries meaning, and the anchor gives the reader somewhere useful to go.'
       ),
     ],
   },
@@ -336,6 +408,131 @@ export const COURSES: Record<string, CourseLesson> = {
         ['name="value" inside the opening tag', 'Content between tags', 'Separate closing tags', 'CSS rules'],
         'Attributes configure the element: src, href, alt all follow this shape.'
       ),
+      CODE(
+        'Build a linked card: a nav with two anchors, an image with descriptive alt text, and a ul with at least two items.',
+        {
+          language: 'html',
+          starter: '<nav>\n  <!-- Add two real links. -->\n</nav>\n<!-- Add the image and list. -->\n',
+          tests: [
+            {
+              id: 'nav',
+              label: 'A nav contains at least two links with hrefs',
+              run: "!!document.querySelector('nav') && document.querySelector('nav').querySelectorAll('a[href]').length >= 2",
+              hint: 'Put two <a href="…"> links inside <nav>.',
+              pattern: '<nav[\\s\\S]*<a[^>]*href[\\s\\S]*<a[^>]*href',
+            },
+            {
+              id: 'image',
+              label: 'An image has non-empty alt text',
+              run: "Array.from(document.images).some(function (img) { return img.alt.trim().length > 0; })",
+              hint: 'Describe the image: alt="A finished project on a desk".',
+              pattern: '<img[^>]*alt\\s*=\\s*"[^"]+"[^>]*>',
+            },
+            {
+              id: 'list',
+              label: 'A ul has at least two items',
+              run: "Array.from(document.querySelectorAll('ul')).some(function (ul) { return ul.querySelectorAll('li').length >= 2; })",
+              hint: 'Use ul > li for the list.',
+              pattern: '<ul[\\s\\S]*<li[\\s\\S]*<li',
+            },
+          ],
+        },
+        '<nav><a href="#work">Work</a><a href="#contact">Contact</a></nav>\n<img src="work.jpg" alt="A finished project on a desk">\n<ul><li>Fast</li><li>Accessible</li></ul>',
+        'Links need destinations, images need alt text, and lists need list items. The live DOM checks each relationship, not just the presence of a tag name.'
+      ),
+    ],
+  },
+
+  'html-final': {
+    id: 'html-final',
+    title: 'HTML Final Exam',
+    theory: [
+      'Final exam: prove you can read and write the HTML that real pages are built from. Expect structure, attributes, accessibility, links, images, and lists — not trivia.',
+      'Aim for 80% first-try mastery. After the exam, the recipe card capstone puts every one of these skills into a page you can keep.',
+    ],
+    questions: [
+      MCQ(
+        'Which attribute gives an image a text alternative for screen readers?',
+        'alt',
+        ['alt', 'src', 'title', 'href'],
+        'Alt text is the accessible name of an image; src is only the file location.'
+      ),
+      BUILD(
+        'Link to /recipes with the visible label: Recipes',
+        ['<a', 'href="/recipes">', 'Recipes', '</a>'],
+        ['<a', 'href="/recipes">', 'Recipes', '</a>', '<link>'],
+        'An anchor needs href for the destination and text between the tags for the label.'
+      ),
+      MCQ(
+        'Which element is the semantic landmark for a page’s primary navigation?',
+        '<nav>',
+        ['<nav>', '<div>', '<menu>', '<header>'],
+        'Use <nav> for major navigation groups so assistive technology can jump straight to them.'
+      ),
+      BUILD(
+        'Build an ordered list with two steps: Mix, then Bake',
+        ['<ol>', '<li>', 'Mix', '</li>', '<li>', 'Bake', '</li>', '</ol>'],
+        ['<ol>', '<li>', 'Mix', '</li>', '<li>', 'Bake', '</li>', '</ol>', '<ul>'],
+        'Ordered lists use <ol>; each item closes before the next one opens.'
+      ),
+      MCQ(
+        'Which element wraps a word inside a sentence without starting a new block?',
+        '<span>',
+        ['<span>', '<div>', '<p>', '<section>'],
+        'Span is inline; div, p, and section are block containers.'
+      ),
+      BUILD(
+        'Wrap the main content in the main landmark',
+        ['<main>', 'Content', '</main>'],
+        ['<main>', 'Content', '</main>', '<div>'],
+        'The main landmark identifies the primary content of the page.'
+      ),
+      CODE(
+        'Ship a complete recipe card: one h1, an image with descriptive alt text, an ingredients ul with three li items, an ordered steps list with two li items, and a source link.',
+        {
+          language: 'html',
+          starter: '<h1>Tomato Soup</h1>\n<!-- Build the image, ingredient list, steps and source. -->\n',
+          tests: [
+            {
+              id: 'title',
+              label: 'Exactly one h1 names the recipe',
+              run: "document.querySelectorAll('h1').length === 1 && document.querySelector('h1').textContent.trim().length > 0",
+              hint: 'Keep a single top heading with the dish name.',
+              pattern: '<h1[^>]*>[^<]+</h1>',
+            },
+            {
+              id: 'image',
+              label: 'An image has non-empty alt text',
+              run: "Array.from(document.images).some(function (img) { return img.alt.trim().length > 0; })",
+              hint: 'Describe what the image shows: alt="A bowl of tomato soup".',
+              pattern: '<img[^>]*alt\\s*=\\s*"[^"]+"[^>]*>',
+            },
+            {
+              id: 'ingredients',
+              label: 'A ul holds at least three ingredients',
+              run: "Array.from(document.querySelectorAll('ul')).some(function (ul) { return ul.querySelectorAll('li').length >= 3; })",
+              hint: 'Ingredients are unordered: ul > three li.',
+              pattern: '<ul[\\s\\S]*<li[\\s\\S]*<li[\\s\\S]*<li',
+            },
+            {
+              id: 'steps',
+              label: 'An ol holds at least two ordered steps',
+              run: "Array.from(document.querySelectorAll('ol')).some(function (ol) { return ol.querySelectorAll('li').length >= 2; })",
+              hint: 'Cooking steps are ordered: ol > li.',
+              pattern: '<ol[\\s\\S]*<li[\\s\\S]*<li',
+            },
+            {
+              id: 'source',
+              label: 'A source link has a real href',
+              run: "Array.from(document.querySelectorAll('a')).some(function (a) { return !!a.getAttribute('href') && a.textContent.trim().length > 0; })",
+              hint: 'Credit the recipe with an anchor and a destination.',
+              pattern: '<a[^>]*href\\s*=\\s*"[^"]+"[^>]*>[^<]+</a>',
+            },
+          ],
+        },
+        '<h1>Tomato Soup</h1>\n<img src="soup.jpg" alt="A bowl of tomato soup with basil">\n<h2>Ingredients</h2>\n<ul><li>Tomatoes</li><li>Stock</li><li>Basil</li></ul>\n<h2>Method</h2>\n<ol><li>Simmer the tomatoes.</li><li>Blend and season.</li></ol>\n<a href="https://example.com/soup">Source</a>',
+        'This is the capstone in miniature. One h1 names the recipe, alt text makes the photo accessible, ul groups ingredients, ol sequences steps, and the source link keeps the work honest.'
+      ),
     ],
   },
 
@@ -457,6 +654,48 @@ export const COURSES: Record<string, CourseLesson> = {
         ['#hero', '{', 'text-align', ':', 'center', ';', '}', '.hero'],
         'Hash hooks the one hero; centered text frames it.'
       ),
+      CODE(
+        'Style the fixture: center the h1 in navy (#0f172a), set .lead to 18px, and give .button a 44px minimum height.',
+        {
+          language: 'css',
+          starter: '/* Style the fixture without editing its HTML. */\n',
+          fixture: {
+            html: '<div id="hero">\n  <h1>Launch</h1>\n  <p class="lead">A clear first sentence.</p>\n  <a class="button" href="#start">Start</a>\n</div>\n',
+          },
+          tests: [
+            {
+              id: 'center',
+              label: 'The h1 is centered',
+              run: "getComputedStyle(document.querySelector('h1')).textAlign === 'center'",
+              hint: 'h1 { text-align: center; }',
+              pattern: 'h1\\s*\\{[^}]*text-align\\s*:\\s*center',
+            },
+            {
+              id: 'navy',
+              label: 'The h1 is navy (#0f172a)',
+              run: "getComputedStyle(document.querySelector('h1')).color === 'rgb(15, 23, 42)'",
+              hint: 'Use the exact color #0f172a on h1.',
+              pattern: 'h1\\s*\\{[^}]*color\\s*:\\s*#0f172a',
+            },
+            {
+              id: 'lead',
+              label: '.lead renders at 18px',
+              run: "getComputedStyle(document.querySelector('.lead')).fontSize === '18px'",
+              hint: '.lead { font-size: 18px; }',
+              pattern: '\\.lead\\s*\\{[^}]*font-size\\s*:\\s*18px',
+            },
+            {
+              id: 'tap',
+              label: '.button is at least 44px tall',
+              run: "getComputedStyle(document.querySelector('.button')).minHeight === '44px'",
+              hint: '.button { min-height: 44px; } — the accessible tap target.',
+              pattern: '\\.button\\s*\\{[^}]*min-height\\s*:\\s*44px',
+            },
+          ],
+        },
+        'h1 { text-align: center; color: #0f172a; }\n.lead { font-size: 18px; }\n.button { min-height: 44px; display: inline-flex; align-items: center; }',
+        'CSS is applied through selectors, not by rewriting the HTML. The h1 rule controls alignment and color; the class rules style the two elements that need different treatment. The 44px floor is an accessibility requirement, not a design preference.'
+      ),
     ],
   },
 
@@ -494,6 +733,39 @@ export const COURSES: Record<string, CourseLesson> = {
         'The next declaration to break',
         ['The next declaration to break', 'Nothing — optional', 'The page to go blank', 'Faster loading'],
         'The parser merges the lines; always terminate with a semicolon.'
+      ),
+      CODE(
+        'Style the card: 16px padding, a 12px border radius, and a 1px solid #cbd5e1 border.',
+        {
+          language: 'css',
+          starter: '/* .card is the element to style. */\n',
+          fixture: { html: '<article class="card">A small, readable card.</article>\n' },
+          tests: [
+            {
+              id: 'padding',
+              label: '.card has 16px padding',
+              run: "getComputedStyle(document.querySelector('.card')).paddingTop === '16px'",
+              hint: 'padding: 16px;',
+              pattern: '\\.card\\s*\\{[^}]*padding\\s*:\\s*16px',
+            },
+            {
+              id: 'radius',
+              label: '.card has a 12px border radius',
+              run: "getComputedStyle(document.querySelector('.card')).borderTopLeftRadius === '12px'",
+              hint: 'border-radius: 12px;',
+              pattern: '\\.card\\s*\\{[^}]*border-radius\\s*:\\s*12px',
+            },
+            {
+              id: 'border',
+              label: '.card has a 1px solid border',
+              run: "getComputedStyle(document.querySelector('.card')).borderTopWidth === '1px' && getComputedStyle(document.querySelector('.card')).borderTopStyle === 'solid'",
+              hint: 'border: 1px solid #cbd5e1;',
+              pattern: '\\.card\\s*\\{[^}]*border\\s*:\\s*1px\\s+solid',
+            },
+          ],
+        },
+        '.card { padding: 16px; border-radius: 12px; border: 1px solid #cbd5e1; }',
+        'Three declarations, three visual jobs: padding makes the interior breathe, radius softens the box, and the border separates the card from its background. CSS checks read the computed result, so a rule hidden in a comment cannot pass.'
       ),
     ],
   },
@@ -573,6 +845,46 @@ export const COURSES: Record<string, CourseLesson> = {
         'Flow onto new lines when space runs out',
         ['Flow onto new lines when space runs out', 'Shrink to zero', 'Overflow invisibly', 'Become columns'],
         'Wrapping is what makes flex grids responsive.'
+      ),
+      CODE(
+        'Lay out the nav: display flex, space items apart, 12px gaps, and wrap to a new line on narrow screens.',
+        {
+          language: 'css',
+          starter: '/* .nav is already in the fixture. */\n',
+          fixture: { html: '<nav class="nav"><a href="#home">Home</a><a href="#docs">Docs</a><a href="#pricing">Pricing</a></nav>\n' },
+          tests: [
+            {
+              id: 'flex',
+              label: '.nav is a flex container',
+              run: "getComputedStyle(document.querySelector('.nav')).display === 'flex'",
+              hint: '.nav { display: flex; }',
+              pattern: '\\.nav\\s*\\{[^}]*display\\s*:\\s*flex',
+            },
+            {
+              id: 'spacing',
+              label: 'Items spread across the row',
+              run: "getComputedStyle(document.querySelector('.nav')).justifyContent === 'space-between'",
+              hint: 'justify-content: space-between;',
+              pattern: '\\.nav\\s*\\{[^}]*justify-content\\s*:\\s*space-between',
+            },
+            {
+              id: 'gap',
+              label: 'The row has a 12px gap',
+              run: "getComputedStyle(document.querySelector('.nav')).gap === '12px'",
+              hint: 'gap: 12px;',
+              pattern: '\\.nav\\s*\\{[^}]*gap\\s*:\\s*12px',
+            },
+            {
+              id: 'wrap',
+              label: 'The nav can wrap',
+              run: "getComputedStyle(document.querySelector('.nav')).flexWrap === 'wrap'",
+              hint: 'flex-wrap: wrap;',
+              pattern: '\\.nav\\s*\\{[^}]*flex-wrap\\s*:\\s*wrap',
+            },
+          ],
+        },
+        '.nav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }',
+        'Flexbox is four decisions: the container (display), distribution along the main axis (justify-content), interior spacing (gap), and what happens when space runs out (wrap). All four are verified from computed styles.'
       ),
     ],
   },
@@ -725,6 +1037,39 @@ export const COURSES: Record<string, CourseLesson> = {
         ['a', '{', 'text-decoration', ':', 'underline', ';', '}', 'none'],
         "Jakob's law: links should look like the links users already know."
       ),
+      CODE(
+        'Make the call-to-action accessible: a dark navy background, white text, and a 44px minimum height. The fixture supplies the button.',
+        {
+          language: 'css',
+          starter: '/* .cta is already in the fixture. */\n',
+          fixture: { html: '<button class="cta">Start free</button>\n' },
+          tests: [
+            {
+              id: 'background',
+              label: '.cta has a navy background',
+              run: "getComputedStyle(document.querySelector('.cta')).backgroundColor === 'rgb(15, 23, 42)'",
+              hint: 'background: #0f172a;',
+              pattern: '\\.cta\\s*\\{[^}]*background(-color)?\\s*:\\s*#0f172a',
+            },
+            {
+              id: 'text',
+              label: '.cta text is white',
+              run: "getComputedStyle(document.querySelector('.cta')).color === 'rgb(255, 255, 255)'",
+              hint: 'color: #ffffff;',
+              pattern: '\\.cta\\s*\\{[^}]*color\\s*:\\s*#fff(fff)?',
+            },
+            {
+              id: 'target',
+              label: '.cta is at least 44px tall',
+              run: "getComputedStyle(document.querySelector('.cta')).minHeight === '44px'",
+              hint: 'min-height: 44px; — 44 CSS pixels is the accessible touch floor.',
+              pattern: '\\.cta\\s*\\{[^}]*min-height\\s*:\\s*44px',
+            },
+          ],
+        },
+        '.cta { background: #0f172a; color: #ffffff; min-height: 44px; padding: 12px 20px; border: 0; border-radius: 8px; }',
+        'Contrast and target size are not stylistic preferences: white on navy clears WCAG AA for normal text, and 44px keeps the control reachable for thumbs and motor-impaired users.'
+      ),
     ],
   },
 
@@ -763,6 +1108,46 @@ export const COURSES: Record<string, CourseLesson> = {
         ['Groups related items and separates unrelated ones', 'Fills empty areas with decoration', 'Shrinks the page to one screen', 'Replaces all borders and color'],
         'Proximity is the strongest grouping cue — space intentionally.'
       ),
+      CODE(
+        'Repair the fixture: body copy must be near-black (#0f172a) and the .cta button must use white text on the same near-black background with a 44px minimum height.',
+        {
+          language: 'css',
+          starter: '/* Fix contrast and the touch target without editing the HTML. */\n',
+          fixture: { html: '<p class="copy">Readable copy is a design requirement, not a preference.</p>\n<button class="cta">Start free</button>\n' },
+          tests: [
+            {
+              id: 'copy',
+              label: 'The paragraph is near-black',
+              run: "getComputedStyle(document.querySelector('.copy')).color === 'rgb(15, 23, 42)'",
+              hint: '.copy { color: #0f172a; }',
+              pattern: '\\.copy\\s*\\{[^}]*color\\s*:\\s*#0f172a',
+            },
+            {
+              id: 'button-bg',
+              label: 'The button background is near-black',
+              run: "getComputedStyle(document.querySelector('.cta')).backgroundColor === 'rgb(15, 23, 42)'",
+              hint: '.cta { background: #0f172a; }',
+              pattern: '\\.cta\\s*\\{[^}]*background(-color)?\\s*:\\s*#0f172a',
+            },
+            {
+              id: 'button-text',
+              label: 'The button text is white',
+              run: "getComputedStyle(document.querySelector('.cta')).color === 'rgb(255, 255, 255)'",
+              hint: '.cta { color: #ffffff; }',
+              pattern: '\\.cta\\s*\\{[^}]*color\\s*:\\s*#fff(fff)?',
+            },
+            {
+              id: 'target',
+              label: 'The button is at least 44px tall',
+              run: "getComputedStyle(document.querySelector('.cta')).minHeight === '44px'",
+              hint: 'min-height: 44px;',
+              pattern: '\\.cta\\s*\\{[^}]*min-height\\s*:\\s*44px',
+            },
+          ],
+        },
+        '.copy { color: #0f172a; }\n.cta { background: #0f172a; color: #ffffff; min-height: 44px; padding: 12px 20px; border: 0; border-radius: 8px; }',
+        'Contrast and target size are measurable. White on near-black clears WCAG AA for normal text; 44px keeps the control reachable. This is the same audit you would run on a real interface.'
+      ),
     ],
   },
 
@@ -785,6 +1170,9 @@ export const COURSES: Record<string, CourseLesson> = {
   ...TRACK_LINUX_GRASSHOPPER,
   ...TRACK_LINUX_JOURNEYMAN,
   ...TRACK_LINUX_NETWORKING,
+
+  // Course 6 mastery layer: command labs + cumulative finals for each unit.
+  ...LINUX_ASSESSMENTS,
 };
 
 // Fail loudly at import time — a bad seed breaks the bundle, not a session.
@@ -798,9 +1186,11 @@ export function getCourseLesson(id: string): CourseLesson | undefined {
 
 export interface ProjectStory {
   label: string;
-  /** Tested against the raw code with new RegExp(pattern, 'i'). */
+  /** Offline fallback: tested against the raw code with new RegExp(pattern, 'i'). */
   pattern: string;
   hint: string;
+  /** Live-DOM assertion evaluated in the rendered page (beats the regex when present). */
+  check?: string;
 }
 
 export interface CourseProject {
@@ -841,6 +1231,48 @@ export const PROJECTS: Record<string, CourseProject> = {
         label: 'CSS centers the heading',
         pattern: 'h1\\s*\\{[^}]*text-align\\s*:\\s*center',
         hint: 'Add a style block: h1 { text-align: center; }',
+      },
+    ],
+    xp: 50,
+  },
+  'html-project': {
+    id: 'html-project',
+    title: 'Recipe Card Project',
+    brief: [
+      'Build a recipe card from scratch: a clear title, one useful image, ingredients, numbered steps, and a source link.',
+      'Pass every user story, then submit. This is the capstone for Complete HTML and the bridge into styling.',
+    ],
+    starterCode: '<h1>My Recipe</h1>\n<p>Describe the dish in one sentence.</p>\n',
+    stories: [
+      {
+        label: 'A single <h1> names the recipe',
+        pattern: '<h1>[^<]+</h1>',
+        hint: 'Add exactly one <h1>Recipe Name</h1>.',
+      },
+      {
+        label: 'An image with descriptive alt text',
+        pattern: '<img[^>]*alt\\s*=\\s*"[^"]+"[^>]*>',
+        hint: 'Add <img src="dish.jpg" alt="A bowl of tomato soup">.',
+      },
+      {
+        label: 'An ingredients list with at least three items',
+        pattern: '<ul>[\\s\\S]*<li>[^<]+</li>[\\s\\S]*<li>[^<]+</li>[\\s\\S]*<li>[^<]+</li>[\\s\\S]*</ul>',
+        hint: 'Use <ul> with at least three <li> ingredients.',
+      },
+      {
+        label: 'Numbered steps with at least two items',
+        pattern: '<ol>[\\s\\S]*<li>[^<]+</li>[\\s\\S]*<li>[^<]+</li>[\\s\\S]*</ol>',
+        hint: 'Use <ol> for the ordered cooking steps.',
+      },
+      {
+        label: 'A source link',
+        pattern: '<a[^>]*href\\s*=\\s*"[^"]+"[^>]*>[^<]+</a>',
+        hint: 'Credit the recipe with <a href="https://example.com">Source</a>.',
+      },
+      {
+        label: 'A readable line length set in CSS',
+        pattern: 'body\\s*\\{[^}]*max-width\\s*:',
+        hint: 'Add a style block with body { max-width: 60ch; margin: auto; }.',
       },
     ],
     xp: 50,

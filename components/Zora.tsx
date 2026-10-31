@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { View, Image } from 'react-native';
 import Reanimated, {
   useSharedValue,
@@ -11,6 +11,7 @@ import Reanimated, {
 import type { OwlMood } from './DuoOwl';
 import { useClipFrames } from './mascotClips';
 import AppIcon from './AppIcon';
+import MascotClip from './MascotClip';
 
 /**
  * ZORA — the build coach.
@@ -138,25 +139,11 @@ export function ZoraPortrait({ mood = 'happy', size = 96 }: { mood?: ZoraMood; s
 
 export default function Zora({ mood = 'happy', size = 96 }: { mood?: ZoraMood; size?: number }) {
   const { uris, fps } = useClipFrames('zora', mood);
-  const [frame, setFrame] = useState(0);
-
-  useEffect(() => {
-    setFrame(0);
-    if (uris.length < 2) return;
-    const id = setInterval(() => setFrame((f) => (f + 1) % uris.length), Math.round(1000 / Math.max(1, fps)));
-    return () => clearInterval(id);
-  }, [mood, uris.length, fps]);
 
   // A rendered Synfig clip (full body, transparent) outranks the portrait.
   if (uris.length > 0) {
     return (
-      <Image
-        source={{ uri: uris[frame] }}
-        accessibilityRole="image"
-        accessibilityLabel={labelFor(mood)}
-        style={{ width: size, height: size * 1.15 }}
-        resizeMode="contain"
-      />
+      <MascotClip key={mood} uris={uris} fps={fps} width={size} height={size * 1.15} label={labelFor(mood)} />
     );
   }
 

@@ -5,8 +5,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Mascot from '../../components/AfricanMascots';
-import AppIcon from '../../components/AppIcon';
-import { ContentMark } from '../../components/AppIcon';
+import AppIcon, { ContentMark } from '../../components/AppIcon';
 import { DESIGN_GUIDES, DESIGN_VIDEOS } from '../../lib/design';
 
 /**

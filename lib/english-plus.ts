@@ -6,7 +6,7 @@
  * lesson words are covered by the bundled offline dictionary
  * (assets/dict/en.json, English WordNet 2024 glosses).
  */
-import { MCQ, BUILD, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
 
 export const ENGLISH_PLUS: Record<string, CourseLesson> = {
   'english-greetings': {
@@ -361,6 +361,23 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         ['I', 'am', 'allergic', 'to', 'peanuts'],
         ['peanuts', 'I', 'am', 'allergic', 'to', 'allergy'],
         'I am allergic to + the food. Allergy is the noun; allergic is the adjective.'
+      ),
+      MCQ(
+        'You arrive at a hotel with a reservation. Which check-in line is most professional?',
+        'Hi, I have a reservation under Chen.',
+        [
+          'Hi, I have a reservation under Chen.',
+          'Give me my room, Chen.',
+          'I am Chen and I want a room now.',
+          'Reservation? Chen. Room.',
+        ],
+        'Name, reservation, and the name it is under — complete, calm, and easy for the desk to check.'
+      ),
+      TEXT(
+        'Type the past tense of the verb “buy”.',
+        ['bought'],
+        'Buy is irregular: buy → bought. “Buyed” is never correct, even though it sounds plausible.',
+        { misconceptions: { buyed: 'Buy is irregular: the past tense is bought, not buyed.' } }
       ),
     ],
   },

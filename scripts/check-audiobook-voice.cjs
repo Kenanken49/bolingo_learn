@@ -414,6 +414,36 @@ check('the preview command uses the same builder and writes both samples', () =>
   assert.match(preview, /no longer exists/);
 });
 
+check('the bundled premium narrator sample is short, playable and wired to free surfaces', () => {
+  const samplePath = path.join(ROOT, 'assets', 'audio', 'premium-narrator-sample.mp3');
+  assert.ok(fs.existsSync(samplePath), 'bundled narrator sample is missing');
+  const bytes = fs.readFileSync(samplePath);
+  assert.ok(bytes.length > 40_000, 'bundled narrator sample is unexpectedly small');
+  assert.ok(bytes.length < 200_000, 'bundled narrator sample is too large for a short audition');
+  const id3 = bytes.subarray(0, 3).toString('ascii') === 'ID3';
+  const frameSync = bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0;
+  assert.ok(id3 || frameSync, 'bundled narrator sample is not an MP3');
+
+  const narrationAsset = read(path.join(ROOT, 'assets', 'narrator.ts'));
+  assert.match(narrationAsset, /require\('\.\/audio\/premium-narrator-sample\.mp3'\)/);
+  assert.match(narrationAsset, /PREMIUM_NARRATOR_SAMPLE_TEXT/);
+
+  const sampleComponent = read(path.join(ROOT, 'components', 'PremiumNarratorSample.tsx'));
+  assert.match(sampleComponent, /Premium narrator sample/);
+  assert.match(sampleComponent, /TTS credits/);
+  assert.doesNotMatch(sampleComponent, /fetch\(|signedUrl|elevenlabs/i);
+
+  const settings = read(path.join(ROOT, 'src', 'app', 'settings.tsx'));
+  assert.match(settings, /PremiumNarratorSample/);
+  assert.match(settings, /PREMIUM_NARRATOR_SAMPLE/);
+
+  const paywall = read(path.join(ROOT, 'src', 'app', 'paywall.tsx'));
+  assert.match(paywall, /PremiumNarratorSample/);
+  assert.match(paywall, /PREMIUM_NARRATOR_SAMPLE/);
+
+  assert.match(read(DOCS), /premium-narrator-sample\.mp3/);
+});
+
 check('both new runtime files parse', () => {
   assertTranspiles(EDGE_FUNCTION);
   assertJavaScriptParses(PREVIEW_SCRIPT);
@@ -436,6 +466,9 @@ check('the pre-deploy preflight verifies the voice is in the key workspace', () 
   assert.match(preflight, /voiceInWorkspace/);
   assert.match(preflight, /not listed in workspace/);
   assert.match(preflight, /TTS_PROVIDER/);
+  assert.match(preflight, /--consent/);
+  assert.match(preflight, /TTS_CONSENT_RECORD/);
+  assert.match(preflight, /CLONED_VOICE_CATEGORIES/);
 });
 
 check('the full-lesson verifier reads a real uploaded lesson and uses the same builder', () => {
@@ -484,6 +517,8 @@ check('the setup is documented', () => {
   assert.match(docs, /## Verify a real uploaded lesson/);
   assert.match(docs, /audio:preflight/);
   assert.match(docs, /## Preflight the voice before deployment/);
+  assert.match(docs, /Cloned-voice consent record/);
+  assert.match(docs, /TTS_CONSENT_RECORD/);
   assert.match(docs, /ElevenLabs stub test/);
   assert.match(docs, /OpenAI stub test/);
   assert.match(docs, /preflight stub test/);
@@ -765,9 +800,10 @@ const missingVoicePreviewCheck = checkAsync(
 );
 
 const voicePreflightCheck = checkAsync(
-  'the voice preflight proves workspace membership before deployment',
+  'the voice preflight proves workspace membership and cloned-voice consent',
   async () => {
     let listed = true;
+    let category = 'professional';
     const seen = [];
     const voiceId = 'testVoice0000000001';
     const server = http.createServer((req, res) => {
@@ -783,7 +819,7 @@ const voicePreflightCheck = checkAsync(
         return send({
           voice_id: voiceId,
           name: 'Test Voice',
-          category: 'professional',
+          category,
           is_owner: true,
           sharing: { status: 'copied' },
         });
@@ -791,7 +827,7 @@ const voicePreflightCheck = checkAsync(
       if (req.url.startsWith('/v1/voices?')) {
         return send({
           voices: listed
-            ? [{ voice_id: voiceId, name: 'Test Voice', category: 'professional', is_owner: true }]
+            ? [{ voice_id: voiceId, name: 'Test Voice', category, is_owner: true }]
             : [],
         });
       }
@@ -801,12 +837,41 @@ const voicePreflightCheck = checkAsync(
     const address = server.address();
     if (!address || typeof address === 'string') throw new Error('stub server did not get a port');
 
+    const fixtureDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bolingo-voice-consent-'));
+    const day = 24 * 60 * 60 * 1000;
+    const isoDay = (offset) => new Date(Date.now() + offset * day).toISOString().slice(0, 10);
+    const baseRecord = {
+      templateVersion: '2026-10-30',
+      recordId: 'VC-TEST-001',
+      status: 'Active',
+      completed: true,
+      provider: 'ElevenLabs',
+      voiceId,
+      workspaceId: 'ws_test',
+      voiceType: 'Professional Voice Clone',
+      speaker: 'Test Speaker',
+      signedOn: isoDay(-30),
+      reviewDueOn: isoDay(335),
+      approvedBy: 'Test Operator',
+      approvedOn: isoDay(-1),
+    };
+    const writeRecord = (name, changes) => {
+      const file = path.join(fixtureDir, name);
+      fs.writeFileSync(file, JSON.stringify({ ...baseRecord, ...changes }, null, 2));
+      return file;
+    };
+    const consentFile = writeRecord('consent.json', {});
+    const draftFile = writeRecord('draft.json', { status: 'Draft' });
+    const expiredFile = writeRecord('expired.json', { reviewDueOn: isoDay(-1) });
+    const wrongVoiceFile = writeRecord('wrong-voice.json', { voiceId: 'otherVoice00000001' });
+
     const env = {
       TTS_PROVIDER: 'elevenlabs',
       TTS_MODEL_ID: 'eleven_multilingual_v2',
       TTS_VOICE_ID: voiceId,
       TTS_API_KEY: 'test-preflight-key',
       ELEVENLABS_API_KEY: 'test-preflight-key',
+      TTS_CONSENT_RECORD: '',
     };
     const args = [
       PREFLIGHT_SCRIPT,
@@ -814,8 +879,29 @@ const voicePreflightCheck = checkAsync(
       `http://127.0.0.1:${address.port}`,
       '--json',
     ];
+    const withConsent = [...args, '--consent', consentFile];
     try {
-      const result = await runNode(args, env);
+      const missingConsent = await runNode(args, env);
+      assert.equal(missingConsent.code, 1, 'a cloned voice must require consent');
+      assert.match(
+        missingConsent.stderr,
+        /refuses to validate it without a completed, active consent record/
+      );
+      assert.match(missingConsent.stderr, /professional/);
+
+      const draft = await runNode([...args, '--consent', draftFile], env);
+      assert.equal(draft.code, 1, 'a draft consent record must fail');
+      assert.match(draft.stderr, /must be "Active"/);
+
+      const expired = await runNode([...args, '--consent', expiredFile], env);
+      assert.equal(expired.code, 1, 'an expired consent record must fail');
+      assert.match(expired.stderr, /expired/);
+
+      const wrongVoice = await runNode([...args, '--consent', wrongVoiceFile], env);
+      assert.equal(wrongVoice.code, 1, 'a record for another voice must fail');
+      assert.match(wrongVoice.stderr, /is for voice otherVoice00000001/);
+
+      const result = await runNode(withConsent, env);
       assert.equal(result.code, 0, result.stderr || result.stdout);
       const data = JSON.parse(result.stdout);
       assert.equal(data.ok, true);
@@ -824,12 +910,27 @@ const voicePreflightCheck = checkAsync(
       assert.equal(data.voiceInWorkspace, true);
       assert.equal(data.voice.name, 'Test Voice');
       assert.equal(data.workspaceVoiceCount, 1);
+      assert.equal(data.consent.required, true);
+      assert.equal(data.consent.provided, true);
+      assert.equal(data.consent.recordId, 'VC-TEST-001');
+      assert.equal(data.consent.status, 'Active');
       assert.ok(seen.includes('/v1/user'));
       assert.ok(seen.includes(`/v1/voices/${voiceId}`));
       assert.ok(seen.some((url) => url.startsWith('/v1/voices?')));
 
+      const fromEnv = await runNode(args, { ...env, TTS_CONSENT_RECORD: consentFile });
+      assert.equal(fromEnv.code, 0, fromEnv.stderr || fromEnv.stdout);
+
+      category = 'premade';
+      const premade = await runNode(args, env);
+      assert.equal(premade.code, 0, 'a non-cloned voice must not require a record');
+      const premadeData = JSON.parse(premade.stdout);
+      assert.equal(premadeData.consent.required, false);
+      assert.equal(premadeData.consent.provided, false);
+      category = 'professional';
+
       listed = false;
-      const missing = await runNode(args, env);
+      const missing = await runNode(withConsent, env);
       assert.equal(missing.code, 1, 'a shared-only voice must fail the preflight');
       assert.match(missing.stderr, /not listed in workspace/);
 
@@ -843,6 +944,7 @@ const voicePreflightCheck = checkAsync(
       assert.match(wrongProvider.stderr, /ElevenLabs/);
     } finally {
       await new Promise((resolve) => server.close(resolve));
+      fs.rmSync(fixtureDir, { recursive: true, force: true });
     }
   }
 );

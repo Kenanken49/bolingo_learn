@@ -42,6 +42,16 @@ export type Facet = (typeof FACETS)[number];
 /** Dominant-skill routing: every lesson feeds exactly one skill. */
 export function skillOfLesson(lessonId: string): SkillId {
   const id = lessonId.toLowerCase();
+  // LabEx ids encode their category (`labex-<category>-<slug>`), which the
+  // generic patterns below would otherwise read as "core".
+  if (id.startsWith('labex-')) {
+    const category = id.split('-')[1];
+    if (category === 'javascript' || category === 'jquery') return 'js';
+    if (category === 'react') return 'fed';
+    if (category === 'python' || category === 'flask') return 'py';
+    if (['matplotlib', 'numpy', 'pandas', 'sklearn'].includes(category)) return 'secml';
+    if (category === 'css') return 'css';
+  }
   if (/(^|-)html/.test(id)) return 'html';
   if (/(^|-)css/.test(id) || /(^|-)rwd/.test(id)) return 'css';
   if (/(^|-)js/.test(id)) return 'js';
@@ -108,7 +118,7 @@ export interface KikiState {
   skills: Record<string, number>;
   diffs: Record<string, number>;
   mem: Record<string, KikiMemory>;
-  log: Record<string, Array<{ t: number; c: 0 | 1 }>>;
+  log: Record<string, { t: number; c: 0 | 1 }[]>;
   /** Attempts per skill (adaptive step sizes) + last-active timestamps (drift). */
   counts: Record<string, number>;
   seen: Record<string, number>;

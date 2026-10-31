@@ -1,0 +1,23 @@
+# Swahili voice audit — Android device
+# Date: 2026-10-31T02:22:53Z
+# Device: sdk_gphone64_x86_64 / 17 (API 37)
+# TTS engine: com.google.android.tts
+# TTS locale: sw-KE
+# Source: adb logcat -d -b main,crash | grep SwahiliVoiceAudit
+
+10-31 05:19:47.453  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-questions:0 | native-sw | sw-KE | sw-ke-language | Je
+10-31 05:19:50.386  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-questions:1 | native-sw | sw-KE | sw-ke-language | Unakwenda wapi
+10-31 05:19:53.298  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-questions:2 | native-sw | sw-KE | sw-ke-language | Sipendi chai
+10-31 05:19:56.338  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-questions:3 | native-sw | sw-KE | sw-ke-language | Hatuna pesa
+10-31 05:19:59.654  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-questions:4 | native-sw | sw-KE | sw-ke-language | Hakuna maji
+10-31 05:20:06.063  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-adjectives:0 | native-sw | sw-KE | sw-ke-language | Mtoto mzuri
+10-31 05:20:09.730  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-adjectives:1 | native-sw | sw-KE | sw-ke-language | Vitabu vikubwa
+10-31 05:20:57.929  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-adjectives:2 | native-sw | sw-KE | sw-ke-language | Nyumba ndogo
+10-31 05:21:07.092  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-adjectives:3 | native-sw | sw-KE | sw-ke-language | Mti ni mrefu
+10-31 05:21:13.502  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-adjectives:4 | native-sw | sw-KE | sw-ke-language | Kuliko
+10-31 05:21:16.872  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-health:0 | native-sw | sw-KE | sw-ke-language | Naumwa na tumbo
+10-31 05:21:28.821  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-health:1 | native-sw | sw-KE | sw-ke-language | Nahitaji daktari
+10-31 05:21:33.007  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-health:2 | native-sw | sw-KE | sw-ke-language | Nisaidie!
+10-31 05:21:37.347  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-health:3 | native-sw | sw-KE | sw-ke-language | Hospitali iko wapi
+10-31 05:21:41.089  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] swahili-health:4 | native-sw | sw-KE | sw-ke-language | Dawa
+10-31 05:21:41.320  6408  6468 I ReactNativeJS: [SwahiliVoiceAudit] {"phrases":15,"native":15,"fallback":0,"missing":0,"voiceNames":["sw-ke-language"],"locales":["sw-KE"]}

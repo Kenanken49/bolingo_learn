@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Pressable, ScrollView } from 'react-native';
 import Text from './ui/Text';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
@@ -109,10 +109,13 @@ function FreePlayer({ title, segments, onClose }: Props) {
 }
 
 function PlayerInner({ title, segments, fullUrl, onClose }: Props) {
-  const queue =
-    segments.length > 0
-      ? segments.map((s) => ({ id: s.question_id, prompt: s.prompt, url: s.url }))
-      : [{ id: 'full-mix', prompt: 'Full narration (segments still generating)', url: fullUrl as string }];
+  const queue = useMemo(
+    () =>
+      segments.length > 0
+        ? segments.map((s) => ({ id: s.question_id, prompt: s.prompt, url: s.url }))
+        : [{ id: 'full-mix', prompt: 'Full narration (segments still generating)', url: fullUrl as string }],
+    [segments, fullUrl]
+  );
 
   const [index, setIndex] = useState(0);
   const player = useAudioPlayer({ uri: queue[0].url });
@@ -121,21 +124,27 @@ function PlayerInner({ title, segments, fullUrl, onClose }: Props) {
   // Autoplay on open.
   useEffect(() => {
     player.play();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [player]);
 
-  const go = (i: number) => {
-    const n = (i + queue.length) % queue.length;
-    setIndex(n);
-    player.replace({ uri: queue[n].url });
-    player.play();
-  };
+  const go = useCallback(
+    (i: number) => {
+      const n = (i + queue.length) % queue.length;
+      setIndex(n);
+      player.replace({ uri: queue[n].url });
+      player.play();
+    },
+    [player, queue]
+  );
 
-  // Advance + highlight the next block when a segment ends.
+  // Advance + highlight the next block when a segment ends. The native
+  // listener replaces a status-watching effect so a finished frame can never
+  // restart the wrong block after a manual skip.
   useEffect(() => {
-    if (status.didJustFinish) go(index + 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status.didJustFinish]);
+    const sub = player.addListener('playbackStatusUpdate', (s) => {
+      if (s.didJustFinish) go(index + 1);
+    });
+    return () => sub.remove();
+  }, [player, go, index]);
 
   const fmt = (s?: number) =>
     s == null || !isFinite(s) ? '--:--' : `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

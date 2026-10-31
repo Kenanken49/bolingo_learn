@@ -5,12 +5,11 @@ import Text from '../../../components/ui/Text';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CURRICULUM, KIND_META, type BlockKind } from '../../../lib/curriculum';
-import AppIcon from '../../../components/AppIcon';
-import { ContentMark } from '../../../components/AppIcon';
+import AppIcon, { ContentMark } from '../../../components/AppIcon';
 import { getCourseLesson } from '../../../lib/courses';
 import AskBingo from '../../../components/AskBingo';
 
-const GROUPS: Array<{ title: string; kinds: BlockKind[]; blurb: string }> = [
+const GROUPS: { title: string; kinds: BlockKind[]; blurb: string }[] = [
   { title: 'Learn the theory', kinds: ['lesson'], blurb: 'First exposure: core concepts with live examples.' },
   { title: 'Guided practice', kinds: ['workshop'], blurb: 'Step-based builds that walk you through every move.' },
   { title: 'Build on your own', kinds: ['lab'], blurb: 'User stories + tests. No guidance — like the real job.' },

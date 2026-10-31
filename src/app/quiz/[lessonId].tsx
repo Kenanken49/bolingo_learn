@@ -4,6 +4,10 @@ import Text from '../../../components/ui/Text';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/GamifiedCodePlayer';
+import CodeExercise from '../../../components/CodeExercise';
+import TextAnswer from '../../../components/TextAnswer';
+import TerminalPlayer from '../../../components/TerminalPlayer';
+import GuidedLabPlayer from '../../../components/GuidedLabPlayer';
 import DuoButton from '../../../components/DuoButton';
 import AppIcon, { type AppIconName } from '../../../components/AppIcon';
 import AskBingo from '../../../components/AskBingo';
@@ -13,12 +17,18 @@ import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
 import { getLanguageLessonAsync, isLanguageLessonId } from '../../../lib/languageCatalog';
+import { getLabexLesson, isLabexLessonId } from '../../../lib/labex/load';
+import { getGuidedLab } from '../../../lib/labex/guided';
+import { GIT_SCENARIOS } from '../../../lib/labex/gitScenarios';
 import { setLessonResult, type QuestionResult } from '../../../lib/quizResults';
 import { levelForXp } from '../../../lib/levels';
 import { gradeCard, getDueItems } from '../../../lib/srs';
 import { skillOfLesson } from '../../../lib/kiki';
 import { flushKiki, kikiAttempt, loadKiki } from '../../../lib/kikiStore';
 import { hasSeenQuizIntro, markQuizIntroSeen, markOnboarded, savePendingGuestResult } from '../../../lib/onboarding';
+import { blockByLessonId } from '../../../lib/curriculum';
+import { isMastery, sessionStandard } from '../../../lib/learningStandards';
+import { track } from '../../../lib/telemetry';
 
 const DEMO_QUESTIONS: CodeQuizData[] = [
   {
@@ -50,6 +60,15 @@ export default function QuizPlayer() {
   const { lessonId, title } = useLocalSearchParams<{ lessonId: string; title?: string }>();
   // Role split: Zora introduces code/design lessons; Livia introduces languages.
   const isLanguageLesson = typeof lessonId === 'string' && isLanguageLessonId(lessonId);
+  // The path block decides the pedagogy: a lab hides its checklist, an exam
+  // counts first attempts, and a guided lesson/workshop lets learners retry.
+  const block = typeof lessonId === 'string' ? blockByLessonId(lessonId) : undefined;
+  const sessionKind = typeof lessonId === 'string' && lessonId.startsWith('srs-review')
+    ? 'review'
+    : isLabexLessonId(lessonId)
+      ? 'lab'
+      : block?.kind ?? 'lesson';
+  const standard = sessionStandard(sessionKind);
   const [questions, setQuestions] = useState<CodeQuizData[] | null>(null);
   // Title and theory come from the loaded catalog, not the route param: a
   // dashboard edit must reach the header and Bingo/Zora's grounding too.
@@ -58,8 +77,13 @@ export default function QuizPlayer() {
   const [index, setIndex] = useState(0);
   const [hearts, setHearts] = useState(MAX_HEARTS);
   const [userId, setUserId] = useState<string | null>(null);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [answers, setAnswers] = useState<QuestionResult[]>([]);
+  // One record per question: the first response and the latest practice
+  // response. Guided lessons count the final answer; labs/exams count the
+  // first, so retrying can never inflate mastery.
+  const attemptsRef = useRef<Record<number, { first: QuestionResult; final: QuestionResult }>>({});
+  // Session timing feeds the funnel p95 and the experiment guardrail. The
+  // clock is read in the load effect, never during render (purity rule).
+  const startedAtRef = useRef(0);
   // Micro-onboarding: coach overlay appears the very first time a user meets
   // the quiz player, then never again.
   const [showCoach, setShowCoach] = useState(false);
@@ -67,10 +91,12 @@ export default function QuizPlayer() {
   const [qKeys, setQKeys] = useState<string[]>([]);
   // Daily Review with nothing due renders a celebration, not an error.
   const [reviewEmpty, setReviewEmpty] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   // Addictive combo loop: consecutive correct answers build a visible streak.
   const [combo, setCombo] = useState(0);
   const [bestCombo, setBestCombo] = useState(0);
-  const pulse = useRef(new Animated.Value(1)).current;
+  // Stable per mount, and react-native-web has no useAnimatedValue.
+  const [pulse] = useState(() => new Animated.Value(1));
   useEffect(() => {
     if (combo < 2) return;
     pulse.setValue(0.7);
@@ -108,21 +134,70 @@ export default function QuizPlayer() {
     // Bite-sized cap: every session stays 2–5 min (3–6 questions max).
     let baseQuestions: CodeQuizData[] = [];
     let baseKeys: string[] = [];
-    // Language rows may have been edited in Supabase; code lessons stay bundled.
-    const course = (await getLanguageLessonAsync(lessonId)) ?? getCourseLesson(lessonId);
+    // Labs whose runtime this build does not ship keep their knowledge check
+    // and add one read-only walkthrough at the end.
+    let guidedQuestion: CodeQuizData | null = null;
+    // LabEx banks are split per category and resolved on demand; language rows
+    // may have been edited in Supabase; core code lessons stay bundled.
+    const course = isLabexLessonId(lessonId)
+      ? await getLabexLesson(lessonId)
+      : (await getLanguageLessonAsync(lessonId)) ?? getCourseLesson(lessonId);
     if (course) {
+      const scenario = isLabexLessonId(lessonId) ? GIT_SCENARIOS[lessonId] : undefined;
+      // A lab that already runs in this build (terminal VM or code sandbox)
+      // never gets the read-only walkthrough — that stage is the fallback for
+      // languages this runtime cannot execute.
+      const runsHere = !!scenario || course.questions.some((q) => q.kind === 'code');
+      const guided = !runsHere && isLabexLessonId(lessonId) ? await getGuidedLab(lessonId) : undefined;
       setLessonTitle(course.title);
       setLessonTheory(course.theory.slice(0, 2).join(' ').slice(0, 900));
-      baseQuestions = course.questions.map((q) => ({
-        prompt: q.prompt,
-        correctChain: q.correctChain,
-        scrambledTokens: [...q.scrambledTokens].sort(() => Math.random() - 0.5),
-        explain: q.explain,
-      }));
-      baseKeys = course.questions.map((_, i) => `${lessonId}:${i}`);
+      if (scenario) {
+        // A runnable lab replaces the recall quiz: the learner performs the
+        // real workflow and every task is graded from the repo state.
+        baseQuestions = [
+          {
+            prompt: scenario.brief,
+            correctChain: ['Complete every task in the terminal'],
+            scrambledTokens: [],
+            explain: 'Each task is verified against the repository the terminal actually builds.',
+            kind: 'terminal',
+            terminal: { scenarioId: lessonId },
+          },
+        ];
+        baseKeys = [`${lessonId}:0`];
+      } else {
+        const recall = course.questions.map((q) => ({
+          prompt: q.prompt,
+          correctChain: q.correctChain,
+          scrambledTokens: q.scrambledTokens.length > 1 ? [...q.scrambledTokens].sort(() => Math.random() - 0.5) : [...q.scrambledTokens],
+          explain: q.explain,
+          kind: q.kind,
+          code: q.code,
+          text: q.text,
+        }));
+        // Guided labs stay bite-sized: four recall items, then the walkthrough.
+        baseQuestions = guided ? recall.slice(0, 4) : recall;
+        baseKeys = baseQuestions.map((_, i) => `${lessonId}:${i}`);
+        if (guided) {
+          guidedQuestion = {
+            prompt: `Walk through the “${course.title}” lab step by step`,
+            correctChain: ['Walk through every step'],
+            scrambledTokens: [],
+            explain:
+              'This runtime is guided, not executed: the lab keeps its real steps, commands and reference files.',
+            kind: 'guided',
+            guided,
+          };
+        }
+      }
     } else if (lessonId.startsWith('demo-')) {
       baseQuestions = DEMO_QUESTIONS;
       baseKeys = DEMO_QUESTIONS.map((_, i) => `${lessonId}:${i}`);
+    } else if (isLabexLessonId(lessonId)) {
+      // A known lab id that failed to resolve must never fall through to the
+      // Supabase question table, which has no rows for it.
+      baseQuestions = [];
+      baseKeys = [];
     } else {
       const dbId = toDbLessonId(lessonId); // "45" -> 45 for the integer FK
       const { data, error } = await supabase.from('questions').select('*').eq('lesson_id', dbId).order('created_at');
@@ -138,7 +213,7 @@ export default function QuizPlayer() {
       });
       // Attach narration when this lesson has generated segments.
       const { data: lesson } = await supabase.from('lessons').select('content').eq('id', dbId).single();
-      const segments = (lesson?.content as { segments?: Array<{ question_id: string; prompt: string; audio_url: string }> } | null)?.segments ?? [];
+      const segments = (lesson?.content as { segments?: { question_id: string; prompt: string; audio_url: string }[] } | null)?.segments ?? [];
       if (segments.length > 0) {
         for (let i = 0; i < Math.min(mapped.length, segments.length); i++) {
           try {
@@ -152,6 +227,23 @@ export default function QuizPlayer() {
       baseQuestions = mapped;
       baseKeys = mapped.map((_, i) => `${lessonId}:${i}`);
     }
+    // Assessments and labs shuffle items so a memorised sequence cannot carry
+    // a learner through a checkpoint; guided lessons keep their teaching order.
+    // Interactive stages (run the code, use the terminal, walk the lab) stay
+    // after the recall questions so a session never ends on a soft note.
+    if (standard.shuffleQuestions && baseQuestions.length > 1) {
+      const paired = baseQuestions.map((question, i) => ({ question, key: baseKeys[i] }));
+      const interactive = (q: CodeQuizData) => q.kind === 'code' || q.kind === 'terminal' || q.kind === 'guided';
+      const recall = paired.filter((item) => !interactive(item.question));
+      const handsOn = paired.filter((item) => interactive(item.question));
+      for (let i = recall.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [recall[i], recall[j]] = [recall[j], recall[i]];
+      }
+      const ordered = [...recall, ...handsOn];
+      baseQuestions = ordered.map((item) => item.question);
+      baseKeys = ordered.map((item) => item.key);
+    }
     const p = await getProfile();
     setUserId(p?.id ?? null);
     setHearts(p?.hearts ?? MAX_HEARTS);
@@ -162,7 +254,7 @@ export default function QuizPlayer() {
     // Injected cards keep their original keys so grading reschedules them,
     // and get a Review prefix so learners know why old content reappeared.
     // Total stays bite-sized: never exceed 6 questions per session.
-    if (p && baseQuestions.length > 0 && baseQuestions.length < 6) {
+    if (p && baseQuestions.length > 0 && baseQuestions.length < 6 && !guidedQuestion) {
       try {
         const room = Math.min(2, 6 - baseQuestions.length);
         const due = (await getDueItems(p.id, 10).catch(() => []))
@@ -175,7 +267,10 @@ export default function QuizPlayer() {
           }));
           const injectedK = due.map((d) => d.key);
           // Weave after the 2nd question so the session starts familiar, then recalls.
-          const at = Math.min(2, baseQuestions.length);
+          const recallCount = baseQuestions.filter(
+            (q) => q.kind !== 'code' && q.kind !== 'terminal' && q.kind !== 'guided'
+          ).length;
+          const at = Math.min(2, recallCount);
           baseQuestions = [...baseQuestions.slice(0, at), ...injectedQ, ...baseQuestions.slice(at)];
           baseKeys = [...baseKeys.slice(0, at), ...injectedK, ...baseKeys.slice(at)];
         }
@@ -183,14 +278,34 @@ export default function QuizPlayer() {
         // injection is best-effort — lesson plays on without it
       }
     }
+    if (guidedQuestion) {
+      baseQuestions = [...baseQuestions, guidedQuestion];
+      baseKeys = [...baseKeys, `${lessonId}:guided`];
+    }
     setQuestions(baseQuestions);
     setQKeys(baseKeys);
-    if (!(await hasSeenQuizIntro(isLanguageLesson ? 'lang' : 'code'))) setShowCoach(true);
-  }, [lessonId, isLanguageLesson]);
+  }, [lessonId, standard.shuffleQuestions]);
 
   useEffect(() => {
-    load().catch((e) => console.warn('Quiz load failed:', e));
-  }, [load]);
+    hasSeenQuizIntro(isLanguageLesson ? 'lang' : 'code')
+      .then((seen) => {
+        if (!seen) setShowCoach(true);
+      })
+      .catch(() => {});
+  }, [isLanguageLesson]);
+
+  useEffect(() => {
+    startedAtRef.current = Date.now();
+    if (typeof lessonId === 'string' && lessonId) {
+      track('lesson_started', { lessonId, kind: sessionKind });
+    }
+    Promise.resolve()
+      .then(load)
+      .catch((e) => {
+        console.warn('Quiz load failed:', e);
+        setLoadFailed(true);
+      });
+  }, [load, lessonId, sessionKind]);
 
   useFocusEffect(
     useCallback(() => {
@@ -203,7 +318,68 @@ export default function QuizPlayer() {
   );
 
   const q = questions?.[index];
+  // Sessions that contain a runnable or free-response exercise get coach copy
+  // about typing instead of token tapping.
+  const typedSession = !!questions?.some((qq) => qq.kind === 'code' || qq.kind === 'text' || qq.kind === 'terminal' || qq.kind === 'guided');
 
+  const handleAnswer = (r: QuestionResult) => {
+    if (!q) return;
+    const previous = attemptsRef.current[index];
+    const isFirst = !previous;
+    const first = previous?.first ?? r;
+    // `final` replaces the practice answer; `first` never changes. Assessment
+    // feedback and SRS use the first response, guided practice uses the final.
+    attemptsRef.current[index] = { first, final: { ...r, firstTryCorrect: first.correct } };
+    if (!isFirst) return;
+    // Kiki v3: only the first response is evidence of skill. Retries are
+    // practice, not a second chance to inflate the learner model.
+    if (typeof lessonId === 'string') {
+      const chainLen = Array.isArray(q.correctChain) ? q.correctChain.length : 1;
+      const isBuild = q.kind === 'code' || chainLen > 1;
+      kikiAttempt(skillOfLesson(lessonId), qKeys[index] ?? `${lessonId}:${index}`, r.correct, { chainLen, isBuild });
+    }
+    // Combo loop: a first-try correct extends it, a first-try miss resets it.
+    if (r.correct) {
+      const n = combo + 1;
+      setCombo(n);
+      if (n > bestCombo) setBestCombo(n);
+    } else {
+      setCombo(0);
+    }
+    // SRS snapshots only carry tokens, so a code/text card could not replay in
+    // Daily Review. Those exercises are performance tasks — graded, not scheduled.
+    if (userId && q.kind !== 'code' && q.kind !== 'text' && q.kind !== 'terminal' && q.kind !== 'guided') {
+      void gradeCard(userId, qKeys[index] ?? `${lessonId}:${index}`, r.correct, {
+        prompt: q.prompt,
+        correctChain: q.correctChain,
+        options: q.scrambledTokens,
+        lessonTitle,
+      });
+    }
+  };
+
+  if (loadFailed && !questions) {
+    return (
+      <View className="flex-1 items-center justify-center px-6">
+        <Mascot character="bingo" mood="sad" size={110} />
+        <Text onPhoto className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-300">Nothing to load</Text>
+        <Text onPhoto className="mt-3 text-center font-duo text-2xl font-extrabold text-slate-900 dark:text-slate-50">
+          This lesson is not available yet
+        </Text>
+        <Text onPhoto className="mt-3 text-center text-base leading-7 text-slate-700 dark:text-slate-200">
+          It may have been renamed or is not part of this build. Your progress is safe — pick another lesson and continue.
+        </Text>
+        <View className="mt-5 w-full max-w-sm">
+          <DuoButton
+            color="grey"
+            onPress={() => router.replace(isLabexLessonId(lessonId) ? '/labs' : '/')}
+            label="Back to my lessons"
+            title="Back"
+          />
+        </View>
+      </View>
+    );
+  }
   if (!questions) {
     return (
       <View className="flex-1 items-center justify-center">
@@ -231,8 +407,11 @@ export default function QuizPlayer() {
     return (
       <View className="flex-1 items-center justify-center px-6">
         <Text onPhoto className="text-lg text-slate-600 dark:text-slate-200">No questions in this lesson yet.</Text>
-        <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-slate-800 px-6 py-3">
-          <Text className="font-bold text-white">Back to Path</Text>
+        <Pressable
+          onPress={() => router.replace(isLabexLessonId(lessonId) ? '/labs' : '/')}
+          className="mt-4 rounded-2xl bg-slate-800 px-6 py-3"
+        >
+          <Text className="font-bold text-white">{isLabexLessonId(lessonId) ? 'Back to lab library' : 'Back to Path'}</Text>
         </Pressable>
       </View>
     );
@@ -240,23 +419,63 @@ export default function QuizPlayer() {
 
   const finish = () => {
     void flushKiki();
-    const xpEarned = correctCount * 10;
+    const total = questions?.length ?? 0;
+    const entries = questions
+      ?.map((_, i) => attemptsRef.current[i])
+      .filter((entry): entry is { first: QuestionResult; final: QuestionResult } => Boolean(entry)) ?? [];
+    const firstCorrect = entries.filter((entry) => entry.first.correct).length;
+    const finalCorrect = entries.filter((entry) => entry.final.correct).length;
+    // Guided lessons and workshops count the corrected final answer; labs,
+    // reviews, and exams count the first attempt so retries cannot rewrite it.
+    const counted = standard.firstAttemptCounts ? firstCorrect : finalCorrect;
+    const mastered = isMastery(counted, total, sessionKind);
+    const xpEarned = mastered ? counted * standard.xpPerCorrect : 0;
+    track('quiz_submitted', {
+      lessonId,
+      kind: sessionKind,
+      correct: counted,
+      total,
+      scorePct: total > 0 ? Math.round((counted / total) * 100) : 0,
+      mastered,
+      firstTryCorrect: firstCorrect,
+      durationMs: startedAtRef.current > 0 ? Date.now() - startedAtRef.current : 0,
+      ok: mastered,
+    });
+    const reviewAnswers = entries.map((entry) => ({
+      ...(standard.firstAttemptCounts ? entry.first : entry.final),
+      firstTryCorrect: entry.first.correct,
+    }));
     const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0) => {
       setLessonResult({
         lessonId,
         title: lessonTitle,
         xpEarned,
         streak: streakCount,
-        correctCount,
-        total: questions?.length ?? 0,
-        results: answers,
+        correctCount: counted,
+        total,
+        results: reviewAnswers,
         bestCombo,
+        mastered,
+        firstTryCorrect: firstCorrect,
         leveledUp,
         newLevel,
         totalXp,
       });
       router.replace('/results');
     };
+    // A failed mastery check does not unlock the node or award XP. The results
+    // screen keeps the retry button, so the learner can review and try again.
+    if (!mastered) {
+      if (userId) {
+        getProfile()
+          .then((p) => goResults(p?.streak_count ?? 0))
+          .catch(() => goResults(0));
+      } else {
+        void markOnboarded();
+        goResults(0);
+      }
+      return;
+    }
     if (userId) {
       completeLesson(userId, xpEarned, lessonId)
         .then((p) => {
@@ -296,45 +515,79 @@ export default function QuizPlayer() {
             </View>
           </Animated.View>
         ) : null}
-        <GamifiedCodePlayer
-          key={`${lessonId}-${index}`}
-          userId={userId}
-          lessonId={lessonId}
-          questionData={q}
-          theory={lessonTheory}
-          questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
-          progressPct={Math.round(((index + 1) / questions.length) * 100)}
-          hearts={hearts}
-          onHeartsChange={setHearts}
-          onOutOfHearts={() => router.push('/refill')}
-          onCorrect={() => setCorrectCount((c) => c + 1)}
-          onAnswer={(r) => {
-            setAnswers((a) => [...a, r]);
-            // Kiki v3: every graded answer tunes skill + difficulty + memory.
-            if (typeof lessonId === 'string') {
-              const chainLen = Array.isArray(q?.correctChain) ? q.correctChain.length : 1;
-              kikiAttempt(skillOfLesson(lessonId), qKeys[index] ?? `${lessonId}:${index}`, r.correct, { chainLen, isBuild: chainLen > 1 });
-            }
-            // Combo loop: correct extends it, a miss resets it to zero.
-            if (r.correct) {
-              const n = combo + 1;
-              setCombo(n);
-              if (n > bestCombo) setBestCombo(n);
-            } else {
-              setCombo(0);
-            }
-            // SRS: every graded answer reschedules that memory card.
-            if (userId && q) {
-              void gradeCard(userId, qKeys[index] ?? `${lessonId}:${index}`, r.correct, {
-                prompt: q.prompt,
-                correctChain: q.correctChain,
-                options: q.scrambledTokens,
-                lessonTitle,
-              });
-            }
-          }}
-          onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
-        />
+        {q.kind === 'code' && q.code ? (
+          <CodeExercise
+            key={`${lessonId}-${index}`}
+            userId={userId}
+            lessonId={lessonId}
+            questionData={q}
+            questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
+            progressPct={Math.round(((index + 1) / questions.length) * 100)}
+            hearts={hearts}
+            sessionKind={sessionKind}
+            onCorrect={() => {}}
+            onAnswer={handleAnswer}
+            onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
+          />
+        ) : q.kind === 'terminal' && q.terminal && GIT_SCENARIOS[q.terminal.scenarioId] ? (
+          <TerminalPlayer
+            key={`${lessonId}-${index}`}
+            userId={userId}
+            lessonId={lessonId}
+            prompt={q.prompt}
+            questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
+            progressPct={Math.round(((index + 1) / questions.length) * 100)}
+            hearts={hearts}
+            sessionKind={sessionKind}
+            terminal={q.terminal}
+            scenario={GIT_SCENARIOS[q.terminal.scenarioId]}
+            onCorrect={() => {}}
+            onAnswer={handleAnswer}
+            onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
+          />
+        ) : q.kind === 'guided' && q.guided ? (
+          <GuidedLabPlayer
+            key={`${lessonId}-${index}`}
+            lessonId={lessonId}
+            prompt={q.prompt}
+            questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
+            progressPct={Math.round(((index + 1) / questions.length) * 100)}
+            sessionKind={sessionKind}
+            guided={q.guided}
+            onCorrect={() => {}}
+            onAnswer={handleAnswer}
+            onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
+          />
+        ) : q.kind === 'text' && q.text ? (
+          <TextAnswer
+            key={`${lessonId}-${index}`}
+            questionData={q}
+            questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
+            progressPct={Math.round(((index + 1) / questions.length) * 100)}
+            hearts={hearts}
+            sessionKind={sessionKind}
+            onCorrect={() => {}}
+            onAnswer={handleAnswer}
+            onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
+          />
+        ) : (
+          <GamifiedCodePlayer
+            key={`${lessonId}-${index}`}
+            userId={userId}
+            lessonId={lessonId}
+            questionData={q}
+            theory={lessonTheory}
+            questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
+            progressPct={Math.round(((index + 1) / questions.length) * 100)}
+            hearts={hearts}
+            sessionKind={sessionKind}
+            onHeartsChange={setHearts}
+            onOutOfHearts={() => router.push('/refill')}
+            onCorrect={() => {}}
+            onAnswer={handleAnswer}
+            onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
+          />
+        )}
       </ScrollView>
       {/* First-visit coach marks: contextual, dismissible, shown exactly once. */}
       {showCoach ? (
@@ -346,7 +599,9 @@ export default function QuizPlayer() {
             </Text>
             <Text className="mt-2 font-duo text-xl font-extrabold text-slate-900 dark:text-slate-100">How a lesson works</Text>
             {[
-                ['hand', 'Tap tokens', 'Build your answer in the drop zone. Tap again to remove one.'],
+                typedSession
+                  ? ['code', 'Write and run', 'Type your answer, then run the tests — free, no hearts lost.']
+                  : ['hand', 'Tap tokens', 'Build your answer in the drop zone. Tap again to remove one.'],
                 isLanguageLesson
                   ? ['volume', 'Hear Livia', 'Livia pronounces the phrase in its native voice — tap 🐢 to hear it slowly. Bingo can read the question too.']
                   : ['play', 'Run tests', 'Check your code like a real dev — free, no hearts lost.'],

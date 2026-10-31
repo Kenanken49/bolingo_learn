@@ -1,0 +1,32 @@
+name: Engineer audit
+
+on:
+  schedule:
+    # Every six hours. The agent records a report, queues approvals and emails
+    # bolingolearn@pm.me. It never edits source code from production.
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Invoke the engineer agent
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          ENGINEER_CRON_SECRET: ${{ secrets.ENGINEER_CRON_SECRET }}
+        run: |
+          if [ -z "${SUPABASE_URL}" ] || [ -z "${ENGINEER_CRON_SECRET}" ]; then
+            echo "::notice::Set SUPABASE_URL and ENGINEER_CRON_SECRET to enable scheduled audits."
+            exit 0
+          fi
+          curl --fail-with-body --silent --show-error \
+            --max-time 120 \
+            -X POST "${SUPABASE_URL}/functions/v1/engineer-agent" \
+            -H "Content-Type: application/json" \
+            -H "x-engineer-cron-secret: ${ENGINEER_CRON_SECRET}" \
+            -d '{"trigger":"schedule"}'

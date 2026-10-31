@@ -5,7 +5,7 @@
  * certification project renders its verdict on the page). All original.
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MCQ, BUILD, CODE, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_JS: Record<string, CourseLesson> = {
   'js-variables-loops': {
@@ -73,11 +73,40 @@ export const TRACK_JS: Record<string, CourseLesson> = {
         ],
         'return hands the result back; code after it never runs.'
       ),
-      BUILD(
-        'Start a function named toRoman that takes num',
-        ['function', 'toRoman(num)', '{'],
-        ['function', 'toRoman(num)', '=>', '{', '}'],
-        'function keyword, name with its parameter, then the opening brace.'
+      CODE(
+        'Write a function double(n) that returns n multiplied by 2.',
+        {
+          language: 'js',
+          starter: '// Define double below, then run the tests\n',
+          tests: [
+            {
+              id: 'defined',
+              label: 'double is a function',
+              run: "typeof double === 'function'",
+              hint: 'Declare it with function double(n) { … } — the declaration itself makes it callable.',
+            },
+            {
+              id: 'two',
+              label: 'double(2) returns 4',
+              run: 'double(2) === 4',
+              hint: 'Return n * 2 — not n + 2.',
+            },
+            {
+              id: 'negative',
+              label: 'double(-3) returns -6',
+              run: 'double(-3) === -6',
+              hint: 'Negative numbers must work too — multiplying handles the sign for you.',
+            },
+            {
+              id: 'zero',
+              label: 'double(0) returns 0',
+              run: 'double(0) === 0',
+              hint: 'Multiplication handles zero; a special case here is a smell.',
+            },
+          ],
+        },
+        'function double(n) {\n  return n * 2;\n}',
+        'A function takes a parameter, returns a computed value, and works for every input — the single n * 2 expression covers all four tests.'
       ),
       MCQ(
         'Why is an object a good fit for Roman numerals?',
@@ -294,6 +323,20 @@ export const TRACK_JS: Record<string, CourseLesson> = {
         ],
         'Count the values of i: three values, three passes.'
       ),
+      CODE(
+        'Write a loop that pushes 0, 1, 2, 3, 4 into numbers.',
+        {
+          language: 'js',
+          starter: 'const numbers = [];\n// Loop from 0 to 4 and push each value.\n',
+          tests: [
+            { id: 'array', label: 'numbers is an array', run: "Array.isArray(numbers)", hint: 'Do not replace numbers with a string.' },
+            { id: 'length', label: 'numbers has five values', run: 'numbers.length === 5', hint: 'The loop should run five times, starting at 0.' },
+            { id: 'order', label: 'values are 0 through 4 in order', run: "numbers.join(',') === '0,1,2,3,4'", hint: 'Push i inside the loop; do not hard-code the whole array.' },
+          ],
+        },
+        'const numbers = [];\nfor (let i = 0; i < 5; i += 1) {\n  numbers.push(i);\n}',
+        'A loop turns a repeated push into one rule: start at 0, stop below 5, step by one.'
+      ),
     ],
   },
 
@@ -372,6 +415,20 @@ export const TRACK_JS: Record<string, CourseLesson> = {
         ],
         'Compare totals first; status follows the arithmetic.'
       ),
+      CODE(
+        'Write doubleAll(nums): return a new array with every number doubled.',
+        {
+          language: 'js',
+          starter: 'function doubleAll(nums) {\n  // Return a new array; do not mutate nums.\n}\n',
+          tests: [
+            { id: 'double', label: 'doubleAll([1, 2, 3]) returns [2, 4, 6]', run: "JSON.stringify(doubleAll([1, 2, 3])) === '[2,4,6]'", hint: 'Map over nums and multiply each value by 2.' },
+            { id: 'empty', label: 'doubleAll([]) returns an empty array', run: 'Array.isArray(doubleAll([])) && doubleAll([]).length === 0', hint: 'map handles an empty array without a special case.' },
+            { id: 'immutable', label: 'the original array is unchanged', run: '(() => { const input = [1, 2]; doubleAll(input); return input.join(",") === "1,2"; })()', hint: 'map returns a new array; do not push into nums.' },
+          ],
+        },
+        'function doubleAll(nums) {\n  return nums.map((n) => n * 2);\n}',
+        'map expresses the transformation directly and returns a new array, so the caller’s data stays untouched.'
+      ),
     ],
   },
 
@@ -411,6 +468,21 @@ export const TRACK_JS: Record<string, CourseLesson> = {
         ],
         'Codes in, letters out — the mirror of charCodeAt.'
       ),
+      CODE(
+        'Write maskEmail(email): keep the first local character, replace the rest with ***, and preserve the @domain. Return the input unchanged when it has no @.',
+        {
+          language: 'js',
+          starter: 'function maskEmail(email) {\n  // Mask everything before @ except the first character\n}\n',
+          tests: [
+            { id: 'normal', label: 'amina@example.com becomes a***@example.com', run: "maskEmail('amina@example.com') === 'a***@example.com'", hint: 'Capture the first character and the @domain, then rebuild.' },
+            { id: 'short', label: 'bo@x.io becomes b***@x.io', run: "maskEmail('bo@x.io') === 'b***@x.io'", hint: 'One visible character is enough; mask the remainder.' },
+            { id: 'single', label: 'a@b.com becomes a***@b.com', run: "maskEmail('a@b.com') === 'a***@b.com'", hint: 'A one-character local part still gets the *** suffix.' },
+            { id: 'invalid', label: 'A string without @ is returned unchanged', run: "maskEmail('no-at-sign') === 'no-at-sign'", hint: 'Return early when indexOf("@") is -1.' },
+          ],
+        },
+        'function maskEmail(email) {\n  const at = email.indexOf("@");\n  if (at < 1) return email;\n  return email[0] + "***" + email.slice(at);\n}',
+        'Privacy-preserving display is a string problem: find the boundary, keep the minimum identifying prefix, and preserve the domain so the person can still recognize the address.'
+      ),
     ],
   },
 
@@ -449,6 +521,21 @@ export const TRACK_JS: Record<string, CourseLesson> = {
           'Graders reject any visible placeholder',
         ],
         'Empty with an id: JavaScript fills it after computing.'
+      ),
+      CODE(
+        'Write renderVerdict(message): create one paragraph with id="verdict" if it is missing, set its textContent to message, and return the text. Calling it twice must update the same element, not add a second one.',
+        {
+          language: 'js',
+          starter: 'function renderVerdict(message) {\n  // Create-or-update #verdict, then return its text\n}\n',
+          tests: [
+            { id: 'create', label: 'The first call creates #verdict', run: "renderVerdict('Valid') === 'Valid' && !!document.getElementById('verdict')", hint: 'Use document.getElementById first, then create and append a p when it is null.' },
+            { id: 'text', label: 'The element carries the exact message', run: "renderVerdict('Valid') === 'Valid' && document.getElementById('verdict').textContent === 'Valid'", hint: 'Use textContent — never innerHTML for untrusted verdict text.' },
+            { id: 'update', label: 'A second call updates instead of duplicating', run: "(function () { renderVerdict('Valid'); renderVerdict('Not valid'); return document.querySelectorAll('#verdict').length === 1 && document.getElementById('verdict').textContent === 'Not valid'; })()", hint: 'Reuse the element; do not append on every call.' },
+            { id: 'return', label: 'The function returns the rendered text', run: "renderVerdict('Maybe') === 'Maybe'", hint: 'Return the same string you wrote into textContent.' },
+          ],
+        },
+        'function renderVerdict(message) {\n  let el = document.getElementById("verdict");\n  if (!el) {\n    el = document.createElement("p");\n    el.id = "verdict";\n    document.body.appendChild(el);\n  }\n  el.textContent = message;\n  return el.textContent;\n}',
+        'The grab-compute-show pattern needs one element with one identity. Creating it lazily and updating textContent keeps the DOM stable, avoids duplicate ids, and makes repeated renders idempotent.'
       ),
     ],
   },
@@ -495,6 +582,27 @@ export const TRACK_JS: Record<string, CourseLesson> = {
         'INSUFFICIENT_FUNDS',
         ['INSUFFICIENT_FUNDS', 'OPEN', 'CLOSED', 'PENDING'],
         'Drawer smaller than change: insufficient.'
+      ),
+      TEXT(
+        'Type the expression that checks whether value is strictly equal to zero.',
+        ['value === 0', 'value===0'],
+        'Triple equals compares type and value, so "0" and 0 are different. Prefer strict equality in every condition.',
+        { misconceptions: { 'value == 0': 'Double equals coerces types. Use === for a strict comparison.' } }
+      ),
+      CODE(
+        'Write sumEven(nums): return the sum of all even numbers in the array.',
+        {
+          language: 'js',
+          starter: 'function sumEven(nums) {\n  // Return the sum; an empty array sums to 0.\n}\n',
+          tests: [
+            { id: 'mixed', label: 'sumEven([1, 2, 3, 4]) returns 6', run: 'sumEven([1, 2, 3, 4]) === 6', hint: 'Filter for even values, then reduce to a sum.' },
+            { id: 'empty', label: 'sumEven([]) returns 0', run: 'sumEven([]) === 0', hint: 'Give reduce a starting value of 0.' },
+            { id: 'repeat', label: 'sumEven([2, 2]) returns 4', run: 'sumEven([2, 2]) === 4', hint: 'Every matching value must be added, not just the first.' },
+            { id: 'negative', label: 'sumEven([-2, 3]) returns -2', run: 'sumEven([-2, 3]) === -2', hint: 'Negative even numbers count too: use n % 2 === 0.' },
+          ],
+        },
+        'function sumEven(nums) {\n  return nums.filter((n) => n % 2 === 0).reduce((sum, n) => sum + n, 0);\n}',
+        'The pipeline separates the two ideas: filter decides which values qualify, reduce combines them. The 0 starting value makes the empty case automatic.'
       ),
     ],
   },

@@ -13,6 +13,10 @@
  *    copy is used for that id, never a crash on the loading screen.
  *  - No Supabase config, a timeout, a network error or an empty table all fall
  *    back to the bundled catalog. A quiz must never be blocked by the network.
+ *  - Reviewed transcript lessons are remote-only in the seed, but a release
+ *    snapshot of the published ones ships in the offline bundle, so a path
+ *    node that points at one still opens without a catalog read. A successful
+ *    remote read stays authoritative: unpublishing the row hides it online.
  *  - Results cache for CACHE_TTL_MS, failures for RETRY_MS, so an offline
  *    learner pays the timeout once rather than on every question.
  *
@@ -24,6 +28,7 @@ import { supabase } from './supabase';
 import { LANGUAGE_COURSES } from './languages';
 import type { CourseLesson } from './quizBank';
 import { mergeLessonCatalogs, toCourseLesson, type RemoteLessonRow } from './languageCatalogRows';
+import { PUBLISHED_TRANSCRIPT_LESSONS } from './publishedTranscriptLessons';
 
 /** Long enough to batch a session, short enough to see an edit on the next visit. */
 const CACHE_TTL_MS = 5 * 60 * 1000;
@@ -66,8 +71,15 @@ let retryAt = 0;
 let warnedTransport = false;
 const warnedRows = new Set<string>();
 
+function offlineLessons(): Record<string, CourseLesson> {
+  // Built-in banks first, then the released snapshot of transcript lessons.
+  // The snapshot is intentionally absent when a remote read succeeds, so a
+  // transcript row unpublished in the dashboard does not reappear online.
+  return mergeLessonCatalogs(LANGUAGE_COURSES, PUBLISHED_TRANSCRIPT_LESSONS);
+}
+
 function builtinSnapshot(): LanguageCatalogSnapshot {
-  return { lessons: LANGUAGE_COURSES, source: 'builtin', remoteLessons: 0, fetchedAt: 0 };
+  return { lessons: offlineLessons(), source: 'builtin', remoteLessons: 0, fetchedAt: 0 };
 }
 
 function warnBadRow(id: string, reason: string): void {
@@ -126,10 +138,19 @@ async function fetchAndMerge(): Promise<LanguageCatalogSnapshot> {
   }
 
   const count = Object.keys(remote).length;
+  if (count === 0) {
+    // Empty table (migration not run yet) is not an error: the offline bundle
+    // plays, including its published transcript snapshot.
+    const snapshot: LanguageCatalogSnapshot = { ...builtinSnapshot(), fetchedAt: Date.now() };
+    cache = snapshot;
+    retryAt = 0;
+    return snapshot;
+  }
   const snapshot: LanguageCatalogSnapshot = {
-    // Empty table (migration not run yet) is not an error: the bundle plays.
-    lessons: count > 0 ? mergeLessonCatalogs(LANGUAGE_COURSES, remote) : LANGUAGE_COURSES,
-    source: count > 0 ? 'remote' : 'builtin',
+    // A successful remote read is authoritative for transcript lessons: only
+    // the built-in banks and the published remote rows are included.
+    lessons: mergeLessonCatalogs(LANGUAGE_COURSES, remote),
+    source: 'remote',
     remoteLessons: count,
     fetchedAt: Date.now(),
   };
@@ -159,6 +180,8 @@ export function loadLanguageCatalog({ force = false }: { force?: boolean } = {})
 export async function getLanguageLessonAsync(id: string): Promise<CourseLesson | undefined> {
   if (!isLanguageLessonId(id)) return undefined;
   const { lessons } = await loadLanguageCatalog();
+  // `lessons` already contains the offline transcript snapshot when the load
+  // fell back to the bundle; the direct bank lookup keeps code-lesson ids out.
   return lessons[id] ?? LANGUAGE_COURSES[id];
 }
 

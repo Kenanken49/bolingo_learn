@@ -6,7 +6,7 @@
  * then responsive behavior. All content original.
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MCQ, BUILD, CODE, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_RWD: Record<string, CourseLesson> = {
   'rwd-responsive': {
@@ -146,6 +146,52 @@ export const TRACK_RWD: Record<string, CourseLesson> = {
         ['@media', '(max-width:', '600px)', '{'],
         ['@media', '(max-width:', '600px)', '{', '@screen', '(min-width:'],
         'The 600px breakpoint opens every phone layout.'
+      ),
+      TEXT(
+        'Type the media query that applies rules at 600px and below.',
+        ['@media (max-width: 600px)', '@media (max-width:600px)'],
+        'max-width is inclusive: the rules apply at 600px and every narrower screen. Test it by resizing, not by guessing.',
+        { misconceptions: { '@media (min-width: 600px)': 'min-width targets 600px and wider — the opposite direction.' } }
+      ),
+      CODE(
+        'Build the responsive grid: .grid is a two-column CSS grid with a 16px gap, and a max-width 600px media query collapses it to one column.',
+        {
+          language: 'css',
+          starter: '/* .grid and its cards are in the fixture. */\n',
+          fixture: { html: '<main class="grid"><article>One</article><article>Two</article></main>\n' },
+          tests: [
+            {
+              id: 'display',
+              label: '.grid uses display: grid',
+              run: "getComputedStyle(document.querySelector('.grid')).display === 'grid'",
+              hint: '.grid { display: grid; }',
+              pattern: '\\.grid\\s*\\{[^}]*display\\s*:\\s*grid',
+            },
+            {
+              id: 'columns',
+              label: '.grid has two equal columns',
+              run: "getComputedStyle(document.querySelector('.grid')).gridTemplateColumns.split(' ').length === 2",
+              hint: 'grid-template-columns: 1fr 1fr;',
+              pattern: '\\.grid\\s*\\{[^}]*grid-template-columns\\s*:\\s*1fr\\s+1fr',
+            },
+            {
+              id: 'gap',
+              label: '.grid has a 16px gap',
+              run: "getComputedStyle(document.querySelector('.grid')).gap === '16px'",
+              hint: 'gap: 16px;',
+              pattern: '\\.grid\\s*\\{[^}]*gap\\s*:\\s*16px',
+            },
+            {
+              id: 'breakpoint',
+              label: 'A max-width 600px media query collapses it',
+              run: "Array.from(document.styleSheets).some(function (sheet) { try { return Array.from(sheet.cssRules).some(function (rule) { return rule.type === 4 && /max-width\\s*:\\s*600px/.test(rule.conditionText || rule.media.mediaText); }); } catch (e) { return false; } })",
+              hint: '@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }',
+              pattern: '@media\\s*\\(max-width\\s*:\\s*600px\\)[^{]*\\{[\\s\\S]*grid-template-columns',
+            },
+          ],
+        },
+        '.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }\n@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }',
+        'Grid handles the wide layout and the media query handles the narrow one. The tests read computed styles and the CSSOM, so a comment or a class name alone cannot pass: the browser has to agree that the two-column grid and its breakpoint exist.'
       ),
     ],
   },

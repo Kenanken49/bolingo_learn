@@ -235,9 +235,13 @@ dashboard → SQL editor. It is idempotent and starts with a check that the
    the published row over the bundle.
 4. Record the publication in
    [`content/published/language-lessons.json`](../content/published/language-lessons.json)
-   with its source, review date and `onPath` flag. This is what lets
-   `check:catalog` prove a path block points at a real published draft without
-   copying the lesson into the bundled seed.
+   with its source, review date and `onPath` flag. Then copy the reviewed
+   `title`, `theory`, `questions` and `position` into
+   [`content/published/language-lessons.offline.json`](../content/published/language-lessons.offline.json).
+   That snapshot is bundled with the app, so the path node still opens when the
+   catalog cannot be read. `check:catalog` fails if a published transcript
+   lesson is missing from the snapshot, if the snapshot is malformed, or if the
+   two files disagree on title or position.
 5. To put it on the path, add a path block in `lib/curriculum.ts` in a release;
    path shape (locking, XP, review placement) is product code, not editorial
    content.
@@ -293,6 +297,8 @@ bwana.’ Which word completes his greeting?” with `Jambo` as the answer. The
 fix lives in the publication SQL, not the generated draft, so re-running the
 importer still produces the same reviewable draft.
 
-Published remote-only lessons are not in the bundled catalog. The catalog read
-must succeed for the node to open; on a cold offline start the loader falls back
-to the bundle, which does not contain this FSI row.
+Published remote-only lessons are not in the generated seed, but the reviewed
+snapshot ships in the bundled offline catalog. On a cold or offline start the
+loader falls back to the bundle and the FSI path node still opens without a
+catalog read. When Supabase answers, its published row is authoritative: if the
+row is unpublished there, it stays hidden online.

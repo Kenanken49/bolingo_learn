@@ -1,3 +1,5 @@
+/* global __dirname -- Node CJS globals. */
+
 /**
  * One-shot importer: linuxjourney-desktop (GPL-3.0, Sempiternal-Futility fork
  * of LinuxJourney.com) → lib/tracks/linux-{grasshopper,journeyman,networking}.ts
@@ -52,8 +54,6 @@ while ((m = reCourse.exec(ax))) courseTitles[m[1]] = m[2];
 
 // ---- course -> ordered lesson buttons (from each course handler's hide-list) ----
 const courseLessons = {};
-const reCourseH = /public void (course[A-Za-z]+Button)_Click[\s\S]*?lessonContent\.IsVisible=true;/g;
-let cm;
 const handlerBodies = {};
 {
   const parts = cs.split(/(?=    public void (?:course|lesson)[A-Za-z]+Button_Click\()/g);

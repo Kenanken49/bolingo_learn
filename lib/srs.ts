@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getFlagNumber } from './featureFlags';
 import type { CodeQuizData } from '../components/GamifiedCodePlayer';
 
 /**
@@ -94,7 +95,10 @@ export async function getDueCount(userId: string): Promise<number> {
  * lapsed cards are retrieval failures — rehearse them before routine dues.
  * Capped for a ~2-minute session.
  */
-export async function getDueItems(userId: string, limit = REVIEW_CAP): Promise<DueItem[]> {
+export async function getDueItems(userId: string, limit?: number): Promise<DueItem[]> {
+  // Remote config, not a release: operators can tune the session length from
+  // the owner console. The catalog default is 5 cards.
+  const cap = limit ?? (await getFlagNumber('review_cap', REVIEW_CAP).catch(() => REVIEW_CAP));
   const { data, error } = await supabase
     .from('srs_cards')
     .select('item_key,prompt,correct_chain,options,lesson_title,lapses')
@@ -102,9 +106,9 @@ export async function getDueItems(userId: string, limit = REVIEW_CAP): Promise<D
     .lte('due_at', new Date().toISOString())
     .order('lapses', { ascending: false })
     .order('due_at', { ascending: true })
-    .limit(limit);
+    .limit(Math.max(1, Math.min(20, Math.round(cap))));
   if (error || !data) return [];
-  return (data as Array<{ item_key: string; prompt: string; correct_chain: string[]; options: string[]; lesson_title: string }>)
+  return (data as { item_key: string; prompt: string; correct_chain: string[]; options: string[]; lesson_title: string }[])
     .filter((r) => Array.isArray(r.correct_chain) && r.correct_chain.length > 0)
     .map((r) => ({
       key: r.item_key,

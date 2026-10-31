@@ -7,6 +7,7 @@ const HAPTICS_KEY = 'bolingo.hapticsOn';
 const MINUTES_KEY = 'bolingo.dailyMinutes';
 const COURSE_KEY = 'bolingo.selectedCourse';
 const WEEKLY_KEY = 'bolingo.weeklyDays';
+const TELEMETRY_KEY = 'bolingo.telemetryOn';
 
 export const DAILY_MINUTES_OPTIONS = [5, 10, 15, 20] as const;
 /** Codecademy-style weekly target: gentler than a strict daily streak. */
@@ -123,6 +124,26 @@ export async function getHapticsOn(): Promise<boolean> {
 export async function setHapticsOn(on: boolean): Promise<void> {
   try {
     await AsyncStorage.setItem(HAPTICS_KEY, on ? '1' : '0');
+  } catch {}
+}
+
+/**
+ * Anonymous product diagnostics. On by default; no learner content, email or
+ * free text ever leaves the device (see lib/telemetry.ts). Turning this off
+ * clears the local queue immediately and stops all uploads.
+ */
+export async function getTelemetryOn(): Promise<boolean> {
+  try {
+    const v = await AsyncStorage.getItem(TELEMETRY_KEY);
+    return v === null ? true : v === '1';
+  } catch {
+    return true;
+  }
+}
+
+export async function setTelemetryOn(on: boolean): Promise<void> {
+  try {
+    await AsyncStorage.setItem(TELEMETRY_KEY, on ? '1' : '0');
   } catch {}
 }
 

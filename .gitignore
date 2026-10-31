@@ -42,6 +42,9 @@ yarn-error.*
 package.json.*
 supabase/.temp/
 
+# quality gate reports (CI uploads them as artifacts)
+.quality/
+
 # generated native folders
 /ios
 /android

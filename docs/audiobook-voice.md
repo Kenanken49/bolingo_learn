@@ -43,14 +43,15 @@ clone or train a voice at runtime.
    rather than guessing.
 6. **Configure the deployment.** Confirm the cloned-voice consent record's
    pre-deployment gate is complete, then use the env names in the table below
-   and deploy:
+   and deploy. For a cloned or professional voice, also set
+   `TTS_CONSENT_RECORD` in `.env.local` to the machine-readable record.
 
    ```bash
    supabase secrets set TTS_API_KEY=...
    supabase secrets set TTS_PROVIDER=elevenlabs TTS_MODEL_ID=eleven_multilingual_v2
    supabase secrets set TTS_VOICE_ID=<voice-id> TTS_OUTPUT_FORMAT=mp3_44100_128
    supabase secrets set TTS_STABILITY=0.5 TTS_SIMILARITY_BOOST=0.75 TTS_STYLE=0 TTS_SPEAKER_BOOST=true
-   supabase functions deploy process-upload
+   npm run deploy:process-upload
    ```
 
 7. **Preflight, validate and audition.** Confirm the configured voice is in the
@@ -59,6 +60,8 @@ clone or train a voice at runtime.
 
    ```bash
    npm run audio:preflight
+   # cloned/professional voice without TTS_CONSENT_RECORD in .env.local:
+   # npm run audio:preflight -- --consent ../../secure/voice-consent.json
    node scripts/preview-audiobook-voice.cjs
    node scripts/preview-audiobook-voice.cjs --preview --out ./.preview-audio
    ```
@@ -176,6 +179,7 @@ obtain new server TTS by asking the app.
 | Quiz narration | Device voice; upgrade hint | Generated segment; device fallback if a URL is missing |
 | TTS cost | $0 | Provider charges; the word cap is a guardrail, not a TTS budget |
 | Voice preview CLI | Operator only | Operator only |
+| Premium narrator audition | Bundled 9-second MP3, free to replay | Bundled sample + generated narration |
 
 Details:
 
@@ -292,6 +296,63 @@ node --env-file=.env.local scripts/preview-audiobook-voice.cjs --preview --out .
 Do not commit generated audio or `.env.local`; the default temp directory keeps
 the repository clean.
 
+## Bundled free sample
+
+The app ships [`assets/audio/premium-narrator-sample.mp3`](../assets/audio/premium-narrator-sample.mp3),
+a 9.06-second recording of the default full-mix line in the configured licensed
+voice. Free learners can play it from the paywall and from **Settings → Audiobook
+voice**; it is bundled locally, so replaying it makes no TTS call, spends no
+provider credits and needs no signed URL or sign-in. Premium learners hear the
+same sample alongside their generated full mix and segments.
+
+The sample text is the default `AUDIOBOOK_VOICE_DEFAULTS.preview.fullMix` line,
+and the checked-in recording is the only generated preview artifact that belongs
+in the repository. Regenerate it after changing `TTS_VOICE_ID` or the preview
+line, then run the audiobook check:
+
+```bash
+npm run audio:preview -- --out ./.preview-audio
+cp .preview-audio/full-mix.mp3 assets/audio/premium-narrator-sample.mp3
+npm run check:audiobook-voice
+```
+
+`assets/narrator.ts` owns the bundled asset and the exact spoken line. Keep the
+clip short; it is shipped in the app bundle, not fetched from storage. The
+sample must stay within the permitted scope in the voice's consent record.
+
+### On-device playback test
+
+The sample has a real device test, separate from the source-only checks in
+`npm test`:
+
+```bash
+npx expo start --dev-client --host lan    # in one terminal
+npm run test:narrator-sample:device       # in another
+```
+
+It needs a connected Android device or emulator with the development build
+installed, and Metro on port 8081. An emulator is pointed at the host through
+`10.0.2.2`; a physical device uses `adb reverse`. Use a free/guest session: the
+paywall card is shown to learners who are not Premium.
+
+The script launches each real screen with `?narratorAudit=1`, a development-only
+hook that calls the same `toggleNarratorSample()` handler as the Play button.
+This avoids `uiautomator`, which cannot reach an idle state on the continuously
+animated screen, while still exercising the production player. It verifies:
+
+- the source still wires both Play buttons and both audit hooks to that one
+  handler;
+- the dev-only `useNarratorSampleProbe` line appears in `adb logcat` for
+  `surface=paywall` **and** `surface=settings`;
+- that line reports a playback position past 0.25 s and a non-zero duration,
+  proving the bundled player decoded audio rather than only changing state.
+
+Pass `--serial <id>` to choose among devices, `--avd <name>` to boot an emulator,
+`--headless` with `--avd`, or `--report <path>` to keep the pass log. The test
+force-stops the app between surfaces so each player is measured alone. It never
+calls ElevenLabs, OpenAI, or Supabase; the MP3 is local and the only network
+traffic is the Metro bundle.
+
 ## Verify a real uploaded lesson
 
 The preview command proves the request shape with two short canned lines. The
@@ -318,6 +379,34 @@ Flags: `--upload <uuid>` selects the lesson generated from a specific upload,
 `--concurrency 1..3` controls parallel TTS requests, and `--json` prints the
 full manifest. `--allow-default-voice` bypasses the licensed-voice guard for
 demo-only runs; do not use it for a release check.
+
+### Disposable verification lesson
+
+If you do not have a real upload yet, or do not want to touch one, use the
+disposable wrapper. It creates a temporary ready `user_uploads` row, a
+generated lesson with three questions, and then runs the same verifier against
+it. The rows are removed after a pass, a failed check or a missing voice (in a
+`finally` block), and on Ctrl+C; no manual SQL or dashboard cleanup is needed.
+
+```bash
+# Create, plan, and remove the temporary lesson without spending credits
+npm run verify:lesson-audio:disposable -- --plan
+
+# Run the real full-mix and segment synthesis, then remove everything
+npm run verify:lesson-audio:disposable -- --out ./.preview-audio/disposable
+```
+
+The verifier flags pass straight through (`--plan`, `--out`, `--concurrency`,
+`--allow-default-voice`, `--json`). `--lesson`, `--upload` and `--list` are
+rejected because the temporary lesson is always the target. `--keep` leaves the
+rows in place and prints the upload id, lesson id and title for debugging.
+
+The helper uses the same `SUPABASE_URL` and server key as the verifier, creates
+the rows with `user_id = null` (so they never belong to a learner), marks
+`content.verification.disposable`, and gives the lesson a
+`Disposable audio verification …` title. A normal interruption is cleaned up;
+a `SIGKILL` or power loss can still leave rows, which the title and marker make
+easy to find.
 
 Before spending anything the command:
 
@@ -351,10 +440,10 @@ non-zero exit means at least one call failed or one check did not pass; nothing
 is uploaded to Storage and no lesson rows are modified.
 
 This is an operator command, not part of `npm test`: it spends provider credits
-(one call for the full mix plus one per question) and needs a real uploaded
-lesson. If no uploaded lesson exists yet, create one through **My Uploads** in
-the app first — the command exits with a clear message instead of falling back
-to canned text.
+(one call for the full mix plus one per question) and needs a lesson linked to
+a ready upload. If no uploaded lesson exists yet, use the disposable wrapper
+above or create one through **My Uploads** in the app first — the command exits
+with a clear message instead of falling back to canned text.
 
 ## What is validated
 
@@ -387,34 +476,93 @@ This is the deployment gate for the configured ElevenLabs voice. It:
 3. Calls `GET /v1/voices/<TTS_VOICE_ID>` to confirm the voice is readable.
 4. Calls `GET /v1/voices` and requires the configured ID to appear in the
    workspace's own voice list.
+5. If the voice category is `cloned` or `professional`, requires a completed,
+   active consent record via `--consent <file>` or `TTS_CONSENT_RECORD`.
 
 Step 4 matters: a key can sometimes read a shared or library voice that is not
 in its workspace. That voice is not a safe deployment choice, so the command
 exits `1` with a message instead of letting TTS fail later. It also exits `1`
-for an invalid key, a key ID used as the secret, a missing voice, or a
-workspace listing error.
+for an invalid key, a key ID used as the secret, a missing voice, a workspace
+listing error, or a missing/invalid cloned-voice consent record.
 
 ```bash
 # machine-readable result for CI
 npm run audio:preflight -- --json
 ```
 
-Run it before `supabase functions deploy process-upload`, after rotating
-`TTS_API_KEY`, and whenever `TTS_VOICE_ID` changes. It never prints the key.
-`--base-url` exists only for the local stub test.
+### Cloned-voice consent record
+
+A voice with category `cloned` or `professional` is a cloned voice. The
+preflight refuses to finish for one unless you provide a completed, active
+record:
+
+```bash
+npm run audio:preflight -- --consent ../../secure/voice-consent.json
+# or set this in .env.local (never commit that file):
+# TTS_CONSENT_RECORD=../../secure/voice-consent.json
+```
+
+`--consent` wins over `TTS_CONSENT_RECORD`. The record must match the configured
+`TTS_VOICE_ID` and the key's workspace; a record for another voice or workspace
+is rejected. Complete the signed Markdown
+[cloned-voice consent record](voice-consent-record-template.md) first; the JSON
+is a machine-readable companion, not a replacement.
+
+```json
+{
+  "templateVersion": "2026-10-30",
+  "recordId": "VC-2026-001",
+  "status": "Active",
+  "completed": true,
+  "provider": "ElevenLabs",
+  "voiceId": "ezWcjzmShLr2IarIA07u",
+  "workspaceId": "302af46e251b4a7783b3601c64b4cdc1",
+  "voiceType": "Professional Voice Clone",
+  "speaker": "Speaker legal name",
+  "signedOn": "2026-10-30",
+  "reviewDueOn": "2027-10-30",
+  "approvedBy": "Operator name",
+  "approvedOn": "2026-10-30"
+}
+```
+
+`completed: true` attests that the signed record is complete, including the
+speaker signature and provider verification. `status` must be `Active`.
+`reviewDueOn` is optional, but a past date fails the gate. Dates use `YYYY-MM-DD`
+and cannot be in the future. The preflight output includes the record ID and
+dates, not the speaker's personal details.
+
+`npm run deploy:process-upload` runs the preflight automatically before
+`supabase functions deploy process-upload`. For a cloned voice, set
+`TTS_CONSENT_RECORD` in `.env.local` or the CI environment so the deploy script
+finds the record. Run the standalone preflight after rotating `TTS_API_KEY`, and
+whenever `TTS_VOICE_ID` changes. It never prints the key. `--base-url` exists
+only for the local stub test.
 
 ## Deploying
 
-Run the preflight first, then set the secrets on the Edge Function and deploy:
+For a cloned or professional voice, add the machine-readable record path to
+`.env.local` (never commit it) or the CI environment:
 
 ```bash
-npm run audio:preflight
+TTS_CONSENT_RECORD=../../secure/voice-consent.json
+```
+
+Then set the secrets on the Edge Function and use the gated deploy script:
+
+```bash
 supabase secrets set TTS_API_KEY=...
 supabase secrets set TTS_PROVIDER=elevenlabs TTS_MODEL_ID=eleven_multilingual_v2
 supabase secrets set TTS_VOICE_ID=<voice-id> TTS_OUTPUT_FORMAT=mp3_44100_128
 supabase secrets set TTS_STABILITY=0.5 TTS_SIMILARITY_BOOST=0.75 TTS_STYLE=0 TTS_SPEAKER_BOOST=true
-supabase functions deploy process-upload
+npm run deploy:process-upload
 ```
+
+`deploy:process-upload` runs the voice preflight first. If the key, workspace,
+voice or provider guard fails, or a cloned voice has no valid consent record,
+the preflight exits non-zero and the function is not deployed. Run
+`npm run audio:preflight` on its own when you only want to check the
+configuration.
 
 The pipeline validates the same values at TTS time. A bad value fails the audio
 jobs with a field-specific message while the already-ready quiz stays usable.
@@ -450,5 +598,7 @@ assertions: both preview requests must share the endpoint, model, voice and
 response format, and the manifest must report that provider, model and voice.
 The preflight stub test runs the real preflight against a local API stub and
 proves it accepts a voice listed in the workspace, rejects a voice that is only
-directly readable but absent from `/v1/voices`, and refuses a non-ElevenLabs
-provider. None of the stub checks makes a real network call or spends credits.
+directly readable but absent from `/v1/voices`, refuses a non-ElevenLabs
+provider, and requires a completed `Active` consent record for a cloned voice
+while rejecting Draft, expired and wrong-voice records. None of the stub checks
+makes a real network call or spends credits.

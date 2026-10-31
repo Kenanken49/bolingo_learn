@@ -1,0 +1,8 @@
+# Bundled narrator playback — Android device
+# Date: 2026-10-31T04:31:52.060Z
+# Device: sdk_gphone64_x86_64 / Android 17 (emulator-5554)
+# Paywall: PASS · position 0.76s · duration 9.04s
+# Settings: PASS · position 0.63s · duration 9.04s
+
+10-31 07:31:16.450  5639  5728 I ReactNativeJS: [NarratorSample] surface=paywall event=playing position=0.76 duration=9.04 source=bundled
+10-31 07:31:50.964  5914  5985 I ReactNativeJS: [NarratorSample] surface=settings event=playing position=0.63 duration=9.04 source=bundled

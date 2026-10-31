@@ -1,8 +1,8 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Pressable, ScrollView, Switch, Alert, Platform } from 'react-native';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import Text from '../../components/ui/Text';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import BrandMark from '../../components/BrandMark';
 import AppIcon, { type AppIconName } from '../../components/AppIcon';
 import { StatusBar } from 'expo-status-bar';
@@ -22,6 +22,9 @@ import Mascot from '../../components/AfricanMascots';
 import { stopSpeaking, type Mentor, type PronounceResult } from '../../lib/pronunciation';
 import { VOICE_CAST, auditionVoice, castMember, type CastLanguage } from '../../lib/voiceCast';
 import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
+import { PREMIUM_NARRATOR_SAMPLE } from '../../assets/narrator';
+import PremiumNarratorSample from '../../components/PremiumNarratorSample';
+import { narratorAuditRequested, useNarratorSampleProbe } from '../../lib/narratorSample';
 import {
   getSoundOn,
   setSoundOn as persistSoundOn,
@@ -39,7 +42,10 @@ import {
   getWeeklyDays,
   setWeeklyDays,
   WEEKLY_DAYS_OPTIONS,
+  getTelemetryOn,
+  setTelemetryOn as persistTelemetryOn,
 } from '../../lib/preferences';
+import { setTelemetryConsent } from '../../lib/telemetry';
 
 interface CastCapture {
   character: Mentor;
@@ -55,11 +61,14 @@ const CAST_STEPS = (['en', 'sw'] as const).flatMap((language) =>
 );
 
 export default function Settings() {
+  // Dev-only device test hook; see lib/narratorSample.ts.
+  const { narratorAudit } = useLocalSearchParams<{ narratorAudit?: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [soundOn, setSoundOn] = useState(true);
   const [rewardVolume, setRewardVolume] = useState(1);
   const [ambientOn, setAmbientOn] = useState(true);
   const [hapticsOn, setHapticsOn] = useState(true);
+  const [telemetryOn, setTelemetryOnState] = useState(true);
   // Platform appearance: light / dark, persisted, flips instantly everywhere.
   const [theme, setTheme] = useTheme();
   const [remindersOn, setReminders] = useState(false);
@@ -98,6 +107,11 @@ export default function Settings() {
   // whole Settings screen twice as often while a preview is playing.
   const audiobookPlayer = useAudioPlayer(null, { updateInterval: 1000 });
   const audiobookStatus = useAudioPlayerStatus(audiobookPlayer);
+  // Bundled Premium narrator audition, available even before a learner has an
+  // audiobook or a signed-in session. Replaying it never calls TTS.
+  const narratorPlayer = useAudioPlayer(PREMIUM_NARRATOR_SAMPLE, { updateInterval: 250 });
+  const narratorStatus = useAudioPlayerStatus(narratorPlayer);
+  useNarratorSampleProbe('settings', narratorStatus);
 
   const refresh = useCallback(async () => {
     try {
@@ -111,6 +125,7 @@ export default function Settings() {
       setRewardVolume(await getRewardVolume());
       setAmbientOn(await getAmbientOn());
       setHapticsOn(await getHapticsOn());
+      setTelemetryOnState(await getTelemetryOn());
     } catch {
       setProfile(null);
     }
@@ -121,6 +136,7 @@ export default function Settings() {
     audiobookLoadToken.current = token;
     setAudiobookLoading(true);
     audiobookPlayer.pause();
+    narratorPlayer.pause();
     setAudiobookTrack(null);
     try {
       const book = await loadLatestAudiobook();
@@ -142,7 +158,7 @@ export default function Settings() {
     } finally {
       if (token === audiobookLoadToken.current) setAudiobookLoading(false);
     }
-  }, [audiobookPlayer]);
+  }, [audiobookPlayer, narratorPlayer]);
 
   useFocusEffect(
     useCallback(() => {
@@ -154,6 +170,7 @@ export default function Settings() {
       return () => {
         audiobookLoadToken.current += 1;
         audiobookPlayer.pause();
+        narratorPlayer.pause();
         setAudiobookTrack(null);
         auditionToken.current += 1;
         setAuditioning(null);
@@ -161,7 +178,7 @@ export default function Settings() {
         setCastStep(null);
         void stopSpeaking();
       };
-    }, [audiobookPlayer, loadAudiobookPreview, refresh])
+    }, [audiobookPlayer, narratorPlayer, loadAudiobookPreview, refresh])
   );
 
   const toggleReminders = async (v: boolean) => {
@@ -214,7 +231,39 @@ export default function Settings() {
 
   const pauseAudiobookPreview = () => {
     audiobookPlayer.pause();
+    narratorPlayer.pause();
   };
+
+  const toggleNarratorSample = async () => {
+    if (narratorStatus.playing) {
+      narratorPlayer.pause();
+      return;
+    }
+    pauseAudiobookPreview();
+    // Only one voice path at a time: stop character speech and reward cues
+    // before the narrator sample, exactly as the audiobook previews do.
+    auditionToken.current += 1;
+    setAuditioning(null);
+    setVoiceCheck(null);
+    setCastStep(null);
+    await stopSpeaking();
+    await stopRewardCues();
+    if (narratorStatus.didJustFinish) await narratorPlayer.seekTo(0);
+    narratorPlayer.play();
+  };
+
+  // The on-device test asks the real screen to start the sample. This is the
+  // same handler the Play button calls and is disabled outside development.
+  useEffect(() => {
+    if (!narratorAuditRequested(narratorAudit)) return;
+    const timer = setTimeout(() => {
+      void toggleNarratorSample();
+    }, 900);
+    return () => clearTimeout(timer);
+    // Route params are fixed for the mounted screen; the timer needs the
+    // current handler, not a stale copy from the first render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [narratorAudit]);
 
   const auditionCast = async (character: Mentor) => {
     pauseAudiobookPreview();
@@ -370,6 +419,12 @@ export default function Settings() {
   const toggleHaptics = async (v: boolean) => {
     setHapticsOn(v);
     await persistHapticsOn(v);
+  };
+
+  const toggleTelemetry = async (v: boolean) => {
+    setTelemetryOnState(v);
+    await persistTelemetryOn(v);
+    await setTelemetryConsent(v);
   };
 
   const refillHearts = async () => {
@@ -545,6 +600,14 @@ export default function Settings() {
 
       <View className="mt-6 w-full max-w-sm gap-3">
         {row('user', 'Account', profile ? 'Manage sign-in & session' : 'Sign in to sync progress', () => router.push('/auth'))}
+        {profile && (profile.is_admin || isPremium || __DEV__)
+          ? row(
+              'shield',
+              'Quality & Operations',
+              profile.is_admin ? 'Owner console · gates, telemetry, experiments' : 'Owner console · verify access',
+              () => router.push('/admin')
+            )
+          : null}
         {row(
           'crown',
           'Go Premium',
@@ -955,6 +1018,12 @@ export default function Settings() {
             </Text>
           </View>
 
+          <PremiumNarratorSample
+            playing={narratorStatus.playing}
+            onToggle={toggleNarratorSample}
+            className="mt-3"
+          />
+
           <View className="mt-3 border-t border-amber-100 pt-3 dark:border-amber-900">
             <Text className="text-xs font-extrabold uppercase tracking-widest text-amber-700 dark:text-amber-300">
               Hear it on this device
@@ -1059,6 +1128,13 @@ export default function Settings() {
         {row('zap', 'Haptics', hapticsOn ? 'Vibration ON' : 'Vibration OFF', undefined, (
           <Switch value={hapticsOn} onValueChange={toggleHaptics} />
         ))}
+        {row(
+          'shield',
+          'Anonymous diagnostics',
+          telemetryOn ? 'On · no learner content' : 'Off · nothing uploaded',
+          undefined,
+          <Switch value={telemetryOn} onValueChange={toggleTelemetry} />
+        )}
         {__DEV__ && row('heart', 'Debug: refill', 'Dev builds only — remove before release', refillHearts)}
         {__DEV__ &&
           row(

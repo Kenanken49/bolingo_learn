@@ -4,7 +4,7 @@
  * beginner-Spanish syllabi. Merged into LANGUAGE_COURSES in
  * lib/languages.ts — quiz, SRS, and guidebook work unchanged.
  */
-import { MCQ, BUILD, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
 
 export const SPANISH_PLUS: Record<string, CourseLesson> = {
   'spanish-greetings': {
@@ -334,6 +334,23 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         ['Dónde', 'está'],
         ['está', 'Dónde', 'Cuánto', 'Está'],
         '¿Dónde está…? + place. La estación = the station.'
+      ),
+      MCQ(
+        'You are at a café in Madrid. You want water and the bill. Which pair is most natural?',
+        'Un agua, por favor. La cuenta, por favor.',
+        [
+          'Un agua, por favor. La cuenta, por favor.',
+          'Agua cuenta por favor.',
+          'Yo quiero agua y cuenta.',
+          'Una agua, la cuenta.',
+        ],
+        'Por favor softens both requests, and la cuenta is the bill. Politeness is part of the language, not decoration.'
+      ),
+      TEXT(
+        'Type the Spanish for “I don’t understand.”',
+        ['No entiendo.', 'No comprendo.'],
+        'No entiendo and no comprendo both mean “I don’t understand”; entiendo is the most common everyday choice.',
+        { misconceptions: { 'No entiendo nada': 'That means “I understand nothing” — stronger than the neutral phrase.' } }
       ),
     ],
   },

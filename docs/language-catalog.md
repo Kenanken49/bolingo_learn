@@ -11,6 +11,7 @@ the offline fallback.
 | --- | --- | --- |
 | Lesson banks | `lib/languages.ts`, `lib/*-plus.ts` | Source of truth at build time, offline fallback at runtime |
 | Migration + seed | [`supabase/migrations_language_catalog.sql`](../supabase/migrations_language_catalog.sql) | Creates the tables and inserts the 86 built-in lessons (generated) |
+| Published transcript snapshot | [`content/published/language-lessons.offline.json`](../content/published/language-lessons.offline.json), [`lib/publishedTranscriptLessons.ts`](../lib/publishedTranscriptLessons.ts) | Reviewed release content for remote-only lessons, bundled so path nodes open offline |
 | Loader | [`lib/languageCatalog.ts`](../lib/languageCatalog.ts) | Reads Supabase, validates rows, merges over the bundle, caches |
 | Path | `lib/curriculum.ts` | Which lessons appear in which unit, and their order (still code) |
 | Consumer | `src/app/quiz/[lessonId].tsx` | Loads the lesson through the catalog, so edits apply without a release |
@@ -75,10 +76,12 @@ The loader caches for **five minutes**, so an edit appears on the next quiz open
 after that window (or after an app reload). Reopening a quiz inside the window
 serves the cached copy.
 
-**Rolling back.** `published = false` hides the row from the app — which means
-the loader falls back to the bundled version of that lesson. To restore edited
-content, set `published = true` again. To go back to a shipped version of a
-lesson, copy it from the bank; the seed itself never overwrites existing rows.
+**Rolling back.** `published = false` hides the row from the app. A built-in
+lesson falls back to its bundled bank; a transcript lesson has no bank, so it
+is hidden online while the released offline snapshot remains the fallback for a
+device that cannot read the catalog. To restore edited content, set
+`published = true` again. To go back to a shipped version of a lesson, copy it
+from the bank; the seed itself never overwrites existing rows.
 
 ## Adding a brand-new lesson
 
@@ -89,18 +92,23 @@ is deliberate — path shape (locking, XP, review placement) is product logic,
 while lesson content is editorial.
 
 A **remote-only** lesson (a reviewed transcript draft) is not copied into the
-bundled seed. Register it in
+generated seed. Register it in
 [`content/published/language-lessons.json`](../content/published/language-lessons.json)
 with `published: true` and `onPath: true`, then point the curriculum block at
-its id. `check:catalog` validates that the id exists in a committed draft, is
-not shadowing a built-in lesson, and is actually present in the path. This keeps
-`swahili-fsi-01` out of the 86-lesson generated migration while still making the
-path auditable.
+its id. Also copy the reviewed content into
+[`content/published/language-lessons.offline.json`](../content/published/language-lessons.offline.json);
+that snapshot ships with the app and is what resolves the path node when the
+catalog cannot be read. `check:catalog` validates that the id exists in a
+committed draft, is not shadowing a built-in lesson, is present in the path,
+and has a valid offline snapshot. This keeps `swahili-fsi-01` out of the
+86-lesson generated migration while still making the path auditable and
+openable offline.
 
-If an id is already on the path, editing its row is all that is needed. A
-remote-only lesson needs a successful catalog read to open; it is intentionally
-not part of the offline bundle, so publishing and unpublishing it stay
-meaningful.
+If an id is already on the path, editing its published row is all that is
+needed while online. When the content changes, update the offline snapshot in
+the same release. Supabase stays authoritative whenever it answers: a
+successful remote read that omits an unpublished transcript lesson keeps it
+hidden online, while the released snapshot remains the offline fallback.
 
 ## Security model
 
@@ -120,7 +128,8 @@ meaningful.
 | Network hangs | Same, after a 2s timeout |
 | Table empty (migration not run) | Bundled catalog, re-checked after 5 minutes |
 | One malformed row | That lesson falls back to the bundle; the rest load from the DB |
-| Published transcript lesson while offline | Not in the bundle; the path node cannot open until the catalog read succeeds |
+| Published transcript lesson while offline | Its reviewed snapshot in the bundled catalog opens the path node without a catalog read |
+| Published transcript lesson unpublished online | Hidden by the successful remote read; released offline snapshot is not merged |
 
 Multiple-choice questions store one token in `correctChain`; build questions
 store the ordered token chain. Both are validated before use, so a half-finished

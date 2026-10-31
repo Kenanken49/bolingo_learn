@@ -6,7 +6,7 @@
  * guidebook work unchanged. Vocabulary cross-checked against the bundled
  * offline kamusi (assets/dict/sw.json) where possible.
  */
-import { MCQ, BUILD, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
 
 export const SWAHILI_PLUS: Record<string, CourseLesson> = {
   'swahili-greetings': {
@@ -397,6 +397,23 @@ export const SWAHILI_PLUS: Record<string, CourseLesson> = {
         ['Nina', 'homa'],
         ['homa', 'Nina', 'kikohozi', 'dawa'],
         'Nina = I have; homa = fever. Kikohozi is a cough and dawa is medicine.'
+      ),
+      MCQ(
+        'At a market stall in Dar es Salaam, you want the price and two mangoes. Which pair is most natural?',
+        'Bei gani? Naomba maembe mawili.',
+        [
+          'Bei gani? Naomba maembe mawili.',
+          'Bei gani? Naomba maembe mbili.',
+          'Bei gani? Naomba embe mawili.',
+          'Bei gani? Nataka maembe mawili sana.',
+        ],
+        'Bei gani? asks the price; naomba is a polite request. Maembe is class 6, so the pair is mawili, not mbili.'
+      ),
+      TEXT(
+        'Type the Swahili for “I don’t understand.”',
+        ['Sielewi.', 'Sikuelewi.'],
+        'Sielewi is the neutral “I don’t understand”; sikuelewi adds “you” — I don’t understand you. Both are useful, but sielewi is the safer default.',
+        { misconceptions: { 'Sijui': 'Sijui means “I don’t know.” Use sielewi for “I don’t understand.”' } }
       ),
     ],
   },

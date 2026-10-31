@@ -502,6 +502,19 @@ check('the signed-URL path is used for Deepgram and bytes for OpenAI', () => {
   assert.match(edge, /mediaContentType\(fileName\)/);
 });
 
+check('the OpenAI path checks object size before downloading it', () => {
+  const edge = read(EDGE_FUNCTION);
+  const helper = edge.indexOf('async function storageObjectSize(');
+  const sizeCall = edge.indexOf('const size = await storageObjectSize(supabase, filePath)');
+  const guard = edge.indexOf('if (size !== null && size > config.maxBytes)');
+  const download = edge.indexOf('const { data: file, error: dlError }');
+  assert.ok(helper > 0, 'the metadata size helper exists');
+  assert.ok(sizeCall > helper, 'the helper is called from the OpenAI branch');
+  assert.ok(guard > sizeCall, 'the size limit is applied before the download');
+  assert.ok(download > guard, 'the oversized file is rejected before it is downloaded');
+  assert.match(edge, /throw new Error\(mediaTooLargeMessage\(config, size\)\)/);
+});
+
 check('the schema and migration store the transcript and its provenance', () => {
   const columns = [
     'transcript text',

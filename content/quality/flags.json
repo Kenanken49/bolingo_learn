@@ -1,0 +1,48 @@
+[
+  {
+    "key": "quality_dashboard",
+    "name": "Owner quality console",
+    "description": "Shows the Quality & Operations console in Settings for the platform owner.",
+    "type": "release",
+    "enabled": true,
+    "rolloutPct": 100,
+    "variants": [{ "key": "on", "weight": 100, "label": "On" }],
+    "metric": "admin_console_opened",
+    "hypothesis": "A visible quality console increases the share of releases that carry a published gate run."
+  },
+  {
+    "key": "paywall_value_badge",
+    "name": "Paywall value framing",
+    "description": "A/B test: a factual value badge above the Premium plan versus the current plan card alone.",
+    "type": "experiment",
+    "enabled": true,
+    "rolloutPct": 100,
+    "variants": [
+      { "key": "control", "weight": 50, "label": "Current plan card" },
+      { "key": "value_badge", "weight": 50, "label": "Value badge" }
+    ],
+    "metric": "premium_checkout_started",
+    "hypothesis": "Naming the four concrete Premium outcomes beside the price lifts checkout starts without reducing completion.",
+    "guardrail": "premium_purchase_failed"
+  },
+  {
+    "key": "review_cap",
+    "name": "Daily review cap",
+    "description": "Remote config for how many due cards a Daily Review serves (default 5).",
+    "type": "ops",
+    "enabled": true,
+    "rolloutPct": 100,
+    "variants": [{ "key": "5", "weight": 100, "label": "5 cards" }],
+    "metric": "review_completed"
+  },
+  {
+    "key": "engineer_auto_guardrails",
+    "name": "Engineer auto-guardrails",
+    "description": "Allows the engineer agent to pause experiment rollouts when reliability floors are breached, and to record the action for approval review.",
+    "type": "ops",
+    "enabled": true,
+    "rolloutPct": 100,
+    "variants": [{ "key": "on", "weight": 100, "label": "On" }],
+    "metric": "guardrail_actions"
+  }
+]

@@ -39,17 +39,32 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
 ## Checks
 
 ```bash
+npm run gate        # every required release gate (CI runs the same runner)
 npm run typecheck   # TypeScript
-npm test            # cue + benchmark + celebration + speak-back + catalog + drafts + content rights + transcription + roleplay
+npm test            # cue + benchmark + celebration + speak-back + catalog + drafts + content rights + transcription + roleplay + labs
 npm run lint        # ESLint (expo lint)
-npm run audio:preflight                 # configured ElevenLabs voice is in the API key's workspace
+npm run check:labex    # licensed lab library: 1842 labs, 6580 questions, 12 categories
+npm run check:sandbox  # every generated JS/CSS exercise really executes (reference passes, starter fails)
+npm run check:vm       # offline Git VM: every scenario's reference solution passes its own checks
+npm run check:guided   # every lab is runnable here or ships a walkthrough
+npm run audio:preflight                 # workspace + cloned-voice consent gate for the configured voice
 npm run verify:lesson-audio -- --list   # uploaded lessons available for full audio verification
+npm run verify:lesson-audio:disposable -- --plan  # free dry run with a temporary lesson
 ```
+
+`npm run gate` reads [content/quality/gates.json](content/quality/gates.json),
+runs every blocking check, writes `.quality/last-run.json` / `.md`, and can
+publish the run to the owner console with `--publish`. CI calls the same
+runner on every pull request and main push. See
+[docs/quality-operations.md](docs/quality-operations.md).
 
 `verify:lesson-audio` is an operator command, not part of `npm test`: it
 synthesizes a real lesson's complete full mix and every segment with the
 configured ElevenLabs voice and therefore spends provider credits. See
 [docs/audiobook-voice.md](docs/audiobook-voice.md#verify-a-real-uploaded-lesson).
+The `:disposable` variant creates a temporary ready upload, lesson and question
+set, runs the same verifier, and deletes them even when a check fails; start
+with `--plan` to exercise the whole path without spending credits.
 
 The audio check reads the WAV header directly, so it also guards against a
 re-export silently changing the cue's sample rate or frame count.
@@ -72,8 +87,26 @@ fails.
 The catalog check ([scripts/check-language-catalog.cjs](scripts/check-language-catalog.cjs))
 parses the generated migration, proves every question is solvable, confirms the
 seed matches the lesson banks and covers every language block on the path, and
-asserts the public-read policies and grants. It fails if a bank lesson was added
-without running `npm run catalog:sql`.
+asserts the public-read policies and grants. It also requires a bundled offline
+snapshot for every published transcript lesson and runs the real loader with an
+unreadable catalog to prove the path node still resolves. It fails if a bank
+lesson was added without running `npm run catalog:sql`.
+
+The curriculum check ([scripts/check-curriculum-quality.cjs](scripts/check-curriculum-quality.cjs))
+locks in the learning standard across every course, quiz, lab, and workshop:
+every block resolves, every lesson teaches before it tests, every question has
+an explanation, every chain is solvable, every exam has production work, and
+every course that needs a capstone has one. It also proves the first-try
+mastery model: 80% to unlock, zero XP on a failed check, retries as practice.
+The rules are documented in [docs/curriculum-standards.md](docs/curriculum-standards.md).
+
+The four lab gates keep the runnable content honest: `check:labex` validates the
+licensed library, `check:sandbox` re-executes every generated JS/CSS exercise in
+`node:vm` and fails if a reference stops passing, a starter passes as written, an
+assertion turns trivial or a fixture smuggles a script or a network call,
+`check:vm` proves each Git lab's reference solution against its own state checks,
+and `check:guided` proves no lab is left with neither a runnable stage nor a
+walkthrough. Full design: [docs/hands-on-labs.md](docs/hands-on-labs.md).
 
 The transcript check ([scripts/check-transcript-import.cjs](scripts/check-transcript-import.cjs))
 regenerates the draft lessons from the FSI Swahili transcript, validates every
@@ -88,6 +121,8 @@ with temporary files. Both run inside `npm test`.
 - `supabase/functions/streak-reset` — reset stale streaks (schedule daily via cron).
 - `supabase/functions/premium-webhook` — toggle `profiles.is_premium` from a payment webhook.
 - `supabase/functions/roleplay-chat` — Livia/Bingo language tutors (ES/FR/DE) and the code/career scenarios.
+- `supabase/functions/engineer-agent` — Kito audits quality, telemetry, flags and error clusters; records approvals and emails the owner.
+- `supabase/functions/review-approval` — owner approval/rejection with allowlisted, reversible actions and an audit trail.
 
 `npm run check:roleplay` keeps the persona/language catalogs, prompt contract,
 bilingual parser and screen/function wiring aligned; it runs inside `npm test`.
@@ -98,7 +133,48 @@ Deploy with the Supabase CLI:
 supabase functions deploy streak-reset
 supabase functions deploy premium-webhook
 supabase functions deploy roleplay-chat
+supabase functions deploy engineer-agent
+supabase functions deploy review-approval
 ```
+
+## Quality operations (CI gates, telemetry, A/B, AI engineer)
+
+Run [`supabase/migrations_quality_ops.sql`](supabase/migrations_quality_ops.sql),
+deploy `engineer-agent` and `review-approval`, then open
+**Settings → Quality & Operations** as the verified owner
+(`bolingolearn@pm.me`). The console shows the latest published gate run,
+crash-free %, p95, the learning funnel, experiment results, the engineer's
+findings, and pending approvals. Every approval is also emailed to the owner
+through a provider-neutral webhook or the Resend adapter.
+
+- CI: [.github/workflows/quality-gate.yml](.github/workflows/quality-gate.yml)
+- Scheduled audit: [.github/workflows/engineer-audit.yml](.github/workflows/engineer-audit.yml)
+- Telemetry opt-out: Settings → Anonymous diagnostics (clears the queue)
+- Full setup, privacy model, agent autonomy and runbook:
+  [docs/quality-operations.md](docs/quality-operations.md)
+
+## Runnable labs (offline VM, sandbox editors, guided)
+
+1 842 imported labs, and each one runs or says plainly that it cannot:
+
+- **Offline Git VM** — `lib/vm/` is an in-memory POSIX filesystem plus the Git
+  object model and porcelain (`clone`, `branch`, `switch`, `merge`, `rebase`,
+  `stash`, `reset`, `push`…), driven by [components/TerminalPlayer.tsx](components/TerminalPlayer.tsx).
+  Tasks are graded from the repository state the learner actually built, never
+  from matched text. 59 scenarios, 59/63 Git labs runnable.
+- **Sandbox editors** — [lib/codeSandbox.ts](lib/codeSandbox.ts) compiles the
+  learner's JavaScript/CSS/HTML with the lab's own assertions into one offline
+  runner; [components/CodeExercise.tsx](components/CodeExercise.tsx) shows
+  per-test results and the run time. 308 exercises (226 JS, 82 CSS).
+- **Guided fallback** — labs in languages this build cannot execute keep their
+  knowledge check and add a read-only walkthrough of the real steps, commands and
+  reference files, labelled **GUIDED — NO EXECUTION**
+  ([components/GuidedLabPlayer.tsx](components/GuidedLabPlayer.tsx)). Chunks load
+  per 40 labs, so one lab never pulls a whole category.
+
+Interactive stages always come last in a session, and a lesson that runs here
+never also gets the walkthrough. Details, licensing and the gate table:
+[docs/hands-on-labs.md](docs/hands-on-labs.md).
 
 ## Jungle expedition UI (QD-OLED)
 
@@ -206,7 +282,12 @@ and the offline fallback; at runtime [lib/languageCatalog.ts](lib/languageCatalo
 reads `public.language_lessons` first, validates every row, and merges it over
 the bundle. Editors can therefore fix wording, rewrite theory or replace a
 question in the Supabase dashboard and have it reach learners without an app
-release — the loader caches for five minutes. The generated migration
+release — the loader caches for five minutes. Reviewed transcript lessons that
+are remote-only also ship a release snapshot in
+[content/published/language-lessons.offline.json](content/published/language-lessons.offline.json),
+so their path nodes open when the catalog cannot be read; a successful remote
+read stays authoritative and hides an unpublished row online. The generated
+migration
 [supabase/migrations_language_catalog.sql](supabase/migrations_language_catalog.sql)
 creates the tables and seeds all 86 built-in lessons (`npm run catalog:sql`
 regenerates it, `npm run check:catalog` guards it). The learning path itself —
@@ -351,7 +432,7 @@ Progress helpers live in [lib/progress.ts](lib/progress.ts) (`getProfile`, `comp
 
 ## EAS builds (device testing)
 
-`eas.json` ships three profiles: `development` (dev client + `EXPO_PUBLIC_DEBUG_PREMIUM=1`), `preview` (internal channel), `production`. `app.config.js` (replacing `app.json`, kept as `app.json.bak`) reads AdMob app ids from `ADMOB_*_APP_ID` with Google sample ids as fallback.
+`eas.json` ships three profiles: `development` (dev client + `EXPO_PUBLIC_DEBUG_PREMIUM=1`), `preview` (internal channel), `production`. `app.config.js` replaces `app.json` and reads AdMob app ids from `ADMOB_*_APP_ID` with Google sample ids as fallback.
 
 ```bash
 npm i -g eas-cli
@@ -425,7 +506,7 @@ supabase secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
 # Optional: TRANSCRIBE_PROVIDER TRANSCRIBE_MODEL TRANSCRIBE_BASE_URL TRANSCRIBE_LANGUAGE
 ```
 
-Deploy with `supabase functions deploy process-upload` (plus `streak-reset`, `premium-webhook`).
+Deploy with `npm run deploy:process-upload` (this runs the audiobook voice preflight first; a cloned/professional voice needs a completed, active consent record via `TTS_CONSENT_RECORD`), plus `supabase functions deploy streak-reset` and `supabase functions deploy premium-webhook`.
 
 ### Trigger on upload (recommended)
 

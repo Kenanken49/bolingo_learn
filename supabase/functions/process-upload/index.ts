@@ -58,6 +58,7 @@ import {
   isMediaUpload,
 } from '../_shared/contentRights.ts';
 import {
+  mediaTooLargeMessage,
   transcribeMedia,
   transcriptionConfigFromEnv,
   type TranscriptionResult,
@@ -280,6 +281,31 @@ function mediaContentType(fileName: string): string {
 }
 
 /**
+ * Read an object's size from Storage metadata without downloading it. The
+ * OpenAI path has a 25 MB ceiling, so checking first keeps a multi-GB video
+ * out of Edge Function memory instead of downloading it just to reject it.
+ * Returns null when the listing is unavailable; the post-download check in
+ * the shared module still enforces the limit.
+ */
+async function storageObjectSize(
+  supabase: ReturnType<typeof createClient>,
+  filePath: string,
+): Promise<number | null> {
+  const slash = filePath.lastIndexOf('/');
+  const dir = slash >= 0 ? filePath.slice(0, slash) : '';
+  const name = filePath.slice(slash + 1);
+  const { data, error } = await supabase.storage
+    .from('user-materials')
+    .list(dir, { limit: 100, search: name });
+  if (error || !data) return null;
+  const match = (data as Array<{ name?: string; metadata?: { size?: number } | null }>).find(
+    (entry) => entry.name === name,
+  );
+  const size = match?.metadata?.size;
+  return typeof size === 'number' && size > 0 ? size : null;
+}
+
+/**
  * Transcribe one consented media upload. The transcript is persisted on the
  * upload row before the LLM sees it, so a retry after an LLM/TTS failure does
  * not pay the provider a second time and produces the same text. Deepgram gets
@@ -312,6 +338,11 @@ async function transcribeUpload(
     }
     source = { kind: 'url', url: signed.signedUrl };
   } else {
+    // Reject an oversized recording from metadata before downloading it.
+    const size = await storageObjectSize(supabase, filePath);
+    if (size !== null && size > config.maxBytes) {
+      throw new Error(mediaTooLargeMessage(config, size));
+    }
     const { data: file, error: dlError } = await supabase.storage
       .from('user-materials')
       .download(filePath);

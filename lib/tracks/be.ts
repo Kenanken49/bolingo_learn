@@ -5,7 +5,7 @@
  * last. All original.
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MCQ, BUILD, CODE, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_BE: Record<string, CourseLesson> = {
   'be-node-express': {
@@ -329,6 +329,22 @@ export const TRACK_BE: Record<string, CourseLesson> = {
         ],
         'Every input gets a shaped answer.'
       ),
+      CODE(
+        'Write parseTimestamp(input): return { unix, utc } for a valid date or millisecond string, and { error: "Invalid Date" } for junk. Empty input means now.',
+        {
+          language: 'js',
+          starter: 'function parseTimestamp(input) {\n  // Return { unix, utc } or { error: "Invalid Date" }\n}\n',
+          tests: [
+            { id: 'iso', label: 'An ISO date returns the right unix value', run: "parseTimestamp('2015-12-25').unix === 1451001600000", hint: 'new Date(input).getTime() converts a parseable date to milliseconds.' },
+            { id: 'utc', label: 'The UTC string is human-readable', run: "parseTimestamp('2015-12-25').utc === 'Fri, 25 Dec 2015 00:00:00 GMT'", hint: 'toUTCString() produces the standard HTTP-style date.' },
+            { id: 'millis', label: 'A millisecond string is accepted', run: "parseTimestamp('1451001600000').unix === 1451001600000", hint: 'Number(input) is a valid Date constructor input when it is all digits.' },
+            { id: 'invalid', label: 'Junk returns the documented error', run: "parseTimestamp('not-a-date').error === 'Invalid Date'", hint: 'Check Number.isNaN(date.getTime()) before building the response.' },
+            { id: 'empty', label: 'Empty input means now, not an error', run: "typeof parseTimestamp('').unix === 'number' && typeof parseTimestamp('').utc === 'string'", hint: 'Default to new Date() when the parameter is absent or empty.' },
+          ],
+        },
+        'function parseTimestamp(input) {\n  const raw = input == null || input === "" ? Date.now() : input;\n  const date = new Date(/^\\d+$/.test(String(raw)) ? Number(raw) : raw);\n  if (Number.isNaN(date.getTime())) return { error: "Invalid Date" };\n  return { unix: date.getTime(), utc: date.toUTCString() };\n}',
+        'The route is a thin wrapper around one deterministic function. Parsing, millisecond handling and validation live here, so the HTTP layer only chooses a status code and sends the object.'
+      ),
     ],
   },
 
@@ -545,6 +561,12 @@ export const TRACK_BE: Record<string, CourseLesson> = {
         'updated_on — created_on is write-once',
         ['updated_on — created_on is write-once', 'created_on', 'Both always', 'Neither'],
         'Refresh updated, keep birth.'
+      ),
+      TEXT(
+        'Type the HTTP status code that means a resource was created.',
+        ['201', '201 Created'],
+        '201 Created is the success code for a POST that actually creates a resource; 200 is generic success.',
+        { misconceptions: { '200': '200 means OK, not created. Use 201 when a new resource exists.' } }
       ),
     ],
   },

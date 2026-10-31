@@ -4,7 +4,7 @@
  * merges LANGUAGE_COURSES so getCourseLesson() behavior is identical and
  * the quiz engine, SRS, and guidebook need no changes.
  */
-import { MCQ, BUILD, validateBank, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, validateBank, type CourseLesson } from './quizBank';
 import { SWAHILI_PLUS } from './swahili-plus';
 import { ENGLISH_PLUS } from './english-plus';
 import { SPANISH_PLUS } from './spanish-plus';
@@ -353,6 +353,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['como', 'comes', 'come', 'comen'],
         'Tenses check: ellos take -en → comen.'
       ),
+      TEXT(
+        'You are at a café in Madrid. Type the Spanish for “A coffee, please. The bill, please.”',
+        ['Un café, por favor. La cuenta, por favor.', 'Un café por favor, la cuenta por favor.'],
+        'Por favor softens both requests, and la cuenta is the bill. In Spain you can also say “Cobrar, por favor” when you are ready to pay.',
+        { misconceptions: { 'Un café. La cuenta.': 'Both requests need por favor to sound polite in a café.' } }
+      ),
     ],
   },
 
@@ -479,6 +485,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['est', 'sommes', 'sont', 'êtes'],
         'Tenses check: ils + être → sont.'
       ),
+      TEXT(
+        'You walk into a restaurant in Lyon. Type the French for “A table for two, please.”',
+        ['Une table pour deux, s’il vous plaît.', 'Une table pour deux s’il vous plaît.'],
+        'Une table = a table, pour deux = for two, s’il vous plaît = please. The whole phrase is the polite request; dropping the final phrase makes it sound like a command.',
+        { misconceptions: { 'Une table deux': 'Name the party size with pour: une table pour deux.' } }
+      ),
     ],
   },
 
@@ -604,6 +616,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'sind',
         ['bin', 'bist', 'ist', 'sind'],
         'Tenses check: wir/sie + sein → sind.'
+      ),
+      TEXT(
+        'Ask a stranger in Berlin, politely, where the station is. Type the German question.',
+        ['Wo ist der Bahnhof, bitte?', 'Entschuldigung, wo ist der Bahnhof?', 'Wo ist der Bahnhof?'],
+        'Wo = where, ist = is, der Bahnhof = the station. Add bitte or Entschuldigung to soften a direct question to a stranger.',
+        { misconceptions: { 'Wo der Bahnhof ist?': 'German questions put the verb second: wo ist der Bahnhof?' } }
       ),
     ],
   },
@@ -749,6 +767,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['kichwa', 'Naumwa', 'na', 'tumbo'],
         'Naumwa = it hurts me; na kichwa names the place. Naumwa na tumbo is the stomach.'
       ),
+      TEXT(
+        'You are in a market in Nairobi and want the price of a shirt. Type the polite Swahili question.',
+        ['Bei ya shati ni ngapi?', 'Shati hili ni bei gani?', 'Bei gani ya shati?'],
+        'Bei = price, ya = of, shati = shirt, ni ngapi = is how much. Bei gani? is the shorter alternative; either works in the market.',
+        { misconceptions: { 'Bei ya shati?': 'A price label is not a question. Add ni ngapi? to ask how much.' } }
+      ),
     ],
   },
 
@@ -827,6 +851,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'The king is attacked and cannot escape — game over',
         ['The king is attacked and cannot escape — game over', 'The king is attacked but can move', 'Both sides agree a draw', 'A pawn reaches the far rank'],
         'Check = attacked. Checkmate = no escape. Stalemate = draw.'
+      ),
+      TEXT(
+        'White has an unmoved king on e1 and rook on h1; f1 and g1 are empty and neither square is attacked. Type the notation for the legal kingside castle.',
+        ['O-O', '0-0'],
+        'O-O is kingside castling when the king and h1 rook are unmoved and the path is safe. O-O-O is queenside, which this position does not allow.',
+        { misconceptions: { 'O-O-O': 'That is queenside castling — it needs the a1 rook and the b1/c1/d1 squares clear.' } }
       ),
     ],
   },
@@ -1008,6 +1038,12 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['You', "shouldn't", 'drive'],
         ['drive', 'You', "shouldn't", 'should'],
         'Should + not contracts to shouldn’t, then the base verb: shouldn’t drive.'
+      ),
+      TEXT(
+        'You are at a clinic and need help. Type a polite sentence asking to see a doctor.',
+        ['Could I see a doctor, please?', 'I need a doctor, please.', 'May I see a doctor, please?'],
+        'Could I…? and May I…? are the polite request forms; please softens the ask. “I need a doctor” is direct but still acceptable in an emergency — add please for a routine appointment.',
+        { misconceptions: { 'I need doctor': 'English needs an article: a doctor.' } }
       ),
     ],
   },

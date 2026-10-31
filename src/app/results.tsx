@@ -33,10 +33,11 @@ export default function Results() {
   // Live confetti: when the applause plays, ribbons pour for its full five
   // seconds, then stop and unmount — zero timers in this screen.
   const [burst, setBurst] = useState(celebrates);
-  const pop = useRef(new Animated.Value(0.5)).current;
+  // Stable per mount; react-native-web has no useAnimatedValue.
+  const [pop] = useState(() => new Animated.Value(0.5));
   // XP pop: the earned XP floats up and fades like Duolingo's reward burst.
-  const xpRise = useRef(new Animated.Value(0)).current;
-  const xpFade = useRef(new Animated.Value(1)).current;
+  const [xpRise] = useState(() => new Animated.Value(0));
+  const [xpFade] = useState(() => new Animated.Value(1));
   useEffect(() => {
     Animated.parallel([
       Animated.timing(xpRise, { toValue: -46, duration: 1100, useNativeDriver: true }),
@@ -71,29 +72,21 @@ export default function Results() {
     }, [])
   );
 
-  if (!result) {
-    return (
-      <View className="flex-1 items-center justify-center px-6">
-        <AppIcon name="map" size={44} color="#CBD5E1" />
-        <Text onPhoto className="mt-2 text-lg text-slate-600 dark:text-slate-100">No results yet — finish a lesson first.</Text>
-        <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-green-500 px-6 py-3">
-          <Text className="font-bold text-white">Back to Path</Text>
-        </Pressable>
-        <StatusBar style="auto" />
-      </View>
-    );
-  }
-
+  // Hooks must run in the same order even if this route is opened without a
+  // result. Compute null-safe values first, then branch.
   const passed = score >= PASS_PCT;
-  const missed = result.results.filter((r) => !r.correct);
-  const block = blockByLessonId(result.lessonId);
+  const missed = result?.results.filter((r) => !r.correct) ?? [];
+  const block = result ? blockByLessonId(result.lessonId) : undefined;
   // Kiki v3 card: next-best challenge + live 40-dim profile summary.
   const [kikiPick, setKikiPick] = useState<{ lessonId: string; title: string; kind: string; p: number } | null>(null);
-  const [kikiBars, setKikiBars] = useState<{ skill: string; v: number }[]>([]);
+  // Hydrated once per result screen; the profile bars are a snapshot, not a live feed.
+  const [kikiBars] = useState<{ skill: string; v: number }[]>(() => {
+    const st = getKikiState();
+    return SKILLS.map((s) => ({ skill: s, v: facetValue(st, s, 'accuracy') }));
+  });
   useEffect(() => {
     try {
       const st = getKikiState();
-      setKikiBars(SKILLS.map((s) => ({ skill: s, v: facetValue(st, s, 'accuracy') })));
       if (!block) return;
       const unit = CURRICULUM.find((u) => u.blocks.some((b) => b.lessonId === block.lessonId));
       if (!unit) return;
@@ -109,6 +102,19 @@ export default function Results() {
     } catch {}
   }, [block, profile?.id]);
 
+  if (!result) {
+    return (
+      <View className="flex-1 items-center justify-center px-6">
+        <AppIcon name="map" size={44} color="#CBD5E1" />
+        <Text onPhoto className="mt-2 text-lg text-slate-600 dark:text-slate-100">No results yet — finish a lesson first.</Text>
+        <Pressable onPress={() => router.replace('/')} className="mt-4 rounded-2xl bg-green-500 px-6 py-3">
+          <Text className="font-bold text-white">Back to Path</Text>
+        </Pressable>
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1">
       {burst && celebrates ? (
@@ -122,21 +128,29 @@ export default function Results() {
       ) : (
         <Mascot character="bingo" mood="sad" size={110} />
       )}
-      <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+      <Text onPhoto className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-300">
         {passed ? 'Bingo is dancing' : pct >= 50 ? 'Livia is proud' : 'Bingo believes in you'}
       </Text>
-      <Text className="mt-2 font-duo text-2xl font-extrabold text-slate-900 dark:text-slate-100">Lesson complete!</Text>
-      <Text className="text-base text-slate-500 dark:text-slate-400">{result.title}</Text>
+      <Text onPhoto className="mt-2 font-duo text-2xl font-extrabold text-slate-900 dark:text-slate-100">
+        {passed ? 'Mastery unlocked' : 'Not mastered yet'}
+      </Text>
+      <Text onPhoto className="text-base text-slate-600 dark:text-slate-300">{result.title}</Text>
 
       {/* XP burst: floats up off the stat bar, then fades. */}
-      <Animated.View style={{ transform: [{ translateY: xpRise }], opacity: xpFade }} className="items-center">
-        <View className="rounded-full bg-green-500 px-5 py-2 shadow-lg">
-          <View className="flex-row items-center gap-1.5">
-            <AppIcon name="party" size={20} color="#FFFFFF" />
-            <Text className="font-duo text-xl font-black text-white">+{result.xpEarned} XP</Text>
+      {result.xpEarned > 0 ? (
+        <Animated.View style={{ transform: [{ translateY: xpRise }], opacity: xpFade }} className="items-center">
+          <View className="rounded-full bg-green-500 px-5 py-2 shadow-lg">
+            <View className="flex-row items-center gap-1.5">
+              <AppIcon name="party" size={20} color="#FFFFFF" />
+              <Text className="font-duo text-xl font-black text-white">+{result.xpEarned} XP</Text>
+            </View>
           </View>
-        </View>
-      </Animated.View>
+        </Animated.View>
+      ) : (
+        <Text className="mt-1 text-sm font-bold text-amber-600 dark:text-amber-400">
+          No XP this attempt — clear the mastery bar to earn it.
+        </Text>
+      )}
       {/* Duo-style XP / accuracy / streak stat bar */}
       <View className="mt-1 w-full max-w-sm flex-row justify-between rounded-3xl border border-slate-800 bg-slate-900 px-5 py-4">
         <View className="items-center">
@@ -147,12 +161,13 @@ export default function Results() {
           <Text className="text-2xl font-extrabold text-white">
             {result.correctCount}/{result.total}
           </Text>
-          <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">CORRECT</Text>
+          <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">MASTERED</Text>
         </View>
-        <View className="items-center">            <View className="flex-row items-center gap-1">
-              <AppIcon name="flame" size={20} color="#FB923C" />
-              <Text className="text-2xl font-extrabold text-orange-400">{result.streak}</Text>
-            </View>
+        <View className="items-center">
+          <View className="flex-row items-center gap-1">
+            <AppIcon name="flame" size={20} color="#FB923C" />
+            <Text className="text-2xl font-extrabold text-orange-400">{result.streak}</Text>
+          </View>
           <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">STREAK</Text>
         </View>
         {result.bestCombo != null && result.bestCombo >= 2 ? (
@@ -223,20 +238,25 @@ export default function Results() {
       <View className="mt-3 h-3 w-full max-w-sm overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
         <View className={`h-full rounded-full ${passed ? 'bg-green-500' : 'bg-amber-500'}`} style={{ width: `${pct}%` }} />
       </View>
-      <Text className="mt-1 text-sm font-bold text-slate-400 dark:text-slate-500">{pct}% mastery</Text>
+      <Text onPhoto className="mt-1 text-sm font-bold text-slate-500 dark:text-slate-300">{pct}% mastery</Text>
+      {result.firstTryCorrect != null && result.firstTryCorrect !== result.correctCount ? (
+        <Text onPhoto className="mt-1 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-300">
+          First try: {result.firstTryCorrect}/{result.total} correct
+        </Text>
+      ) : null}
 
       {/* FCC-style pass / fail certification panel */}
       <View className={`mt-4 w-full max-w-sm rounded-3xl border-2 p-4 ${passed ? 'border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950' : 'border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950'}`}>
         <View className="flex-row items-start gap-2">
           <AppIcon name={passed ? 'checkCircle' : 'pencil'} size={22} color={passed ? '#15803D' : '#B45309'} />
           <Text className={`flex-1 text-lg font-extrabold ${passed ? 'text-green-700 dark:text-green-300' : 'text-amber-700 dark:text-amber-300'}`}>
-            {passed ? 'Quiz passed — 80%+ required' : `${PASS_PCT}% needed to pass — you scored ${pct}%`}
+            {passed ? 'Mastery cleared — 80%+ required' : `${PASS_PCT}% needed — you scored ${pct}%`}
           </Text>
         </View>
         <Text className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           {passed
-            ? 'Certification check cleared. The next node is unlocked on your path.'
-            : 'Review the missed concepts below, then retry. Replays still protect your streak.'}
+            ? 'Session cleared. The next node is unlocked on your path.'
+            : 'This run did not unlock the node or award XP. Review the first-try misses below, then retry.'}
         </Text>
         {!passed && missed.length > 0 ? (
           <View className="mt-2 gap-1">
@@ -250,7 +270,7 @@ export default function Results() {
         ) : null}
       </View>
 
-      <Text className="mt-6 self-start text-lg font-extrabold text-slate-900 dark:text-slate-100">Review</Text>
+      <Text onPhoto className="mt-6 self-start text-lg font-extrabold text-slate-900 dark:text-slate-100">Review</Text>
       {result.results.map((r, i) => (
         <View
           key={i}
@@ -297,12 +317,16 @@ export default function Results() {
                 ? router.replace({ pathname: '/project/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })
                 : router.replace({ pathname: '/quiz/[lessonId]', params: { lessonId: result.lessonId, title: result.title } })
             }
-            label="Retry this lesson"
+            label={passed ? 'Practice again' : 'Review & retry'}
             title="Retry"
           />
         </View>
         <View className="flex-1">
-          <DuoButton onPress={() => router.replace('/')} label="Back to learning path" title="Path" />
+          <DuoButton
+            onPress={() => router.replace(result.lessonId.startsWith('labex-') ? '/labs' : '/')}
+            label={result.lessonId.startsWith('labex-') ? 'Back to the lab library' : 'Back to learning path'}
+            title={result.lessonId.startsWith('labex-') ? 'Labs' : 'Path'}
+          />
         </View>
       </View>
       {block ? (
@@ -312,10 +336,11 @@ export default function Results() {
             if (unit) router.push({ pathname: '/curriculum/[unitId]', params: { unitId: unit.id } });
           }}
           className="mt-2 w-full max-w-sm items-center rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-3"
-        >            <View className="flex-row items-center justify-center gap-1.5">
-              <AppIcon name="book" size={17} color="#475569" />
-              <Text className="font-extrabold text-slate-600 dark:text-slate-400">Back to syllabus</Text>
-            </View>
+        >
+          <View className="flex-row items-center justify-center gap-1.5">
+            <AppIcon name="book" size={17} color="#475569" />
+            <Text className="font-extrabold text-slate-600 dark:text-slate-400">Back to syllabus</Text>
+          </View>
         </Pressable>
       ) : null}
       {/* LEVEL UP! — variable-reward peak moment, shown once per crossing. */}

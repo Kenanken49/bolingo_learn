@@ -12,15 +12,17 @@
  *   npm run audio:preflight
  *   node --env-file=.env.local scripts/preflight-audiobook-voice.cjs
  *   node scripts/preflight-audiobook-voice.cjs --json
+ *   node scripts/preflight-audiobook-voice.cjs --consent ../../secure/voice-consent.json
  *
  * The command makes two or three read-only API calls and spends no credits.
  * It never prints the API key. Exits 1 when the key, workspace, voice or
- * provider guard fails.
+ * provider guard fails, or when a cloned/professional voice has no completed,
+ * active consent record.
  */
 
 'use strict';
 
-/* global __dirname, Buffer, fetch -- Node 18+ provides these. */
+/* global __dirname -- Node provides this; fetch is a standard global. */
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -32,6 +34,7 @@ const ENV_FILES = [path.join(ROOT, '.env'), path.join(ROOT, '.env.local')];
 const DEFAULT_API_BASE = 'https://api.elevenlabs.io';
 const REQUEST_TIMEOUT_MS = 20_000;
 const MAX_VOICE_PAGES = 20;
+const CLONED_VOICE_CATEGORIES = new Set(['cloned', 'professional']);
 
 class UsageError extends Error {}
 
@@ -72,6 +75,107 @@ function envValue(...names) {
   return null;
 }
 
+// --- cloned-voice consent ------------------------------------------------
+
+function consentField(record, field) {
+  const value = record[field];
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new Error(`consent record field "${field}" must be a non-empty string.`);
+  }
+  return value.trim();
+}
+
+function consentDate(record, field, { required = true } = {}) {
+  const raw = record[field];
+  if (raw === undefined || raw === null || raw === '') {
+    if (!required) return null;
+    throw new Error(`consent record field "${field}" is required.`);
+  }
+  if (typeof raw !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(raw.trim())) {
+    throw new Error(`consent record field "${field}" must be a YYYY-MM-DD date.`);
+  }
+  const value = raw.trim();
+  const parsed = new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) {
+    throw new Error(`consent record field "${field}" is not a valid date.`);
+  }
+  return value;
+}
+
+function loadConsentRecord(file) {
+  const resolved = path.resolve(process.cwd(), file);
+  let text;
+  try {
+    text = fs.readFileSync(resolved, 'utf8');
+  } catch {
+    throw new Error(`Could not read the cloned-voice consent record at ${resolved}.`);
+  }
+  let record;
+  try {
+    record = JSON.parse(text);
+  } catch {
+    throw new Error(`The cloned-voice consent record at ${resolved} is not valid JSON.`);
+  }
+  if (!record || typeof record !== 'object' || Array.isArray(record)) {
+    throw new Error('The cloned-voice consent record must be a JSON object.');
+  }
+  return { file: resolved, record };
+}
+
+function validateConsentRecord(record, { voiceId, workspaceId }) {
+  const recordId = consentField(record, 'recordId');
+  consentField(record, 'templateVersion');
+  const status = consentField(record, 'status');
+  if (status.toLowerCase() !== 'active') {
+    throw new Error(`consent record ${recordId} has status "${status}"; it must be "Active".`);
+  }
+  if (record.completed !== true) {
+    throw new Error(`consent record ${recordId} is not marked completed.`);
+  }
+  const provider = consentField(record, 'provider');
+  if (provider.toLowerCase() !== 'elevenlabs') {
+    throw new Error(`consent record ${recordId} is for provider "${provider}", not ElevenLabs.`);
+  }
+  const recordedVoiceId = consentField(record, 'voiceId');
+  if (recordedVoiceId !== voiceId) {
+    throw new Error(`consent record ${recordId} is for voice ${recordedVoiceId}, not ${voiceId}.`);
+  }
+  const recordedWorkspaceId = consentField(record, 'workspaceId');
+  if (recordedWorkspaceId !== workspaceId) {
+    throw new Error(
+      `consent record ${recordId} is for workspace ${recordedWorkspaceId}, not ${workspaceId}.`
+    );
+  }
+  const voiceType = consentField(record, 'voiceType');
+  if (!/clone/i.test(voiceType)) {
+    throw new Error(`consent record ${recordId} voiceType "${voiceType}" is not a clone type.`);
+  }
+  consentField(record, 'speaker');
+  const today = new Date().toISOString().slice(0, 10);
+  const signedOn = consentDate(record, 'signedOn');
+  if (signedOn > today) {
+    throw new Error(`consent record ${recordId} has a future signedOn date (${signedOn}).`);
+  }
+  const reviewDueOn = consentDate(record, 'reviewDueOn', { required: false });
+  if (reviewDueOn && reviewDueOn < today) {
+    throw new Error(`consent record ${recordId} is expired (reviewDueOn ${reviewDueOn}).`);
+  }
+  const approvedBy = consentField(record, 'approvedBy');
+  const approvedOn = consentDate(record, 'approvedOn');
+  if (approvedOn > today) {
+    throw new Error(`consent record ${recordId} has a future approvedOn date (${approvedOn}).`);
+  }
+  return {
+    recordId,
+    status: 'Active',
+    voiceType,
+    signedOn,
+    reviewDueOn,
+    approvedBy,
+    approvedOn,
+  };
+}
+
 function loadVoiceModule() {
   const source = fs.readFileSync(VOICE_CONFIG, 'utf8');
   const { outputText, diagnostics } = ts.transpileModule(source, {
@@ -102,18 +206,21 @@ function usage() {
 Options:
   --json                  Print a machine-readable result
   --allow-default-voice   Allow the built-in placeholder voice (demo only)
+  --consent <file>        Completed, active cloned-voice consent record (JSON)
   --base-url <url>        Override the ElevenLabs API origin (tests only)
   --help                  Show this message
 
 Reads TTS_* / ELEVENLABS_API_KEY from .env and .env.local. No credits are spent.
-Exits 1 if the key is invalid, the voice is not in the key's workspace, or the
-provider is not ElevenLabs.`);
+A cloned/professional voice also requires --consent, or TTS_CONSENT_RECORD in
+the environment. Exits 1 if the key is invalid, the voice is not in the key's
+workspace, the provider is not ElevenLabs, or consent is missing/invalid.`);
 }
 
 function parseArgs(argv) {
   const options = {
     json: false,
     allowDefaultVoice: false,
+    consentPath: null,
     baseUrl: null,
     help: false,
   };
@@ -126,6 +233,11 @@ function parseArgs(argv) {
       const value = argv[i + 1];
       if (!value || value.startsWith('--')) throw new UsageError('--base-url needs a URL.');
       options.baseUrl = value;
+      i += 1;
+    } else if (arg === '--consent') {
+      const value = argv[i + 1];
+      if (!value || value.startsWith('--')) throw new UsageError('--consent needs a file path.');
+      options.consentPath = value;
       i += 1;
     } else {
       throw new UsageError(`Unknown option "${arg}". Use --help for usage.`);
@@ -196,7 +308,9 @@ async function main() {
     return;
   }
 
-  loadEnv();
+  // Stub runs pass their environment explicitly; don't let a local
+  // .env.local consent record leak into the gate tests.
+  if (!options.baseUrl) loadEnv();
 
   const voice = loadVoiceModule();
   const config = voice.audiobookVoiceFromEnv(process.env);
@@ -225,6 +339,10 @@ async function main() {
         'ELEVENLABS_API_KEY in .env.local.'
     );
   }
+
+  const consentEnv = envValue('TTS_CONSENT_RECORD');
+  const consentPath = options.consentPath || (consentEnv ? consentEnv.value : null);
+  const consent = consentPath ? loadConsentRecord(consentPath) : null;
 
   const apiRoot = normalizeApiRoot(
     options.baseUrl || process.env.ELEVENLABS_API_BASE_URL || DEFAULT_API_BASE
@@ -265,6 +383,39 @@ async function main() {
   }
 
   const voiceRecord = voices.find((entry) => entry.voice_id === config.voiceId);
+  const voiceCategory = String(direct.data?.category ?? voiceRecord?.category ?? '')
+    .trim()
+    .toLowerCase();
+  if (!voiceCategory) {
+    throw new Error(
+      'Could not determine the voice category from ElevenLabs, so cloned-voice consent ' +
+        'cannot be checked. Refusing to validate until the provider returns a category.'
+    );
+  }
+
+  const requiresConsent = CLONED_VOICE_CATEGORIES.has(voiceCategory);
+  if (requiresConsent && !consent) {
+    throw new Error(
+      `Voice ${config.voiceId} is a cloned voice (${voiceCategory}). The preflight refuses ` +
+        'to validate it without a completed, active consent record. Pass --consent <file> ' +
+        'or set TTS_CONSENT_RECORD. See docs/voice-consent-record-template.md.'
+    );
+  }
+
+  let consentSummary = null;
+  if (consent) {
+    try {
+      consentSummary = validateConsentRecord(consent.record, {
+        voiceId: config.voiceId,
+        workspaceId,
+      });
+    } catch (error) {
+      throw new Error(
+        `${error instanceof Error ? error.message : String(error)} Record: ${consent.file}`
+      );
+    }
+  }
+
   const summary = {
     ok: true,
     provider: config.provider,
@@ -287,6 +438,16 @@ async function main() {
     },
     workspaceVoiceCount: voices.length,
     voiceInWorkspace: true,
+    consent: {
+      required: requiresConsent,
+      provided: Boolean(consentSummary),
+      recordId: consentSummary?.recordId ?? null,
+      status: consentSummary?.status ?? null,
+      signedOn: consentSummary?.signedOn ?? null,
+      reviewDueOn: consentSummary?.reviewDueOn ?? null,
+      approvedOn: consentSummary?.approvedOn ?? null,
+      approvedBy: consentSummary?.approvedBy ?? null,
+    },
   };
 
   if (options.json) {
@@ -304,6 +465,16 @@ async function main() {
   console.log(`  owner:            ${summary.voice.isOwner === null ? 'unknown' : String(summary.voice.isOwner)}`);
   console.log(`  sharing:          ${summary.voice.sharingStatus ?? 'none'}`);
   console.log(`  workspace voices: ${summary.workspaceVoiceCount}`);
+  console.log(
+    `  consent:          ${
+      consentSummary
+        ? `${consentSummary.recordId} (${consentSummary.status}, signed ${consentSummary.signedOn}` +
+          `${consentSummary.reviewDueOn ? `, review due ${consentSummary.reviewDueOn}` : ''})`
+        : requiresConsent
+          ? 'missing'
+          : 'not required (voice is not a clone)'
+    }`
+  );
   console.log('\n[ok] voice exists in this API key\'s workspace.');
 }
 

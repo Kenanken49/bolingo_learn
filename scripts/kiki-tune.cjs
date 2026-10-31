@@ -1,3 +1,5 @@
+/* global __dirname -- Node CJS globals. */
+
 /**
  * Kiki v3.1 tuning harness — grid-searches engine constants and proves the
  * locked values beat the v3.0 baseline (fixed K=0.25/0.06, no priors, no
@@ -72,7 +74,7 @@ const ROUNDS = 3; // learners meet every item 3× — single-pass favors whoever
 const EASY = [-1.5, -1.25, -1.0, -0.75, -0.5];
 function runLearner(makeEngine, rand, theta, trainItems) {
   const engine = makeEngine();
-  let coldLL = 0, coldN = 0, seen = 0;
+  let coldLL = 0, coldN = 0;
   for (let round = 0; round < ROUNDS; round++) {
     // Round 0 opens with the 5 easy onboarding items in ascending order,
     // then the shuffled bank — first wins come fast, like the real first lesson.
@@ -88,7 +90,6 @@ function runLearner(makeEngine, rand, theta, trainItems) {
         coldN += 1;
       }
       engine.update('js', key, c);
-      seen += 1;
     });
   }
   let seenLL = 0;

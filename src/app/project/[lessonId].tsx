@@ -1,4 +1,4 @@
-import { createElement, useEffect, useMemo, useState } from 'react';
+import { createElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, View, Pressable, ScrollView, Platform } from 'react-native';
 import Text from '../../../components/ui/Text';
 // NOTE: no top-level react-native-webview import — Expo Go ships no
@@ -9,6 +9,12 @@ import { StatusBar } from 'expo-status-bar';
 import CodeEditor, { combineDoc, type CodeDoc } from '../../../components/CodeEditor';
 import { getCourseProject } from '../../../lib/courses';
 import { fetchRemoteProject, getCertProject, gradeProject } from '../../../lib/certifications';
+import {
+  PROJECT_TIMEOUT_MS,
+  buildProjectTestDoc,
+  parseProjectMessage,
+  type ProjectSandboxResult,
+} from '../../../lib/projectSandbox';
 import { completeLesson, getProfile } from '../../../lib/progress';
 import AskBingo from '../../../components/AskBingo';
 import AppIcon from '../../../components/AppIcon';
@@ -69,13 +75,25 @@ export default function CertificationProject() {
     originWhitelist?: string[];
     source?: { html: string };
     style?: unknown;
+    onMessage?: (e: { nativeEvent: { data: string } }) => void;
   }> | null>(null);
   useEffect(() => {
     if (Platform.OS === 'web') return;
     let live = true;
     import('react-native-webview')
       .then((m) => {
-        if (live) setNativeWebView(() => (m as { WebView: React.ComponentType<{ originWhitelist?: string[]; source?: { html: string }; style?: unknown }> }).WebView);
+        if (live)
+          setNativeWebView(
+            () =>
+              (m as {
+                WebView: React.ComponentType<{
+                  originWhitelist?: string[];
+                  source?: { html: string };
+                  style?: unknown;
+                  onMessage?: (e: { nativeEvent: { data: string } }) => void;
+                }>;
+              }).WebView
+          );
       })
       .catch(() => {
         if (live) setNativeWebView(null);
@@ -84,6 +102,36 @@ export default function CertificationProject() {
       live = false;
     };
   }, []);
+  // Live grading: the page runs in a hidden frame and stories with a `check`
+  // expression report pass/fail from the real DOM, not from regex luck.
+  const [live, setLive] = useState<ProjectSandboxResult | null>(null);
+  const [liveRunning, setLiveRunning] = useState(false);
+  const [liveDoc, setLiveDoc] = useState<{ seq: number; html: string } | null>(null);
+  const liveSeq = useRef(0);
+  const finishLive = useCallback((r: ProjectSandboxResult) => {
+    setLive(r);
+    setLiveRunning(false);
+    setLiveDoc(null);
+  }, []);
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const receive = (e: MessageEvent) => {
+      const parsed = parseProjectMessage(e.data);
+      if (parsed) finishLive(parsed);
+    };
+    window.addEventListener('message', receive);
+    return () => window.removeEventListener('message', receive);
+  }, [finishLive]);
+  useEffect(() => {
+    if (!liveRunning) return;
+    const timer = setTimeout(() => {
+      setLiveRunning(false);
+      setLive(null);
+      setLiveDoc(null);
+      Alert.alert('Tests timed out', 'Your page did not finish loading in 6 seconds — check for an infinite loop.');
+    }, PROJECT_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [liveRunning, liveDoc]);
   // Leaving the project must not leave Zora talking over the next screen.
   useEffect(
     () => () => {
@@ -96,9 +144,23 @@ export default function CertificationProject() {
   const checks = useMemo(() => (project ? gradeProject(project, combined) : []), [combined, project]);
   // Server verdict display: when the server disagrees with local checks, show its checklist.
   const [serverChecks, setServerChecks] = useState<typeof checks | null>(null);
-  const shown = serverChecks ?? checks;
-  const passed = checks.filter((c) => c.pass).length;
-  const allPass = passed >= checks.length && checks.length > 0;
+  // Live DOM verdict overrides the regex for every story that has a `check`.
+  const verdict = useMemo(
+    () =>
+      checks.map((c, i) => {
+        const outcome = live?.outcomes.find((o) => o.index === i);
+        return outcome ? { ...c, pass: outcome.pass } : c;
+      }),
+    [checks, live]
+  );
+  const shown = serverChecks ?? verdict;
+  const passed = verdict.filter((c) => c.pass).length;
+  // Stories with a runtime check need one live run before shipping; builds
+  // without a web view (Expo Go) keep the offline regex verdict.
+  const hasLiveChecks = !!project?.stories.some((s) => !!s.check);
+  const runtimeAvailable = Platform.OS === 'web' || NativeWebView !== null;
+  const needsLive = hasLiveChecks && runtimeAvailable;
+  const allPass = passed >= verdict.length && verdict.length > 0 && (!needsLive || live !== null);
 
   if (!project) {
     return (
@@ -124,7 +186,22 @@ export default function CertificationProject() {
   const reset = () => {
     setDoc(starter);
     setSubmitted(false);
+    setLive(null);
+    setServerChecks(null);
     setResetTick((t) => t + 1); // remounts the editor back to starter code
+  };
+
+  const runLive = () => {
+    if (liveRunning) return;
+    if (!runtimeAvailable) {
+      Alert.alert('Sandbox unavailable', 'This build cannot execute a page — the static checks below still grade your project.');
+      return;
+    }
+    setServerChecks(null);
+    setLive(null);
+    setLiveRunning(true);
+    liveSeq.current += 1;
+    setLiveDoc({ seq: liveSeq.current, html: buildProjectTestDoc(doc, project.stories) });
   };
 
   const submit = async () => {
@@ -132,7 +209,7 @@ export default function CertificationProject() {
     setSubmitted(true);
     // Server is the source of truth when reachable (same patterns, newer rows);
     // offline or unknown ids fall back to the local verdict.
-    let final = checks;
+    let final = verdict;
     if (typeof lessonId === 'string' && (remoteCert || getCertProject(lessonId))) {
       try {
         const { data, error } = await supabase.functions.invoke('grade-project', {
@@ -251,6 +328,7 @@ export default function CertificationProject() {
             </View>
             <View className={`rounded-full px-3 py-1 ${allPass ? 'bg-green-100 dark:bg-green-950' : 'bg-slate-100 dark:bg-slate-800'}`}>
               <Text className={`text-xs font-extrabold ${allPass ? 'text-green-700 dark:text-green-300' : 'text-slate-500 dark:text-slate-400'}`}>
+                {live ? 'LIVE · ' : ''}
                 {shown.filter((c) => c.pass).length}/{shown.length} passing
               </Text>
             </View>
@@ -267,9 +345,30 @@ export default function CertificationProject() {
                     {c.label}
                   </Text>
                   {!c.pass ? <Text className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">Hint: {c.hint}</Text> : null}
+                  {!c.pass && live?.outcomes.find((o) => o.index === i)?.error ? (
+                    <Text className="mt-0.5 font-mono text-xs text-red-500">
+                      {live.outcomes.find((o) => o.index === i)?.error}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             ))}
+          </View>
+          <View className="mt-3 flex-row items-center justify-between rounded-2xl border border-slate-200 dark:border-slate-800 px-3 py-2">
+            <Pressable
+              onPress={runLive}
+              disabled={liveRunning}
+              accessibilityRole="button"
+              accessibilityLabel="Run project tests in a sandbox"
+              className={`rounded-full px-4 py-2 ${liveRunning ? 'bg-slate-200 dark:bg-slate-800' : 'bg-sky-500 active:bg-sky-600'}`}
+            >
+              <Text className={`text-xs font-extrabold uppercase tracking-wide ${liveRunning ? 'text-slate-500 dark:text-slate-400' : 'text-white'}`}>
+                {liveRunning ? 'Running your page…' : '▶ Run tests in a sandbox'}
+              </Text>
+            </Pressable>
+            <Text className="ml-2 flex-1 text-right text-[11px] font-semibold text-slate-400 dark:text-slate-500">
+              {live ? `Live DOM · ${live.ms} ms` : needsLive ? 'Runs your real page — required before submit' : 'Static checks only in this build'}
+            </Text>
           </View>
         </View>
 
@@ -289,7 +388,7 @@ export default function CertificationProject() {
           </Pressable>
         </View>
         <View className="mt-2 shadow-lg">
-          <CodeEditor key={resetTick} initial={starter} onChange={(d) => { setDoc(d); setSubmitted(false); setServerChecks(null); }} />
+          <CodeEditor key={resetTick} initial={starter} onChange={(d) => { setDoc(d); setSubmitted(false); setServerChecks(null); setLive(null); }} />
         </View>
 
         {/* Live preview */}
@@ -322,12 +421,38 @@ export default function CertificationProject() {
           }`}
         >
           <Text className="text-lg font-extrabold uppercase tracking-wide text-white">
-            {allPass ? `Submit project · +${project.xp} XP` : `Pass all ${checks.length} stories to submit (${passed}/${checks.length})`}
+            {allPass
+              ? `Submit project · +${project.xp} XP`
+              : needsLive && !live
+                ? `Run tests to verify your project (${passed}/${verdict.length})`
+                : `Pass all ${verdict.length} stories to submit (${passed}/${verdict.length})`}
           </Text>
         </Pressable>
       </View>
       <StatusBar style="auto" />
     </ScrollView>
+      {/* Hidden runtime: the learner's page executes here and reports story verdicts. */}
+      {Platform.OS === 'web' && liveDoc
+        ? createElement('iframe', {
+            key: liveDoc.seq,
+            srcDoc: liveDoc.html,
+            sandbox: 'allow-scripts',
+            title: 'Project test runner',
+            style: { position: 'absolute', width: 1, height: 1, opacity: 0, borderWidth: 0, pointerEvents: 'none' },
+          })
+        : null}
+      {Platform.OS !== 'web' && NativeWebView && liveDoc ? (
+        <NativeWebView
+          key={liveDoc.seq}
+          originWhitelist={['*']}
+          source={{ html: liveDoc.html }}
+          style={{ position: 'absolute', width: 1, height: 1, opacity: 0 }}
+          onMessage={(e) => {
+            const parsed = parseProjectMessage(e.nativeEvent.data);
+            if (parsed) finishLive(parsed);
+          }}
+        />
+      ) : null}
       {/* Super Intelligent help: Bingo debugs stuck builders in context. */}
       <AskBingo
         lessonTitle={String(title ?? project.title)}

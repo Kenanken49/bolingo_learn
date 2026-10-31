@@ -35,7 +35,6 @@ export function normalize(q: string): string {
 
 function loadSw(): Map<string, SwEntry[]> {
   if (!swIndex) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const raw = require('../assets/dict/sw.json') as [string, string, string][];
     swIndex = new Map();
     swWords = [];
@@ -53,7 +52,6 @@ function loadSw(): Map<string, SwEntry[]> {
 
 function loadEn(): Map<string, EnEntry[]> {
   if (!enIndex) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const raw = require('../assets/dict/en.json') as [string, string][];
     enIndex = new Map();
     enWords = [];

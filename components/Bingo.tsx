@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Image } from 'react-native';
 import type { OwlMood } from './DuoOwl';
 import BingoOwl from './BingoOwl';
+import MascotClip from './MascotClip';
 
 /**
  * BINGO — Synfig-ready clip loader with a still-frame owl fallback.
@@ -74,32 +73,23 @@ export default function Bingo({
   size?: number;
 }) {
   const { uris, fps } = useBingoFrames(mood);
-  const [frame, setFrame] = useState(0);
-
-  useEffect(() => {
-    setFrame(0);
-    if (uris.length < 2) return;
-    const id = setInterval(() => {
-      setFrame((f) => (f + 1) % uris.length);
-    }, Math.round(1000 / Math.max(1, fps)));
-    return () => clearInterval(id);
-  }, [mood, uris.length, fps]);
 
   // Synfig clip present → play the PNG sequence (transparent, theme-safe).
   if (uris.length > 0) {
     return (
-      <Image
-        source={{ uri: uris[frame] }}
-        accessibilityRole="image"
-        accessibilityLabel={
+      <MascotClip
+        key={mood}
+        uris={uris}
+        fps={fps}
+        width={size}
+        height={size * 1.08}
+        label={
           mood === 'sad'
             ? 'Bingo the owl looking sad'
             : mood === 'party'
               ? 'Bingo the owl celebrating'
               : 'Bingo the owl, happy'
         }
-        style={{ width: size, height: size * 1.08 }}
-        resizeMode="contain"
       />
     );
   }
