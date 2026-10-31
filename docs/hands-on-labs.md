@@ -66,6 +66,10 @@ comment-stripped starter.
 Current coverage: **308 runnable exercises — 226 JavaScript and 82 CSS, both
 from the `javascript` and `css` banks** (`npm run check:sandbox`).
 
+To see why a lab did not get an exercise, re-run the importer with
+`LABEX_SANDBOX_STATS=1`: it prints the drop reasons per language instead of
+guessing.
+
 ## Guided fallback
 
 Labs in languages this build cannot execute on-device (Go, Python, Rust, React,
@@ -87,8 +91,16 @@ The library is distilled from official public source repositories by
 hosted lab product — and only permissive licences are imported (CC-BY, MIT, BSD,
 Apache). Prose is rewritten, not copied; VM-only noise (`ssh`, container
 boilerplate) is stripped; the attribution line (`source · author · licence`)
-renders in the lab header. Regenerate with `npm run import:labex` and read
-[docs/content-rights.md](content-rights.md) before adding a new upstream.
+renders in the lab header. Regenerate from a local clone of the upstream
+repository:
+
+```bash
+git clone --depth 1 https://github.com/labex-labs/open-source-labs "$HOME/open-source-labs"
+npm run import:labex -- "$HOME/open-source-labs"   # defaults to ~/open-source-labs
+npm run check:labex && npm run check:sandbox && npm run check:guided
+```
+
+Read [docs/content-rights.md](content-rights.md) before adding a new upstream.
 
 Library size today: **1 842 labs, 6 580 questions, 12 categories**
 (`npm run check:labex`).
