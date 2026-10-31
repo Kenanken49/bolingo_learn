@@ -36,9 +36,15 @@ Security notes:
 ### 2. Deploy the functions
 
 ```bash
-supabase functions deploy engineer-agent
-supabase functions deploy review-approval
+supabase functions deploy engineer-agent --no-verify-jwt
+supabase functions deploy review-approval --no-verify-jwt=false
 ```
+
+`deploy` keeps whatever `verify_jwt` the function already had, so the flag must
+be stated every time: `--no-verify-jwt=false` is what turns platform
+verification back on, and a plain `deploy` after a `--no-verify-jwt` deploy
+leaves the function open. Confirm with an unauthenticated `POST` — every
+function here must answer `401`.
 
 They use the LLM secrets already configured for Ask Bingo / Explain
 (`LLM_BASE_URL`, `LLM_MODEL`, `LLM_API_KEY`, optional fallback). If the model
@@ -109,12 +115,15 @@ Checked against the live project, not from the files:
   profile guard trigger, 30 policies, the four seeded flags and the
   `default` settings row. The migration is `if not exists` / `or replace`
   throughout, so re-running it is safe.
-- **Functions** — `engineer-agent` and `review-approval` are live and return
-  `401` to unauthenticated posts. `engineer-agent` is deployed with
-  `--no-verify-jwt` because its scheduled path presents
+- **Functions** — `engineer-agent` and `review-approval` are live, as are
+  `ask-bingo`, `process-upload` and `roleplay-chat` after the product-name
+  sweep; all five answer `401` to unauthenticated posts. `engineer-agent` is
+  deployed with `--no-verify-jwt` because its scheduled path presents
   `x-engineer-cron-secret` rather than a user JWT; both functions still verify
   the bearer token and `profiles.is_admin` in code, so the platform check is
-  belt-and-braces, not the only gate. `review-approval` keeps JWT verification.
+  belt-and-braces, not the only gate. Every other function keeps platform
+  verification on — `ask-bingo` and `process-upload` do no auth of their own,
+  so for them it is the only gate.
 - **Secrets** — `ENGINEER_CRON_SECRET` and the `LLM_*` set are present. No
   `NOTIFY_EMAIL_WEBHOOK_URL` or `RESEND_API_KEY` yet, so every notification is
   recorded in `notification_outbox` with `status = 'skipped'` and the reason
