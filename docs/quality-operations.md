@@ -96,6 +96,35 @@ function with `x-engineer-cron-secret`. Add `SUPABASE_URL` and
 `ENGINEER_CRON_SECRET` as GitHub secrets to enable it. The console's **Run
 audit** button is the manual path.
 
+### Deployed state (2026-11-01)
+
+Checked against the live project, not from the files:
+
+- **Schema** — `migrations_quality_ops.sql` is fully applied to
+  `rlulmewvmhxgctonizas`: all seven tables (`quality_runs`,
+  `telemetry_events`, `feature_flags`, `quality_settings`,
+  `engineering_reports`, `engineering_approvals`, `notification_outbox`), both
+  views, `is_admin()` / `claim_founder_admin()` / `guard_profile_admin_flag()` /
+  `quality_overview()` / `prune_telemetry()`, RLS enabled on every table, the
+  profile guard trigger, 30 policies, the four seeded flags and the
+  `default` settings row. The migration is `if not exists` / `or replace`
+  throughout, so re-running it is safe.
+- **Functions** — `engineer-agent` and `review-approval` are live and return
+  `401` to unauthenticated posts. `engineer-agent` is deployed with
+  `--no-verify-jwt` because its scheduled path presents
+  `x-engineer-cron-secret` rather than a user JWT; both functions still verify
+  the bearer token and `profiles.is_admin` in code, so the platform check is
+  belt-and-braces, not the only gate. `review-approval` keeps JWT verification.
+- **Secrets** — `ENGINEER_CRON_SECRET` and the `LLM_*` set are present. No
+  `NOTIFY_EMAIL_WEBHOOK_URL` or `RESEND_API_KEY` yet, so every notification is
+  recorded in `notification_outbox` with `status = 'skipped'` and the reason
+  `No email provider configured`; approvals still surface in the console.
+  Setting either secret switches delivery on without a redeploy.
+- **Still open** — the repo has no git remote, so
+  `quality-gate.yml` and `engineer-audit.yml` never fire; pushing to a host and
+  marking `Required checks` in branch protection is what turns the CI half of
+  this system on. Owner access is claimed from the app, not from the CLI.
+
 ## The release bar
 
 `content/quality/gates.json` is the single source for:

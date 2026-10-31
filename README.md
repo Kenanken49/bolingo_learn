@@ -153,6 +153,11 @@ through a provider-neutral webhook or the Resend adapter.
 - Full setup, privacy model, agent autonomy and runbook:
   [docs/quality-operations.md](docs/quality-operations.md)
 
+The migration and both functions are already applied to the live project
+(`engineer-agent`, `review-approval` answer `401` unauthenticated as intended);
+what is still missing is an email provider secret and a git remote for CI — see
+*Deployed state* in the runbook.
+
 ## Runnable labs (offline VM, sandbox editors, guided)
 
 1 842 imported labs, and each one runs or says plainly that it cannot:
@@ -435,24 +440,24 @@ Progress helpers live in [lib/progress.ts](lib/progress.ts) (`getProfile`, `comp
 `eas.json` ships three profiles: `development` (dev client + `EXPO_PUBLIC_DEBUG_PREMIUM=1`), `preview` (internal channel), `production`. `app.config.js` replaces `app.json` and reads AdMob app ids from `ADMOB_*_APP_ID` with Google sample ids as fallback.
 
 ```bash
-npm i -g eas-cli
- eas login
- eas init            # fills in extra.eas.projectId in app.config.js
- eas build --profile development --platform android  # first real-device test
- eas build --profile preview --platform all          # internal sharing
- eas build --profile production --platform all        # store submission
+npx eas-cli login
+npx eas-cli init     # projectId 7ceeed84-5e6b-4157-b515-b7adfba83ddb is already in app.config.js
+npx eas-cli build --profile development --platform android  # first real-device test
+npx eas-cli build --profile preview --platform all          # internal sharing
+npx eas-cli build --profile production --platform all       # store submission
 ```
 Set secrets with `eas secret:create` (or EAS dashboard → Environment variables): `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, AdMob + RevenueCat keys. Install the dev build, open it, then run `npx expo start --dev-client` and scan the QR.
 
 ### OTA updates (no rebuild)
 
-`runtimeVersion` tracks the app version, so JS-only changes (screens, quiz logic, styles) ship instantly:
+`runtimeVersion` tracks the app version, so JS-only changes (screens, quiz logic, styles) ship instantly. `expo-updates` is a real dependency — without it the app cannot check for an update at all, and `eas update` refuses to publish.
 
 ```bash
- eas update --branch preview --message "Tweak lesson copy"
- eas update --branch production --message "Fix quiz scoring"
+ bunx eas-cli update --branch preview --environment preview -p all --message "Tweak lesson copy"
+ bunx eas-cli update --branch production --environment production -p all --message "Fix quiz scoring"
 ```
-After `eas init`, replace `your-eas-project-id` in `app.config.js` (`updates.url`) with the real id. Native changes (new SDKs, AdMob/RevenueCat config, splash/icon) still need a rebuild — OTA covers JS only.
+
+The flag is `-p/--platform` (there is no `--platforms`), and a non-interactive publish must name `--environment`. A published rollout only reaches builds that were made with a channel: `preview` and `production` both carry one, the `development` profile does not, so a dev client always runs whatever the Metro bundler serves. Native changes (new SDKs, AdMob/RevenueCat config, splash/icon, adding `expo-updates` itself) still need a rebuild — OTA covers JS only.
 
 ## Premium paywall (RevenueCat)
 
