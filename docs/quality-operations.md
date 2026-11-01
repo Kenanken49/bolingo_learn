@@ -139,7 +139,10 @@ Checked against the live project, not from the files:
   schema is reproducible; RLS is off on them but `anon` and `authenticated`
   hold only `REFERENCES, TRIGGER, TRUNCATE`, so no client can read or write
   them. Do not widen those grants, and do not re-run the baseline file — it is
-  plain `CREATE`, not idempotent.
+  plain `CREATE`, not idempotent. With the baseline committed, the object list
+  matches both ways: every one of the 59 tables, views and functions in
+  `public` is defined by a file in `supabase/`, and no file defines an object
+  production is missing.
 - **Build config** — `EXPO_PUBLIC_SUPABASE_URL` and
   `EXPO_PUBLIC_SUPABASE_ANON_KEY` exist as EAS environment variables in
   `development`, `preview` and `production`; `.env` is gitignored and there is
