@@ -118,23 +118,31 @@ with temporary files. Both run inside `npm test`.
 
 ## Edge Functions
 
-- `supabase/functions/streak-reset` — reset stale streaks (schedule daily via cron).
-- `supabase/functions/premium-webhook` — toggle `profiles.is_premium` from a payment webhook.
+Eight functions, all deployed to `rlulmewvmhxgctonizas` and all rejecting an
+unauthenticated call:
+
+- `supabase/functions/ask-bingo` — in-lesson help from Bingo.
+- `supabase/functions/explain-answer` — why an answer was right or wrong.
+- `supabase/functions/grade-project` — capstone grading.
+- `supabase/functions/process-upload` — turns a pasted text into draft lessons.
 - `supabase/functions/roleplay-chat` — Livia/Bingo language tutors (ES/FR/DE) and the code/career scenarios.
 - `supabase/functions/engineer-agent` — Kito audits quality, telemetry, flags and error clusters; records approvals and emails the owner.
 - `supabase/functions/review-approval` — owner approval/rejection with allowlisted, reversible actions and an audit trail.
+- `supabase/functions/revenuecat-webhook` — grants and revokes `profiles.is_premium` from RevenueCat events. Needs the `REVENUECAT_WEBHOOK_SECRET` secret and must run with `--no-verify-jwt`, because it authenticates the provider's bearer token itself.
 
 `npm run check:roleplay` keeps the persona/language catalogs, prompt contract,
 bilingual parser and screen/function wiring aligned; it runs inside `npm test`.
 
-Deploy with the Supabase CLI:
+Streaks are advanced by `lib/progress.ts`, and premium is also synced on-device
+by `lib/purchases.ts`, so the webhook is the server-side authority for
+revocations when the learner is not in the app.
+
+Deploy with the Supabase CLI. State `--no-verify-jwt` explicitly: `deploy`
+keeps whatever the function already had.
 
 ```bash
-supabase functions deploy streak-reset
-supabase functions deploy premium-webhook
-supabase functions deploy roleplay-chat
-supabase functions deploy engineer-agent
-supabase functions deploy review-approval
+npx supabase functions deploy ask-bingo --no-verify-jwt=false
+npx supabase functions deploy revenuecat-webhook --no-verify-jwt
 ```
 
 ## Quality operations (CI gates, telemetry, A/B, AI engineer)
@@ -446,7 +454,14 @@ npx eas-cli build --profile development --platform android  # first real-device 
 npx eas-cli build --profile preview --platform all          # internal sharing
 npx eas-cli build --profile production --platform all       # store submission
 ```
-Set secrets with `eas secret:create` (or EAS dashboard → Environment variables): `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, AdMob + RevenueCat keys. Install the dev build, open it, then run `npx expo start --dev-client` and scan the QR.
+`.env` is gitignored and there is no `.easignore`, so a cloud build never sees your local file — its configuration comes only from EAS environment variables. `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` are already set in `development`, `preview` and `production`; the AdMob and RevenueCat keys are not. `eas secret:create` is deprecated, so use `env:set` and confirm with `eas env:list --environment <name>` (it hides sensitive values unless you pass `--include-sensitive`):
+
+```bash
+npx eas-cli env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value <key> \
+  --environment development --environment preview --environment production
+```
+
+Install the dev build, open it, then run `npx expo start --dev-client` and scan the QR.
 
 ### OTA updates (no rebuild)
 

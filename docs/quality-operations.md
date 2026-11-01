@@ -115,15 +115,36 @@ Checked against the live project, not from the files:
   profile guard trigger, 30 policies, the four seeded flags and the
   `default` settings row. The migration is `if not exists` / `or replace`
   throughout, so re-running it is safe.
-- **Functions** — `engineer-agent` and `review-approval` are live, as are
-  `ask-bingo`, `process-upload` and `roleplay-chat` after the product-name
-  sweep; all five answer `401` to unauthenticated posts. `engineer-agent` is
-  deployed with `--no-verify-jwt` because its scheduled path presents
-  `x-engineer-cron-secret` rather than a user JWT; both functions still verify
-  the bearer token and `profiles.is_admin` in code, so the platform check is
-  belt-and-braces, not the only gate. Every other function keeps platform
-  verification on — `ask-bingo` and `process-upload` do no auth of their own,
-  so for them it is the only gate.
+- **Functions** — eight are deployed: `ask-bingo`, `explain-answer`,
+  `grade-project`, `process-upload`, `roleplay-chat`, `engineer-agent`,
+  `review-approval` and `revenuecat-webhook`. All except
+  `revenuecat-webhook` answer `401` to an unauthenticated post.
+  `engineer-agent` is deployed with `--no-verify-jwt` because its scheduled
+  path presents `x-engineer-cron-secret` rather than a user JWT; both functions
+  still verify the bearer token and `profiles.is_admin` in code, so the
+  platform check is belt-and-braces, not the only gate. `revenuecat-webhook` is
+  the other `--no-verify-jwt` case — it checks RevenueCat's bearer secret
+  itself — and while `REVENUECAT_WEBHOOK_SECRET` is unset every post fails
+  closed with `500 Webhook secret not configured`, so no event can grant
+  premium. Every remaining function keeps platform verification on —
+  `ask-bingo` and `process-upload` do no auth of their own, so for them it is
+  the only gate. `premium-webhook` and `streak-reset` were deleted before ever
+  being deployed: they were unauthenticated template stubs that set
+  `is_premium` for any posted `user_id` and mass-reset
+  `profiles.streak_count`, and both behaviours are already owned by
+  `lib/purchases.ts` + `revenuecat-webhook` and `lib/progress.ts`.
+- **Legacy schema** — 23 tables and 2 views exist in production with no DDL
+  anywhere in the repo (early `users`/`phrases`/`concepts`-era objects). They
+  are captured verbatim in `supabase/schema_baseline.sql` so the deployed
+  schema is reproducible; RLS is off on them but `anon` and `authenticated`
+  hold only `REFERENCES, TRIGGER, TRUNCATE`, so no client can read or write
+  them. Do not widen those grants, and do not re-run the baseline file — it is
+  plain `CREATE`, not idempotent.
+- **Build config** — `EXPO_PUBLIC_SUPABASE_URL` and
+  `EXPO_PUBLIC_SUPABASE_ANON_KEY` exist as EAS environment variables in
+  `development`, `preview` and `production`; `.env` is gitignored and there is
+  no `.easignore`, so before those variables were set a cloud build would have
+  shipped with no backend at all. RevenueCat and AdMob keys are still absent.
 - **Secrets** — `ENGINEER_CRON_SECRET` and the `LLM_*` set are present. No
   `NOTIFY_EMAIL_WEBHOOK_URL` or `RESEND_API_KEY` yet, so every notification is
   recorded in `notification_outbox` with `status = 'skipped'` and the reason
@@ -132,7 +153,9 @@ Checked against the live project, not from the files:
 - **Still open** — the repo has no git remote, so
   `quality-gate.yml` and `engineer-audit.yml` never fire; pushing to a host and
   marking `Required checks` in branch protection is what turns the CI half of
-  this system on. Owner access is claimed from the app, not from the CLI.
+  this system on. Owner access is claimed from the app, not from the CLI. No
+  `eas build` has been run since `expo-updates` was added, so the published
+  update groups have no installed build that can ask for them.
 
 ## The release bar
 
