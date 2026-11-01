@@ -463,6 +463,21 @@ npx eas-cli env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value <key> \
 
 Install the dev build, open it, then run `npx expo start --dev-client` and scan the QR.
 
+### Dependency parity
+
+`npx expo-doctor` must end with `20/20 checks passed`. It lags silently: the SDK
+ships patches, and `expo install --fix` is what pulls `expo`, `expo-router` and
+`react-native` back onto the versions the SDK expects. Run it before a release
+build, not after — a patch bump changes the native runtime, and
+`runtimeVersion` only tracks the app version, so an update published from newer
+JS libraries will still be served to builds compiled against the old ones.
+
+`npm audit --omit=dev` is the shipped-surface number; the dev bucket holds the
+local Supabase server (`@supabase/server` → `hono`) and Prisma RC tooling, which
+never reach a learner's device. What remains in `--omit=dev` is Expo's own
+toolchain (`glob`/`minimatch`, `node-forge` via code-signing) — upstream-pinned,
+not fixable here, and not reachable from the app bundle.
+
 ### OTA updates (no rebuild)
 
 `runtimeVersion` tracks the app version, so JS-only changes (screens, quiz logic, styles) ship instantly. `expo-updates` is a real dependency — without it the app cannot check for an update at all, and `eas update` refuses to publish.
