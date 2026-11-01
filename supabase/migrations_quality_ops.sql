@@ -299,6 +299,18 @@ values
     'guardrail_actions',
     null,
     null
+  ),
+  (
+    'mpesa_premium',
+    'M-Pesa premium checkout',
+    'Offers Safaricom M-Pesa (Daraja STK Push) as a Premium payment method on Android. Off until the Daraja secrets and mpesa_checkouts migration are live.',
+    'release',
+    false,
+    0,
+    $$[{"key":"on","weight":100,"label":"On"}]$$::jsonb,
+    'mpesa_checkout_started',
+    'A local payment rail converts Kenyan learners who cannot pay through store billing.',
+    'mpesa_checkout_failed'
   )
 on conflict (key) do nothing;
 

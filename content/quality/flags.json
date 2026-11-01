@@ -44,5 +44,17 @@
     "rolloutPct": 100,
     "variants": [{ "key": "on", "weight": 100, "label": "On" }],
     "metric": "guardrail_actions"
+  },
+  {
+    "key": "mpesa_premium",
+    "name": "M-Pesa premium checkout",
+    "description": "Offers Safaricom M-Pesa (Daraja STK Push) as a Premium payment method on Android. Off until the Daraja secrets and mpesa_checkouts migration are live.",
+    "type": "release",
+    "enabled": false,
+    "rolloutPct": 0,
+    "variants": [{ "key": "on", "weight": 100, "label": "On" }],
+    "metric": "mpesa_checkout_started",
+    "hypothesis": "A local payment rail converts Kenyan learners who cannot pay through store billing.",
+    "guardrail": "mpesa_checkout_failed"
   }
 ]

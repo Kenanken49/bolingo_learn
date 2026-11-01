@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { supabase } from './supabase';
+import { mpesaPremiumLive } from './mpesa';
 
 /** Entitlement id in RevenueCat dashboard — one entitlement gates everything. */
 export const PREMIUM_ENTITLEMENT = 'premium';
@@ -81,9 +82,10 @@ async function getCustomerEntitled(): Promise<{ ok: boolean; entitled: boolean }
 
 /**
  * Is the signed-in user entitled to premium? Syncs the flag to profiles —
- * but ONLY when RevenueCat gave a definitive answer. On store errors
- * (no network, Expo Go, misconfigured keys) the existing profile flag is
- * kept, so a transient failure can never demote a paying user.
+ * RevenueCat can grant access, and only a store answer PLUS an expired M-Pesa
+ * ledger can revoke it. On store errors (no network, Expo Go, misconfigured
+ * keys) the existing profile flag is kept, so a transient failure can never
+ * demote a paying user.
  */
 export async function refreshPremiumStatus(userId: string): Promise<boolean> {
   if (DEBUG_PREMIUM_UNLOCK && (await debugUnlocked())) {
@@ -103,12 +105,16 @@ export async function refreshPremiumStatus(userId: string): Promise<boolean> {
       return false;
     }
   }
+  // The store is authoritative for "yes", never for "not anymore": an M-Pesa
+  // subscriber has no RevenueCat record, so an unentitled answer must not
+  // erase a payment period that is still running.
+  const live = entitled || (await mpesaPremiumLive());
   try {
-    await supabase.from('profiles').update({ is_premium: entitled }).eq('id', userId);
+    await supabase.from('profiles').update({ is_premium: live }).eq('id', userId);
   } catch {
     // profile sync is best-effort
   }
-  return entitled;
+  return live;
 }
 
 export async function getOfferingsSafe(): Promise<{ offering: any | null; error: string | null }> {

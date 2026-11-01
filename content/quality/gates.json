@@ -75,6 +75,14 @@
       "required": true
     },
     {
+      "id": "mpesa",
+      "label": "M-Pesa payment rail",
+      "category": "safety",
+      "command": "node scripts/check-mpesa.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
       "id": "transcription",
       "label": "Transcription pipeline",
       "category": "safety",

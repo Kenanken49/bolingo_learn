@@ -112,9 +112,20 @@ Checked against the live project, not from the files:
   `engineering_reports`, `engineering_approvals`, `notification_outbox`), both
   views, `is_admin()` / `claim_founder_admin()` / `guard_profile_admin_flag()` /
   `quality_overview()` / `prune_telemetry()`, RLS enabled on every table, the
-  profile guard trigger, 30 policies, the four seeded flags and the
+  profile guard trigger, 30 policies, the five seeded flags (the newest,
+  `mpesa_premium`, lands only when this migration is re-run) and the
   `default` settings row. The migration is `if not exists` / `or replace`
   throughout, so re-running it is safe.
+- **Payment rails** — `mpesa-push` and `mpesa-callback` exist in the repo and
+  are **not deployed yet**: they need the six Daraja secrets
+  (`DARAJA_CONSUMER_KEY`, `DARAJA_CONSUMER_SECRET`, `DARAJA_SHORTCODE`,
+  `DARAJA_PASSKEY`, `MPESA_CALLBACK_URL`, `MPESA_CALLBACK_TOKEN`) plus
+  `supabase/migrations_mpesa_premium.sql`. The `mpesa_premium` release flag
+  ships enabled=false / rollout 0, so the Android paywall card stays hidden
+  until the rail is installed, deployed and deliberately rolled out.
+  `npm run check:mpesa` proves the money rules (server price authority,
+  underpayment rejected, one settle per checkout, premium lapses by itself)
+  without touching Daraja.
 - **Functions** — eight are deployed: `ask-bingo`, `explain-answer`,
   `grade-project`, `process-upload`, `roleplay-chat`, `engineer-agent`,
   `review-approval` and `revenuecat-webhook`. All except
@@ -207,8 +218,14 @@ The closed event vocabulary currently includes:
 - `code_sandbox_result`, `code_sandbox_timeout`
 - `paywall_viewed`, `premium_checkout_started`, `premium_activated`,
   `premium_purchase_failed`
+- `mpesa_checkout_started`, `mpesa_checkout_confirmed`, `mpesa_checkout_failed`
 - `experiment_exposed`, `experiment_converted`
 - `admin_console_opened`
+
+`mpesa_checkout_*` carries a plan key and a failure reason. A phone number is
+never passed to `track()` and `sanitizeTelemetryProps()` drops the `phone` key
+anyway, so the only personal identifier in an M-Pesa event is the user id the
+event already carries.
 
 `terminal_command` carries the command verb and an ok flag only — arguments can
 name paths and file contents the learner typed, so they never enter the queue.

@@ -54,7 +54,35 @@ Costly server paths double-enforce Premium regardless of the flag:
 `process-upload` (PDF/audio + word billing) and `roleplay-chat` (402 unless
 `profiles.is_premium`) both read the profile service-side.
 
-## 6. Test before release
+## 6. Kenya: M-Pesa through Safaricom Daraja (Android only)
+
+Store billing excludes a large part of the audience — no card, no Play balance.
+M-Pesa is the second rail: the app sends an STK Push, the learner types their
+M-Pesa PIN **on the phone**, and Safaricom tells the server whether it landed.
+
+1. Run [`supabase/migrations_mpesa_premium.sql`](../supabase/migrations_mpesa_premium.sql)
+   (creates `mpesa_checkouts`: select-only RLS for the owner, service-role writes).
+2. `supabase secrets set DARAJA_CONSUMER_KEY=… DARAJA_CONSUMER_SECRET=… DARAJA_SHORTCODE=… DARAJA_PASSKEY=… MPESA_CALLBACK_URL=… MPESA_CALLBACK_TOKEN=…`
+   — get the first four from the Daraja dashboard (sandbox keys first); invent
+   the token and embed it in the callback URL as `?t=<token>`.
+3. `supabase functions deploy mpesa-push --no-verify-jwt=false` and
+   `supabase functions deploy mpesa-callback --no-verify-jwt`.
+4. Sandbox test: with `DARAJA_BASE_URL` left at its sandbox default, pay with a
+   Safaricom test MSISDN, confirm `mpesa_checkouts.status` flips to `confirmed`
+   and `profiles.is_premium` follows.
+5. Enable the `mpesa_premium` release flag in Settings → Quality & Operations
+   and roll out gradually. The card is hidden on iOS by rule 3.1.1 and on
+   Android until the flag is on, so nothing changes for existing learners.
+
+Who owns what: the **server** picks the amount (`MPESA_PREMIUM_KES`, default
+770) and the paid-through window; the client only ever sends a phone number and
+a plan key. A callback that reports a different amount is marked `failed` and
+grants nothing. Because M-Pesa has no renewal webhook, `mpesa-push` recomputes
+`profiles.is_premium` from the ledger on every call, so premium ends when the
+30 days end — and `refreshPremiumStatus` will not let an unentitled answer from
+the store clear an in-date M-Pesa period.
+
+## 7. Test before release
 
 - Android: internal testing track + license-test account → purchase with test card, verify `profiles.is_premium` flips.
 - iOS: sandbox tester (App Store Connect → Users) → subscribe, verify, cancel.
@@ -63,8 +91,10 @@ Costly server paths double-enforce Premium regardless of the flag:
   unavailable by design — the paywall now says so instead of hanging.
   Test real purchases in a dev build (`npx expo run:android`) on a device
   with Play Store, or use the debug toggle (`EXPO_PUBLIC_DEBUG_PREMIUM=1`).
+- M-Pesa: `npm run check:mpesa` exercises the ledger rules offline; a real
+  sandbox payment still needs a Kenyan test number and an Android dev build.
 
-## 7. Grant the admin (one-time SQL)
+## 8. Grant the admin (one-time SQL)
 
 ```sql
 update public.profiles set is_premium = true

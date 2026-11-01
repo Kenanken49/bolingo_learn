@@ -20,11 +20,13 @@ import {
 } from '../../lib/purchases';
 import BrandMark from '../../components/BrandMark';
 import AppIcon, { type AppIconName } from '../../components/AppIcon';
+import TextInput from '../../components/ui/TextInput';
 import { useExperiment } from '../../lib/featureFlags';
 import { track } from '../../lib/telemetry';
 import { PREMIUM_NARRATOR_SAMPLE } from '../../assets/narrator';
 import PremiumNarratorSample from '../../components/PremiumNarratorSample';
 import { narratorAuditRequested, useNarratorSampleProbe } from '../../lib/narratorSample';
+import { MPESA_PLAN, MPESA_PRICE_LABEL, fetchMpesaState, mpesaAvailable, startMpesaCheckout } from '../../lib/mpesa';
 
 const isWebBilling = Platform.OS === 'web';
 const WEB_BILLING_KEY = process.env.EXPO_PUBLIC_REVENUECAT_WEB_KEY ?? '';
@@ -63,6 +65,13 @@ export default function Paywall() {
   const [storeError, setStoreError] = useState<string | null>(null);
   const [isPremium, setIsPremium] = useState(false);
   const [debugOn, setDebugOn] = useState(false);
+  // M-Pesa is an Android-only rail (App Store rule 3.1.1) behind a release
+  // flag, so the card has to disappear entirely when either gate is off.
+  const [mpesaOn, setMpesaOn] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [mpesaBusy, setMpesaBusy] = useState(false);
+  const [mpesaWaiting, setMpesaWaiting] = useState(false);
+  const [mpesaError, setMpesaError] = useState<string | null>(null);
   // Free learners can audition the licensed narrator here with no sign-in,
   // network request or TTS spend.
   const narratorPlayer = useAudioPlayer(PREMIUM_NARRATOR_SAMPLE, { updateInterval: 250 });
@@ -76,6 +85,7 @@ export default function Paywall() {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return;
+    setMpesaOn(await mpesaAvailable().catch(() => false));
     if (isWebBilling && WEB_BILLING_KEY) {
       try {
         const inst = await webPurchases(user.id);
@@ -269,6 +279,59 @@ export default function Paywall() {
     }
   };
 
+  const payByMpesa = async () => {
+    track('mpesa_checkout_started', { plan: MPESA_PLAN });
+    track('premium_checkout_started', { ...experimentProps, rail: 'mpesa' });
+    setMpesaError(null);
+    setMpesaBusy(true);
+    try {
+      const res = await startMpesaCheckout(phone, () => setMpesaWaiting(true));
+      if (res.status === 'confirmed') {
+        await afterChange();
+        track('mpesa_checkout_confirmed', { plan: MPESA_PLAN });
+        track('premium_activated', { ...experimentProps, rail: 'mpesa' });
+        Alert.alert('Premium active', 'M-Pesa confirmed. PDF uploads, elite voices and unlimited hearts are unlocked.');
+        router.replace('/');
+        return;
+      }
+      if (res.status === 'pending') {
+        Alert.alert(
+          'Still processing',
+          'Safaricom is still working on this payment. Tap "Check payment status" in a moment — you will not be charged twice.'
+        );
+        return;
+      }
+      track('mpesa_checkout_failed', { reason: res.status, message: res.error ?? 'stk_push' });
+      setMpesaError(res.error ?? 'Payment did not go through. No money was taken.');
+    } finally {
+      setMpesaBusy(false);
+      setMpesaWaiting(false);
+    }
+  };
+
+  const checkMpesaStatus = async () => {
+    setMpesaBusy(true);
+    try {
+      const state = await fetchMpesaState();
+      if (state.isPremium) {
+        setIsPremium(true);
+        track('mpesa_checkout_confirmed', { plan: MPESA_PLAN, source: 'status_check' });
+        track('premium_activated', { ...experimentProps, rail: 'mpesa' });
+        Alert.alert('Premium active', 'Your M-Pesa payment is confirmed.');
+        router.replace('/');
+        return;
+      }
+      const last = state.lastCheckout;
+      setMpesaError(
+        last && last.status !== 'confirmed'
+          ? `Last request ended as ${last.status}. Start a new payment when ready.`
+          : 'No completed payment found yet. If the PIN prompt is still open on your phone, approve it first.'
+      );
+    } finally {
+      setMpesaBusy(false);
+    }
+  };
+
   const toggleNarratorSample = async () => {
     if (narratorStatus.playing) {
       narratorPlayer.pause();
@@ -430,6 +493,61 @@ export default function Paywall() {
           </Pressable>
         </View>
       )}
+
+      {!isPremium && mpesaOn ? (
+        <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-cyan-300 dark:border-cyan-800 bg-cyan-50 dark:bg-cyan-950 p-5">
+          <View className="flex-row items-center justify-between gap-3">
+            <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">M-Pesa</Text>
+            <Text className="text-lg font-extrabold text-slate-900 dark:text-slate-100">{MPESA_PRICE_LABEL}</Text>
+          </View>
+          <Text className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            Safaricom sends a prompt to your phone — enter your M-Pesa PIN there, never here. Each payment
+            unlocks Premium for 30 days; renew from this screen before it ends.
+          </Text>
+          <TextInput
+            value={phone}
+            onChangeText={setPhone}
+            placeholder="07XX XXX XXX"
+            keyboardType="phone-pad"
+            autoComplete="tel"
+            editable={!mpesaBusy}
+            aria-label="M-Pesa phone number"
+            className="mt-3 rounded-2xl border-2 border-slate-300 bg-white px-4 py-3 text-base font-bold text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+          />
+          <Pressable
+            onPress={payByMpesa}
+            disabled={mpesaBusy || phone.replace(/[^0-9]/g, '').length < 9}
+            className={`mt-3 items-center rounded-2xl py-4 ${
+              mpesaBusy || phone.replace(/[^0-9]/g, '').length < 9 ? 'bg-slate-300 dark:bg-slate-700' : 'bg-cyan-700'
+            }`}
+          >
+            {mpesaBusy ? (
+              <View className="flex-row items-center gap-2">
+                <ActivityIndicator color="#FFFFFF" />
+                <Text className="text-lg font-extrabold text-white">
+                  {mpesaWaiting ? 'Waiting for your PIN…' : 'Sending request…'}
+                </Text>
+              </View>
+            ) : (
+              <Text className="text-lg font-extrabold text-white">Pay {MPESA_PRICE_LABEL}</Text>
+            )}
+          </Pressable>
+          {mpesaWaiting ? (
+            <Text className="mt-2 text-center text-xs text-slate-600 dark:text-slate-400">
+              Unlock your phone and open the Safaricom message. This screen keeps checking for about two minutes.
+            </Text>
+          ) : null}
+          <Pressable onPress={checkMpesaStatus} disabled={mpesaBusy} className="mt-2 items-center">
+            <Text className="font-bold text-slate-500 dark:text-slate-400">Check payment status</Text>
+          </Pressable>
+          {mpesaError ? (
+            <View className="mt-3 flex-row items-start gap-1.5">
+              <AppIcon name="alert" size={16} color="#B91C1C" />
+              <Text className="flex-1 text-sm font-bold text-red-700 dark:text-red-400">{mpesaError}</Text>
+            </View>
+          ) : null}
+        </View>
+      ) : null}
 
       {__DEV__ && (
         <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700 p-4">

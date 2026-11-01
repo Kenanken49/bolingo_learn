@@ -118,24 +118,32 @@ with temporary files. Both run inside `npm test`.
 
 ## Edge Functions
 
-Eight functions, all deployed to `rlulmewvmhxgctonizas` and all rejecting an
-unauthenticated call:
+Ten functions, all deployed to `rlulmewvmhxgctonizas`. Nine of them reject an
+unauthenticated call; the tenth (`mpesa-callback`) is provider-facing and
+authenticates a shared secret instead:
 
 - `supabase/functions/ask-bingo` — in-lesson help from Bingo.
 - `supabase/functions/explain-answer` — why an answer was right or wrong.
 - `supabase/functions/grade-project` — capstone grading.
 - `supabase/functions/process-upload` — turns a pasted text into draft lessons.
 - `supabase/functions/roleplay-chat` — Livia/Bingo language tutors (ES/FR/DE) and the code/career scenarios.
-- `supabase/functions/engineer-agent` — Kito audits quality, telemetry, flags and error clusters; records approvals and emails the owner.
+- `supabase/functions/engineer-agent` — Kito audits quality, telemetry, flags and errors; records approvals and emails the owner.
 - `supabase/functions/review-approval` — owner approval/rejection with allowlisted, reversible actions and an audit trail.
 - `supabase/functions/revenuecat-webhook` — grants and revokes `profiles.is_premium` from RevenueCat events. Needs the `REVENUECAT_WEBHOOK_SECRET` secret and must run with `--no-verify-jwt`, because it authenticates the provider's bearer token itself.
+- `supabase/functions/mpesa-push` — starts a Safaricom STK Push for a signed-in learner, rate-limits prompts, queries missed callbacks and settles the learner's own expiry. Runs with JWT verification ON.
+- `supabase/functions/mpesa-callback` — receives the STK Push result from Daraja. Deployed with `--no-verify-jwt` and gated by `MPESA_CALLBACK_TOKEN`; it can only settle a `CheckoutRequestID` this server created.
 
 `npm run check:roleplay` keeps the persona/language catalogs, prompt contract,
 bilingual parser and screen/function wiring aligned; it runs inside `npm test`.
+`npm run check:mpesa` runs the real payment module against an in-memory ledger
+(price authority, underpayment rejection, idempotency, automatic lapse) plus
+the trust-boundary and wiring checks — no network, no credentials.
 
 Streaks are advanced by `lib/progress.ts`, and premium is also synced on-device
-by `lib/purchases.ts`, so the webhook is the server-side authority for
-revocations when the learner is not in the app.
+by `lib/purchases.ts`, so the webhooks are the server-side authority for
+revocations when the learner is not in app. M-Pesa has no renewal webhook at
+all: `mpesa-push` re-derives `profiles.is_premium` from the paid-through dates
+in `mpesa_checkouts` on every call, so one 30-day payment cannot outlive itself.
 
 Deploy with the Supabase CLI. State `--no-verify-jwt` explicitly: `deploy`
 keeps whatever the function already had.
@@ -143,6 +151,8 @@ keeps whatever the function already had.
 ```bash
 npx supabase functions deploy ask-bingo --no-verify-jwt=false
 npx supabase functions deploy revenuecat-webhook --no-verify-jwt
+npx supabase functions deploy mpesa-push --no-verify-jwt=false
+npx supabase functions deploy mpesa-callback --no-verify-jwt
 ```
 
 ## Quality operations (CI gates, telemetry, A/B, AI engineer)
@@ -536,12 +546,53 @@ supabase secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
 # Audio/video transcription (pick one):
 #   supabase secrets set DEEPGRAM_API_KEY=...          # signed URL, long audio + video
 #   supabase secrets set TRANSCRIBE_API_KEY=...        # OpenAI-compatible, ≤25 MB
+# M-Pesa (Safaricom Daraja) — see the paywall section below:
+#   supabase secrets set DARAJA_CONSUMER_KEY=... DARAJA_CONSUMER_SECRET=...
+#   supabase secrets set DARAJA_SHORTCODE=... DARAJA_PASSKEY=...
+#   supabase secrets set MPESA_CALLBACK_URL=... MPESA_CALLBACK_TOKEN=...
 # Optional: LLM_BASE_URL LLM_MODEL TTS_PROVIDER=elevenlabs|openai TTS_VOICE_ID TTS_OUTPUT_FORMAT
 # Optional: TTS_STABILITY TTS_SIMILARITY_BOOST TTS_STYLE TTS_SPEAKER_BOOST OPENAI_BASE_URL
 # Optional: TRANSCRIBE_PROVIDER TRANSCRIBE_MODEL TRANSCRIBE_BASE_URL TRANSCRIBE_LANGUAGE
+# Optional: DARAJA_BASE_URL (default is the Daraja sandbox) MPESA_PREMIUM_KES MPESA_PENDING_TTL_MINUTES
 ```
 
-Deploy with `npm run deploy:process-upload` (this runs the audiobook voice preflight first; a cloned/professional voice needs a completed, active consent record via `TTS_CONSENT_RECORD`), plus `supabase functions deploy streak-reset` and `supabase functions deploy premium-webhook`.
+Deploy with `npm run deploy:process-upload` (this runs the audiobook voice preflight first; a cloned/professional voice needs a completed, active consent record via `TTS_CONSENT_RECORD`).
+
+## Paying with M-Pesa (Kenya)
+
+Install [`supabase/migrations_mpesa_premium.sql`](supabase/migrations_mpesa_premium.sql),
+set the six Daraja secrets above, then deploy `mpesa-push`
+(`--no-verify-jwt=false`) and `mpesa-callback` (`--no-verify-jwt`). Create
+`MPESA_CALLBACK_TOKEN` yourself — a long random string kept out of the repo —
+and put the same value in `MPESA_CALLBACK_URL` as `?t=<token>`, because
+Safaricom posts the result without a learner session.
+
+The rail is **Android only** (App Store rule 3.1.1 requires in-app purchase for
+digital content on iOS) and stays hidden until the `mpesa_premium` release flag
+in **Settings → Quality & Operations** is enabled and rolled out. Until then the
+paywall behaves exactly as before.
+
+Trust boundaries, enforced by `npm run check:mpesa`:
+
+- the learner sends a phone number and a plan key — never an amount. The price
+  comes from `_shared/mpesa.ts` (`MPESA_PREMIUM_KES` can localize it), and the
+  ledger stores that server-chosen figure;
+- a callback paying less than the recorded amount is marked `failed`, with the
+  reason, and grants nothing;
+- `mpesa_checkouts` has a select-only RLS policy, so no client can insert a
+  `confirmed` row and grant itself premium;
+- the callback only settles a `CheckoutRequestID` this server created, compares
+  the token at constant time, and refuses everything when the secret is unset;
+- a payment is settled once — a replayed callback cannot extend the period;
+- premium lapses on its own: `mpesa-push` recomputes `profiles.is_premium` from
+  the live paid-through date on every call, and `refreshPremiumStatus` will not
+  let a "not entitled" answer from the store clear an in-date M-Pesa period.
+
+Sandbox testing uses `DARAJA_BASE_URL=https://sandbox.safaricom.co.ke` (already
+the default), the sandbox shortcode/passkey pair from the Daraja dashboard, and
+one of Safaricom's sandbox test MSISDNs. Move to `https://api.safaricom.co.ke`
+only after a live KES-1 self-test payment round-trips, then raise
+`MPESA_PREMIUM_KES` back to the real price.
 
 ### Trigger on upload (recommended)
 
