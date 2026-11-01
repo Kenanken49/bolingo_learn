@@ -31,7 +31,16 @@ import { getHapticsOn, getSoundOn } from '../lib/preferences';
 import { playNaturalSwahili, stopNaturalSwahili } from '../lib/naturalLessonAudio';
 import AppIcon from './AppIcon';
 import SpeakBack from './SpeakBack';
-import type { CodeExercise, GuidedLab, QuestionKind, TerminalExercise, TextAnswerSpec } from '../lib/quizBank';
+import type {
+  CodeExercise,
+  GuidedLab,
+  ListenSpec,
+  MatchSpec,
+  QuestionKind,
+  SpeakSpec,
+  TerminalExercise,
+  TextAnswerSpec,
+} from '../lib/quizBank';
 import type { BlockKind } from '../lib/curriculum';
 import { sessionInstruction, sessionStandard } from '../lib/learningStandards';
 
@@ -48,6 +57,12 @@ export interface CodeQuizData {
   kind?: QuestionKind;
   /** Present when kind === 'code': runnable JS with per-question assertions. */
   code?: CodeExercise;
+  /** Present when kind === 'match': cue/answer pairs to link by tapping. */
+  match?: MatchSpec;
+  /** Present when kind === 'listen': spoken phrase + accepted transcriptions. */
+  listen?: ListenSpec;
+  /** Present when kind === 'speak': phrase to say aloud, graded by recogniser. */
+  speak?: SpeakSpec;
   /** Present when kind === 'text': accepted answers + misconception reteach. */
   text?: TextAnswerSpec;
   /** Present when kind === 'terminal': the runnable Git lab to attach. */

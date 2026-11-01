@@ -32,13 +32,16 @@ interface AuditItem {
 const ITEMS: AuditItem[] = LESSON_IDS.flatMap((lessonId) => {
   const lesson = getLanguageLesson(lessonId);
   if (!lesson) return [];
-  return lesson.questions.map((question, index) => ({
-    key: `${lessonId}:${index}`,
-    lesson: lesson.title,
-    question: index + 1,
-    prompt: question.prompt,
-    phrase: phraseForQuestion(question, SWAHILI_SPEECH),
-  }));
+  return lesson.questions
+    .map((question, index) => ({
+      key: `${lessonId}:${index}`,
+      lesson: lesson.title,
+      question: index + 1,
+      prompt: question.prompt,
+      phrase: phraseForQuestion(question, SWAHILI_SPEECH),
+    }))
+    // A match board pairs phrases; it has no phrase of its own to speak.
+    .filter((item) => item.phrase.trim().length > 0);
 });
 
 type AuditState =

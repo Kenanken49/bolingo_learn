@@ -17,6 +17,7 @@ import {
   discardAttempt,
   endWebAttempt,
   nativeAttemptCaptureOptions,
+  speechRecognitionAvailable,
 } from '../lib/attemptAudio';
 
 type Phase = 'idle' | 'listening' | 'result' | 'error';
@@ -61,8 +62,19 @@ const WORD_STYLE: Record<SpeakBackScore['words'][number]['status'], { chip: stri
  * Speak-back practice for language lessons: tap, say the model phrase, and get
  * a word-level match score from the device's speech recognizer. No audio is
  * stored by the app; recognition happens in the OS/browser service.
+ *
+ * `onScore` is what turns practice into a graded exercise — a quiz player uses
+ * it to decide pass/fail, and it only ever fires for a real recogniser result.
  */
-export default function SpeakBack({ phrase, language }: { phrase: string; language: LanguagePreset }) {
+export default function SpeakBack({
+  phrase,
+  language,
+  onScore,
+}: {
+  phrase: string;
+  language: LanguagePreset;
+  onScore?: (score: SpeakBackScore) => void;
+}) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [score, setScore] = useState<SpeakBackScore | null>(null);
   const [interim, setInterim] = useState('');
@@ -152,7 +164,8 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
     if (!mounted.current) return;
     setScore(result);
     setPhase('result');
-  }, [clearTimer, phrase, stopCapture]);
+    onScore?.(result);
+  }, [clearTimer, onScore, phrase, stopCapture]);
 
   const fail = useCallback(
     (code?: ExpoSpeechRecognitionErrorCode) => {
@@ -233,7 +246,7 @@ export default function SpeakBack({ phrase, language }: { phrase: string; langua
     setInterim('');
     setMessage(null);
     try {
-      if (!ExpoSpeechRecognitionModule.isRecognitionAvailable()) {
+      if (!speechRecognitionAvailable()) {
         setPhase('error');
         setMessage('Speech recognition isn’t available in this browser or on this device.');
         return;

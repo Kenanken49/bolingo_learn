@@ -46,6 +46,19 @@ export function nativeAttemptCaptureOptions(): { recordingOptions: { persist: tr
   return !IS_WEB && attemptCaptureSupported() ? { recordingOptions: { persist: true } } : null;
 }
 
+/**
+ * Whether this browser/device can turn speech into text at all. A graded speak
+ * exercise is only honest when the recognizer exists — otherwise the loader
+ * drops the item rather than handing out a pass nobody earned.
+ */
+export function speechRecognitionAvailable(): boolean {
+  try {
+    return ExpoSpeechRecognitionModule.isRecognitionAvailable();
+  } catch {
+    return false;
+  }
+}
+
 /* ------------------------------------------------------------------ *
  * Web capture
  * ------------------------------------------------------------------ */

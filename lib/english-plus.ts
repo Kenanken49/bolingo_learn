@@ -6,7 +6,7 @@
  * lesson words are covered by the bundled offline dictionary
  * (assets/dict/en.json, English WordNet 2024 glosses).
  */
-import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, MATCH, LISTEN, SPEAK, type CourseLesson } from './quizBank';
 
 export const ENGLISH_PLUS: Record<string, CourseLesson> = {
   'english-greetings': {
@@ -46,6 +46,29 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         'Good to see you!',
         ['Good to see you!', 'Nice to meet you!', 'Who are you?', 'See you never!'],
         'Nice to MEET you is first-time only — then it is Good to SEE you.'
+      ),
+      MATCH(
+        'Pair each phrase with the moment it belongs to.',
+        [
+          { left: 'How is it going', right: 'A casual hello that wants no report' },
+          { left: 'Nice to meet you', right: 'Meeting someone for the first time' },
+          { left: 'Good to see you', right: 'Greeting someone you already know' },
+          { left: 'Any plans', right: 'Friendly small talk about the weekend' },
+          { left: 'Good talking to you', right: 'Ending the conversation' },
+        ],
+        'English small talk is a sequence: open, ask lightly, then close. Nice to meet you only fits the very first link.'
+      ),
+      LISTEN(
+        'Listen and type the casual greeting.',
+        'How is it going',
+        ['How is it going'],
+        'In fast speech this collapses toward howzitgoing — the sounds blur but the words never change.',
+        { misconceptions: { 'How it is going': 'The question keeps the verb before the subject: how IS IT going.' } }
+      ),
+      SPEAK(
+        'Greet someone you have just been introduced to, out loud.',
+        'Nice to meet you',
+        'Link meet straight into you — meech-oo — and let the t of to disappear; no English speaker says each word separately here.'
       ),
     ],
   },
@@ -88,6 +111,29 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         ['on', 'at', 'in', 'by'],
         'On + days, at + clock times, in + months and years.'
       ),
+      MATCH(
+        'Pair each number word with its value.',
+        [
+          { left: 'Thirteen', right: '13' },
+          { left: 'Twenty', right: '20' },
+          { left: 'Thirty', right: '30' },
+          { left: 'Hundred', right: '100' },
+          { left: 'Thousand', right: '1000' },
+        ],
+        'Thirteen and thirty are the famous ear-trap: the stress sits on THIR-teen versus THREE-ty, and that is the only difference.'
+      ),
+      LISTEN(
+        'Listen and type the time being said.',
+        'It is half past three',
+        ['It is half past three'],
+        'Half past three is 3:30 — thirty minutes after the hour named last.',
+        { misconceptions: { 'It is three thirty': 'That is the same minute spoken the other way; the recording used half past three.' } }
+      ),
+      SPEAK(
+        'Say the time just before five, out loud.',
+        'It is quarter to five',
+        'Quarter takes a flap in American speech — KWER-er — and to reduces to a schwa: tuh five.'
+      ),
     ],
   },
 
@@ -128,6 +174,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         'an',
         ['an', 'a', 'the', 'none'],
         'Honest starts with a vowel SOUND (silent h) → an honest man.'
+      ),
+      MATCH(
+        'Pair each pointing word with the job it does.',
+        [
+          { left: 'A', right: 'Something new, before a consonant sound' },
+          { left: 'An', right: 'Something new, before a vowel sound' },
+          { left: 'The', right: 'Both speakers already know which one' },
+          { left: 'This', right: 'One thing, near me' },
+          { left: 'Those', right: 'Many things, far away' },
+        ],
+        'A and an answer sound, not spelling: a university, an hour. The answers shared knowledge.'
+      ),
+      LISTEN(
+        'Listen and type what was seen at the zoo.',
+        'I saw an elephant',
+        ['I saw an elephant'],
+        'An glues onto the vowel of elephant — one running sound, anelephant — which is why learners often miss where the article ends.'
+      ),
+      SPEAK(
+        'Describe a trustworthy person, out loud.',
+        'He is an honest man',
+        'The h in honest is silent: AN-ONN-est. If you breathe the h, the article has to be a, and that is what gives the accent away.'
       ),
     ],
   },
@@ -170,6 +238,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         ['That is too expensive!', 'Give it free!', 'Too cheap!', 'No money!'],
         'Too + adjective states the problem; then bargain.'
       ),
+      MATCH(
+        'Pair each shopping phrase with what it does.',
+        [
+          { left: 'How much is this', right: 'Ask the price' },
+          { left: 'Could I have a coffee', right: 'Order without demanding' },
+          { left: 'Many apples', right: 'Countables take many' },
+          { left: 'Much rice', right: 'Uncountables take much' },
+          { left: 'I will take it', right: 'Close the deal' },
+        ],
+        'Could I have…? is the sentence that makes any shop staff smile; Give me… is the sentence that makes them wary.'
+      ),
+      LISTEN(
+        'Listen and type the polite order.',
+        'Could I have a coffee please',
+        ['Could I have a coffee please'],
+        'Could reduces to cud and I have runs as eye-uv — the politeness is in the words, not in the emphasis.'
+      ),
+      SPEAK(
+        'Ask the price of something in your hand, out loud.',
+        'How much is this',
+        'Much ends on the ch sound — muuch — and this keeps its final s voiceless; do not let it drift into "thiz".'
+      ),
     ],
   },
 
@@ -210,6 +300,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         'The departure time',
         ['The departure time', 'The price', 'The platform', 'The arrival city'],
         'Leave = depart, arrive = get there. Mind both.'
+      ),
+      MATCH(
+        'Pair each direction phrase with what it tells you.',
+        [
+          { left: 'Go straight on', right: 'Keep walking forward' },
+          { left: 'Turn left at the corner', right: 'Change direction at a landmark' },
+          { left: 'It is on your right', right: 'Pin the place to your own body' },
+          { left: 'How far is it', right: 'Ask about distance' },
+          { left: 'What time does it leave', right: 'Ask about departure' },
+        ],
+        'Directions use landmark grammar: turn + direction + at + place. Ask twice — distance and time are different questions.'
+      ),
+      LISTEN(
+        'Listen and type the question a traveller asks first.',
+        'Excuse me where is the station',
+        ['Excuse me where is the station'],
+        'Excuse me opens the conversation; the station is the shared the because both speakers know which one is meant.'
+      ),
+      SPEAK(
+        'Give someone the turn, out loud.',
+        'Turn left at the corner',
+        'Turn starts with the r-colored vowel — TURN, tongue curled, no t-u split — and at the reduces to uh-theh.'
       ),
     ],
   },
@@ -252,6 +364,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         ['Made a decision', 'Had an idea', 'Disagreed', 'Delayed'],
         'Decide + to + verb: decided to launch, agreed to wait.'
       ),
+      MATCH(
+        'Pair each work phrase with what it names.',
+        [
+          { left: 'I work as a nurse', right: 'The role' },
+          { left: 'I work for City Hospital', right: 'The employer' },
+          { left: 'I am responsible for reports', right: 'The duty' },
+          { left: 'I can code', right: 'An ability you have now' },
+          { left: 'Could you help me', right: 'A request, softened' },
+        ],
+        'As names the job, for names the company. Can states ability; could is either past ability or politeness.'
+      ),
+      LISTEN(
+        'Listen and type where she works.',
+        'She works for City Hospital',
+        ['She works for City Hospital'],
+        'The -s on works is audible and obligatory: she WORKS. Dropping it is the single most common workplace-English slip.'
+      ),
+      SPEAK(
+        'Name your duty at work, out loud.',
+        'I am responsible for reports',
+        'Re-SPON-si-bl puts the weight on the second syllable, and responsible for runs together as one breath.'
+      ),
     ],
   },
 
@@ -292,6 +426,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         'Already in progress',
         ['Already in progress', 'Finished first', 'Cancelled', 'Planned later'],
         'Past continuous = in progress; past simple = the interruption.'
+      ),
+      MATCH(
+        'Pair each irregular verb with its past form.',
+        [
+          { left: 'Go', right: 'Went' },
+          { left: 'Eat', right: 'Ate' },
+          { left: 'See', right: 'Saw' },
+          { left: 'Buy', right: 'Bought' },
+          { left: 'It was raining', right: 'The background scene' },
+        ],
+        'The rebels share one rule: no -ed, ever. Bought is spelled with a silent -ght, which is why it looks longer than it sounds.'
+      ),
+      LISTEN(
+        'Listen and type the story about the safari.',
+        'We saw a lion two days ago',
+        ['We saw a lion two days ago'],
+        'Saw is the past of see, and ago always counts backwards from today — two days ago, not two days from now.'
+      ),
+      SPEAK(
+        'Say what someone bought yesterday, out loud.',
+        'She bought a new phone',
+        'Bought is one syllable — bawt — with no g sound and no ht sound. Pronouncing the letters you see is the giveaway of a reader, not a speaker.'
       ),
     ],
   },
@@ -379,6 +535,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         'Buy is irregular: buy → bought. “Buyed” is never correct, even though it sounds plausible.',
         { misconceptions: { buyed: 'Buy is irregular: the past tense is bought, not buyed.' } }
       ),
+      MATCH(
+        'Pair each course item with the rule it proves.',
+        [
+          { left: 'Bought', right: 'Irregular past, no -ed' },
+          { left: 'Doesn’t work', right: 'After the auxiliary the verb stays bare' },
+          { left: 'More comfortable', right: 'Long adjectives take more' },
+          { left: 'An hour', right: 'An before a vowel sound, silent h counts' },
+          { left: 'Allergic to peanuts', right: 'The preposition allergic demands' },
+        ],
+        'The final is five rules from five units — each one a mistake that non-native speakers still make after ten years.'
+      ),
+      LISTEN(
+        'Listen and type the question about his home.',
+        'Where does he live',
+        ['Where does he live'],
+        'Does carries the tense, so live stays bare: where DOES he LIVE. Two -s endings would be double-marking.'
+      ),
+      SPEAK(
+        'Talk about yesterday, out loud.',
+        'I didn’t go to work',
+        'Didn’t ends on a t and flows straight into go; after didn’t the verb is bare, so the past lives only in the auxiliary.'
+      ),
     ],
   },
 
@@ -420,6 +598,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         'Does she…?',
         ['Does she…?', 'Do she…?', 'Is she…?', 'Did she…?'],
         'Short answers echo the auxiliary and tense of the question — does in, doesn’t out.'
+      ),
+      MATCH(
+        'Pair each auxiliary with the sentence it belongs to.',
+        [
+          { left: 'Do', right: 'Present question with you, we or they' },
+          { left: 'Does', right: 'Present question with he, she or it' },
+          { left: 'Did', right: 'Any past question' },
+          { left: 'Don’t', right: 'Negative for I, you, we or they' },
+          { left: 'Doesn’t', right: 'Negative for he, she or it' },
+        ],
+        'One tense marker per clause: does already carries the third person, so the main verb never adds an -s on top.'
+      ),
+      LISTEN(
+        'Listen and type the question about her.',
+        'Does she live in Mombasa',
+        ['Does she live in Mombasa'],
+        'Does + she + live: the -es ending on does is the only place the third person appears.'
+      ),
+      SPEAK(
+        'Ask why someone rang, out loud.',
+        'Why did you call',
+        'Did you links as did-ya, and call keeps its pure final l — the past is already inside did, so no -ed anywhere.'
       ),
     ],
   },
@@ -463,6 +663,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         ['It is hotter than I want', 'It is exactly right', 'It is not hot', 'It is the hottest soup'],
         'Too = more than is wanted. Enough would mean it is acceptable.'
       ),
+      MATCH(
+        'Pair each comparative pattern with what it compares.',
+        [
+          { left: 'Cheaper than', right: 'A short adjective taking -er' },
+          { left: 'More expensive than', right: 'A long adjective taking more' },
+          { left: 'As tall as', right: 'Equality — no difference at all' },
+          { left: 'The best', right: 'The superlative of good' },
+          { left: 'Worse than', right: 'The comparative of bad' },
+        ],
+        'One or two syllables take -er; three take more. Good and bad refuse both patterns entirely.'
+      ),
+      LISTEN(
+        'Listen and type the comparison between the rooms.',
+        'This room is bigger than mine',
+        ['This room is bigger than mine'],
+        'Big doubles the g before -er: bigger. The written -er is pronounced as a soft r, never a hard err.'
+      ),
+      SPEAK(
+        'Say the two of you are equal height, out loud.',
+        'She is as tall as her brother',
+        'The two as sounds reduce to uhz — uz-TALL-uhz — which is why the sentence sounds shorter than it looks.'
+      ),
     ],
   },
 
@@ -504,6 +726,28 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
         'Could you call an ambulance?',
         ['Could you call an ambulance?', 'Call ambulance now!', 'You call ambulance.', 'Ambulance calling?'],
         'Could you…? is the polite request; the emergency itself stays urgent and clear.'
+      ),
+      MATCH(
+        'Pair each health phrase with what the clinician hears.',
+        [
+          { left: 'I have a headache', right: 'A symptom you carry' },
+          { left: 'My back hurts', right: 'Pain named by body part' },
+          { left: 'You should rest', right: 'Advice' },
+          { left: 'I am allergic to peanuts', right: 'A warning before any food' },
+          { left: 'Could you call an ambulance', right: 'A request that stays polite under pressure' },
+        ],
+        'Have carries symptoms, hurt is the verb the body part owns, and should never takes -s or -ed.'
+      ),
+      LISTEN(
+        'Listen and type the question about medicine.',
+        'Where is the nearest pharmacy',
+        ['Where is the nearest pharmacy'],
+        'Nearest is near plus the superlative -est, and pharmacy stresses the first syllable: FARM-uh-see.'
+      ),
+      SPEAK(
+        'Give someone firm advice, out loud.',
+        'You shouldn’t drive',
+        'Shouldn’t loses the l-d sound entirely — SHUDDNT — and drive stays bare because should never takes a past form.'
       ),
     ],
   },

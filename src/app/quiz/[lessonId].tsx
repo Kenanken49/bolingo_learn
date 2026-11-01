@@ -6,6 +6,9 @@ import { StatusBar } from 'expo-status-bar';
 import GamifiedCodePlayer, { type CodeQuizData } from '../../../components/GamifiedCodePlayer';
 import CodeExercise from '../../../components/CodeExercise';
 import TextAnswer from '../../../components/TextAnswer';
+import MatchPairs from '../../../components/MatchPairs';
+import ListenAnswer from '../../../components/ListenAnswer';
+import SpeakAnswer from '../../../components/SpeakAnswer';
 import TerminalPlayer from '../../../components/TerminalPlayer';
 import GuidedLabPlayer from '../../../components/GuidedLabPlayer';
 import DuoButton from '../../../components/DuoButton';
@@ -27,7 +30,10 @@ import { skillOfLesson } from '../../../lib/kiki';
 import { flushKiki, kikiAttempt, loadKiki } from '../../../lib/kikiStore';
 import { hasSeenQuizIntro, markQuizIntroSeen, markOnboarded, savePendingGuestResult } from '../../../lib/onboarding';
 import { blockByLessonId } from '../../../lib/curriculum';
+import { selectSession } from '../../../lib/quizSession';
 import { isMastery, sessionStandard } from '../../../lib/learningStandards';
+import { languageForLesson } from '../../../lib/pronunciation';
+import { speechRecognitionAvailable } from '../../../lib/attemptAudio';
 import { track } from '../../../lib/telemetry';
 
 const DEMO_QUESTIONS: CodeQuizData[] = [
@@ -69,6 +75,9 @@ export default function QuizPlayer() {
       ? 'lab'
       : block?.kind ?? 'lesson';
   const standard = sessionStandard(sessionKind);
+  // One voice for the whole session: listen and speak items need the lesson's
+  // own language, and the loader drops those kinds when it cannot be supplied.
+  const lessonSpeech = languageForLesson(lessonId);
   const [questions, setQuestions] = useState<CodeQuizData[] | null>(null);
   // Title and theory come from the loaded catalog, not the route param: a
   // dashboard edit must reach the header and Bingo/Zora's grounding too.
@@ -172,11 +181,14 @@ export default function QuizPlayer() {
           scrambledTokens: q.scrambledTokens.length > 1 ? [...q.scrambledTokens].sort(() => Math.random() - 0.5) : [...q.scrambledTokens],
           explain: q.explain,
           kind: q.kind,
+          match: q.match,
+          listen: q.listen,
+          speak: q.speak,
           code: q.code,
           text: q.text,
         }));
         // Guided labs stay bite-sized: four recall items, then the walkthrough.
-        baseQuestions = guided ? recall.slice(0, 4) : recall;
+        baseQuestions = guided ? recall.slice(0, 4) : selectSession(recall);
         baseKeys = baseQuestions.map((_, i) => `${lessonId}:${i}`);
         if (guided) {
           guidedQuestion = {
@@ -282,9 +294,23 @@ export default function QuizPlayer() {
       baseQuestions = [...baseQuestions, guidedQuestion];
       baseKeys = [...baseKeys, `${lessonId}:guided`];
     }
+    // A skill this device cannot run is dropped, never faked: a listening item
+    // with no voice, or a speaking item with no recogniser, would hand out a
+    // result the learner did not earn. (docs/hands-on-labs.md applies to audio
+    // exactly as it does to terminals.)
+    const playable = baseQuestions
+      .map((question, i) => ({ question, key: baseKeys[i] }))
+      .filter(
+        ({ question }) =>
+          !(question.kind === 'listen' && (!question.listen || !lessonSpeech)) &&
+          !(question.kind === 'speak' && (!question.speak || !speechRecognitionAvailable())) &&
+          !(question.kind === 'match' && !question.match)
+      );
+    baseQuestions = playable.map((item) => item.question);
+    baseKeys = playable.map((item) => item.key);
     setQuestions(baseQuestions);
     setQKeys(baseKeys);
-  }, [lessonId, standard.shuffleQuestions]);
+  }, [lessonId, lessonSpeech, standard.shuffleQuestions]);
 
   useEffect(() => {
     hasSeenQuizIntro(isLanguageLesson ? 'lang' : 'code')
@@ -320,7 +346,14 @@ export default function QuizPlayer() {
   const q = questions?.[index];
   // Sessions that contain a runnable or free-response exercise get coach copy
   // about typing instead of token tapping.
-  const typedSession = !!questions?.some((qq) => qq.kind === 'code' || qq.kind === 'text' || qq.kind === 'terminal' || qq.kind === 'guided');
+  const typedSession = !!questions?.some(
+    (qq) =>
+      qq.kind === 'code' ||
+      qq.kind === 'text' ||
+      qq.kind === 'listen' ||
+      qq.kind === 'terminal' ||
+      qq.kind === 'guided'
+  );
 
   const handleAnswer = (r: QuestionResult) => {
     if (!q) return;
@@ -554,6 +587,44 @@ export default function QuizPlayer() {
             progressPct={Math.round(((index + 1) / questions.length) * 100)}
             sessionKind={sessionKind}
             guided={q.guided}
+            onCorrect={() => {}}
+            onAnswer={handleAnswer}
+            onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
+          />
+        ) : q.kind === 'match' && q.match ? (
+          <MatchPairs
+            key={`${lessonId}-${index}`}
+            questionData={q}
+            questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
+            progressPct={Math.round(((index + 1) / questions.length) * 100)}
+            hearts={hearts}
+            sessionKind={sessionKind}
+            onCorrect={() => {}}
+            onAnswer={handleAnswer}
+            onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
+          />
+        ) : q.kind === 'listen' && q.listen && lessonSpeech ? (
+          <ListenAnswer
+            key={`${lessonId}-${index}`}
+            questionData={q}
+            questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
+            progressPct={Math.round(((index + 1) / questions.length) * 100)}
+            hearts={hearts}
+            sessionKind={sessionKind}
+            language={lessonSpeech}
+            onCorrect={() => {}}
+            onAnswer={handleAnswer}
+            onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
+          />
+        ) : q.kind === 'speak' && q.speak && lessonSpeech ? (
+          <SpeakAnswer
+            key={`${lessonId}-${index}`}
+            questionData={q}
+            questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
+            progressPct={Math.round(((index + 1) / questions.length) * 100)}
+            hearts={hearts}
+            sessionKind={sessionKind}
+            language={lessonSpeech}
             onCorrect={() => {}}
             onAnswer={handleAnswer}
             onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}

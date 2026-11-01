@@ -58,10 +58,11 @@ function mp3Fixture(header) {
 
 test('phrase inventory covers all three new lessons', () => {
   const phrases = getSwahiliPhrases();
-  assert.equal(phrases.length, 15);
-  assert.equal(new Set(phrases.map((p) => p.key)).size, 15);
+  assert.equal(new Set(phrases.map((p) => p.key)).size, phrases.length);
+  assert.ok(phrases.length >= 15, `the narration inventory shrank to ${phrases.length} phrases`);
   for (const id of ['swahili-questions', 'swahili-adjectives', 'swahili-health']) {
-    assert.ok(phrases.some((p) => p.lessonId === id), `missing ${id}`);
+    const mine = phrases.filter((p) => p.lessonId === id);
+    assert.ok(mine.length >= 5, `${id} narrates only ${mine.length} phrases`);
   }
   for (const phrase of phrases) {
     assert.ok(phrase.phrase.trim().length > 0, `empty phrase: ${phrase.key}`);
@@ -128,7 +129,7 @@ test('dry-run prints every phrase', () => {
     { cwd: ROOT, encoding: 'utf8' }
   );
   const parsed = JSON.parse(output);
-  assert.equal(parsed.length, 15);
+  assert.equal(parsed.length, getSwahiliPhrases().length, 'the dry-run skipped a phrase');
 });
 
 test('lesson player uses natural Swahili before device speech', () => {

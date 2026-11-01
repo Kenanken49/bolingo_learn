@@ -121,7 +121,7 @@ const CHARACTER_VOICE: Record<Mentor, { pitch: number; rate: number; slowRate: n
   zora: { pitch: 1, rate: 0.93, slowRate: 0.7 },
 };
 
-type PronounceQuestion = { prompt: string; correctChain: string[] };
+type PronounceQuestion = { prompt: string; correctChain: string[]; kind?: string };
 
 const TARGET_CLUES: Record<LanguagePreset['base'], RegExp> = {
   es: /\b(hola|gracias|adiós|por favor|sí|el|la|los|las|un|una|de|del|que|y|en|es|son|está|estás|soy|eres|tengo|tiene|puedo|quiero|me|mi|tu|su|como|cómo|muy|bien|mal|mañana|hoy|agua|comida|casa|libro|niña|niño|amigo|amiga|pollo|tren|hermana|hermano|hambre|hablo|hablé|hice|buenas|buenos|noches|días|tardes|dónde|cuánto|cuánta|usted|nosotros|ellos|comí|bebí|habites|habité|médico|farmacia|duele|duelen|cabeza|estómago|fiebre|tos|ambulancia|alérgico|alérgica|ayudarme|cuándo|quién|nada|nadie|tiempo|baño)\b/i,
@@ -377,8 +377,12 @@ function nounPhrase(prompt: string, chain: string, preset: LanguagePreset): stri
  * can put the target in either the prompt ("Gracias" means…) or the answer
  * (How do you say hello in Spanish?). Score both, fill any gap with the answer
  * so the engine never reads underscores, and let the question shape break ties.
+ *
+ * A match board has no phrase to hear — its teaching is the pairing itself, and
+ * its `correctChain` is a count, so it narrates nothing rather than "5 pairs".
  */
 export function phraseForQuestion(question: PronounceQuestion, preset: LanguagePreset): string {
+  if (question.kind === 'match') return '';
   const rawChain = question.correctChain.join(' ').replace(/\s+/g, ' ').trim();
   const chain = cleanPhrase(rawChain, preset);
   const prompt = question.prompt;

@@ -4,7 +4,7 @@
  * merges LANGUAGE_COURSES so getCourseLesson() behavior is identical and
  * the quiz engine, SRS, and guidebook need no changes.
  */
-import { MCQ, BUILD, TEXT, validateBank, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, MATCH, LISTEN, SPEAK, validateBank, type CourseLesson } from './quizBank';
 import { SWAHILI_PLUS } from './swahili-plus';
 import { ENGLISH_PLUS } from './english-plus';
 import { SPANISH_PLUS } from './spanish-plus';
@@ -53,6 +53,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['amigo', 'Hola', 'Adiós', 'gracias'],
         'Adiós = goodbye, amigo = friend.'
       ),
+      MATCH(
+        'Pair each Spanish word with its meaning.',
+        [
+          { left: 'Hola', right: 'Hello' },
+          { left: 'Adiós', right: 'Goodbye' },
+          { left: 'Gracias', right: 'Thank you' },
+          { left: 'Por favor', right: 'Please' },
+          { left: 'Niña', right: 'Girl' },
+        ],
+        'Four politeness words plus the gender cue: la niña is feminine, so el article never fits.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about apples.',
+        'Yo como manzanas',
+        ['Yo como manzanas'],
+        'Yo = I, como = (I) eat, manzanas = apples — the -o ending is what marks the speaker as "I".'
+      ),
+      SPEAK(
+        'Say goodbye to a friend, out loud.',
+        'Adiós amigo',
+        'The stress sits on the middle syllable — ad-YOS ah-MEE-go — and the accent on adiós lengthens that o.'
+      ),
     ],
   },
 
@@ -93,6 +115,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['Au', 'revoir', 'mon', 'ami'],
         ['ami', 'Bonjour', 'Au', 'revoir', 'mon'],
         'Au revoir = until we meet again; mon ami = my friend.'
+      ),
+      MATCH(
+        'Pair each French word with its meaning.',
+        [
+          { left: 'Bonjour', right: 'Hello' },
+          { left: 'Merci', right: 'Thank you' },
+          { left: 'Au revoir', right: 'Goodbye' },
+          { left: 'Fille', right: 'Girl' },
+          { left: 'Pommes', right: 'Apples' },
+        ],
+        'Bonjour opens, au revoir closes, and gender decides the article: la fille, des pommes.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about apples.',
+        'Je mange des pommes',
+        ['Je mange des pommes'],
+        'Je = I, mange = (I) eat, des pommes = (some) apples. The -s on pommes is silent; the nasal in "pommes" is not.'
+      ),
+      SPEAK(
+        'Say goodbye to a friend, out loud.',
+        'Au revoir mon ami',
+        'Link the words the way French does — oh-rev-WAR mohn-ah-MEE — and let the r rasp at the back of the throat.'
       ),
     ],
   },
@@ -135,6 +179,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['Morgen', 'Hallo', 'Guten', 'Abend'],
         'Guten Morgen — capital M, always.'
       ),
+      MATCH(
+        'Pair each German word with its meaning.',
+        [
+          { left: 'Hallo', right: 'Hello' },
+          { left: 'Danke', right: 'Thank you' },
+          { left: 'Frau', right: 'Woman' },
+          { left: 'Äpfel', right: 'Apples' },
+          { left: 'Morgen', right: 'Morning' },
+        ],
+        'Every German noun is capitalised — Morgen and Äpfel wear their capitals even mid-sentence.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about apples.',
+        'Ich esse Äpfel',
+        ['Ich esse Äpfel'],
+        'Ich = I, esse = (I) eat, Äpfel = apples. The umlaut Ä is a different vowel, not a decorated A.'
+      ),
+      SPEAK(
+        'Greet someone before noon, out loud.',
+        'Guten Morgen',
+        'Guten takes the "goo-ten" glide and Morgen stresses first: GOO-ten MOR-gen.'
+      ),
     ],
   },
 
@@ -175,6 +241,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['Habari', 'yako'],
         ['yako', 'Asante', 'Habari', 'karibu'],
         'Habari yako? = your news? — the everyday greeting.'
+      ),
+      MATCH(
+        'Pair each Swahili word with its meaning.',
+        [
+          { left: 'Habari', right: 'Hello / How are you' },
+          { left: 'Asante', right: 'Thank you' },
+          { left: 'Karibu', right: 'Welcome' },
+          { left: 'Tafadhali', right: 'Please' },
+          { left: 'Maembe', right: 'Mangoes' },
+        ],
+        'Habari literally asks after someone’s news; the other four are the politeness set.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about mangoes.',
+        'Ninakula maembe',
+        ['Ninakula maembe'],
+        'Ni-na-kula is one block: I + present -na- + eat. Maembe = mangoes.'
+      ),
+      SPEAK(
+        'Ask a friend how they are, out loud.',
+        'Habari yako',
+        'Every syllable gets its vowel: hah-BAR-ee YAH-koh, with the h breathed out.'
       ),
     ],
   },
@@ -225,6 +313,17 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['e4', 'e3', 'Nf3', 'e5'],
         'Pawns move straight; from rank 2 they may jump two squares.'
       ),
+      MATCH(
+        'Pair each piece or symbol with what it does.',
+        [
+          { left: 'Knight', right: 'Jumps in an L-shape' },
+          { left: 'Bishop', right: 'Glides along diagonals' },
+          { left: 'Rook', right: 'Runs along straight lines' },
+          { left: 'O-O', right: 'Kingside castle' },
+          { left: 'O-O-O', right: 'Queenside castle' },
+        ],
+        'Bishops never change colour, rooks never turn, and the two castles differ by how many O’s you write.'
+      ),
     ],
   },
 
@@ -268,6 +367,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['See you later', 'Good night', 'Good luck', 'Welcome back'],
         'Hasta = until; luego = later. Warmer than Adiós.'
       ),
+      MATCH(
+        'Pair each phrase with what it does in a conversation.',
+        [
+          { left: '¿Cómo estás?', right: 'Ask a friend how they are' },
+          { left: 'Me llamo', right: 'Introduce yourself' },
+          { left: 'Por favor', right: 'Soften a request' },
+          { left: 'Muchas gracias', right: 'Thank someone warmly' },
+          { left: 'Hasta luego', right: 'Leave for now' },
+        ],
+        'Each one is a move in a conversation, not just a translation — greet, name, ask, thank, part.'
+      ),
+      LISTEN(
+        'Listen and type how someone says their name.',
+        'Me llamo Ana',
+        ['Me llamo Ana'],
+        'Me llamo = I call myself. No verb changes, no accent — the stress sits on the final a of Ana.'
+      ),
+      SPEAK(
+        'Thank someone generously, out loud.',
+        'Muchas gracias',
+        'Both words stress the second-to-last syllable: MUCH-ahs GRASH-yahs (Latin America) or GRAH-see-ahs (Spain).'
+      ),
     ],
   },
 
@@ -308,6 +429,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'comen',
         ['como', 'comes', 'come', 'comen'],
         '-er verbs: ellos take -en → comen.'
+      ),
+      MATCH(
+        'Pair each subject with its present-tense ending.',
+        [
+          { left: 'Yo', right: '-o' },
+          { left: 'Tú', right: '-as' },
+          { left: 'Él o Ella', right: '-a' },
+          { left: 'Nosotros', right: '-amos' },
+          { left: 'Ellos', right: '-an' },
+        ],
+        'One ending tells you who is speaking — that is why Spanish drops the pronoun so often.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about languages.',
+        'Nosotros hablamos inglés',
+        ['Nosotros hablamos inglés'],
+        '-amos marks the we-form, and inglés keeps its accent on the final syllable.'
+      ),
+      SPEAK(
+        'Ask where the bathroom is, out loud.',
+        'Dónde está el baño',
+        'Two accents, two stresses: DON-deh, es-TAH — and the ñ cuts the nose, not the n.'
       ),
     ],
   },
@@ -359,6 +502,27 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Por favor softens both requests, and la cuenta is the bill. In Spain you can also say “Cobrar, por favor” when you are ready to pay.',
         { misconceptions: { 'Un café. La cuenta.': 'Both requests need por favor to sound polite in a café.' } }
       ),
+      MATCH(
+        'Pair each subject with the verb form that agrees with it.',
+        [
+          { left: 'Yo', right: 'hablo' },
+          { left: 'Tú', right: 'hablas' },
+          { left: 'Nosotros', right: 'hablamos' },
+          { left: 'Ellos', right: 'comen' },
+        ],
+        'Three -o/-as/-amos forms from hablar, plus one -er verb: ellos comen, never comemos.'
+      ),
+      LISTEN(
+        'Listen and type the question a stranger asks you.',
+        'Dónde está el baño',
+        ['Dónde está el baño', 'Donde esta el bano'],
+        'Location uses estar, and the accent on dónde is what makes it a question rather than a statement.'
+      ),
+      SPEAK(
+        'Order a coffee politely, out loud.',
+        'Un café por favor',
+        'Rise slightly on favor to signal a request; the é in café is a full vowel, not a stray mark.'
+      ),
     ],
   },
 
@@ -400,6 +564,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['See you soon', 'Good night', 'Good luck', 'Welcome back'],
         'À = until; bientôt = soon.'
       ),
+      MATCH(
+        'Pair each phrase with what it does in a conversation.',
+        [
+          { left: 'Comment ça va?', right: 'Ask how someone is' },
+          { left: "Je m'appelle", right: 'Introduce yourself' },
+          { left: "S'il vous plaît", right: 'Soften a request' },
+          { left: 'Merci beaucoup', right: 'Thank someone warmly' },
+          { left: 'À bientôt', right: 'Leave for now' },
+        ],
+        'The same five moves as Spanish, in French clothes: greet, name, ask, thank, part.'
+      ),
+      LISTEN(
+        'Listen and type how someone says their name.',
+        "Je m'appelle Marie",
+        ["Je m'appelle Marie"],
+        'The elision m’appelle swallows the vowel of je — one smooth jump, not two words.'
+      ),
+      SPEAK(
+        'Thank someone generously, out loud.',
+        'Merci beaucoup',
+        'mer-SEE boh-KOO — the l is silent and the final p never appears.'
+      ),
     ],
   },
 
@@ -440,6 +626,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'sont',
         ['est', 'sommes', 'sont', 'êtes'],
         'Ils + être → sont.'
+      ),
+      MATCH(
+        'Pair each subject with its form of être (to be).',
+        [
+          { left: 'Je', right: 'suis' },
+          { left: 'Tu', right: 'es' },
+          { left: 'Il ou Elle', right: 'est' },
+          { left: 'Nous', right: 'sommes' },
+          { left: 'Vous', right: 'êtes' },
+        ],
+        'Être is irregular from the ground up — memorise it whole, because every level of French builds on it.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about bread.',
+        'Nous aimons le pain',
+        ['Nous aimons le pain'],
+        '-ons is the we-ending, and the n in pain is nasal — the air comes through the nose.'
+      ),
+      SPEAK(
+        'Say that she is tired, out loud.',
+        'Elle est fatiguée',
+        'Elle est runs together as one breath — el-AY — and fatiguée ends on the last e, not a silent one.'
       ),
     ],
   },
@@ -491,6 +699,27 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Une table = a table, pour deux = for two, s’il vous plaît = please. The whole phrase is the polite request; dropping the final phrase makes it sound like a command.',
         { misconceptions: { 'Une table deux': 'Name the party size with pour: une table pour deux.' } }
       ),
+      MATCH(
+        'Pair each article with the noun shape it needs.',
+        [
+          { left: 'le', right: 'masculine singular' },
+          { left: 'la', right: 'feminine singular' },
+          { left: 'les', right: 'any plural' },
+          { left: 'un', right: 'one masculine thing' },
+        ],
+        'Gender is a property of the noun, not the object: livre is masculine, fille is feminine, and les makes either plural.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about apples.',
+        'Je mange des pommes',
+        ['Je mange des pommes'],
+        'des pommes is "some apples" — the partitive article you need whenever you eat or buy something.'
+      ),
+      SPEAK(
+        'Ask a waiter for the table you already booked, out loud.',
+        'Une table pour deux',
+        'Link the words: oon-table-poor-DUH — French hates a gap between them.'
+      ),
     ],
   },
 
@@ -532,6 +761,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['Bye (informal)', 'Good night', 'Good luck', 'Welcome back'],
         'Tschüss for friends; Auf Wiedersehen for formal farewells.'
       ),
+      MATCH(
+        'Pair each phrase with what it does in a conversation.',
+        [
+          { left: "Wie geht's?", right: 'Ask how someone is' },
+          { left: 'Ich heiße', right: 'Introduce yourself' },
+          { left: 'Entschuldigung', right: 'Apologise or get past' },
+          { left: 'Vielen Dank', right: 'Thank someone warmly' },
+          { left: 'Tschüss', right: 'Say bye to a friend' },
+        ],
+        'Entschuldigung covers both sorry and excuse me — the register comes from your tone, not the word.'
+      ),
+      LISTEN(
+        'Listen and type how someone says their name.',
+        'Ich heiße Anna',
+        ['Ich heiße Anna', 'Ich heisse Anna'],
+        'The ß (Eszett) is a sharp s — heisse and heiße are the same word spelled two ways.'
+      ),
+      SPEAK(
+        'Thank someone generously, out loud.',
+        'Vielen Dank',
+        'VEE-len DANK — stress the first syllable of each word and keep the vowel short and clean.'
+      ),
     ],
   },
 
@@ -572,6 +823,27 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'sind',
         ['bin', 'bist', 'ist', 'sind'],
         'Sein: ich bin, du bist, er ist, wir/sie sind.'
+      ),
+      MATCH(
+        'Pair each subject with its haben (to have) ending.',
+        [
+          { left: 'ich', right: 'habe' },
+          { left: 'du', right: 'hast' },
+          { left: 'er sie es', right: 'hat' },
+          { left: 'wir', right: 'haben' },
+        ],
+        'du adds -st and er drops it entirely — and the plural just reuses the infinitive.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about learning German.',
+        'Wir lernen Deutsch',
+        ['Wir lernen Deutsch'],
+        'Wir takes the bare infinitive: no ending at all. Deutsch wears its capital D because nouns are capitalised.'
+      ),
+      SPEAK(
+        'Ask a friend whether they are tired, out loud.',
+        'Bist du müde',
+        'Verb first turns it into a question — no word order change needed, just the ü: BYST doo MUE-deh.'
       ),
     ],
   },
@@ -623,6 +895,27 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Wo = where, ist = is, der Bahnhof = the station. Add bitte or Entschuldigung to soften a direct question to a stranger.',
         { misconceptions: { 'Wo der Bahnhof ist?': 'German questions put the verb second: wo ist der Bahnhof?' } }
       ),
+      MATCH(
+        'Pair each subject with its form of sein (to be).',
+        [
+          { left: 'ich', right: 'bin' },
+          { left: 'du', right: 'bist' },
+          { left: 'er', right: 'ist' },
+          { left: 'wir', right: 'sind' },
+        ],
+        'Sein is the most irregular verb in German — and the one you cannot speak without.'
+      ),
+      LISTEN(
+        'Listen and type the question a stranger would ask you.',
+        'Wo ist der Bahnhof',
+        ['Wo ist der Bahnhof'],
+        'Verb sits in second position even in a question: wo (1) ist (2) der Bahnhof (3).'
+      ),
+      SPEAK(
+        'Take your leave of someone formally, out loud.',
+        'Auf Wiedersehen',
+        'owf VEE-der-zay-en — literally "to the seeing again", so keep the two words welded together.'
+      ),
     ],
   },
 
@@ -664,6 +957,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['Please', 'Thank you', 'Sorry', 'Welcome'],
         'Tafadhali softens every request.'
       ),
+      MATCH(
+        'Pair each phrase with what it does in a conversation.',
+        [
+          { left: 'Jina langu ni', right: 'Introduce yourself' },
+          { left: 'Habari za asubuhi', right: 'Greet in the morning' },
+          { left: 'Asante sana', right: 'Thank someone warmly' },
+          { left: 'Pole', right: 'Show sympathy' },
+          { left: 'Tafadhali', right: 'Soften a request' },
+        ],
+        'Pole is sympathy ("sorry that happened"), not an admission of blame — that is samahani.'
+      ),
+      LISTEN(
+        'Listen and type how someone says their name.',
+        'Jina langu ni Amina',
+        ['Jina langu ni Amina'],
+        'Word for word: name my is Amina. No verb to conjugate — Swahili keeps introductions cheap.'
+      ),
+      SPEAK(
+        'Thank someone warmly, out loud.',
+        'Asante sana',
+        'ah-SAHN-teh SAH-nah — every syllable is pronounced, and sana doubles the gratitude.'
+      ),
     ],
   },
 
@@ -704,6 +1019,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'We will eat',
         ['We will eat', 'We are eating', 'We ate', 'Let us eat'],
         'tu-ta-kula: we + future -ta- + eat.'
+      ),
+      MATCH(
+        'Pair each subject prefix with the person it means.',
+        [
+          { left: 'ni-', right: 'I' },
+          { left: 'u-', right: 'you' },
+          { left: 'a-', right: 'he or she' },
+          { left: 'tu-', right: 'we' },
+          { left: 'wa-', right: 'they' },
+        ],
+        'The prefix opens the verb, then the tense infix, then the root — one word, whole sentence.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about reading.',
+        'Wanasoma vitabu kila siku',
+        ['Wanasoma vitabu kila siku'],
+        'wa-na-soma = they-are-reading; kila siku = every day, the habit cue that makes the present fit.'
+      ),
+      SPEAK(
+        'Say that you will come tomorrow, out loud.',
+        'Nitakuja kesho',
+        'ni-ta-kuja is three morphemes welded into one word — nee-tah-KOO-jah, then KEH-shoh.'
       ),
     ],
   },
@@ -773,6 +1110,27 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Bei = price, ya = of, shati = shirt, ni ngapi = is how much. Bei gani? is the shorter alternative; either works in the market.',
         { misconceptions: { 'Bei ya shati?': 'A price label is not a question. Add ni ngapi? to ask how much.' } }
       ),
+      MATCH(
+        'Pair each Swahili word or phrase with its meaning.',
+        [
+          { left: 'Watoto', right: 'Children' },
+          { left: 'Watoto wazuri', right: 'Good children' },
+          { left: 'Naumwa na kichwa', right: 'My head hurts' },
+          { left: 'Naumwa na tumbo', right: 'My stomach hurts' },
+        ],
+        'Watoto is a plural class, so the adjective must borrow its wa- prefix: wazuri, not mzuri.'
+      ),
+      LISTEN(
+        'Listen and type the market question.',
+        'Bei ya shati ni ngapi',
+        ['Bei ya shati ni ngapi'],
+        'Bei = price, ya shati = of the shirt, ni ngapi = is how much — the question marker comes last.'
+      ),
+      SPEAK(
+        'Greet someone early in the morning, out loud.',
+        'Habari za asubuhi',
+        'hah-BAR-ee zah ah-soo-BOO-hee — literally "news of the morning", so the za links the two halves.'
+      ),
     ],
   },
 
@@ -813,6 +1171,16 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Win pawns and trap the enemy king',
         ['Win pawns and trap the enemy king', 'Lose their power', 'Force a draw', 'Must be traded off'],
         'Pigs on the 7th: the most feared sight in an endgame.'
+      ),
+      MATCH(
+        'Pair each tactic with the shape it makes on the board.',
+        [
+          { left: 'Fork', right: 'One piece attacks two targets' },
+          { left: 'Pin', right: 'A piece is frozen to protect something better' },
+          { left: 'Discovered attack', right: 'Moving aside unveils the attacker behind' },
+          { left: 'Doubled rooks', right: 'Two rooks stacked on one file' },
+        ],
+        'A fork attacks twice, a pin paralyses, a discovery attacks from nowhere, and doubled rooks just eat.'
       ),
     ],
   },
@@ -858,6 +1226,16 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'O-O is kingside castling when the king and h1 rook are unmoved and the path is safe. O-O-O is queenside, which this position does not allow.',
         { misconceptions: { 'O-O-O': 'That is queenside castling — it needs the a1 rook and the b1/c1/d1 squares clear.' } }
       ),
+      MATCH(
+        'Pair each notation or term with what it means.',
+        [
+          { left: 'Nf3', right: 'Knight moves to f3' },
+          { left: 'O-O', right: 'Kingside castle' },
+          { left: 'Checkmate', right: 'The king is attacked and cannot escape' },
+          { left: 'Stalemate', right: 'No legal move, but the king is not attacked' },
+        ],
+        'Checkmate and stalemate look alike from far away: the difference is whether the king is in check.'
+      ),
     ],
   },
 
@@ -901,6 +1279,27 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['student', 'I', 'am', 'a', 'teacher'],
         'I + am + a + who you are — your first English sentence.'
       ),
+      MATCH(
+        'Pair each word or rule with the form it needs.',
+        [
+          { left: 'an', right: 'Before a vowel sound' },
+          { left: 'a', right: 'Before a consonant sound' },
+          { left: 'children', right: 'The plural of child' },
+          { left: 'boxes', right: 'The plural of box' },
+        ],
+        'An hour takes an because the h is silent; an apple takes an because a is a vowel sound. Sound, not spelling.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about who you are.',
+        'I am a student',
+        ['I am a student'],
+        'Four short words, one be-form: am only ever follows I.'
+      ),
+      SPEAK(
+        'Say your first English sentence out loud.',
+        'I am a student',
+        'Link am into the rhythm — "eye-am-uh-STOO-dent" — and do not stress the a.'
+      ),
     ],
   },
 
@@ -942,6 +1341,28 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['When meeting someone for the first time', 'When leaving a party', 'When answering the phone', 'When saying thank you'],
         'First meeting only — then switch to "Good to see you".'
       ),
+      MATCH(
+        'Pair each phrase with the moment it belongs to.',
+        [
+          { left: 'Sorry', right: 'You have hurt someone' },
+          { left: 'Excuse me', right: 'You need to get past' },
+          { left: 'Nice to meet you', right: 'A first introduction' },
+          { left: 'What time is it?', right: 'You want the clock' },
+          { left: 'See you tomorrow', right: 'You are leaving' },
+        ],
+        'Sorry apologises after the fact; excuse me asks before it happens — swapping them sounds rude.'
+      ),
+      LISTEN(
+        'Listen and type the friendliest question in English.',
+        'Where are you from',
+        ['Where are you from'],
+        'Where + are + you + from — the auxiliary sits before the subject, which is what makes it a question.'
+      ),
+      SPEAK(
+        'Say your goodbye for tomorrow, out loud.',
+        'See you tomorrow',
+        'Natives squeeze it to "see-ya-tuh-MOR-oh" — the t is a flap, so it sounds like a soft d.'
+      ),
     ],
   },
 
@@ -982,6 +1403,27 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         'Present continuous',
         ['Present continuous', 'Present simple', 'Past simple', 'Future'],
         'Right now / at the moment → am/is/are + -ing.'
+      ),
+      MATCH(
+        'Pair each sentence with the tense it uses.',
+        [
+          { left: 'She goes to school every day', right: 'Present simple' },
+          { left: 'I am eating now', right: 'Present continuous' },
+          { left: 'Yesterday I went to the market', right: 'Past simple' },
+          { left: 'They will come tomorrow', right: 'Future with will' },
+        ],
+        'The time word decides the tense: every day → -s, now → be + -ing, yesterday → past form, tomorrow → will.'
+      ),
+      LISTEN(
+        'Listen and type the sentence about tomorrow.',
+        'They will come tomorrow',
+        ['They will come tomorrow'],
+        'will takes the base verb — no -s on comes, ever, after a modal.'
+      ),
+      SPEAK(
+        'Say what you are doing right now, out loud.',
+        'I am eating now',
+        'The -ing ending is a short nasal, not "ee-ing": eye-am-EE-ting-now.'
       ),
     ],
   },
@@ -1044,6 +1486,27 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         ['Could I see a doctor, please?', 'I need a doctor, please.', 'May I see a doctor, please?'],
         'Could I…? and May I…? are the polite request forms; please softens the ask. “I need a doctor” is direct but still acceptable in an emergency — add please for a routine appointment.',
         { misconceptions: { 'I need doctor': 'English needs an article: a doctor.' } }
+      ),
+      MATCH(
+        'Pair each word with the irregular form it hides.',
+        [
+          { left: 'good', right: 'Its comparative is better' },
+          { left: 'best', right: 'Its superlative' },
+          { left: 'child', right: 'Its plural is children' },
+          { left: 'box', right: 'Its plural is boxes' },
+        ],
+        'Good/better/best never take -er or -est, and after -x the plural adds -es, not a bare s.'
+      ),
+      LISTEN(
+        'Listen and type the question you would ask a new friend.',
+        'Where are you from',
+        ['Where are you from'],
+        'Rising intonation on the last word marks it as a question — the words themselves never change.'
+      ),
+      SPEAK(
+        'Give someone a piece of advice, out loud.',
+        "You shouldn't drive",
+        'should-ent contracts hard: "yoo SHUD-nt drive" — the l in should is silent.'
       ),
     ],
   },

@@ -11,12 +11,13 @@
  * This guard runs the real `speakAs` path — the same Livia call the lesson and
  * the device audit use — against a stubbed `expo-speech` whose voice list
  * arrives 2.5 s late, then speaks every phrase in the three Swahili lessons
- * added after the original bank (5 + 5 + 5 = 15). It asserts:
+ * added after the original bank (every question of every lesson, ≥5 each).
+ * It asserts:
  *
  *   - the cold call waits for the list instead of falling back,
  *   - the first phrase gets the native Swahili voice the cast planner assigns
  *     to Livia, with a sw locale,
- *   - all 15 phrases reuse that same native voice,
+ *   - every phrase reuses that same native voice,
  *   - the list is enumerated once and the settled cast is cached.
  *
  * No device or network is needed. Runs inside `npm test`, and directly:
@@ -121,11 +122,14 @@ function lessonPhrases() {
   return LESSON_IDS.flatMap((lessonId) => {
     const lesson = languages.getLanguageLesson(lessonId);
     assert.ok(lesson, `${lessonId} is missing from the language catalog`);
-    return lesson.questions.map((question, index) => ({
-      key: `${lessonId}:${index + 1}`,
-      lesson: lesson.title,
-      phrase: pronunciation.phraseForQuestion(question, pronunciation.SWAHILI_SPEECH),
-    }));
+    return lesson.questions
+      .map((question, index) => ({
+        key: `${lessonId}:${index + 1}`,
+        lesson: lesson.title,
+        phrase: pronunciation.phraseForQuestion(question, pronunciation.SWAHILI_SPEECH),
+      }))
+      // A match board pairs phrases; it has no phrase of its own to speak.
+      .filter((item) => item.phrase.trim().length > 0);
   });
 }
 
@@ -133,7 +137,21 @@ const items = lessonPhrases();
 const expectedLivia = casting.planVoiceCast(INSTALLED_VOICES, pronunciation.SWAHILI_SPEECH).livia;
 
 async function run() {
-  assert.equal(items.length, 15, 'the three new Swahili lessons must contain 15 phrases');
+  const perLesson = LESSON_IDS.map(
+    (id) =>
+      languages
+        .getLanguageLesson(id)
+        .questions.filter((q) => q.kind !== 'match').length
+  );
+  assert.equal(
+    items.length,
+    perLesson.reduce((sum, n) => sum + n, 0),
+    'a narratable Swahili lesson question has no phrase'
+  );
+  assert.ok(
+    perLesson.every((n) => n >= 5),
+    `each cold-audit lesson must keep at least 5 phrases (found ${perLesson.join(', ')})`
+  );
   assert.ok(expectedLivia.voice, 'the cast planner did not assign Livia a native Swahili voice');
   assert.equal(
     expectedLivia.voice.language.split('-')[0].toLowerCase(),
@@ -216,8 +234,8 @@ async function run() {
   //    phrases must not re-pay the cold-start wait or re-cast Livia.
   assert.equal(voiceListCalls, 1, `the voice list was enumerated ${voiceListCalls} times, not once`);
 
-  // 5. Static guards: keep the cold budget, the shared path and the 15-phrase
-  //    device audit wired together.
+  // 5. Static guards: keep the cold budget, the shared path and the device
+  //    audit wired together.
   const source = read(PRONUNCIATION);
   const budget = /Platform\.OS === 'web' \? 1200 : (\d+)/.exec(source);
   assert.ok(budget, 'the native/web voice-list budget is no longer visible in pronunciation.ts');

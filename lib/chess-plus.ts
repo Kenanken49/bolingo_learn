@@ -5,7 +5,7 @@
  * tactics, and positional strategy. Merged into LANGUAGE_COURSES in
  * lib/languages.ts — quiz, SRS, and guidebook work unchanged.
  */
-import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, MATCH, type CourseLesson } from './quizBank';
 
 export const CHESS_PLUS: Record<string, CourseLesson> = {
   'chess-openings': {
@@ -45,6 +45,17 @@ export const CHESS_PLUS: Record<string, CourseLesson> = {
         ['Nf3'],
         ['Nh3', 'Nf3', 'Ne2', 'Ng1'],
         'Nf3 attacks the center and frees castling. Nh3 sulks.'
+      ),
+      MATCH(
+        'Pair each opening law with what it is really about.',
+        [
+          { left: 'e4, d4, Nf3', right: 'Occupying or attacking the center' },
+          { left: 'Develop knights and bishops', right: 'Get the sleeping pieces into the game' },
+          { left: 'Castle before move ten', right: 'King safety' },
+          { left: 'Never move one piece twice', right: 'Tempo — every move should do new work' },
+          { left: '1…c5', right: 'Answering 1. e4 with counterplay instead of copying' },
+        ],
+        'The opening is a race to activate, not a grab for material. Greedy pawn snatching breaks the third law and gets punished.'
       ),
     ],
   },
@@ -87,6 +98,17 @@ export const CHESS_PLUS: Record<string, CourseLesson> = {
         ['Push a luft pawn (h3/g3)', 'Avoid castling', 'Trade rooks', 'Keep the queen home'],
         'Luft = breathing room. One pawn step saves the king.'
       ),
+      MATCH(
+        'Pair each mating pattern with the weakness it exploits.',
+        [
+          { left: 'Back-rank mate', right: 'A king walled in by its own pawns' },
+          { left: 'Scholar’s mate', right: 'The f7 square, guarded only by the king' },
+          { left: 'Smothered mate', right: 'A king buried under its own pieces' },
+          { left: 'Ladder mate', right: 'A lone king with no defender nearby' },
+          { left: 'Luft', right: 'The escape square a pawn push creates' },
+        ],
+        'Four patterns, one lesson: your own pieces are the walls that get your king mated. Knight delivers the smothered finish; two rooks climb the ladder.'
+      ),
     ],
   },
 
@@ -127,6 +149,17 @@ export const CHESS_PLUS: Record<string, CourseLesson> = {
         ['Draw'],
         ['Win', 'Draw', 'Loss', 'Replay'],
         'No legal moves + not in check = draw. Mate needs CHECK.'
+      ),
+      MATCH(
+        'Pair each endgame word with what it means at the board.',
+        [
+          { left: 'Opposition', right: 'Kings face to face, one square apart' },
+          { left: 'Passed pawn', right: 'No enemy pawn stands in its way' },
+          { left: 'Stalemate', right: 'No legal moves and not in check — a draw' },
+          { left: 'The box', right: 'Shrinking the lone king’s space with rook checks' },
+          { left: 'The rim', right: 'Where queen-versus-king mate is finished' },
+        ],
+        'Endgames are technique, not tactics: who moves last in the opposition loses ground, and a passed pawn needs its king as an escort.'
       ),
     ],
   },
@@ -169,6 +202,17 @@ export const CHESS_PLUS: Record<string, CourseLesson> = {
         ['Rank', 'File', 'Diagonal', 'Square'],
         'Battery on a file or rank: double the pressure, double the fun.'
       ),
+      MATCH(
+        'Pair each tactic with the move it forces.',
+        [
+          { left: 'Discovered attack', right: 'Step the mask aside, fire the piece behind it' },
+          { left: 'Double check', right: 'The only legal answer is to move the king' },
+          { left: 'Deflection', right: 'Pull a defender off the square it was guarding' },
+          { left: 'Decoy', right: 'Lure a piece onto a square that ruins it' },
+          { left: 'En passant', right: 'Capture immediately or lose the chance' },
+        ],
+        'Deflection removes a guard that already exists; decoy invites a piece somewhere new. Both are worth knowing apart.'
+      ),
     ],
   },
 
@@ -209,6 +253,17 @@ export const CHESS_PLUS: Record<string, CourseLesson> = {
         'Its pawns stand on the opposite color',
         ['Its pawns stand on the opposite color', 'It never moves', 'It is near the king', 'It takes knights'],
         'Pawns on light squares → dark bishop is “good”. Free the bad one!'
+      ),
+      MATCH(
+        'Pair each positional word with the plan it suggests.',
+        [
+          { left: 'Outpost', right: 'Plant a knight where no enemy pawn can reach it' },
+          { left: 'Open file', right: 'Put a rook where no pawns block it' },
+          { left: 'The 7th rank', right: 'Feed the rook on enemy pawns' },
+          { left: 'Isolated pawn', right: 'Guard it, or trade down around it' },
+          { left: 'Doubled pawns', right: 'They cannot defend each other' },
+        ],
+        'Strategy is asking which piece is worse placed and fixing it. Doubled pawns clog a file; an isolated pawn has no neighbours to hold it.'
       ),
     ],
   },
@@ -270,6 +325,17 @@ export const CHESS_PLUS: Record<string, CourseLesson> = {
         ['O-O-O', '0-0-0'],
         'Queenside castling is O-O-O (three symbols); kingside is O-O. Use letter O, not zero, in standard notation.',
         { misconceptions: { 'O-O': 'O-O is kingside castling. Queenside has three symbols: O-O-O.' } }
+      ),
+      MATCH(
+        'Pair each final-exam idea with the course unit it came from.',
+        [
+          { left: 'Castle before move ten', right: 'Openings' },
+          { left: 'Give the king luft', right: 'Mating patterns' },
+          { left: 'Opposition', right: 'Endgames' },
+          { left: 'Double check — king must move', right: 'Tactics' },
+          { left: 'Rook behind a passed pawn', right: 'Strategy' },
+        ],
+        'One idea per unit: the exam asks whether you can place the knowledge, not only play it.'
       ),
     ],
   },

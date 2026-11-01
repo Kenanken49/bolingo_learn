@@ -4,7 +4,7 @@
  * beginner-Spanish syllabi. Merged into LANGUAGE_COURSES in
  * lib/languages.ts — quiz, SRS, and guidebook work unchanged.
  */
-import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, MATCH, LISTEN, SPEAK, type CourseLesson } from './quizBank';
 
 export const SPANISH_PLUS: Record<string, CourseLesson> = {
   'spanish-greetings': {
@@ -44,6 +44,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         'Welcome! (to everyone)',
         ['Welcome! (to everyone)', 'Goodbye!', 'Congratulations!', 'Good luck!'],
         'Bienvenido (one man), bienvenida (one woman), bienvenidos (all).'
+      ),
+      MATCH(
+        'Pair each phrase with the moment it belongs to.',
+        [
+          { left: 'Buenos días', right: 'Morning' },
+          { left: 'Buenas tardes', right: 'Afternoon' },
+          { left: 'Buenas noches', right: 'Night' },
+          { left: 'De nada', right: 'Answering gracias' },
+          { left: '¡Bienvenidos!', right: 'Welcoming a group' },
+        ],
+        'The clock picks the greeting, and de nada is the only correct reply to gracias.'
+      ),
+      LISTEN(
+        'Listen and type the question you ask a friend.',
+        'Cómo estás',
+        ['Cómo estás', 'Como estas'],
+        'estás with the accent is the tú form; está without it is usted.'
+      ),
+      SPEAK(
+        'Answer someone who thanked you, out loud.',
+        'De nada',
+        'Two flat syllables, no stress drama: deh-NAH-dah — it means “of nothing”.'
       ),
     ],
   },
@@ -86,6 +108,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         ['One o’clock is singular', 'Nights are singular', 'Una is formal', 'It is a question'],
         'La una = the one (hour). Every other hour is las.'
       ),
+      MATCH(
+        'Pair each number with its value.',
+        [
+          { left: 'Seis', right: '6' },
+          { left: 'Siete', right: '7' },
+          { left: 'Ocho', right: '8' },
+          { left: 'Diez', right: '10' },
+          { left: 'Doce', right: '12' },
+        ],
+        'Seis, siete, ocho then a jump: diez, once, doce — the teens break the pattern on purpose.'
+      ),
+      LISTEN(
+        'Listen and type what the clock says.',
+        'Son las tres',
+        ['Son las tres'],
+        'Son las + hour for every hour except one, which is singular: es la una.'
+      ),
+      SPEAK(
+        'Say the only singular hour out loud.',
+        'Es la una',
+        'es-lah-OO-nah — the s of es links straight into la, so it sounds like one word.'
+      ),
     ],
   },
 
@@ -126,6 +170,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         'I love it',
         ['I love it', 'I hate it', 'I want it', 'I need it'],
         'Gusta = like, encanta = love. Me encanta el café!'
+      ),
+      MATCH(
+        'Pair each Spanish food-word with its meaning.',
+        [
+          { left: 'El pollo', right: 'The chicken' },
+          { left: 'El pescado', right: 'The fish' },
+          { left: 'El pan', right: 'The bread' },
+          { left: 'La cuenta', right: 'The bill' },
+          { left: 'Tengo sed', right: 'I am thirsty' },
+        ],
+        'Tener hambre/sed literally means to have hunger/thirst — Spanish owns its appetites.'
+      ),
+      LISTEN(
+        'Listen and type what you would order.',
+        'Quiero café',
+        ['Quiero café'],
+        'Quiero takes any noun: quiero agua, quiero la cuenta, quiero el pollo.'
+      ),
+      SPEAK(
+        'Ask for the bill, out loud.',
+        'La cuenta por favor',
+        'Four even syllables and a rising favor — the rise is what makes it a request.'
       ),
     ],
   },
@@ -168,6 +234,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         ['The train', 'The bus', 'The taxi', 'The plane'],
         'Tren = train, autobús = bus, avión = plane.'
       ),
+      MATCH(
+        'Pair each travel phrase with what you are asking for.',
+        [
+          { left: '¿Dónde está el baño?', right: 'A location' },
+          { left: '¿A qué hora sale?', right: 'A departure time' },
+          { left: '¿Cuánto cuesta?', right: 'A price' },
+          { left: 'A la izquierda', right: 'A direction' },
+          { left: 'Todo recto', right: 'Straight on' },
+        ],
+        'Three question words cover travel: dónde (where), a qué hora (when), cuánto (how much).'
+      ),
+      LISTEN(
+        'Listen and type the price question.',
+        'Cuánto cuesta',
+        ['Cuánto cuesta', 'Cuanto cuesta'],
+        'The accent on cuánto turns a statement into a question — writing marks the rise that speech carries.'
+      ),
+      SPEAK(
+        'Give someone a turning instruction, out loud.',
+        'A la izquierda',
+        'ah-lah-thee-KWER-dah; in Spain the z sounds run through the tongue, elsewhere they are soft.'
+      ),
     ],
   },
 
@@ -208,6 +296,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         'The son',
         ['The son', 'The daughter', 'The father', 'The child (neutral)'],
         'Hijo = son, hija = daughter, hijos = children/sons.'
+      ),
+      MATCH(
+        'Pair each family word with its meaning.',
+        [
+          { left: 'La hermana', right: 'The sister' },
+          { left: 'El hermano', right: 'The brother' },
+          { left: 'La hija', right: 'The daughter' },
+          { left: 'El hijo', right: 'The son' },
+          { left: 'Mis hermanos', right: 'My brothers' },
+        ],
+        'The -a/-o swap does all the work; only plurals force mi to become mis.'
+      ),
+      LISTEN(
+        'Listen and type the phrase about siblings.',
+        'Mis hermanos',
+        ['Mis hermanos'],
+        'mi becomes mis before a plural noun — the possessive agrees in number, not gender.'
+      ),
+      SPEAK(
+        'Talk about a friend’s mother, out loud.',
+        'Tu madre',
+        'TOO MAH-dreh — and Spanish vowels never glide into English diphthongs.'
       ),
     ],
   },
@@ -250,6 +360,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         ['aquí', 'Viven', 'Vivo', 'Vives'],
         '-ir verbs: vivo, vives, vive, viven. Aquí = here.'
       ),
+      MATCH(
+        'Pair each verb form with the person it names.',
+        [
+          { left: 'Hablo', right: 'I speak' },
+          { left: 'Comemos', right: 'We eat' },
+          { left: 'Puedo', right: 'I can' },
+          { left: 'Quiero', right: 'I want' },
+          { left: 'Viven', right: 'They live' },
+        ],
+        'Three different infinitives, one rule: the ending names the subject, so the pronoun is optional.'
+      ),
+      LISTEN(
+        'Listen and type how you say you are happy.',
+        'Estoy feliz',
+        ['Estoy feliz'],
+        'Estar for a feeling, ser for what you are: estoy feliz but soy alto.'
+      ),
+      SPEAK(
+        'Say which language you speak, out loud.',
+        'Hablo español',
+        'AH-bloh es-pah-NYOL — the ny is one sound, pushed through the palate, not n + y.'
+      ),
     ],
   },
 
@@ -290,6 +422,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         'I did / I made',
         ['I did / I made', 'I do', 'I say', 'I have'],
         'Hacer → hice. Dije = I said, tuve = I had.'
+      ),
+      MATCH(
+        'Pair each past form with what it means.',
+        [
+          { left: 'Hablé', right: 'I spoke' },
+          { left: 'Comí', right: 'I ate' },
+          { left: 'Viví', right: 'I lived' },
+          { left: 'Fui', right: 'I went or I was' },
+          { left: 'Hice', right: 'I did or made' },
+        ],
+        'Regular pasts wear one accent at the end; fui and hice are rebels you simply memorise.'
+      ),
+      LISTEN(
+        'Listen and type what you ate.',
+        'Comí arroz',
+        ['Comí arroz'],
+        'Comí is finished past — the accent on the last syllable is the whole tense marker.'
+      ),
+      SPEAK(
+        'Set a story in last week, out loud.',
+        'La semana pasada',
+        'lah seh-MAH-nah pah-SAH-dah — the feminine article and adjective both agree with semana.'
       ),
     ],
   },
@@ -352,6 +506,27 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         'No entiendo and no comprendo both mean “I don’t understand”; entiendo is the most common everyday choice.',
         { misconceptions: { 'No entiendo nada': 'That means “I understand nothing” — stronger than the neutral phrase.' } }
       ),
+      MATCH(
+        'Pair each phrase with the situation it fits.',
+        [
+          { left: 'Ayer', right: 'Talking about yesterday' },
+          { left: 'La semana pasada', right: 'Framing a finished story' },
+          { left: 'Tengo hambre', right: 'You need food' },
+          { left: 'Tengo sed', right: 'You need a drink' },
+        ],
+        'Time words and body words are the two things a beginner actually needs to say out loud.'
+      ),
+      LISTEN(
+        'Listen and type what they tell you about the time.',
+        'Son las tres',
+        ['Son las tres'],
+        'Son las, not Es las — plural hours keep the plural verb.'
+      ),
+      SPEAK(
+        'Say the one phrase that saves any conversation, out loud.',
+        'No entiendo',
+        'no en-ten-YEH-do — admit you do not understand and people switch tactics instead of repeating louder.'
+      ),
     ],
   },
 
@@ -394,6 +569,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         ['I see nothing', 'I don’t see the water', 'I see everything', 'I don’t want to see'],
         'Spanish keeps both negatives: no + veo + nada. Literally “I don’t see nothing,” meaning I see nothing.'
       ),
+      MATCH(
+        'Pair each question word with what it asks for.',
+        [
+          { left: 'Dónde', right: 'Place' },
+          { left: 'Cuándo', right: 'Time' },
+          { left: 'Quién', right: 'Person' },
+          { left: 'Cómo', right: 'Manner' },
+          { left: 'Por qué', right: 'Reason' },
+        ],
+        'Five question words cover almost every survival question. The spoken stress is marked, so the accent is part of the word — quien without an accent is not a question.'
+      ),
+      LISTEN(
+        'Listen and type the excuse they give about time.',
+        'No tengo tiempo',
+        ['No tengo tiempo'],
+        'No + tengo + tiempo — the negative sits directly before the verb, and tengo is the yo form.'
+      ),
+      SPEAK(
+        'Ask out loud whether someone speaks Spanish.',
+        'Hablas español',
+        'say it with the rising pitch that turns a statement into a question — Spanish needs no inversion.'
+      ),
     ],
   },
 
@@ -435,6 +632,28 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
         'Peanuts make me ill',
         ['Peanuts make me ill', 'I love peanuts', 'I am carrying peanuts', 'Peanuts are expensive'],
         'Alérgico/a a… names the trigger. Say it clearly before ordering food.'
+      ),
+      MATCH(
+        'Pair each symptom with what you are telling the pharmacist.',
+        [
+          { left: 'Me duele la cabeza', right: 'My head hurts' },
+          { left: 'Me duele el estómago', right: 'My stomach hurts' },
+          { left: 'Tengo fiebre', right: 'I have a fever' },
+          { left: 'Tengo tos', right: 'I have a cough' },
+          { left: 'Necesito un médico', right: 'I need a doctor' },
+        ],
+        'Doler names the body part; tener names the symptom you carry. Both open the door at a pharmacy counter.'
+      ),
+      LISTEN(
+        'Listen and type the question this person is asking in the street.',
+        'Dónde está la farmacia',
+        ['Dónde está la farmacia'],
+        '¿Dónde está + the place? — farmacia is feminine, so la farmacia, never el.'
+      ),
+      SPEAK(
+        'Ask a stranger for help, politely, out loud.',
+        'Puede ayudarme',
+        'the usted form puede plus the infinitive ayudarme is the polite way to open any request for assistance.'
       ),
     ],
   },

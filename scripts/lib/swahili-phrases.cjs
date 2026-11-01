@@ -103,7 +103,12 @@ function getSwahiliPhrases() {
     lesson.questions.forEach((question, index) => {
       const phrase = phraseForQuestion(question, SWAHILI_SPEECH).trim();
       const key = phraseKey(phrase);
-      if (!key) throw new Error(`Empty phrase at ${lessonId}:${index}`);
+      if (!key) {
+        // A match board pairs phrases instead of presenting one, so it has
+        // nothing to narrate. Any other question losing its phrase is a bug.
+        if (question.kind === 'match') return;
+        throw new Error(`Empty phrase at ${lessonId}:${index}`);
+      }
       if (byKey.has(key)) return;
       byKey.set(key, {
         key,

@@ -48,6 +48,7 @@ const {
   sessionStandard,
 } = require('../lib/learningStandards.ts');
 const { normalizeAnswer } = require('../lib/quizBank.ts');
+const { SESSION_MAX, selectSession } = require('../lib/quizSession.ts');
 
 const failures = [];
 const fail = (message) => failures.push(message);
@@ -86,6 +87,9 @@ for (const kind of ['lesson', 'workshop', 'lab', 'quiz', 'review', 'project']) {
 let questionCount = 0;
 let codeTasks = 0;
 let textTasks = 0;
+let matchTasks = 0;
+let listenTasks = 0;
+let speakTasks = 0;
 const languageFinals = [];
 const LANGUAGE_FINAL_PREFIXES = ['spanish-', 'french-', 'german-', 'swahili-', 'english-', 'chess-'];
 
@@ -160,6 +164,52 @@ for (const lesson of Object.values(ALL_LESSONS)) {
       }
       return;
     }
+    if (question.kind === 'match') {
+      matchTasks += 1;
+      const pairs = question.match?.pairs;
+      if (!Array.isArray(pairs) || pairs.length < 4 || pairs.length > 6) {
+        fail(`${at}: match needs 4-6 pairs, found ${Array.isArray(pairs) ? pairs.length : 'none'}.`);
+        return;
+      }
+      const lefts = new Set();
+      const rights = new Set();
+      for (const pair of pairs) {
+        if (!pair.left?.trim() || !pair.right?.trim()) fail(`${at}: match pair needs both sides filled.`);
+        if (normalizeAnswer(pair.left) === normalizeAnswer(pair.right)) {
+          fail(`${at}: match pair "${pair.left}" is identical on both sides.`);
+        }
+        if (lefts.has(normalizeAnswer(pair.left)) || rights.has(normalizeAnswer(pair.right))) {
+          fail(`${at}: duplicate match term on one side (${pair.left} / ${pair.right}).`);
+        }
+        lefts.add(normalizeAnswer(pair.left));
+        rights.add(normalizeAnswer(pair.right));
+      }
+      return;
+    }
+    if (question.kind === 'listen') {
+      listenTasks += 1;
+      const spec = question.listen;
+      if (!spec?.phrase?.trim()) fail(`${at}: listen exercise needs a phrase to speak.`);
+      if (!spec || !Array.isArray(spec.answers) || spec.answers.length === 0) {
+        fail(`${at}: listen exercise needs at least one accepted transcription.`);
+        return;
+      }
+      if (!spec.answers.map(normalizeAnswer).includes(normalizeAnswer(spec.phrase))) {
+        fail(`${at}: listen must accept the phrase exactly as heard ("${spec.phrase}").`);
+      }
+      if (normalizeAnswer(question.correctChain[0]) !== normalizeAnswer(spec.answers[0])) {
+        fail(`${at}: correctChain[0] must be the first accepted answer.`);
+      }
+      return;
+    }
+    if (question.kind === 'speak') {
+      speakTasks += 1;
+      const spec = question.speak;
+      if (!spec?.phrase?.trim()) fail(`${at}: speak exercise needs a phrase to say.`);
+      const pass = spec?.passScore ?? 75;
+      if (!(pass >= 50 && pass <= 100)) fail(`${at}: speak passScore must sit between 50 and 100.`);
+      return;
+    }
     if (!Array.isArray(question.scrambledTokens) || question.scrambledTokens.length < 2) {
       fail(`${at}: token exercise needs at least two options.`);
       return;
@@ -182,6 +232,64 @@ for (const lesson of Object.values(ALL_LESSONS)) {
 if (questionCount < 1000) fail(`The catalog looks truncated: only ${questionCount} questions.`);
 if (codeTasks < 1) fail('The catalog has no runnable code exercise.');
 if (textTasks < 1) fail('The catalog has no free-response exercise.');
+
+/* ---- The skill gradient is real, not a plan ---- *
+ * These are ratchets: the floor is what the catalog ships today, so a kind can
+ * never quietly disappear from a rewrite. Authoring raises them. */
+const GRADIENT_FLOOR = { match: 80, listen: 70, speak: 70 };
+if (matchTasks < GRADIENT_FLOOR.match) {
+  fail(`Tap-the-pairs coverage regressed: ${matchTasks} match exercises, floor ${GRADIENT_FLOOR.match}.`);
+}
+if (listenTasks < GRADIENT_FLOOR.listen) {
+  fail(`Listening coverage regressed: ${listenTasks} listen exercises, floor ${GRADIENT_FLOOR.listen}.`);
+}
+if (speakTasks < GRADIENT_FLOOR.speak) {
+  fail(`Speaking coverage regressed: ${speakTasks} speak exercises, floor ${GRADIENT_FLOOR.speak}.`);
+}
+
+/* ---- A deep bank still fits one bite-sized session ---- */
+const perfProbe = [
+  { prompt: 'a', kind: 'match' },
+  { prompt: 'b', kind: 'listen' },
+  { prompt: 'c', kind: 'speak' },
+  { prompt: 'd', kind: 'text' },
+];
+const filler = Array.from({ length: 20 }, (_, i) => ({ prompt: `q${i}` }));
+const session = selectSession([...filler, ...perfProbe]);
+if (session.length > SESSION_MAX) fail(`A session grew to ${session.length} items (cap ${SESSION_MAX}).`);
+for (const probe of perfProbe) {
+  if (!session.some((item) => item.kind === probe.kind)) {
+    fail(`selectSession dropped the ${probe.kind} rep — a capped session must keep every production skill.`);
+  }
+}
+if (selectSession(filler.slice(0, 4)).length !== 4) fail('A short bank must pass through selectSession untouched.');
+
+/* ---- Depth promise: an authored language lesson is not a reading list ---- *
+ * Each one must ask the learner to pair, to hear, and to say — not only to
+ * recognise. The published transcript snapshot is exempt: Supabase owns those
+ * rows and the app ships them read-only, so re-theming them here would fork
+ * the content rather than fix it. */
+const AUDIO_LANGUAGES = ['spanish-', 'french-', 'german-', 'swahili-', 'english-'];
+for (const lesson of Object.values(COURSES)) {
+  if (!AUDIO_LANGUAGES.some((prefix) => lesson.id.startsWith(prefix))) continue;
+  for (const kind of ['match', 'listen', 'speak']) {
+    if (!lesson.questions.some((question) => question.kind === kind)) {
+      fail(`${lesson.id}: no "${kind}" exercise — every language lesson must cover the full gradient.`);
+    }
+  }
+}
+
+/* ---- Every listen/speak item is playable, not decorative ---- */
+for (const lesson of Object.values(ALL_LESSONS)) {
+  if (!AUDIO_LANGUAGES.some((prefix) => lesson.id.startsWith(prefix))) continue;
+  const spoken = lesson.questions.filter((question) => question.kind === 'listen' || question.kind === 'speak');
+  for (const question of spoken) {
+    const phrase = question.listen?.phrase || question.speak?.phrase || '';
+    if (!/[a-záéíóúñüçàâêîôûëïöäãõ]/i.test(phrase)) {
+      fail(`${lesson.id}: "${question.kind}" phrase is not speakable text (${JSON.stringify(phrase)}).`);
+    }
+  }
+}
 
 /* ---- Every assessment proves transfer, not just recognition ---- */
 const assessmentBlocks = ALL_BLOCKS.filter(

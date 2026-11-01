@@ -4,7 +4,7 @@
  * beginner-French syllabi. Merged into LANGUAGE_COURSES in
  * lib/languages.ts — quiz, SRS, and guidebook work unchanged.
  */
-import { MCQ, BUILD, TEXT, type CourseLesson } from './quizBank';
+import { MCQ, BUILD, TEXT, MATCH, LISTEN, SPEAK, type CourseLesson } from './quizBank';
 
 export const FRENCH_PLUS: Record<string, CourseLesson> = {
   'french-greetings': {
@@ -44,6 +44,28 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         'Welcome!',
         ['Welcome!', 'Goodbye!', 'Good luck!', 'Congratulations!'],
         'Bienvenue opens every home, shop, and classroom.'
+      ),
+      MATCH(
+        'Pair each French phrase with the moment it fits.',
+        [
+          { left: 'Bonjour', right: 'Greeting someone before evening' },
+          { left: 'Bonsoir', right: 'Greeting someone after dark' },
+          { left: 'Salut', right: 'Greeting a friend' },
+          { left: 'Merci', right: 'Someone handed you what you asked for' },
+          { left: 'De rien', right: 'Someone just thanked you' },
+        ],
+        'Bonjour and bonsoir split the day, salut stays informal, and merci/de rien are a fixed pair — the reply to thanks is never oui.'
+      ),
+      LISTEN(
+        'Listen and type the small-talk question a friend asks you.',
+        'Comment ça va',
+        ['Comment ça va', 'Comment sa va', 'Comment ca va'],
+        'Ça va carries all the small talk — the ç makes an s sound, so typing sa or ca still counts here.'
+      ),
+      SPEAK(
+        'Greet a friend and ask how they are, out loud.',
+        'Salut comment ça va',
+        'Salut lands fast and flat, then let the question rise at the end — French asks with pitch, not word order.'
       ),
     ],
   },
@@ -86,6 +108,28 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         ['Quarter past', 'Quarter to', 'Half past', 'Sharp'],
         'Trois heures et quart = 3:15. Moins le quart = quarter to.'
       ),
+      MATCH(
+        'Pair each French number with its value.',
+        [
+          { left: 'Sept', right: '7' },
+          { left: 'Huit', right: '8' },
+          { left: 'Neuf', right: '9' },
+          { left: 'Dix', right: '10' },
+          { left: 'Quatre-vingts', right: '80' },
+        ],
+        'The run 7-8-9-10 rhymes, then French breaks the pattern: 80 is four twenties, not a word of its own.'
+      ),
+      LISTEN(
+        'Listen and type the time being announced.',
+        'Il est trois heures',
+        ['Il est trois heures'],
+        'Il est, never c’est, and heures keeps a silent s you still have to type.'
+      ),
+      SPEAK(
+        'Tell someone the hour out loud.',
+        'Il est dix heures',
+        'The x in dix links into heures — say it dee-zez, and the final s stays silent.'
+      ),
     ],
   },
 
@@ -126,6 +170,28 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         'I love',
         ['I love', 'I hate', 'I want', 'I need'],
         'J’aime = I like, j’adore = I love. J’adore le café!'
+      ),
+      MATCH(
+        'Pair each word with what you are asking for at the table.',
+        [
+          { left: 'Le pain', right: 'Bread' },
+          { left: 'Le fromage', right: 'Cheese' },
+          { left: 'Le poisson', right: 'Fish' },
+          { left: 'Le poulet', right: 'Chicken' },
+          { left: 'L’addition', right: 'The bill' },
+        ],
+        'Pain, fromage, poisson, poulet all take le; addition starts with a vowel so it takes l’. It is also the word that ends the meal.'
+      ),
+      LISTEN(
+        'Listen and type the polite order.',
+        'Je voudrais un café',
+        ['Je voudrais un café', 'Je voudrais un cafe'],
+        'Je voudrais is the conditional — the soft way to want. Je veux would read as a demand.'
+      ),
+      SPEAK(
+        'Order a coffee the polite way, out loud.',
+        'Je voudrais un café',
+        'Voudrais ends in a silent s: voo-dray. Add s’il vous plaît and the order becomes a request.'
       ),
     ],
   },
@@ -168,6 +234,28 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         ['The train', 'The bus', 'The taxi', 'The plane'],
         'Train = train, bus = bus, avion = plane.'
       ),
+      MATCH(
+        'Pair each travel word with what it gives you.',
+        [
+          { left: 'À gauche', right: 'Turn left' },
+          { left: 'À droite', right: 'Turn right' },
+          { left: 'Tout droit', right: 'Keep going straight' },
+          { left: 'La gare', right: 'Catch a train here' },
+          { left: 'C’est combien', right: 'Ask the price' },
+        ],
+        'Gauche and droite are the two words that save you on any street; combien asks price, where asks place.'
+      ),
+      LISTEN(
+        'Listen and type the question about the station.',
+        'Où est la gare',
+        ['Où est la gare', 'Ou est la gare'],
+        'Où = where; the accent separates it from ou (or), but hearing it is the same sound.'
+      ),
+      SPEAK(
+        'Tell a passer-by which way to go, out loud.',
+        'Allez tout droit',
+        'Allez is the vous imperative — ah-lay with the nasal -ez — and tout droit means straight ahead.'
+      ),
     ],
   },
 
@@ -208,6 +296,28 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         'The son',
         ['The son', 'The daughter', 'The father', 'The thread'],
         'Fils = son, fille = daughter. Pronounced “feece”.'
+      ),
+      MATCH(
+        'Pair each family word with who it names.',
+        [
+          { left: 'La mère', right: 'Mother' },
+          { left: 'Le père', right: 'Father' },
+          { left: 'Le frère', right: 'Brother' },
+          { left: 'La sœur', right: 'Sister' },
+          { left: 'La fille', right: 'Daughter' },
+        ],
+        'La/le carry the gender, and fils (son) and fille (daughter) differ only in that final e you do not pronounce.'
+      ),
+      LISTEN(
+        'Listen and type who you are talking about.',
+        'C’est ma mère',
+        ['C’est ma mère', 'C est ma mere', 'C’est ma mere'],
+        'Ma agrees with the feminine noun; mon would only return before a vowel word like mon amie.'
+      ),
+      SPEAK(
+        'Say you have a big family, out loud.',
+        'J’ai une grande famille',
+        'Grande keeps its final -d before the vowel of famille — that linking sound is what makes French flow.'
       ),
     ],
   },
@@ -250,6 +360,29 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         ['pain', 'Ils', 'vendent', 'vends', 'vendons'],
         '-re verbs: je vends, ils vendent. Pain = bread.'
       ),
+      MATCH(
+        'Pair each verb form with the person it marks.',
+        [
+          { left: 'Je parle', right: 'I speak' },
+          { left: 'Tu parles', right: 'You speak, informally' },
+          { left: 'Nous parlons', right: 'We speak' },
+          { left: 'Ils parlent', right: 'They speak' },
+          { left: 'Je finis', right: 'I finish' },
+        ],
+        'The ending names the person: -e, -es, -ons, -ent. Speak and finish use the same endings, different stems.'
+      ),
+      LISTEN(
+        'Listen and type what they sell.',
+        'Je peux vendre du pain',
+        ['Je peux vendre du pain'],
+        'Can + infinitive is the pattern: je peux vendre (I can sell), and pain is bread.',
+        { misconceptions: { 'Je peut vendre du pain': 'Peut is the il form. The two sound identical, but only je takes peux.' } }
+      ),
+      SPEAK(
+        'Say you speak a little French, out loud.',
+        'Je parle un peu français',
+        'Parle is one syllable (parl), peu is "puh", and français ends in the nasal an — zhuh parl uhn puh fran-SAY.'
+      ),
     ],
   },
 
@@ -290,6 +423,28 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         'I did / I made',
         ['I did / I made', 'I do', 'I say', 'I have'],
         'Faire → fait. J’ai dit = I said, j’ai eu = I had.'
+      ),
+      MATCH(
+        'Pair each past form with what it says.',
+        [
+          { left: 'J’ai parlé', right: 'I spoke' },
+          { left: 'J’ai fini', right: 'I finished' },
+          { left: 'Je suis allé', right: 'I went' },
+          { left: 'J’ai fait', right: 'I did something' },
+          { left: 'La semaine dernière', right: 'When it happened' },
+        ],
+        'Passé composé is auxiliary + past participle. Only movement verbs like aller borrow être instead of avoir.'
+      ),
+      LISTEN(
+        'Listen and type what they did yesterday.',
+        'Hier j’ai mangé au restaurant',
+        ['Hier j’ai mangé au restaurant', 'Hier j ai mange au restaurant'],
+        'Hier sets the frame, j’ai mangé is the finished action, and au restaurant is à + le fused into one word.'
+      ),
+      SPEAK(
+        'Say you spoke French yesterday, out loud.',
+        'Hier j’ai parlé français',
+        'Parlé drops the final e sound: par-LAY. The whole sentence is one breath group, stress on the last syllable.'
       ),
     ],
   },
@@ -352,6 +507,28 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         'Je ne comprends pas wraps the verb in ne … pas. In casual speech you may hear “Je comprends pas,” but the full form is the standard.',
         { misconceptions: { 'Je ne comprende pas': 'Comprendre is an -re verb: the first person is je comprends, not je comprende.' } }
       ),
+      MATCH(
+        'Pair each word from the course with what it does for you.',
+        [
+          { left: 'De rien', right: 'Reply to thanks' },
+          { left: 'Combien', right: 'Ask a price' },
+          { left: 'La semaine dernière', right: 'Frame a finished story' },
+          { left: 'Je suis allé', right: 'Movement in the past' },
+          { left: 'Une pharmacie', right: 'Where you buy medicine' },
+        ],
+        'The final mixes politeness, numbers, past tense and travel — five different jobs, one sentence each.'
+      ),
+      LISTEN(
+        'Listen and type the order at the counter.',
+        'Je voudrais un thé',
+        ['Je voudrais un thé', 'Je voudrais un the'],
+        'Voudrais is the polite want and un thé is one syllable — thé ends in an aspirated h, so no liaison after it.'
+      ),
+      SPEAK(
+        'Admit you did not follow, out loud.',
+        'Je ne comprends pas',
+        'Say both halves: zhuh nuh kohm-PRAH pa. Dropping the ne is casual speech, not the standard form.'
+      ),
     ],
   },
 
@@ -394,6 +571,29 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         ['I see nothing', 'I don’t see the water', 'I see everything', 'I don’t want to see'],
         'Ne … rien is the “nothing” pair. French keeps both halves around the verb.'
       ),
+      MATCH(
+        'Pair each question word with the answer it demands.',
+        [
+          { left: 'Où', right: 'A place' },
+          { left: 'Quand', right: 'A time' },
+          { left: 'Pourquoi', right: 'A reason' },
+          { left: 'Combien', right: 'An amount' },
+          { left: 'Qui', right: 'A person' },
+        ],
+        'Each word demands a different kind of answer: où wants a place, combien wants a number, pourquoi wants an excuse.'
+      ),
+      LISTEN(
+        'Listen and type the refusal.',
+        'Je ne mange pas de viande',
+        ['Je ne mange pas de viande'],
+        'Ne … pas closes around the verb, and after a negation de replaces the article: pas de viande, not pas la viande.',
+        { misconceptions: { 'Je ne mange pas la viande': 'A negation turns the article into de: je ne mange pas de viande.' } }
+      ),
+      SPEAK(
+        'Ask how much something costs, out loud.',
+        'Combien ça coûte',
+        'Combien is kohm-NYEN with the nasal, coûte is one syllable (koót) — the stress always falls on the last sound of the phrase.'
+      ),
     ],
   },
 
@@ -435,6 +635,28 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
         'Peanuts make me ill',
         ['Peanuts make me ill', 'I love peanuts', 'I am carrying peanuts', 'Peanuts are expensive'],
         'Allergique à… names the trigger; à + les contracts to aux.'
+      ),
+      MATCH(
+        'Pair each symptom with what the pharmacist hears.',
+        [
+          { left: 'J’ai mal à la tête', right: 'My head hurts' },
+          { left: 'J’ai mal au ventre', right: 'My stomach hurts' },
+          { left: 'J’ai de la fièvre', right: 'I have a fever' },
+          { left: 'Je tousse', right: 'I cannot stop coughing' },
+          { left: 'J’ai besoin d’un médecin', right: 'I need a doctor' },
+        ],
+        'Avoir mal à + body part for pain, avoir de la fièvre for fever, besoin de for need — three different frames, one visit.'
+      ),
+      LISTEN(
+        'Listen and type the question they ask in the street.',
+        'Où est la pharmacie',
+        ['Où est la pharmacie', 'Ou est la pharmacie'],
+        'Où est + place is the survival question; pharmacie is feminine, so la pharmacie.'
+      ),
+      SPEAK(
+        'Tell someone to call an ambulance, out loud.',
+        'Appelez une ambulance',
+        'Appelez is the vous imperative — ah-play-lay — and the final z links into une: ah-play-LAY-zoon.'
       ),
     ],
   },
