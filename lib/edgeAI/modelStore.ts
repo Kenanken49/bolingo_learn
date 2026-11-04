@@ -197,6 +197,21 @@ export async function setActiveModel(id: string | null, isPremium: boolean): Pro
   await activateEdgeEngine(isPremium);
 }
 
+/**
+ * End of the offline Premium lease (`premiumLease.ts`), set by `edgeBoot`.
+ * null = no deadline known yet (e.g. a screen activated before boot ran);
+ * the plan check itself still gates activation.
+ */
+let leaseUntil: number | null = null;
+
+export function setOfflineLeaseUntil(until: number | null): void {
+  leaseUntil = until;
+}
+
+function leaseExpired(now = Date.now()): boolean {
+  return leaseUntil != null && now >= leaseUntil;
+}
+
 let loaded: { id: string; model: LoadedModel } | null = null;
 let loading: Promise<LoadedModel> | null = null;
 
@@ -215,7 +230,7 @@ export async function activateEdgeEngine(isPremium: boolean): Promise<boolean> {
   const id = await getActiveModelId();
   const spec = edgeModel(id);
   const entry = spec ? (await readInstalled())[spec.id] : undefined;
-  const ok = !!spec && !!entry && canUse('offline_model', isPremium) && llamaAvailable();
+  const ok = !!spec && !!entry && canUse('offline_model', isPremium) && !leaseExpired() && llamaAvailable();
   if (!ok || !spec || !entry) {
     registerEdgeEngine(null);
     await releaseLoaded();
@@ -227,6 +242,13 @@ export async function activateEdgeEngine(isPremium: boolean): Promise<boolean> {
     runtime: RUNTIME_NAME,
     modelId: spec.name,
     async generate(prompt, opts) {
+      // Timers don't fire while the app is suspended, so the deadline is
+      // enforced here too: a lease that ran out offline stops the model on
+      // the very next question, and the tutor falls back to lesson search.
+      if (leaseExpired()) {
+        await activateEdgeEngine(false);
+        throw new Error('Offline Premium needs a quick online check.');
+      }
       if (!loaded) {
         if (!loading) {
           loading = loadLlamaModel(entry.uri).finally(() => {

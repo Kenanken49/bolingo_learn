@@ -37,6 +37,16 @@ screenshots instead of touching production.
 - Cache headers: fingerprinted `_expo/static/*` bundles cache for a year;
   HTML never caches, so an update can never pin learners to a stale build.
 
+## Wireframe board at /wireframes/
+
+The adaptive life-stage wireframes (`design/wireframes-v3-adaptive`) are
+published at **https://bolingo.co.ke/wireframes/**. After the Expo export, the
+Netlify build runs `node scripts/publish-wireframes.cjs`. It copies the board
+into `dist/wireframes/` and its Bingo art into `dist/wireframes-v2/assets/`, and
+adds `<base href="/wireframes/">` so `/wireframes` without the trailing slash
+still loads its styles. Edit the board in `design/` only; the copy is rebuilt
+on every deploy. It is a design document, not part of the app.
+
 ## Checks
 
 ```bash

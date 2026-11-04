@@ -206,6 +206,7 @@ main{max-width:1320px;margin:0 auto;padding:0 28px}
 .match{display:flex;gap:14px;align-items:center}
 .match-ring{flex:0 0 108px;height:108px;border-radius:50%;display:grid;place-items:center;align-content:center;background:conic-gradient(#3B6CF6 calc(var(--p)*360deg),#DCD5C7 0);position:relative;transition:--p .6s}
 .match-ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:#F3EFE7}
+.phone.small .match-ring{flex:none;width:108px;align-self:center}
 .match-ring b,.match-ring small{position:relative}.match-ring b{font:800 26px 'Bricolage Grotesque';line-height:1}.match-ring small{font-size:11px;color:#5B6170}
 .match-role b{display:block;font-size:15px}.match-role span{display:block;font-size:12px;color:#5B6170}.match-role em{font-style:normal;font-weight:700;color:#0F9D7A;font-size:13px}
 .match-skills{list-style:none;margin:0;padding:0;display:grid;gap:6px}
@@ -302,7 +303,7 @@ main{max-width:1320px;margin:0 auto;padding:0 28px}
 @media (max-width:960px){
   .hero,.beyond,.guard-grid{grid-template-columns:1fr}
   .engine{transform:none}
-  .same-grid{grid-template-columns:1fr;justify-items:center}.same-grid .wf{margin-top:0!important}
+  .same-grid{grid-template-columns:1fr;justify-items:center}.same-grid .wf{margin-top:0!important;width:min(300px,100%)}
   .loop{grid-template-columns:1fr}.loop ol{grid-template-columns:1fr 1fr}
   .beyond dl{grid-template-columns:1fr}.board-nav{display:none}
 }

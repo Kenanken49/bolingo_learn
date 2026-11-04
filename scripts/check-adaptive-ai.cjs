@@ -63,6 +63,7 @@ const retrieval = require(rel('lib', 'edgeAI', 'retrieval.ts'));
 const router = require(rel('lib', 'edgeAI', 'router.ts'));
 const queue = require(rel('lib', 'sync', 'syncQueue.ts'));
 const engine = require(rel('lib', 'edgeAI', 'edgeEngine.ts'));
+const lease = require(rel('lib', 'edgeAI', 'premiumLease.ts'));
 
 // --- 1. Behaviour -----------------------------------------------------------
 
@@ -373,6 +374,60 @@ check('Model downloads verify size, stay Premium-only, and clean up', () => {
   assert(/canUse\('offline_model', isPremium\)/.test(store), 'downloads and activation must be Premium-gated');
   assert((store.match(/deleteAsync\(partUri/g) || []).length >= 3, 'failed, wrong-size and cancelled downloads must delete the partial file');
   assert(store.includes('getFreeDiskStorageAsync'), 'free disk space must be checked first');
+});
+
+check('Offline Premium is a lease: it ends at the paid-through date, 7 days at most', () => {
+  const DAY = 24 * 60 * 60 * 1000;
+  const now = Date.UTC(2026, 10, 4);
+  assert(lease.OFFLINE_LEASE_MAX_MS === 7 * DAY, 'the offline cap must be 7 days');
+  // Unknown end date (or lifetime) → the cap alone.
+  assert(lease.leaseFromCheck(now, { until: null, willRenew: false }).validUntil === now + 7 * DAY, 'no end date → 7-day cap');
+  // M-Pesa month ending in 3 days, no auto-renew → ends exactly then.
+  const mpesa = lease.leaseFromCheck(now, { until: now + 3 * DAY, willRenew: false });
+  assert(mpesa.validUntil === now + 3 * DAY, 'a non-renewing plan must end at its paid-through date');
+  // Store plan renewing in 3 days → 2 days of slack for an offline renewal.
+  assert(lease.leaseFromCheck(now, { until: now + 3 * DAY, willRenew: true }).validUntil === now + 5 * DAY, 'auto-renewing plans get the renewal slack');
+  // A period paid well ahead is still capped.
+  assert(lease.leaseFromCheck(now, { until: now + 30 * DAY, willRenew: true }).validUntil === now + 7 * DAY, 'long periods are capped at 7 days');
+  // The lapse the fix is about: subscription ends while offline.
+  assert(lease.leaseValid(mpesa, now + 3 * DAY - 1), 'valid until the last moment');
+  assert(!lease.leaseValid(mpesa, now + 3 * DAY), 'a lapsed subscription must stop the model while still offline');
+  assert(!lease.leaseValid(null, now), 'no lease, no offline Premium');
+});
+
+check('Offline Premium lease resists clock rollback and bad storage', () => {
+  const DAY = 24 * 60 * 60 * 1000;
+  const now = Date.UTC(2026, 10, 4);
+  let l = lease.leaseFromCheck(now, { until: null, willRenew: false });
+  l = lease.touchLease(l, now + 6 * DAY);
+  assert(l.seenAt === now + 6 * DAY, 'touch must record the newest time seen');
+  assert(lease.touchLease(l, now).seenAt === now + 6 * DAY, 'touch must never move backwards');
+  assert(!lease.leaseValid(l, now + 1 * DAY), 'rewinding the clock after the lease was seen later must void it');
+  assert(lease.leaseValid(l, now + 6 * DAY - lease.CLOCK_SKEW_MS + 1000), 'small clock corrections are tolerated');
+  assert(lease.parseLease(JSON.stringify(l)).validUntil === l.validUntil, 'a stored lease must round-trip');
+  for (const bad of [null, '', 'x', '1', 'true', '{"v":1}', JSON.stringify({ ...l, v: 2 }), JSON.stringify({ ...l, validUntil: 'soon' })]) {
+    assert(lease.parseLease(bad) === null, `junk must not parse as a lease: ${bad}`);
+  }
+  // Across rails: the latest end wins; a lifetime rail leaves only the cap.
+  const a = { until: now + DAY, willRenew: true }, b = { until: now + 3 * DAY, willRenew: false };
+  assert(lease.latestPaidThrough([a, null, b]) === b, 'the latest paid-through date must win');
+  assert(lease.latestPaidThrough([a, { until: null, willRenew: false }]).until === null, 'a rail with no end date means cap only');
+  assert(lease.latestPaidThrough([null, null]).until === null, 'no answers means cap only');
+});
+
+check('The lease is wired: boot writes and honours it, the model checks it per answer', () => {
+  const boot = read(rel('lib', 'edgeAI', 'edgeBoot.ts'));
+  assert(/leaseFromCheck\(/.test(boot) && /premiumPaidThrough\(/.test(boot), 'online checks must write a lease from the paid-through date');
+  assert(/leaseValid\(/.test(boot), 'offline plan resolution must go through the lease');
+  assert(/removeItem\(K_LEGACY_LAST_PREMIUM\)/.test(boot), 'the old open-ended Premium flag must be cleared');
+  assert(!/getItem\(K_LEGACY_LAST_PREMIUM\)/.test(boot), 'the old open-ended Premium flag must never grant anything');
+  assert(/setOfflineLeaseUntil\(/.test(boot) && /setTimeout\(/.test(boot), 'boot must hand the deadline to the engine and re-check at the lease end');
+  const store = read(rel('lib', 'edgeAI', 'modelStore.ts'));
+  assert(/!leaseExpired\(\)/.test(store), 'activation must refuse an expired lease');
+  const gen = store.slice(store.indexOf('async generate('));
+  assert(gen.indexOf('leaseExpired()') !== -1 && gen.indexOf('leaseExpired()') < gen.indexOf('loadLlamaModel'), 'each answer must check the lease before loading or running the model');
+  const screen = read(rel('src', 'app', 'offline-ai.tsx'));
+  assert(screen.includes('offlineLeaseUntil()') && screen.includes('Works offline until'), 'the Offline AI screen must show the lease end date');
 });
 
 check('The on-device model never answers without lesson text to ground it', () => {
