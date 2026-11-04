@@ -17,7 +17,8 @@ import AskBingo from '../../../components/AskBingo';
 import Mascot from '../../../components/AfricanMascots';
 import OutOfHeartsSheet from '../../../components/OutOfHeartsSheet';
 import { supabase, toDbLessonId } from '../../../lib/supabase';
-import { completeLesson, getProfile, grantHearts, loseHeart, MAX_HEARTS } from '../../../lib/progress';
+import { getProfile, grantHearts, loseHeart, MAX_HEARTS } from '../../../lib/progress';
+import { completeLessonOfflineFirst } from '../../../lib/sync/syncStore';
 import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
 import { getLanguageLessonAsync, isLanguageLessonId } from '../../../lib/languageCatalog';
@@ -135,7 +136,7 @@ export default function QuizPlayer() {
       if (items.length === 0) {
         // Nothing due still counts as practiced (0 XP): without this the
         // Path review node could never complete and would lock its quiz.
-        void completeLesson(rp.id, 0, lessonId).catch(() => {});
+        void completeLessonOfflineFirst({ userId: rp.id, xp: 0, lessonId }).catch(() => {});
         setQuestions([]);
         setReviewEmpty(true);
         return;
@@ -527,7 +528,7 @@ export default function QuizPlayer() {
       ...(standard.firstAttemptCounts ? entry.first : entry.final),
       firstTryCorrect: entry.first.correct,
     }));
-    const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0) => {
+    const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0, pendingSync = false) => {
       setLessonResult({
         lessonId,
         title: lessonTitle,
@@ -542,6 +543,7 @@ export default function QuizPlayer() {
         leveledUp,
         newLevel,
         totalXp,
+        pendingSync,
       });
       router.replace('/results');
     };
@@ -559,9 +561,16 @@ export default function QuizPlayer() {
       return;
     }
     if (userId) {
-      completeLesson(userId, xpEarned, lessonId)
-        .then((p) => {
+      // Offline-first: saved to the cloud now, or queued on the device when the
+      // network is down and uploaded by Smart Sync once it's back.
+      completeLessonOfflineFirst({ userId, xp: xpEarned, lessonId })
+        .then((r) => {
+          if (r.queued) {
+            goResults(0, false, 0, 0, true);
+            return;
+          }
           // Level-up detection: compare the curve before/after this lesson.
+          const p = r.profile;
           const newLevel = levelForXp(p.xp);
           const leveledUp = newLevel > levelForXp(p.xp - xpEarned);
           goResults(p.streak_count, leveledUp, newLevel, p.xp);
@@ -756,6 +765,7 @@ export default function QuizPlayer() {
         theory={lessonTheory}
         strongFirst={isLanguageLesson}
         userId={userId}
+        isPremium={isPremium}
       />
       <OutOfHeartsSheet
         visible={outOfHearts}

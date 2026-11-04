@@ -129,7 +129,11 @@ export type AppIconName =
   | 'scale'
   | 'shuffle'
   | 'time'
-  | 'download';
+  | 'download'
+  | 'link'
+  | 'sword'
+  | 'radio'
+  | 'cube';
 
 type Glyph = { lib: 'ion' | 'mci'; glyph: string };
 
@@ -216,6 +220,10 @@ const MAP: Record<AppIconName, Glyph> = {
   shuffle: { lib: 'ion', glyph: 'shuffle' },
   time: { lib: 'ion', glyph: 'time' },
   download: { lib: 'ion', glyph: 'cloud-download' },
+  link: { lib: 'ion', glyph: 'link' },
+  sword: { lib: 'mci', glyph: 'sword-cross' },
+  radio: { lib: 'ion', glyph: 'radio' },
+  cube: { lib: 'ion', glyph: 'cube' },
 };
 
 /**

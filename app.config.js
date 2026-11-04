@@ -107,5 +107,7 @@ module.exports = ({ config }) => ({
         iosAppId: process.env.ADMOB_IOS_APP_ID || TEST_IOS_APP_ID,
       },
     ],
+    // On-device small language model runtime (llama.cpp). Native builds only.
+    'llama.rn',
   ],
 });

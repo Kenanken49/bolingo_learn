@@ -53,3 +53,6 @@ supabase/.temp/
 
 # Session import artifacts (never ship)
 .cloud-attachments/
+
+# Local Netlify folder
+.netlify

@@ -178,6 +178,22 @@ export default function Results() {
         ) : null}
       </View>
 
+      {/* Offline-first: the result is safe on this device until Smart Sync uploads it. */}
+      {result.pendingSync ? (
+        <View
+          className="mt-4 w-full max-w-sm flex-row items-start gap-2 rounded-2xl border-2 border-sky-200 bg-sky-50 p-3 dark:border-sky-900 dark:bg-sky-950"
+          accessibilityRole="summary"
+        >
+          <AppIcon name="download" size={16} color="#0284C7" />
+          <View className="flex-1">
+            <Text className="text-sm font-extrabold text-sky-800 dark:text-sky-200">Saved on this device</Text>
+            <Text className="mt-0.5 text-xs leading-4 text-sky-700 dark:text-sky-300">
+              {`You're offline, so your +${result.xpEarned} XP and this lesson's progress will sync as soon as you're back online. Your streak updates then too.`}
+            </Text>
+          </View>
+        </View>
+      ) : null}
+
       {/* Kiki v3: the Goldilocks next challenge, picked for YOUR brain. */}
       {kikiPick ? (
         <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-violet-200 dark:border-violet-900 bg-violet-50 dark:bg-violet-950 p-4">
