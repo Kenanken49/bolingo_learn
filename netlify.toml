@@ -10,8 +10,12 @@
 # Netlify builds a Deploy Preview URL with zero extra config.
 
 [build]
-  command = "npx expo export --platform web"
+  command = "npx expo export --platform web && node scripts/publish-wireframes.cjs"
   publish = "dist"
+
+# The adaptive wireframe board (design/wireframes-v3-adaptive) is copied to
+# dist/wireframes/ after the export and served at /wireframes/. Real files win
+# over the SPA rewrite below, so it needs no rule of its own.
 
 # Expo Router is a single-page app: every deep link (/paywall, /quiz/3, …)
 # must serve index.html with a 200 so the router boots client-side.

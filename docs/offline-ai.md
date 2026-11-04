@@ -24,8 +24,39 @@
   exact byte size (`lib/edgeAI/edgeEngine.ts`, `lib/edgeAI/modelStore.ts`).
 - Boot: `startAutoSync()` and `startEdgeEngine()` in `src/app/_layout.tsx`.
 
-`npm run check:adaptive-ai` (also in `npm run gate`) covers the pure logic and
-the screen wiring.
+## Offline Premium lease
+
+A downloaded model needs Premium, but Premium can only be confirmed online.
+Each online "yes, Premium" saves a lease on the device
+(`lib/edgeAI/premiumLease.ts`, written by `lib/edgeAI/edgeBoot.ts`). Offline,
+the model runs only while the lease holds. The lease ends at the earliest of:
+
+- the paid-through date, read from the RevenueCat entitlement expiry or the
+  latest confirmed M-Pesa period (`premiumPaidThrough()` in `lib/purchases.ts`);
+- for store plans that auto-renew, that date plus **2 days**, because the
+  renewal usually happens while the learner is still offline;
+- **7 days** after the online check, whatever the plan says. This bounds
+  cancellations, refunds and plans whose end date couldn't be read.
+
+So a subscription that lapses while the phone stays offline stops the model
+at the lease end, not at the next online check.
+
+- **Enforcement:** the lease is checked on start, on foreground, by a timer at
+  the lease end, and before every on-device answer (`generate()` in
+  `modelStore.ts`), because timers don't fire while the app is suspended.
+- **After expiry:** the tutor quotes the lessons instead (`edge-retrieval`). The
+  model file stays on the device, so renewing never means another download.
+  Going online once renews the lease automatically.
+- **Clock rollback:** the lease remembers the newest time it has seen. Setting
+  the device clock back more than 10 minutes before that voids it.
+- **Older builds:** they stored an open-ended "was Premium" flag
+  (`bolingo.edgeBoot.lastPremium`). It is deleted and never read, so it can't
+  unlock the model.
+- **Screen:** the Offline AI screen shows "Works offline until <date>". When the
+  lease has run out offline, it asks the learner to connect once to renew it.
+
+`npm run check:adaptive-ai` (also in `npm run gate`) covers the pure logic,
+including the lease rules above, and the screen wiring.
 
 ## Verified off-device (Nov 2026)
 
@@ -65,7 +96,17 @@ Windows). Without it, an x86_64 image is too slow to run a model.
 7. Finish a quiz offline. Expect the results card "Saved on this device". Turn
    the network back on, then Offline AI → **Sync now**. Expect "Uploaded 1
    lesson result".
-8. Cancel a download mid-way and check that no `.part` file remains:
+8. **Lease lapse offline.** While online with Premium, open Offline AI and note
+   "Works offline until <date>". Turn on airplane mode, then in the
+   emulator's Settings → System → Date & time turn off automatic time and set
+   the date past that day. Return to the app and ask Bingo again. Expect the
+   answer to be quoted lesson text, not "On-device model". The Offline AI screen
+   should ask for a quick online check, and the model should still be listed as
+   installed. Turn automatic time and the network back on, reopen the app, and
+   expect "On-device model" answers again with a new date.
+9. **Clock rollback.** With a valid lease, go offline and set the clock a day
+   *earlier* than now. Expect the model to stop, as in step 8.
+10. Cancel a download mid-way and check that no `.part` file remains:
    `adb shell run-as <package> ls files/models`.
 
 Watch `adb logcat | grep -i llama` for runtime errors.

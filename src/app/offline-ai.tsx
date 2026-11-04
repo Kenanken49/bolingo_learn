@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import Text from '../../components/ui/Text';
 import AppIcon from '../../components/AppIcon';
 import BrandMark from '../../components/BrandMark';
-import { currentPremium } from '../../lib/edgeAI/edgeBoot';
+import { currentPremium, offlineLeaseUntil } from '../../lib/edgeAI/edgeBoot';
 import { edgeEngineStatus } from '../../lib/edgeAI/edgeEngine';
 import { knowledgeStats } from '../../lib/edgeAI/knowledge';
 import { llamaUnavailableReason } from '../../lib/edgeAI/llamaRuntime';
@@ -63,6 +63,7 @@ export default function OfflineAiScreen() {
   const pending = usePendingSyncCount();
   const [online, setOnline] = useState<boolean | null>(null);
   const [premium, setPremium] = useState<boolean | null>(null);
+  const [leaseUntil, setLeaseUntil] = useState<number | null>(null);
   const [preferOffline, setPreferOfflineState] = useState(false);
   const [passages, setPassages] = useState<number | null>(null);
   const [rows, setRows] = useState<ModelRow[]>([]);
@@ -86,6 +87,7 @@ export default function OfflineAiScreen() {
     ]);
     setOnline(on);
     setPremium(plan);
+    setLeaseUntil(plan ? offlineLeaseUntil() : null);
     setPreferOfflineState(pref);
     setPassages(stats?.passages ?? null);
     setRows(models);
@@ -308,10 +310,16 @@ export default function OfflineAiScreen() {
           >
             <AppIcon name="crown" size={18} color="#D97706" />
             <Text className="flex-1 text-sm font-bold text-amber-900 dark:text-amber-100">
-              On-device models are a Premium feature. Go Premium to download one.
+              {online === false
+                ? 'Your Premium needs a quick online check before the on-device model runs again. Connect once to renew it.'
+                : 'On-device models are a Premium feature. Go Premium to download one.'}
             </Text>
             <AppIcon name="chevRight" size={16} color="#D97706" />
           </Pressable>
+        ) : premium === true && leaseUntil != null ? (
+          <Text className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            Works offline until {new Date(leaseUntil).toLocaleDateString()}. Going online renews this automatically.
+          </Text>
         ) : null}
 
         {modelError ? (
