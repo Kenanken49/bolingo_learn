@@ -30,6 +30,13 @@ store your card details — those stay with the app store.
 identifier and standard ad-serving data (device info, approximate location
 from IP, ad interactions) under Google's policies. No rewarded-ad viewing
 history is attached to your account beyond the heart refill it earns.
+Ads are optional: they appear only when you run out of hearts and choose to
+watch one. Before any ad is requested we ask Google's consent management
+platform whether you have consented — in the EEA, UK and other regions where
+it applies you will see a consent form, and declining it means no ad is ever
+requested for your device. You can revisit that choice any time in Settings
+→ Ad privacy options. Choosing “wait for a free refill” or Premium instead
+never contacts an ad server at all.
 
 **On-device only (never leaves your phone).** Quiz answers, audio playback
 position, and free-tier device-voice (expo-speech) narration happen locally.

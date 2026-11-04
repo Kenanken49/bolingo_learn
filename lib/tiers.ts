@@ -4,8 +4,8 @@ import { supabase } from './supabase';
 export const FREE_WORD_LIMIT = 1000;
 /** Premium: monthly ceiling across all AI generation (protects margins). */
 export const PREMIUM_MONTHLY_WORD_CAP = 100_000;
-/** $7.70/mo — paywall wiring goes here (RevenueCat/Stripe). */
-export const PREMIUM_PRICE_LABEL = '$7.70/mo';
+/** KSh 770/mo — paywall wiring goes here (RevenueCat/Stripe). */
+export const PREMIUM_PRICE_LABEL = 'KSh 770/mo';
 
 export const countWords = (text: string): number =>
   text.trim().split(/\s+/).filter(Boolean).length;

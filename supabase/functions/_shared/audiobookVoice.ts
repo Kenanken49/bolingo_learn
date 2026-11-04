@@ -64,10 +64,17 @@ const MP3_FORMATS: readonly Mp3OutputFormat[] = [
   'mp3_44100_96',
 ];
 
+/**
+ * ElevenLabs' stock demo voice. It is the sound of an unconfigured account, so
+ * the preflight and the lesson verifier refuse to certify a run that uses it.
+ */
+export const STOCK_DEMO_VOICE_ID = '21m00Tcm4TlvDq8ikWAM';
+
 export const AUDIOBOOK_VOICE_DEFAULTS = Object.freeze({
   provider: 'elevenlabs' as TtsProvider,
   modelId: 'eleven_turbo_v2_5',
-  voiceId: '21m00Tcm4TlvDq8ikWAM',
+  /** George — "Warm, Captivating Storyteller" (British English, narrative). */
+  voiceId: 'JBFqnCBsd6RMkjVDRZzb',
   openaiVoice: 'alloy' as OpenAiVoice,
   outputFormat: 'mp3_44100_128' as Mp3OutputFormat,
   stability: 0.5,
@@ -80,6 +87,94 @@ export const AUDIOBOOK_VOICE_DEFAULTS = Object.freeze({
     segment: 'Habari yako! Mimi ni Livia. Leo tunajifunza Kiswahili pamoja.',
   }),
 });
+
+export interface NarratorVoice {
+  /** ElevenLabs voice id — the only value that may reach `TTS_VOICE_ID`. */
+  id: string;
+  /** What the app calls the narrator. */
+  name: string;
+  /** One line of character, in the voice's own words, for the picker. */
+  blurb: string;
+  /** Short tag shown under the name, e.g. "British · male". */
+  tag: string;
+}
+
+/**
+ * The narrators a Premium learner can choose between.
+ *
+ * This list is the whole trust boundary for a learner's choice: the Edge
+ * Function only ever swaps in an id that appears here, so a tampered
+ * `profiles.narrator_voice` cannot point the pipeline at an arbitrary voice.
+ * Every entry has to be a voice the deployment holds rights to and that
+ * `npm run audio:preflight` finds in the key's workspace — a Voice Library id
+ * is unusable until it has been added to the account's profile.
+ */
+export const NARRATOR_VOICES: readonly NarratorVoice[] = Object.freeze([
+  Object.freeze({
+    id: 'JBFqnCBsd6RMkjVDRZzb',
+    name: 'George',
+    blurb: 'Warm, captivating storyteller — the classic audiobook read, unhurried and easy to follow.',
+    tag: 'British · male',
+  }),
+  Object.freeze({
+    id: 'Xb7hH8MSUJpSbSDYk0k2',
+    name: 'Alice',
+    blurb: 'Clear, engaging educator — bright and articulate, made for study guides and non-fiction.',
+    tag: 'British · female',
+  }),
+  Object.freeze({
+    id: 'pFZP5JQG7iQjIQuC4Bku',
+    name: 'Lily',
+    blurb: 'Velvety actress — confident, dramatic pacing that carries long chapters.',
+    tag: 'British · female',
+  }),
+  Object.freeze({
+    id: 'nPczCjzI2devNBz1zQrb',
+    name: 'Brian',
+    blurb: 'Deep, resonant and comforting — a steady voice for dense material.',
+    tag: 'American · male',
+  }),
+  Object.freeze({
+    id: 'onwK4e9ZLuTAKqWW03F9',
+    name: 'Daniel',
+    blurb: 'Steady broadcaster — formal and even, like a well-read reference book.',
+    tag: 'British · male',
+  }),
+  Object.freeze({
+    id: 'ezWcjzmShLr2IarIA07u',
+    name: 'Mohammed',
+    blurb: 'Kiswahili local — the natural narrator for Swahili material.',
+    tag: 'Swahili · male',
+  }),
+]);
+
+/** The narrator a learner picked, or null when the value is unknown. */
+export function narratorVoice(choice: unknown): NarratorVoice | null {
+  if (typeof choice !== 'string') return null;
+  const wanted = choice.trim();
+  return NARRATOR_VOICES.find((voice) => voice.id === wanted) ?? null;
+}
+
+/** Display name for a stored voice id — the default narrator answers for anything unknown. */
+export function narratorName(choice: unknown): string {
+  const voice = narratorVoice(choice);
+  if (voice) return voice.name;
+  const fallback = NARRATOR_VOICES.find((voice) => voice.id === AUDIOBOOK_VOICE_DEFAULTS.voiceId);
+  return fallback?.name ?? 'the studio narrator';
+}
+
+/**
+ * Point a validated deployment config at a learner's chosen narrator. An absent
+ * or unknown choice leaves the operator's `TTS_VOICE_ID` in charge, so the
+ * picker can never break a lesson whose owner never used it.
+ */
+export function withNarrator(
+  config: AudiobookVoiceConfig,
+  choice: unknown
+): AudiobookVoiceConfig {
+  const voice = narratorVoice(choice);
+  return voice && voice.id !== config.voiceId ? Object.freeze({ ...config, voiceId: voice.id }) : config;
+}
 
 export class AudiobookVoiceConfigError extends Error {
   constructor(message: string) {

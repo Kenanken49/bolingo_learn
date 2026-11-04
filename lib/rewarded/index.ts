@@ -1,10 +1,15 @@
-/** Web stub — rewarded ads are native-only. */
-export function useRewardedHeart(_onEarn: () => void) {
+/** Web/desktop stub — rewarded video is native-only. */
+import type { RewardHook } from './types';
+
+export function useRewardedHeart(_onEarn: () => void): RewardHook {
   void _onEarn;
   return {
     loaded: false,
     showing: false,
     available: false,
+    status: 'unavailable',
+    error: null,
+    testAd: false,
     show: async () => false,
   };
 }

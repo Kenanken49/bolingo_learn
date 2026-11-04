@@ -23,9 +23,11 @@ button. Guided lessons and workshops let learners retry until the corrected
 answer is solid, but a retry never changes the first-attempt record used by
 labs, reviews, and exams.
 
-Hearts remain part of the wider product, but wrong answers in the quiz player no
-longer consume them. The player shows the mastery target instead of implying a
-cost that does not exist.
+Hearts stay live in the quiz player: a wrong answer costs one, and the session
+pauses at zero behind the refill sheet (rewarded video, 4-hour regen, Premium —
+see [admob.md](admob.md)). Running tests and typing answers stay free, and a
+spent heart never changes the mastery record: first attempts are still what
+labs, reviews and exams count.
 
 ## Why first-try mastery
 
@@ -93,10 +95,10 @@ or free-response task alongside its token questions.
 
 The guard currently reports:
 
-- 396 lessons and 1,819 questions;
-- 420 path blocks;
-- 64 workshops, 25 labs, and 25 quizzes/checkpoints/finals;
-- 4 runnable code exercises and 14 typed production exercises.
+- 420 lessons and 2,269 questions;
+- 446 path blocks;
+- 77 workshops, 31 labs, and 28 quizzes/checkpoints/finals;
+- 20 runnable code exercises, 95 listening, 95 speaking, and 49 typed production exercises.
 
 Run the gate alone with:
 

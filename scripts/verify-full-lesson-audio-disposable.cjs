@@ -59,7 +59,7 @@ Options:
   --plan                  Show the planned TTS jobs without spending credits
   --out <dir>             Write MP3s and manifest here
   --concurrency <1-3>     Parallel TTS requests (default: 1)
-  --allow-default-voice   Allow the built-in placeholder voice (demo only)
+  --allow-default-voice   Allow ElevenLabs' stock demo voice (demo only)
   --json                  Pass --json to the verifier
   --keep                  Keep the temporary rows for debugging (prints ids)
   --help                  Show this message

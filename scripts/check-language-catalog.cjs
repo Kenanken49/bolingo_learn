@@ -204,6 +204,33 @@ for (const lesson of lessons) {
       }
       return;
     }
+    if (question.kind === 'match') {
+      const pairs = question.match?.pairs;
+      if (!Array.isArray(pairs) || pairs.length < 4 || pairs.length > 6) {
+        fail(`${at}: match needs 4-6 pairs, found ${Array.isArray(pairs) ? pairs.length : 'none'}.`);
+        return;
+      }
+      return;
+    }
+    if (question.kind === 'listen') {
+      const spec = question.listen;
+      if (!spec?.phrase?.trim()) fail(`${at}: listen exercise needs a phrase to speak.`);
+      if (!spec || !Array.isArray(spec.answers) || spec.answers.length === 0) {
+        fail(`${at}: listen exercise needs at least one accepted transcription.`);
+        return;
+      }
+      if (normalizeAnswer(question.correctChain[0]) !== normalizeAnswer(spec.answers[0])) {
+        fail(`${at}: correctChain[0] must match the first accepted answer.`);
+      }
+      return;
+    }
+    if (question.kind === 'speak') {
+      const spec = question.speak;
+      if (!spec?.phrase?.trim()) fail(`${at}: speak exercise needs a phrase to say.`);
+      const pass = spec?.passScore ?? 75;
+      if (!(pass >= 50 && pass <= 100)) fail(`${at}: speak passScore must sit between 50 and 100.`);
+      return;
+    }
     if (!Array.isArray(question.scrambledTokens)) {
       fail(`${at}: scrambledTokens missing.`);
       return;
@@ -493,9 +520,16 @@ for (const required of [
   'alter table public.language_lessons enable row level security',
   'grant select on public.language_courses, public.language_lessons to anon, authenticated',
   'create policy "Anyone can read published language lessons"',
-  'on conflict (id) do nothing',
 ]) {
   if (!sql.includes(required)) fail(`Migration is missing: ${required}`);
+}
+
+// The seed must update existing rows. With DO NOTHING, a lesson seeded before
+// the repo gained richer content (question kinds, listen/speak/match items)
+// shadowed the bundle forever: the app reads the remote row first, so every
+// language lesson silently degraded to plain tap-to-choose items.
+if (!/on conflict \(id\) do update set[\s\S]{0,200}questions = excluded\.questions/.test(sql)) {
+  fail('Migration never updates an existing lesson: publishing new content cannot reach learners.');
 }
 if (/grant\s+(insert|update|delete)[^;]*\bto\s+(anon|authenticated)\b/i.test(sql)) {
   fail('Migration grants write access to anon/authenticated — edits must go through the dashboard or service role.');

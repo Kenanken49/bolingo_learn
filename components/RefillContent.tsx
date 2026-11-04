@@ -5,14 +5,9 @@ import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { getProfile, grantHearts, nextHeartIn, refillWaitRemaining, MAX_HEARTS, type Profile } from '../lib/progress';
 import AppIcon from './AppIcon';
-import { isTestAd } from '../lib/ads';
+import type { RewardHook } from '../lib/rewarded/types';
 
-export interface RewardHook {
-  loaded: boolean;
-  showing: boolean;
-  available: boolean;
-  show: () => Promise<boolean>;
-}
+export type { RewardHook };
 
 export function useRefillState(useRewardedHeart: (onEarn: () => void) => RewardHook) {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -122,9 +117,11 @@ export function RefillView({
         <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">
           {!available
             ? 'Needs a native dev build (unavailable in Expo Go / web).'
-            : isTestAd
+            : reward.testAd
               ? 'Test ad mode — swap in your AdMob unit id before release.'
-              : 'Sponsored'}
+              : reward.status === 'error' || reward.status === 'no-fill'
+                ? 'No ad filled — the free refill timer still works.'
+                : 'Sponsored'}
         </Text>
         <Pressable
           onPress={watchAd}

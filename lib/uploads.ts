@@ -39,6 +39,16 @@ export async function uploadRawFile(
   contentType: string,
   options: UploadOptions = {}
 ): Promise<UserUpload> {
+  // A 0-byte body reaches Storage as an empty object, and the pipeline can then
+  // only fail with a parser error that means nothing to the learner. Stop it
+  // here, where the cause is still visible (a cloud-backed picker URI that
+  // copied nothing is the usual culprit).
+  if (data.byteLength === 0) {
+    throw new Error(
+      'That file came through empty (0 bytes), so nothing was uploaded. Pick it again, or open it once in another app and share it from there.'
+    );
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -92,11 +102,13 @@ export async function uploadRawFile(
     body: { upload_id: upload.id },
   });
   if (fnError) {
+    // Record the reason on the row, not just on the screen: a bare red
+    // "failed" was indistinguishable from a job that crashed server-side, so
+    // nobody could tell why an upload had died.
+    const reason = `The AI pipeline did not start (${fnError.message}). The process-upload Edge Function may not be deployed — see supabase/functions/process-upload/index.ts header for deploy steps.`;
     console.warn('process-upload invocation failed:', fnError.message);
-    await supabase.from('user_uploads').update({ status: 'failed' }).eq('id', upload.id);
-    throw new Error(
-      `AI pipeline did not start (${fnError.message}). The process-upload Edge Function may not be deployed — see supabase/functions/process-upload/index.ts header for deploy steps.`
-    );
+    await supabase.from('user_uploads').update({ status: 'failed', error: reason }).eq('id', upload.id);
+    throw new Error(reason);
   }
 
   return upload as UserUpload;

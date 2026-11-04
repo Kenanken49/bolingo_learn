@@ -2,11 +2,24 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Pressable, ScrollView, Switch, Alert, Platform } from 'react-native';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import Text from '../../components/ui/Text';
+import TextInput from '../../components/ui/TextInput';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import BrandMark from '../../components/BrandMark';
 import AppIcon, { type AppIconName } from '../../components/AppIcon';
 import { StatusBar } from 'expo-status-bar';
-import { getProfile, getTodayCompletionCount, grantHearts, MAX_HEARTS, type Profile } from '../../lib/progress';
+import {
+  getProfile,
+  getTodayCompletionCount,
+  grantHearts,
+  setNarratorVoice,
+  setDisplayName,
+  setUploadOutput,
+  uploadOutputOf,
+  UPLOAD_OUTPUT_OPTIONS,
+  MAX_HEARTS,
+  type Profile,
+  type UploadOutput,
+} from '../../lib/progress';
 import { PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import {
   areRemindersOn,
@@ -25,6 +38,7 @@ import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
 import { PREMIUM_NARRATOR_SAMPLE } from '../../assets/narrator';
 import PremiumNarratorSample from '../../components/PremiumNarratorSample';
 import { narratorAuditRequested, useNarratorSampleProbe } from '../../lib/narratorSample';
+import { AUDIOBOOK_VOICE_DEFAULTS, NARRATOR_VOICES, narratorName, narratorVoice } from '../../supabase/functions/_shared/audiobookVoice';
 import {
   getSoundOn,
   setSoundOn as persistSoundOn,
@@ -46,6 +60,8 @@ import {
   setTelemetryOn as persistTelemetryOn,
 } from '../../lib/preferences';
 import { setTelemetryConsent } from '../../lib/telemetry';
+import { adsSupported } from '../../lib/ads';
+import { showAdPrivacyOptions } from '../../lib/adsRuntime';
 
 interface CastCapture {
   character: Mentor;
@@ -89,6 +105,8 @@ export default function Settings() {
     voiceName?: string;
     matched: boolean;
     approximate: boolean;
+    /** True when the line came from the ElevenLabs studio voice, not the device. */
+    studio?: boolean;
     /** False when the platform never reported a voice list at all. */
     hasVoiceList: boolean;
   } | null>(null);
@@ -112,11 +130,21 @@ export default function Settings() {
   const narratorPlayer = useAudioPlayer(PREMIUM_NARRATOR_SAMPLE, { updateInterval: 250 });
   const narratorStatus = useAudioPlayerStatus(narratorPlayer);
   useNarratorSampleProbe('settings', narratorStatus);
+  // Voice id being saved right now, so the picker can show progress and refuse
+  // a second tap mid-write.
+  const [savingNarrator, setSavingNarrator] = useState<string | null>(null);
+  const [savingOutput, setSavingOutput] = useState<UploadOutput | null>(null);
+  // Public display name: everyone on the weekly board was called "Learner"
+  // because nothing in the app could set one.
+  const [nameDraft, setNameDraft] = useState('');
+  const [savingName, setSavingName] = useState(false);
+  const [nameNote, setNameNote] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     try {
       const p = await getProfile();
       setProfile(p);
+      setNameDraft((current) => (current.trim() ? current : p?.username ?? ''));
       if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
       setMinutes(await getDailyMinutes().catch(() => 10));
       setWeekly(await getWeeklyDays().catch(() => 5));
@@ -252,6 +280,39 @@ export default function Settings() {
     narratorPlayer.play();
   };
 
+  /**
+   * Save the chosen narrator on the profile. `process-upload` reads it from the
+   * row when it generates the next audiobook, so the pick applies to lessons
+   * made from now on and never travels with a generation request.
+   */
+  /**
+   * Save what an upload should produce. `process-upload` reads it from the row,
+   * so the choice covers every device and cannot be changed per request.
+   */
+  const chooseOutput = async (output: UploadOutput) => {
+    if (!profile?.id || savingOutput) return;
+    setSavingOutput(output);
+    try {
+      setProfile(await setUploadOutput(profile.id, output));
+    } catch (e) {
+      Alert.alert('Could not save your upload preference', e instanceof Error ? e.message : 'Please try again.');
+    } finally {
+      setSavingOutput(null);
+    }
+  };
+
+  const chooseNarrator = async (voiceId: string) => {
+    if (!profile?.id || savingNarrator) return;
+    setSavingNarrator(voiceId);
+    try {
+      setProfile(await setNarratorVoice(profile.id, voiceId));
+    } catch (e) {
+      Alert.alert('Could not save your narrator', e instanceof Error ? e.message : 'Please try again.');
+    } finally {
+      setSavingNarrator(null);
+    }
+  };
+
   // The on-device test asks the real screen to start the sample. This is the
   // same handler the Play button calls and is disabled outside development.
   useEffect(() => {
@@ -291,6 +352,7 @@ export default function Settings() {
         matched: result.matchedVoice,
         approximate: result.approximate,
         hasVoiceList: result.hasVoiceList,
+        studio: result.studio === true,
       });
       if (result.spoken) return;
       Alert.alert(
@@ -356,16 +418,27 @@ export default function Settings() {
   };
 
   const castSummary = {
-    native: castCaptures.filter((capture) => capture.result.matchedVoice).length,
-    approximate: castCaptures.filter((capture) => !capture.result.matchedVoice && capture.result.approximate).length,
-    missing: castCaptures.filter((capture) => !capture.result.matchedVoice && !capture.result.approximate).length,
+    studio: castCaptures.filter((capture) => capture.result.studio).length,
+    // A studio line also has a device voice installed underneath it; counting
+    // both would report six device voices for three lines. Each capture is one
+    // bucket: studio, native, approximate or missing.
+    native: castCaptures.filter((capture) => !capture.result.studio && capture.result.matchedVoice).length,
+    approximate: castCaptures.filter(
+      (capture) => !capture.result.studio && !capture.result.matchedVoice && capture.result.approximate
+    ).length,
+    missing: castCaptures.filter(
+      (capture) => !capture.result.studio && !capture.result.matchedVoice && !capture.result.approximate
+    ).length,
   };
 
   const castSummaryLine =
     castCaptures.length === CAST_STEPS.length
-      ? castSummary.native === CAST_STEPS.length
-        ? 'Every character has its own native voice on this device.'
+      ? castSummary.studio === CAST_STEPS.length
+        ? 'Every character played its studio voice over the connection.'
+        : castSummary.studio + castSummary.native === CAST_STEPS.length
+          ? `${castSummary.studio} studio · ${castSummary.native} on this device`
         : [
+            castSummary.studio > 0 ? `${castSummary.studio} studio` : '',
             `${castSummary.native}/${CAST_STEPS.length} native`,
             castSummary.approximate > 0 ? `${castSummary.approximate} approximate` : '',
             castSummary.missing > 0 ? `${castSummary.missing} missing` : '',
@@ -441,6 +514,17 @@ export default function Settings() {
   };
 
   const isPremium = profile?.is_premium === true;
+  /** Re-open Google's UMP form so the ad-consent choice can be changed. */
+  const openAdPrivacy = async () => {
+    const shown = await showAdPrivacyOptions();
+    if (!shown) {
+      Alert.alert('Ad privacy', 'There is no ad consent choice to make on this device right now.');
+    }
+  };
+  // What the pipeline would actually use: the learner's stored choice when it is
+  // on the allow-list, otherwise the narrator the shared config falls back to.
+  const chosenNarratorId = narratorVoice(profile?.narrator_voice)?.id ?? AUDIOBOOK_VOICE_DEFAULTS.voiceId;
+  const chosenOutput = uploadOutputOf(profile);
   const audiobookFullUrl = audiobook?.full_audio_url ?? null;
   const audiobookSegmentUrl = audiobook?.segments[0]?.url ?? null;
   const fullPreviewActive = audiobookTrack === 'full';
@@ -479,6 +563,53 @@ export default function Settings() {
       <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">
         {profile ? (profile.is_premium ? 'Premium' : 'Free tier') : 'Playing as guest'}
       </Text>
+
+      {profile ? (
+        <View className="mt-4 w-full max-w-sm rounded-2xl border-2 border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+          <Text className="text-base font-extrabold text-slate-800 dark:text-slate-200">Your name</Text>
+          <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Shown on the weekly board, friends list and profile. 3–20 characters, unique.
+          </Text>
+          <TextInput
+            value={nameDraft}
+            onChangeText={(next: string) => {
+              setNameDraft(next);
+              setNameNote(null);
+            }}
+            placeholder="e.g. Amina K"
+            accessibilityLabel="Your display name"
+            className="mt-2 rounded-2xl border-2 border-slate-200 bg-slate-50 px-3 py-2 text-base text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
+          <Pressable
+            onPress={() => {
+              if (!profile?.id || savingName) return;
+              setSavingName(true);
+              setNameNote(null);
+              setDisplayName(profile.id, nameDraft)
+                .then((saved) => {
+                  setProfile(saved);
+                  setNameDraft(saved.username ?? '');
+                  setNameNote('Saved — that is the name on your board.');
+                })
+                .catch((error: unknown) => {
+                  setNameNote(error instanceof Error ? error.message : 'Could not save your name.');
+                })
+                .finally(() => setSavingName(false));
+            }}
+            disabled={savingName || nameDraft.trim() === (profile.username ?? '')}
+            accessibilityRole="button"
+            accessibilityLabel="Save display name"
+            className={`mt-2 items-center rounded-2xl bg-green-500 px-4 py-2 ${
+              savingName || nameDraft.trim() === (profile.username ?? '') ? 'opacity-50' : ''
+            }`}
+          >
+            <Text className="font-bold text-[#03130A]">{savingName ? 'Saving…' : 'Save name'}</Text>
+          </Pressable>
+          {nameNote ? (
+            <Text className="mt-1 text-xs text-slate-500 dark:text-slate-400">{nameNote}</Text>
+          ) : null}
+        </View>
+      ) : null}
 
       <View className="mt-6 w-full max-w-sm rounded-2xl border-2 border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950 p-4">
         <View className="flex-row items-center gap-1.5">
@@ -821,7 +952,9 @@ export default function Settings() {
                 <Text className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
                   {castStep !== null
                     ? `${castStep + 1} of ${CAST_STEPS.length}`
-                    : `${castSummary.native}/${CAST_STEPS.length} native`}
+                    : castSummary.studio > 0
+                      ? `${castSummary.studio} studio · ${castSummary.native} device`
+                      : `${castSummary.native}/${CAST_STEPS.length} native`}
                 </Text>
               </View>
               {castSummaryLine ? (
@@ -835,14 +968,16 @@ export default function Settings() {
                     ? 'Playing…'
                     : !capture
                       ? 'Queued'
-                      : capture.result.matchedVoice
-                        ? 'Native voice'
-                        : capture.result.approximate
+                      : capture.result.studio
+                        ? 'Studio voice'
+                        : capture.result.matchedVoice
+                          ? 'Native voice'
+                          : capture.result.approximate
                           ? 'Approximate'
                           : capture.result.hasVoiceList
                             ? 'Not installed'
                             : 'Engine default';
-                  const good = !!capture?.result.matchedVoice;
+                  const good = !!(capture?.result.studio || capture?.result.matchedVoice);
                   return (
                     <View key={`${step.character}-${step.language}`} className="flex-row items-center gap-2">
                       <AppIcon
@@ -867,7 +1002,7 @@ export default function Settings() {
                         }`}
                       >
                         {label}
-                        {capture ? ` · ${capture.result.locale}` : ''}
+                        {capture && !capture.result.studio ? ` · ${capture.result.locale}` : ''}
                         {capture?.result.voiceName ? ` · ${capture.result.voiceName}` : ''}
                         {capture && !capture.result.spoken ? ' · no sound' : ''}
                       </Text>
@@ -886,7 +1021,7 @@ export default function Settings() {
           {voiceCheck ? (
             <View
               className={`mt-2 rounded-xl border px-3 py-2 ${
-                voiceCheck.matched
+                voiceCheck.studio || voiceCheck.matched
                   ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-[#00251C]'
                   : 'border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-[#2A1B06]'
               }`}
@@ -894,19 +1029,21 @@ export default function Settings() {
             >
               <View className="flex-row items-center gap-1.5">
                 <AppIcon
-                  name={voiceCheck.matched ? 'checkCircle' : 'alert'}
+                  name={voiceCheck.studio || voiceCheck.matched ? 'checkCircle' : 'alert'}
                   size={13}
-                  color={voiceCheck.matched ? '#059669' : '#B45309'}
+                  color={voiceCheck.studio || voiceCheck.matched ? '#059669' : '#B45309'}
                 />
                 <Text
                   className={`text-[10px] font-extrabold uppercase tracking-widest ${
-                    voiceCheck.matched
+                    voiceCheck.studio || voiceCheck.matched
                       ? 'text-emerald-700 dark:text-emerald-300'
                       : 'text-amber-700 dark:text-amber-300'
                   }`}
                 >
-                  {voiceCheck.matched
-                    ? 'Native voice found'
+                  {voiceCheck.studio
+                    ? 'Studio voice'
+                    : voiceCheck.matched
+                      ? 'Native voice found'
                     : voiceCheck.approximate
                       ? 'Approximate voice'
                       : voiceCheck.hasVoiceList
@@ -916,12 +1053,13 @@ export default function Settings() {
               </View>
               <Text
                 className={`mt-1 text-xs font-bold ${
-                  voiceCheck.matched
+                  voiceCheck.studio || voiceCheck.matched
                     ? 'text-emerald-800 dark:text-emerald-200'
                     : 'text-amber-800 dark:text-amber-200'
                 }`}
               >
-                {castMember(voiceCheck.character).name} · {castLanguageLabel(voiceCheck.language)} · {voiceCheck.locale}
+                {castMember(voiceCheck.character).name} · {castLanguageLabel(voiceCheck.language)}
+                {voiceCheck.studio ? ' · ElevenLabs' : ` · ${voiceCheck.locale}`}
                 {voiceCheck.voiceName ? ` · ${voiceCheck.voiceName}` : ''}
               </Text>
               <Text className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
@@ -936,7 +1074,7 @@ export default function Settings() {
             </View>
           ) : null}
           <Text className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
-            Voices come from your device: Livia and Zora are cast feminine, Bingo masculine. Swahili needs a sw-KE, sw-TZ or sw-UG voice.
+            Livia, Bingo and Zora speak in their own studio voices when you are online — Livia is the educator, Bingo the host, Zora the build coach. Offline, in Swahili, or if the studio voice is unavailable, your device voice takes over: Livia and Zora feminine, Bingo masculine.
           </Text>
         </View>
 
@@ -1009,13 +1147,146 @@ export default function Settings() {
               </Text>
               {isPremium ? (
                 <Text className="ml-auto text-[9px] font-extrabold uppercase tracking-widest text-amber-700 dark:text-amber-300">
-                  Current
+                  {narratorName(profile?.narrator_voice)}
                 </Text>
               ) : null}
             </View>
             <Text className="mt-1 text-xs leading-4 text-slate-500 dark:text-slate-400">
-              One configured narrator reads a continuous full mix and a clip for every question. It is separate from the Livia, Bingo and Zora character voices above.
+              Your narrator reads a continuous full mix and a clip for every question. It is separate from the Livia, Bingo and Zora character voices above.
             </Text>
+            <View className="mt-2 gap-2">
+              {NARRATOR_VOICES.map((voice) => {
+                const active = chosenNarratorId === voice.id;
+                const busy = savingNarrator === voice.id;
+                return (
+                  <Pressable
+                    key={voice.id}
+                    onPress={() => void chooseNarrator(voice.id)}
+                    disabled={!isPremium || savingNarrator !== null}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: active, disabled: !isPremium }}
+                    accessibilityLabel={
+                      isPremium
+                        ? `Choose ${voice.name} as your audiobook narrator`
+                        : `${voice.name} is a Premium narrator`
+                    }
+                    className={`rounded-xl border-2 p-2.5 ${
+                      active
+                        ? 'border-amber-400 bg-amber-100 dark:border-amber-500 dark:bg-amber-950'
+                        : 'border-slate-200 bg-white dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+                    } ${!isPremium || busy ? 'opacity-50' : ''}`}
+                  >
+                    <View className="flex-row items-baseline gap-1.5">
+                      <Text
+                        className={`text-sm font-extrabold ${
+                          active ? 'text-amber-800 dark:text-amber-200' : 'text-slate-800 dark:text-slate-100'
+                        }`}
+                      >
+                        {voice.name}
+                      </Text>
+                      <Text className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                        {busy ? 'Saving…' : active ? 'Selected' : isPremium ? 'Choose' : 'Premium'}
+                      </Text>
+                      {active ? (
+                        <View className="ml-auto">
+                          <AppIcon name="check" size={14} color="#B45309" />
+                        </View>
+                      ) : null}
+                    </View>
+                    <Text
+                      numberOfLines={2}
+                      className={`mt-0.5 text-xs ${
+                        active ? 'text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'
+                      }`}
+                    >
+                      {voice.tag} — {voice.blurb}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <Text className="mt-2 text-[11px] leading-4 text-slate-400 dark:text-slate-500">
+              {isPremium
+                ? 'Applies to lessons you add from now on — a book that already has audio keeps the narrator that made it.'
+                : 'Free lessons are read by your device voice. Choosing a studio narrator is part of Premium.'}
+            </Text>
+          </View>
+
+          <View
+            className={`mt-3 rounded-2xl border-2 p-3 ${
+              isPremium
+                ? 'border-amber-300 bg-amber-50 dark:border-amber-800 dark:bg-amber-950'
+                : 'border-slate-200 bg-slate-50 dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+            }`}
+          >
+            <View className="flex-row items-center gap-1.5">
+              <AppIcon name="upload" size={15} color="#B45309" />
+              <Text className="text-xs font-extrabold uppercase tracking-wide text-amber-800 dark:text-amber-200">
+                Premium · Upload output
+              </Text>
+              <Text className="ml-auto text-[9px] font-extrabold uppercase tracking-widest text-amber-700 dark:text-amber-300">
+                {UPLOAD_OUTPUT_OPTIONS.find((o) => o.id === chosenOutput)?.label ?? 'Audiobook + nodes'}
+              </Text>
+            </View>
+            <Text className="mt-1 text-xs leading-4 text-slate-500 dark:text-slate-400">
+              A book you upload is narrated in full, part by part — not just its questions. Quiz nodes are
+              optional: pick what the pipeline should build.
+            </Text>
+            <View className="mt-2 gap-2">
+              {UPLOAD_OUTPUT_OPTIONS.map((option) => {
+                const active = chosenOutput === option.id;
+                const busy = savingOutput === option.id;
+                return (
+                  <Pressable
+                    key={option.id}
+                    onPress={() => void chooseOutput(option.id)}
+                    disabled={!profile?.id || savingOutput !== null || (!isPremium && option.id !== 'nodes')}
+                    accessibilityRole="radio"
+                    accessibilityState={{
+                      selected: active,
+                      disabled: !profile?.id || (!isPremium && option.id !== 'nodes'),
+                    }}
+                    accessibilityLabel={`Uploads produce ${option.label}`}
+                    className={`rounded-xl border-2 p-2.5 ${
+                      active
+                        ? 'border-amber-400 bg-amber-100 dark:border-amber-500 dark:bg-amber-950'
+                        : 'border-slate-200 bg-white dark:border-[#1E1E2C] dark:bg-[#0E0E16]'
+                    } ${!profile?.id || busy || (!isPremium && option.id !== 'nodes') ? 'opacity-50' : ''}`}
+                  >
+                    <View className="flex-row items-baseline gap-1.5">
+                      <Text
+                        className={`text-sm font-extrabold ${
+                          active ? 'text-amber-800 dark:text-amber-200' : 'text-slate-800 dark:text-slate-100'
+                        }`}
+                      >
+                        {option.label}
+                      </Text>
+                      <Text className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                        {busy ? 'Saving…' : active ? 'Selected' : 'Choose'}
+                      </Text>
+                      {active ? (
+                        <View className="ml-auto">
+                          <AppIcon name="check" size={14} color="#B45309" />
+                        </View>
+                      ) : null}
+                    </View>
+                    <Text
+                      numberOfLines={2}
+                      className={`mt-0.5 text-xs ${
+                        active ? 'text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'
+                      }`}
+                    >
+                      {option.blurb}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            {!isPremium ? (
+              <Text className="mt-2 text-[11px] leading-4 text-slate-400 dark:text-slate-500">
+                Studio narration is Premium. Free uploads stay text-only and are read by your device voice.
+              </Text>
+            ) : null}
           </View>
 
           <PremiumNarratorSample
@@ -1036,6 +1307,7 @@ export default function Settings() {
               <>
                 <Text numberOfLines={1} className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Latest: {audiobook.title}
+                  {audiobook.narrator_voice ? ` · ${narratorName(audiobook.narrator_voice)}` : ''}
                 </Text>
                 <View className="mt-2 flex-row gap-2">
                   <Pressable
@@ -1135,6 +1407,8 @@ export default function Settings() {
           undefined,
           <Switch value={telemetryOn} onValueChange={toggleTelemetry} />
         )}
+        {adsSupported &&
+          row('shield', 'Ad privacy options', 'Review or change your ad consent', () => void openAdPrivacy())}
         {__DEV__ && row('heart', 'Debug: refill', 'Dev builds only — remove before release', refillHearts)}
         {__DEV__ &&
           row(

@@ -751,4 +751,193 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'english-politeness': {
+    id: 'english-politeness',
+    title: 'English Politeness & Apologies',
+    theory: [
+      'English relies heavily on softening formulas. Use Excuse me to get someone’s attention or to pass by them, and I’m sorry to apologize for a mistake or express sympathy.',
+      'Could you please help me? is more polite than Can you help me?. When someone thanks you, reply warmly with You’re welcome, Don’t mention it, or No worries.',
+    ],
+    questions: [
+      MCQ(
+        'You need to squeeze past someone on the bus. What do you say?',
+        'Excuse me',
+        ['Excuse me', 'I’m sorry', 'Thank you', 'Goodbye'],
+        'Excuse me asks for a path or gets attention. I’m sorry expresses regret after the fact.'
+      ),
+      BUILD(
+        'Say “Excuse me, could you help me?”:',
+        ['Excuse', 'me', 'could', 'you', 'help', 'me'],
+        ['help', 'Excuse', 'me', 'could', 'you', 'me', 'can'],
+        'Could you help me is the courteous, polite request.'
+      ),
+      MCQ(
+        '“Don’t mention it” means…',
+        'You are welcome',
+        ['You are welcome', 'Do not speak to me', 'I forgot it', 'Please tell me'],
+        'Don’t mention it is a friendly, gracious response to being thanked.'
+      ),
+      BUILD(
+        'Say “Thank you very much”:',
+        ['Thank', 'you', 'very', 'much'],
+        ['much', 'Thank', 'you', 'very', 'many'],
+        'Much pairs with gratitude: Thank you very much.'
+      ),
+      MCQ(
+        'A stranger drops their book. You pick it up, and they thank you. What is a polite response?',
+        'You’re welcome',
+        ['You’re welcome', 'Excuse me', 'I am sorry', 'Never mind'],
+        'You’re welcome is the universal, kind response to thank you.'
+      ),
+      MATCH(
+        'Pair each polite English phrase with the right moment.',
+        [
+          { left: 'Excuse me', right: 'Getting attention or squeezing past' },
+          { left: 'I’m so sorry', right: 'Apologizing for an accident' },
+          { left: 'You’re welcome', right: 'Answering thank you' },
+          { left: 'Could you please', right: 'Softening a request' },
+          { left: 'After you', right: 'Letting someone pass first' },
+        ],
+        'Excuse me opens, I’m sorry apologizes, and You’re welcome answers gratitude.'
+      ),
+      LISTEN(
+        'Listen and type the sincere apology.',
+        'I am really sorry about that',
+        ['I am really sorry about that'],
+        'Really emphasizes your sincerity: I am really sorry about that.'
+      ),
+      SPEAK(
+        'Say “Excuse me, could you help me?” out loud.',
+        'Excuse me could you help me',
+        'ik-SKYOOZ mee cood yoo HELP mee: soft and courteous.'
+      ),
+    ],
+  },
+
+  'english-introductions': {
+    id: 'english-introductions',
+    title: 'English Introductions & Origins',
+    theory: [
+      'Introduce yourself with My name is... or I’m... . Ask someone: What’s your name? (casual) or May I ask your name? (formal).',
+      'Talk about your background with Where are you from? -> I’m from London / I come from Kenya. Talk about residence with Where do you live? -> I live in New York. Close with Nice to meet you or Pleased to meet you.',
+    ],
+    questions: [
+      MCQ(
+        '“Where are you from?” asks about…',
+        'Your country or home town',
+        ['Your country or home town', 'Your job', 'Where you are going', 'Your hotel'],
+        'Where are you from asks for your origin or nationality.'
+      ),
+      BUILD(
+        'Say “My name is Sarah”:',
+        ['My', 'name', 'is', 'Sarah'],
+        ['Sarah', 'My', 'name', 'is', 'Your'],
+        'My name is + name is the classic introduction.'
+      ),
+      MCQ(
+        '“Nice to meet you” is said…',
+        'When being introduced to someone new',
+        ['When being introduced to someone new', 'When leaving for good', 'When ordering food', 'When asking directions'],
+        'Nice to meet you is the universal handshake phrase.'
+      ),
+      BUILD(
+        'Say “I live in London”:',
+        ['I', 'live', 'in', 'London'],
+        ['London', 'I', 'live', 'in', 'from'],
+        'Live in + city: I live in London. From is for origin.'
+      ),
+      MCQ(
+        'You are from Canada. How do you answer “Where are you from?”',
+        'I am from Canada',
+        ['I am from Canada', 'I live in Canada', 'My name is Canada', 'I like Canada'],
+        'I am from Canada directly answers the question.'
+      ),
+      MATCH(
+        'Pair each introduction phrase with its role.',
+        [
+          { left: 'My name is', right: 'Stating your name' },
+          { left: 'I am from', right: 'Stating where you were born' },
+          { left: 'I live in', right: 'Stating your current home' },
+          { left: 'Nice to meet you', right: 'Polite greeting on meeting' },
+          { left: 'What is your name', right: 'Asking for someone’s name' },
+        ],
+        'Name, origin, and residence are the three anchors of any personal introduction.'
+      ),
+      LISTEN(
+        'Listen and type the friendly introduction line.',
+        'It is nice to meet you',
+        ['It is nice to meet you'],
+        'It is nice to meet you is the full, unabbreviated greeting.'
+      ),
+      SPEAK(
+        'Say where you come from, out loud in English.',
+        'I am from the United States',
+        'I am from the yoo-NY-ted STATES: clear and natural.'
+      ),
+    ],
+  },
+
+  'english-money': {
+    id: 'english-money',
+    title: 'English Shopping & Money',
+    theory: [
+      'In stores, ask prices with How much is this? or How much does it cost?.',
+      'Express opinions with It’s too expensive or It’s a good deal / affordable. At checkout: Can I pay by card? or In cash. At a café, ask Could we have the bill, please? (UK) or The check, please (US). Tip with Keep the change.',
+    ],
+    questions: [
+      MCQ(
+        '“How much does it cost?” asks…',
+        'The price of an item',
+        ['The price of an item', 'The time of day', 'The store hours', 'Where the item is'],
+        'How much asks about price or quantity.'
+      ),
+      BUILD(
+        'Say “It is too expensive” in English:',
+        ['It', 'is', 'too', 'expensive'],
+        ['expensive', 'It', 'is', 'too', 'cheap'],
+        'Too means more than acceptable: too expensive.'
+      ),
+      MCQ(
+        'How do you ask to pay with a credit card?',
+        'Can I pay by card?',
+        ['Can I pay by card?', 'Do you take checks?', 'Where is the cashier?', 'Is it free?'],
+        'Pay by card is the standard phrasing.'
+      ),
+      BUILD(
+        'Ask for the bill at a restaurant politely:',
+        ['Could', 'we', 'have', 'the', 'bill', 'please'],
+        ['please', 'Could', 'we', 'have', 'the', 'bill', 'can'],
+        'Could we have the bill, please is the polite British/international dining phrase.'
+      ),
+      MCQ(
+        '“Keep the change” means…',
+        'You are leaving the extra coins as a tip',
+        ['You are leaving the extra coins as a tip', 'You want all coins back', 'The coins are broken', 'You have no money'],
+        'Keep the change tells the server or driver they may retain the change as a gratuity.'
+      ),
+      MATCH(
+        'Pair each shopping phrase with what you are asking.',
+        [
+          { left: 'How much is this', right: 'Asking the price' },
+          { left: 'Too expensive', right: 'Evaluating the cost as high' },
+          { left: 'By card', right: 'Payment method' },
+          { left: 'In cash', right: 'Paying with paper and coins' },
+          { left: 'The bill please', right: 'Asking to pay the restaurant' },
+        ],
+        'How much asks the price, expensive evaluates it, and by card chooses the payment.'
+      ),
+      LISTEN(
+        'Listen and type the customer’s price question.',
+        'How much is this jacket',
+        ['How much is this jacket'],
+        'How much is + the specific noun: How much is this jacket?'
+      ),
+      SPEAK(
+        'Ask for the restaurant bill, out loud.',
+        'Could we have the bill please',
+        'cood wee hav thuh BIL pleez: soft, courteous, and polite.'
+      ),
+    ],
+  },
 };

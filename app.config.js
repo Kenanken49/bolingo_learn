@@ -8,6 +8,29 @@
  * previously published update group: an OTA release only reaches builds whose
  * runtime version matches.
  */
+const TEST_ANDROID_APP_ID = 'ca-app-pub-3940256099942544~3347511713';
+const TEST_IOS_APP_ID = 'ca-app-pub-3940256099942544~1458002511';
+
+// A "production" build with Google's sample App IDs earns nothing and risks
+// an invalid-traffic flag on the account once real units are mixed in. Fail
+// the build loudly instead of shipping a silent zero-revenue release. Preview
+// and development builds keep the sample ids on purpose (store review too).
+if (process.env.EAS_BUILD_PROFILE === 'production' && process.env.ADMOB_ALLOW_TEST_IN_PRODUCTION !== '1') {
+  const missing = [];
+  if (!process.env.ADMOB_ANDROID_APP_ID) missing.push('ADMOB_ANDROID_APP_ID');
+  if (!process.env.ADMOB_IOS_APP_ID) missing.push('ADMOB_IOS_APP_ID');
+  if (!process.env.EXPO_PUBLIC_ADMOB_REWARDED_ANDROID) missing.push('EXPO_PUBLIC_ADMOB_REWARDED_ANDROID');
+  if (!process.env.EXPO_PUBLIC_ADMOB_REWARDED_IOS) missing.push('EXPO_PUBLIC_ADMOB_REWARDED_IOS');
+  if (missing.length > 0) {
+    throw new Error(
+      `[admob] production build needs real AdMob ids — missing: ${missing.join(', ')}. ` +
+        'Create them in the AdMob console, add them as EAS secrets (eas secret:create), and rebuild. ' +
+        'Only set ADMOB_ALLOW_TEST_IN_PRODUCTION=1 to ship a deliberately ad-free (sample-unit) release. ' +
+        'See docs/admob.md.'
+    );
+  }
+}
+
 module.exports = ({ config }) => ({
   ...config,
   name: 'Bolingo Learn',
@@ -25,6 +48,14 @@ module.exports = ({ config }) => ({
   runtimeVersion: { policy: 'appVersion' },
   updates: {
     url: 'https://u.expo.dev/7ceeed84-5e6b-4157-b515-b7adfba83ddb',
+    // The update *channel* is a request header, not a native field. EAS builds
+    // get it from the profile in eas.json; a local build (`expo prebuild` +
+    // gradlew) has no profile, so without this header `Updates.channel` is ""
+    // and every update check 404s. Set EXPO_UPDATES_CHANNEL for local release
+    // builds only — leaving it unset keeps EAS in charge of the channel.
+    ...(process.env.EXPO_UPDATES_CHANNEL
+      ? { requestHeaders: { 'expo-channel-name': process.env.EXPO_UPDATES_CHANNEL } }
+      : {}),
   },
   extra: {
     ...(config.extra ?? {}),
@@ -72,8 +103,8 @@ module.exports = ({ config }) => ({
     [
       'react-native-google-mobile-ads',
       {
-        androidAppId: process.env.ADMOB_ANDROID_APP_ID || 'ca-app-pub-3940256099942544~3347511713',
-        iosAppId: process.env.ADMOB_IOS_APP_ID || 'ca-app-pub-3940256099942544~1458002511',
+        androidAppId: process.env.ADMOB_ANDROID_APP_ID || TEST_ANDROID_APP_ID,
+        iosAppId: process.env.ADMOB_IOS_APP_ID || TEST_IOS_APP_ID,
       },
     ],
   ],

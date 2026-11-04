@@ -660,4 +660,319 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'french-adjectives': {
+    id: 'french-adjectives',
+    title: 'French Adjectives & Agreement',
+    theory: [
+      'French adjectives match the gender and number of the noun. Masculine singular: un grand garçon; feminine singular adds -e: une grande fille. Plural adds -s: des grands garçons, des grandes filles.',
+      'Most adjectives follow the noun (un livre rouge), but BANGS adjectives (beauty, age, number, goodness, size) go before: un beau tableau, un vieux livre. Comparatives use plus... que (more... than) or moins... que (less... than).',
+    ],
+    questions: [
+      MCQ(
+        'Which form of "grand" goes with "une maison" (a house, fem.)?',
+        'grande',
+        ['grande', 'grand', 'grands', 'grandes'],
+        'Maison is feminine singular, so add -e: une grande maison.'
+      ),
+      BUILD(
+        'Say “The boy is tall” in French:',
+        ['Le', 'garçon', 'est', 'grand'],
+        ['grand', 'Le', 'garçon', 'est', 'grande'],
+        'Garçon is masculine, so it takes grand without -e.'
+      ),
+      MCQ(
+        '“Plus rapide que le train” means…',
+        'Faster than the train',
+        ['Faster than the train', 'Slower than the train', 'As fast as the train', 'Behind the train'],
+        'Plus... que is the comparative of superiority: faster than.'
+      ),
+      BUILD(
+        'Say “She is as tall as Marie”:',
+        ['Elle', 'est', 'aussi', 'grande', 'que', 'Marie'],
+        ['que', 'Elle', 'est', 'aussi', 'grande', 'Marie', 'plus'],
+        'Aussi... que expresses equality with adjectives: as tall as.'
+      ),
+      MCQ(
+        'What is the irregular comparative of "bon" (good)?',
+        'Meilleur',
+        ['Meilleur', 'Plus bon', 'Pire', 'Moindre'],
+        'Bon becomes meilleur (better), just as bueno becomes mejor in Spanish.'
+      ),
+      MATCH(
+        'Pair each French adjective with its opposite.',
+        [
+          { left: 'Grand', right: 'Petit' },
+          { left: 'Bon', right: 'Mauvais' },
+          { left: 'Rapide', right: 'Lent' },
+          { left: 'Chaud', right: 'Froid' },
+          { left: 'Facile', right: 'Difficile' },
+        ],
+        'French adjective opposites: grand/petit, bon/mauvais, rapide/lent.'
+      ),
+      LISTEN(
+        'Listen and type the comparison.',
+        'Plus rapide que le train',
+        ['Plus rapide que le train'],
+        'Plus is followed by que to introduce what you compare against.'
+      ),
+      SPEAK(
+        'Say “The boy is tall” out loud in French.',
+        'Le garçon est grand',
+        'luh gar-SON ay GRAN: the final d in grand is silent.'
+      ),
+    ],
+  },
+
+  'french-politeness': {
+    id: 'french-politeness',
+    title: 'French Politeness & Courtesy',
+    theory: [
+      'French conversation requires polite framing. S’il vous plaît (please - formal) opens requests; Pardon or Excusez-moi gains attention or apologizes for an interruption.',
+      'Désolé means sorry. Thank with Merci beaucoup (Thank you very much); reply formally with Je vous en prie (You are very welcome) or casually with De rien (It’s nothing) or Pas de problème (No problem).',
+    ],
+    questions: [
+      MCQ(
+        'You bump into someone on the metro. What do you say?',
+        'Pardon',
+        ['Pardon', 'Merci', 'De rien', 'Au revoir'],
+        'Pardon is the immediate, instinctive French word when bumping into someone.'
+      ),
+      BUILD(
+        'Say “Excuse me, sir” politely:',
+        ['Excusez-moi', 'monsieur'],
+        ['monsieur', 'Excusez-moi', 'Merci', 'Bonjour'],
+        'Excusez-moi is the formal imperative with the pronoun vous.'
+      ),
+      MCQ(
+        '“Je vous en prie” means…',
+        'You are welcome (formal)',
+        ['You are welcome (formal)', 'I am sorry', 'Please leave', 'Good night'],
+        'Je vous en prie is the refined, respectful way to answer merci.'
+      ),
+      BUILD(
+        'Say “Thank you very much”:',
+        ['Merci', 'beaucoup'],
+        ['beaucoup', 'Merci', 'Bien', 'De'],
+        'Merci beaucoup is the standard heartfelt thank-you.'
+      ),
+      MCQ(
+        'A colleague says “Merci”. What is a casual, friendly answer?',
+        'De rien',
+        ['De rien', 'S’il vous plaît', 'Désolé', 'Pardon'],
+        'De rien (it is nothing) or Pas de souci is everyday and natural.'
+      ),
+      MATCH(
+        'Pair each polite French phrase with its meaning.',
+        [
+          { left: 'Excusez-moi', right: 'Excuse me' },
+          { left: 'Désolé', right: 'Sorry' },
+          { left: 'Merci beaucoup', right: 'Thank you very much' },
+          { left: 'Je vous en prie', right: 'You are welcome (formal)' },
+          { left: 'De rien', right: 'You are welcome (casual)' },
+        ],
+        'Excusez-moi gets attention; désolé apologizes; je vous en prie and de rien answer thanks.'
+      ),
+      LISTEN(
+        'Listen and type the sincere French apology.',
+        'Je suis vraiment désolé',
+        ['Je suis vraiment désolé'],
+        'Vraiment = truly / really; désolé = sorry.'
+      ),
+      SPEAK(
+        'Say “You are welcome” out loud casually.',
+        'De rien',
+        'duh ree-EN: two quick beats, nasal on the final en.'
+      ),
+    ],
+  },
+
+  'french-introductions': {
+    id: 'french-introductions',
+    title: 'French Introductions & Origins',
+    theory: [
+      'Introduce yourself with Je m’appelle... (My name is...). Ask someone with Comment vous vous appelez ? (formal) or Comment tu t’appelles ? (casual).',
+      'Origins use venir de: D’où venez-vous ? -> Je viens de France / Je viens du Canada (de + le = du). Residence uses habiter: J’habite à Paris. Close with Enchanté (Pleased to meet you; women write enchantée).',
+    ],
+    questions: [
+      MCQ(
+        '“Comment vous vous appelez ?” asks for…',
+        'Your name (formal)',
+        ['Your name (formal)', 'Your age', 'Where you live', 'Your country'],
+        'Comment vous vous appelez ? is the formal polite way to ask someone’s name.'
+      ),
+      BUILD(
+        'Say “My name is Pierre”:',
+        ['Je', 'm’appelle', 'Pierre'],
+        ['Pierre', 'Je', 'm’appelle', 'Tu', 't’appelles'],
+        'Je m’appelle + name is the universal French introduction.'
+      ),
+      MCQ(
+        '“D’où venez-vous ?” means…',
+        'Where do you come from?',
+        ['Where do you come from?', 'Where are you going?', 'Where do you live?', 'What is your job?'],
+        'D’où = from where; venez-vous = do you come (venir).'
+      ),
+      BUILD(
+        'Say “I live in Paris”:',
+        ['J’habite', 'à', 'Paris'],
+        ['Paris', 'J’habite', 'à', 'Je', 'viens'],
+        'J’habite + à + city: J’habite à Paris.'
+      ),
+      MCQ(
+        'Someone you just met says “Enchanté”. What does it mean?',
+        'Pleased to meet you',
+        ['Pleased to meet you', 'Goodbye', 'Good morning', 'Have a nice day'],
+        'Enchanté (literally "enchanted") is the classic French handshake phrase.'
+      ),
+      MATCH(
+        'Pair each introduction line with its role.',
+        [
+          { left: 'Je m’appelle', right: 'Stating your name' },
+          { left: 'Je viens de', right: 'Stating where you are from' },
+          { left: 'J’habite à', right: 'Stating where you live' },
+          { left: 'Enchanté', right: 'Pleased to meet you' },
+          { left: 'D’où viens-tu', right: 'Where are you from (casual)' },
+        ],
+        'Je m’appelle gives your name, je viens de gives your roots, and j’habite gives your town.'
+      ),
+      LISTEN(
+        'Listen and type the classic introduction greeting.',
+        'Enchanté de faire votre connaissance',
+        ['Enchanté de faire votre connaissance'],
+        'Enchanté de faire votre connaissance = Delighted to make your acquaintance.'
+      ),
+      SPEAK(
+        'Say where you come from, out loud in French.',
+        'Je viens de France',
+        'zhuh vee-EN duh FRAHNS: keep the nasal en clean and round.'
+      ),
+    ],
+  },
+
+  'french-language': {
+    id: 'french-language',
+    title: 'French Languages & Understanding',
+    theory: [
+      'Ask about language ability with parler: Parlez-vous anglais ? (Do you speak English?) or casual Tu parles français ?. Reply with Je parle un peu français (I speak a little French).',
+      'If you lose the thread in Paris, rescue yourself with: Je ne comprends pas (I don’t understand), Pouvez-vous répéter, s’il vous plaît ? (Can you repeat, please?), and Parlez plus lentement (Speak more slowly).',
+    ],
+    questions: [
+      MCQ(
+        '“Je ne comprends pas” means…',
+        'I do not understand',
+        ['I do not understand', 'I do not know', 'I do not speak', 'I am not listening'],
+        'Comprendre = to understand. Je ne comprends pas is the essential tourist phrase.'
+      ),
+      BUILD(
+        'Ask “Do you speak English?” formally:',
+        ['Parlez-vous', 'anglais'],
+        ['anglais', 'Parlez-vous', 'Tu', 'parles'],
+        'Parlez-vous anglais ? uses the polite inverted vous form.'
+      ),
+      MCQ(
+        'You need someone to speak more slowly. What do you say?',
+        'Plus lentement, s’il vous plaît.',
+        ['Plus lentement, s’il vous plaît.', 'Plus vite, s’il vous plaît.', 'Je parle bien.', 'Au revoir.'],
+        'Lentement = slowly; plus lentement = more slowly.'
+      ),
+      BUILD(
+        'Say “I speak a little French”:',
+        ['Je', 'parle', 'un', 'peu', 'français'],
+        ['français', 'Je', 'parle', 'un', 'peu', 'beaucoup'],
+        'Un peu = a little; beaucoup = a lot.'
+      ),
+      MCQ(
+        '“Pouvez-vous répéter ?” asks…',
+        'Can you repeat?',
+        ['Can you repeat?', 'Can you write it down?', 'Can you call a taxi?', 'Can you speak louder?'],
+        'Répéter = to repeat. Pouvez-vous is the polite modal request.'
+      ),
+      MATCH(
+        'Pair each language phrase with what you are communicating.',
+        [
+          { left: 'Je ne comprends pas', right: 'I do not understand' },
+          { left: 'Plus lentement', right: 'Speak slower' },
+          { left: 'Pouvez-vous répéter', right: 'Can you repeat' },
+          { left: 'Un peu', right: 'A little bit' },
+          { left: 'Parlez-vous anglais', right: 'Do you speak English' },
+        ],
+        'Je ne comprends pas signals confusion; plus lentement and répéter guide the speaker.'
+      ),
+      LISTEN(
+        'Listen and type the plea for a slower pace in French.',
+        'Parlez plus lentement s’il vous plaît',
+        ['Parlez plus lentement s’il vous plaît', 'Parlez plus lentement sil vous plait'],
+        'Parlez = speak; plus lentement = more slowly; s’il vous plaît = please.'
+      ),
+      SPEAK(
+        'Admit you speak a little French, out loud.',
+        'Je parle un peu français',
+        'zhuh PARL oon PUH frahn-SAY: un peu is the modest way to start speaking.'
+      ),
+    ],
+  },
+
+  'french-money': {
+    id: 'french-money',
+    title: 'French Shopping & Money',
+    theory: [
+      'In French shops and markets, ask the price with Combien ça coûte ? (How much does that cost?) or simply C’est combien ? (How much is it?).',
+      'Comment on prices with C’est cher (It’s expensive) or Ce n’est pas cher (It’s not expensive). At payment, ask: Je peux payer par carte ? (Can I pay by card?) or en espèces (in cash). At a café, ask L’addition, s’il vous plaît (The check, please).',
+    ],
+    questions: [
+      MCQ(
+        '“Combien ça coûte ?” asks…',
+        'How much does it cost?',
+        ['How much does it cost?', 'What is it?', 'Where is the shop?', 'When do you open?'],
+        'Combien = how much; coûter = to cost. It is the primary shopping question.'
+      ),
+      BUILD(
+        'Say “It is too expensive”:',
+        ['C’est', 'trop', 'cher'],
+        ['cher', 'C’est', 'trop', 'bon', 'marché'],
+        'Trop = too; cher = expensive.'
+      ),
+      MCQ(
+        'How do you ask “Can I pay by card?” in French?',
+        'Je peux payer par carte ?',
+        ['Je peux payer par carte ?', 'Avez-vous de la monnaie ?', 'C’est combien ?', 'Où est la caisse ?'],
+        'Carte = card; payer = to pay. Par carte is the standard prepositional phrase.'
+      ),
+      BUILD(
+        'Ask for the check at a French bistro:',
+        ['L’addition', 's’il', 'vous', 'plaît'],
+        ['plaît', 'L’addition', 's’il', 'vous', 'Le'],
+        'L’addition, s’il vous plaît = The bill/addition, please.'
+      ),
+      MCQ(
+        '“En espèces” means…',
+        'In cash',
+        ['In cash', 'By check', 'On credit', 'Tax-free'],
+        'Espèces = cash coins and bills. Par carte = by card.'
+      ),
+      MATCH(
+        'Pair each French shopping phrase with its meaning.',
+        [
+          { left: 'Combien ça coûte', right: 'How much does it cost' },
+          { left: 'Trop cher', right: 'Too expensive' },
+          { left: 'Par carte', right: 'By card' },
+          { left: 'En espèces', right: 'In cash' },
+          { left: 'L’addition', right: 'The restaurant check' },
+        ],
+        'Combien asks the cost, cher evaluates it, and l’addition closes the meal.'
+      ),
+      LISTEN(
+        'Listen and type the common question asked at the market.',
+        'C’est combien s’il vous plaît',
+        ['C’est combien s’il vous plaît', 'Cest combien sil vous plait'],
+        'C’est combien = How much is it; s’il vous plaît = please.'
+      ),
+      SPEAK(
+        'Ask for the check at a restaurant, out loud.',
+        'L’addition s’il vous plaît',
+        'lah-dee-SYON seel voo PLAY: crisp and polite, understood instantly in every café.'
+      ),
+    ],
+  },
 };

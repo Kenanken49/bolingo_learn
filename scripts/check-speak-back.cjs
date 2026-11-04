@@ -106,6 +106,34 @@ check('a pile of extra words reads worse than a clean attempt', () => {
   assert.ok(noisy >= 0);
 });
 
+/* ---- A device without a recogniser must not strand the session ---- */
+const speakAnswer = fs.readFileSync(path.join(ROOT, 'components', 'SpeakAnswer.tsx'), 'utf8');
+
+check('the speaking exercise offers a typed fallback', () => {
+  assert.ok(
+    speakAnswer.includes("accessibilityLabel=\"Type the phrase instead of speaking\""),
+    'SpeakAnswer must expose a typed fallback; without it a denied or missing microphone leaves the item unpassable.'
+  );
+});
+
+check('the typed fallback is graded by the same scorer', () => {
+  assert.ok(
+    /scoreSpeakBack\(phrase, typed\)/.test(speakAnswer),
+    'typed answers must run through scoreSpeakBack, not a looser comparison.'
+  );
+  assert.ok(
+    /grade\(scoreSpeakBack\(phrase, typed\), 'typed'\)/.test(speakAnswer),
+    'the typed attempt must be marked as typed when it is graded.'
+  );
+});
+
+check('a typed pass never claims pronunciation was scored', () => {
+  assert.ok(
+    speakAnswer.includes('pronunciation was not scored') && speakAnswer.includes('Typed'),
+    'the result panel must say a typed answer was not scored for pronunciation.'
+  );
+});
+
 if (failures > 0) {
   console.error(`\n${failures} speak-back check(s) failed.`);
   process.exitCode = 1;

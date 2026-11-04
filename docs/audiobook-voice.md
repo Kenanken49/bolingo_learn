@@ -11,11 +11,89 @@ secrets, never from `EXPO_PUBLIC_*` variables, and the TTS API key never reaches
 the app bundle. Learners do not choose this voice in Settings; it is an
 operator/deployment setting, and the preview command is the audition tool.
 
+## What gets narrated
+
+An upload is narrated **in full**: the extracted text (up to 60k characters —
+roughly the first 40 minutes of a book), not a reading of its quiz questions.
+Every provider caps one request at `MAX_TTS_CHARS` (4,000), so the text is
+split on sentence boundaries into ordered parts and synthesized three at a
+time:
+
+- parts land at `<user_id>/audio/<lesson_id>/part-NN.mp3`;
+- the lesson stores them as ordered `audio_chunks`, with `audio_url` pointing at
+  part 0 so older players still play something;
+- a part that fails is recorded as `audio_error` — the book is never silently
+  spliced around a gap;
+- per-question clips (`<lesson_id>/<n>.mp3`) stay for review navigation when
+  quiz nodes exist.
+
+`profiles.upload_output` decides what an upload produces (Settings → Upload
+output; see `migrations_upload_output.sql`):
+
+| Value | Produces |
+| --- | --- |
+| `both` (default) | the full audiobook plus 4-5 quiz nodes |
+| `audiobook` | narration only — no LLM spend; the lesson is tagged `audiobook_only` and stays out of the revision-node list, appearing instead under **Your Audiobooks** on the path |
+| `nodes` | quiz nodes only — no TTS spend |
+
+`process-upload` reads the preference server-side, so it applies to every device
+and a client cannot change it per upload. The free tier is pinned to `nodes`:
+its narration is the on-device voice over the quiz prompts, so an audiobook-only
+choice there would produce neither audio nor nodes (the picker disables it too).
+
+An `audiobook_only` lesson is a listenable book, not a revision node: it is
+filtered out of the path list and rendered under **Your Audiobooks**, where
+tapping it opens the chapter player for that specific upload
+(`loadLessonAudiobook`), not merely the newest one.
+
+## Converting an existing upload (delete its nodes, keep one audiobook)
+
+A book uploaded before the preference existed (or uploaded as `both`) already
+has quiz nodes. **My uploads → 🎧 Audiobook only (delete quiz nodes)** turns
+it into precisely one audiobook without re-uploading:
+
+- the lesson's `questions` rows and its revision pack are deleted;
+- the lesson is flagged `audiobook_only` and its per-question clips are
+dropped, so Listen plays the full narration parts in order — nothing else;
+- the action refuses when the full narration is not ready yet, so a book can
+never end up with no nodes and no voice.
+
+Needs `supabase/migrations_audiobook_only_convert.sql` (owner-only UPDATE on
+their generated lessons). For future uploads, pick **Audiobook only** in
+Settings → Upload output instead — then no nodes are ever built.
+
 ## ElevenLabs voice setup
 
 The audiobook uses **one** configured ElevenLabs voice for the full mix and
 every segment. It does not switch between Livia, Bingo and Zora, and it does not
 clone or train a voice at runtime.
+
+The default narrator is **George — "Warm, Captivating Storyteller"**
+(`JBFqnCBsd6RMkjVDRZzb`, premade, British English, narrative use). `TTS_VOICE_ID`
+still decides the voice for a lesson whose learner never picked one; a Premium
+learner's choice from the picker wins when it is set.
+
+Premium learners choose between the narrators in `NARRATOR_VOICES`
+(`supabase/functions/_shared/audiobookVoice.ts`): George, Alice, Lily, Brian and
+Daniel in English, plus Mohammed for Swahili. The picker offers only ids that
+exist in the deployment's ElevenLabs workspace — an id that is missing there
+synthesises nothing, so adding a narrator is a workspace step first and a code
+step second. `npm run audio:preflight` verifies one id at a time; run it with
+`TTS_VOICE_ID` set to each narrator before shipping a new entry.
+
+Two things follow from choosing a voice by id.
+
+- **Add it to the profile first.** A Voice Library ID is not synthesizable until
+  it is in the workspace the API key belongs to; `GET /v1/voices/<id>` answers
+  `A voice with ID '…' was not found` and `npm run audio:preflight` stops there.
+  Open the voice page, add it to the profile, then re-run the preflight — step 4
+  below is what proves the account really holds it.
+- **Its licence is still your call.** Adding a library voice accepts the
+  creator's sharing terms; item 1 below is not optional. "Available in the
+  library" is not the same as "cleared for a paid learning app."
+
+If the library voice is not cleared, set `TTS_VOICE_ID` to a voice you already
+own — nothing else in the pipeline changes.
 
 1. **Use a commercial-capable account.** Confirm your ElevenLabs plan permits
    commercial use in a paid learning app, and that the chosen voice is licensed
@@ -37,6 +115,11 @@ clone or train a voice at runtime.
 4. **Pick the model.** `eleven_multilingual_v2` is the quality-first choice for
    emotional narration; `eleven_turbo_v2_5` is the lower-latency default.
    Confirm the model supports the language of the material before a full upload.
+   The English narrators are verified for English (plus a handful of turbo v2.5 languages) and
+   has no Swahili verification, and neither turbo v2.5 nor multilingual v2
+   supports Swahili at all — so Swahili lesson audio stays on the bundled clips
+   and the device voice (`lib/pronunciation.ts`), and a premium learner's Swahili
+   upload needs a Swahili-capable voice and model before it can be narrated.
 5. **Set the voice settings.** `TTS_STABILITY`, `TTS_SIMILARITY_BOOST`,
    `TTS_STYLE` and `TTS_SPEAKER_BOOST` are sent as `voice_settings`. The defaults
    (`0.5`, `0.75`, `0`, `true`) are a neutral starting point; audition them
@@ -219,7 +302,7 @@ Details:
 | --- | --- | --- |
 | `TTS_PROVIDER` | `elevenlabs` | `elevenlabs` or `openai` |
 | `TTS_MODEL_ID` | `eleven_turbo_v2_5` (ElevenLabs) / `tts-1` (OpenAI) | ElevenLabs ids start with `eleven_`; OpenAI accepts `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts` |
-| `TTS_VOICE_ID` | `21m00Tcm4TlvDq8ikWAM` | ElevenLabs voice id |
+| `TTS_VOICE_ID` | `JBFqnCBsd6RMkjVDRZzb` (George) | ElevenLabs voice id |
 | `TTS_VOICE` | `alloy` | OpenAI voice: `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer` |
 | `TTS_OUTPUT_FORMAT` | `mp3_44100_128` | MP3 only: `mp3_44100_128`, `mp3_44100_192`, `mp3_22050_32`, `mp3_44100_64`, `mp3_44100_96` |
 | `TTS_STABILITY` | `0.5` | ElevenLabs voice setting, `0`–`1` |
@@ -308,11 +391,16 @@ same sample alongside their generated full mix and segments.
 The sample text is the default `AUDIOBOOK_VOICE_DEFAULTS.preview.fullMix` line,
 and the checked-in recording is the only generated preview artifact that belongs
 in the repository. Regenerate it after changing `TTS_VOICE_ID` or the preview
-line, then run the audiobook check:
+line, then run the audiobook check. The clip in the repository was recorded with
+the previous narrator; regenerate it with the default (George) so the audition
+matches what a new learner hears:
 
 ```bash
-npm run audio:preview -- --out ./.preview-audio
+TTS_VOICE_ID=JBFqnCBsd6RMkjVDRZzb npm run audio:preview -- --out ./.preview-audio
 cp .preview-audio/full-mix.mp3 assets/audio/premium-narrator-sample.mp3
+```
+
+```bash
 npm run check:audiobook-voice
 ```
 
@@ -416,7 +504,8 @@ Before spending anything the command:
 - rejects a lesson that is not linked to an upload, or an upload that is not
   `ready`;
 - resolves the voice through `audiobookVoiceFromEnv()`, requires the ElevenLabs
-  provider, and fails if `TTS_VOICE_ID` is still the built-in placeholder;
+  provider, and fails if `TTS_VOICE_ID` is still ElevenLabs' stock demo voice
+  (`21m00Tcm4TlvDq8ikWAM`, exported as `STOCK_DEMO_VOICE_ID`);
 - looks the voice up with the configured key, so a key from the wrong workspace
   fails before synthesis;
 - checks the remaining ElevenLabs character quota against the lesson's total
@@ -470,7 +559,7 @@ npm run audio:preflight
 This is the deployment gate for the configured ElevenLabs voice. It:
 
 1. Validates the shared `TTS_*` configuration and refuses a non-ElevenLabs
-   provider or the built-in placeholder voice.
+   provider or the stock demo voice.
 2. Calls `GET /v1/user` with the configured key and records the key's
    `workspace_id`.
 3. Calls `GET /v1/voices/<TTS_VOICE_ID>` to confirm the voice is readable.

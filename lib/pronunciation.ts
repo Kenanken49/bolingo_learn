@@ -26,7 +26,10 @@ import {
  *     metronome-paced engine does not.
  *  5. Character pacing: Livia models slowly, Bingo narrates at conversational speed.
  *
- * On-device only: no API key, no per-play cost, still works offline.
+ * Device-first: no API key, no per-play cost, still works offline. A studio
+ * voice layer (ElevenLabs, see `lib/studioVoices.ts` and
+ * `docs/character-voices.md`) may be injected with `setStudioLinePlayer`; when
+ * it is missing, fails, or cannot play, this path speaks unchanged.
  */
 
 export type Mentor = MentorId;
@@ -569,14 +572,53 @@ export interface PronounceResult {
   /** True when a related-language voice stood in for a missing native one. */
   approximate: boolean;
   voiceName?: string;
+  /** True when the line played on the ElevenLabs studio voice, not the device. */
+  studio?: boolean;
   /** Effective rate after phrase-length shaping (exposed for QA). */
   rate?: number;
 }
 
 let generation = 0;
 
+/* ------------------------------------------------------------------ *
+ * Studio voice seam
+ * ------------------------------------------------------------------ */
+
+/** One line a character is about to say, in the language it must be said in. */
+export interface StudioLine {
+  character: Mentor;
+  text: string;
+  /** Base language of the line: en / es / fr / de / sw. */
+  language: string;
+  slow: boolean;
+}
+
+/**
+ * Optional ElevenLabs layer: returns the studio voice's name when it played the
+ * line, or null to let the device voice speak. Injected from the app entry
+ * point so this module stays free of React Native audio and network imports —
+ * the Node guards run it with no player installed, which is exactly the
+ * offline behaviour the app must keep.
+ */
+export type StudioLinePlayer = (line: StudioLine) => Promise<string | null>;
+
+let studioPlayer: StudioLinePlayer | null = null;
+let studioStopper: (() => void) | null = null;
+
+/** Install (or clear) the studio voice layer. Safe to call on every launch. */
+export function setStudioLinePlayer(
+  player: StudioLinePlayer | null,
+  stopper: (() => void) | null = null
+): void {
+  studioPlayer = player;
+  studioStopper = stopper;
+}
+
 export async function stopSpeaking(): Promise<void> {
   generation += 1;
+  try {
+    studioStopper?.();
+  } catch {}
   try {
     await Speech.stop();
   } catch {}
@@ -667,6 +709,43 @@ export async function speakAs({
 
   const style = CHARACTER_VOICE[character];
   const rate = humanRate(slow ? style.slowRate : style.rate, phrase);
+
+  // Studio voice first (Livia, Bingo, Zora on ElevenLabs). Swahili, an outage
+  // or a signed-out learner returns null immediately and the device voice
+  // speaks — the lesson must never go quiet because a network call failed.
+  if (studioPlayer) {
+    let studioName: string | null = null;
+    try {
+      studioName = await studioPlayer({ character, text: phrase, language: language.base, slow });
+    } catch {
+      studioName = null;
+    }
+    if (token !== generation) {
+      return {
+        spoken: false,
+        locale: resolved.locale,
+        spokenText: phrase,
+        hasVoiceList: resolved.hasVoiceList,
+        matchedVoice: resolved.matchedVoice,
+        approximate: resolved.approximate,
+        rate,
+      };
+    }
+    if (studioName) {
+      return {
+        spoken: true,
+        locale: resolved.locale,
+        spokenText: phrase,
+        hasVoiceList: true,
+        matchedVoice: true,
+        approximate: false,
+        voiceName: studioName,
+        studio: true,
+        rate,
+      };
+    }
+  }
+
   const ok = await speakChunk(phrase, {
     locale: resolved.locale,
     rate,
@@ -715,6 +794,36 @@ export async function speakSegments(
     if (token !== generation) break;
     const style = CHARACTER_VOICE[character];
     const rate = humanRate(slow ? style.slowRate : style.rate, segment.text);
+
+    if (studioPlayer) {
+      let studioName: string | null = null;
+      try {
+        studioName = await studioPlayer({
+          character,
+          text: segment.text,
+          language: segment.preset.base,
+          slow,
+        });
+      } catch {
+        studioName = null;
+      }
+      if (token !== generation) break;
+      if (studioName) {
+        results.push({
+          spoken: true,
+          locale: resolved.locale,
+          spokenText: segment.text,
+          hasVoiceList: true,
+          matchedVoice: true,
+          approximate: false,
+          voiceName: studioName,
+          studio: true,
+          rate,
+        });
+        continue;
+      }
+    }
+
     const ok = await speakChunk(segment.text, {
       locale: resolved.locale,
       rate,

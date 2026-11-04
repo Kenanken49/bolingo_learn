@@ -10,7 +10,7 @@ the offline fallback.
 | Piece | Location | Role |
 | --- | --- | --- |
 | Lesson banks | `lib/languages.ts`, `lib/*-plus.ts` | Source of truth at build time, offline fallback at runtime |
-| Migration + seed | [`supabase/migrations_language_catalog.sql`](../supabase/migrations_language_catalog.sql) | Creates the tables and inserts the 86 built-in lessons (generated) |
+| Migration + seed | [`supabase/migrations_language_catalog.sql`](../supabase/migrations_language_catalog.sql) | Creates the tables and inserts the 104 built-in lessons (generated) |
 | Published transcript snapshot | [`content/published/language-lessons.offline.json`](../content/published/language-lessons.offline.json), [`lib/publishedTranscriptLessons.ts`](../lib/publishedTranscriptLessons.ts) | Reviewed release content for remote-only lessons, bundled so path nodes open offline |
 | Loader | [`lib/languageCatalog.ts`](../lib/languageCatalog.ts) | Reads Supabase, validates rows, merges over the bundle, caches |
 | Path | `lib/curriculum.ts` | Which lessons appear in which unit, and their order (still code) |
@@ -26,7 +26,7 @@ Two tables:
 
 ## One-time setup
 
-The hosted Bolingo Learn project already has this migration applied (6 courses, 86
+The hosted Bolingo Learn project already has this migration applied (6 courses, 104
 built-in lessons, plus the published FSI transcript lesson `swahili-fsi-01`).
 These steps are for a fresh environment or after rebuilding the database.
 
@@ -36,7 +36,7 @@ These steps are for a fresh environment or after rebuilding the database.
 3. Verify:
 
    ```sql
-   select count(*) from public.language_lessons where published;  -- 86 built-in; 87 with swahili-fsi-01
+   select count(*) from public.language_lessons where published;  -- 104 built-in; 105 with swahili-fsi-01
    select course_id, count(*) from public.language_lessons where published group by 1 order by 1;
    ```
 

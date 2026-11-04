@@ -657,4 +657,319 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'spanish-adjectives': {
+    id: 'spanish-adjectives',
+    title: 'Spanish Adjectives & Agreement',
+    theory: [
+      'Adjectives in Spanish match the noun they describe in gender and number. Masculine: el chico alto (the tall boy), feminine: la chica alta (the tall girl). Plural adds -s or -es: los chicos altos, las chicas altas.',
+      'Compare things with más... que (more... than) or menos... que (less... than): Este libro es más interesante que ese. For equality, use tan... como: Ella es tan alta como su hermano.',
+    ],
+    questions: [
+      MCQ(
+        'Which adjective form goes with "las casas" (the houses)?',
+        'blancas',
+        ['blancas', 'blanco', 'blanca', 'blancos'],
+        'Casas is feminine plural, so the adjective must be blancas.'
+      ),
+      BUILD(
+        'Say “The boy is tall”:',
+        ['El', 'chico', 'es', 'alto'],
+        ['alto', 'El', 'chico', 'es', 'alta'],
+        'Chico is masculine singular, so it takes alto, not alta.'
+      ),
+      MCQ(
+        '“Más rápido que el tren” means…',
+        'Faster than the train',
+        ['Faster than the train', 'Slower than the train', 'As fast as the train', 'Next to the train'],
+        'Más... que is the comparative of superiority: faster than.'
+      ),
+      BUILD(
+        'Say “He is as tall as Juan”:',
+        ['Él', 'es', 'tan', 'alto', 'como', 'Juan'],
+        ['como', 'Él', 'es', 'tan', 'alto', 'Juan', 'que'],
+        'Tan... como expresses equality: as tall as.'
+      ),
+      MCQ(
+        'What is the irregular comparative of "bueno" (good)?',
+        'Mejor',
+        ['Mejor', 'Más bueno', 'Mayor', 'Peor'],
+        'Bueno becomes mejor (better); malo becomes peor (worse).'
+      ),
+      MATCH(
+        'Pair each adjective with its opposite.',
+        [
+          { left: 'Grande', right: 'Pequeño' },
+          { left: 'Alto', right: 'Bajo' },
+          { left: 'Bueno', right: 'Malo' },
+          { left: 'Rápido', right: 'Lento' },
+          { left: 'Fácil', right: 'Difícil' },
+        ],
+        'Spanish adjectives pair up naturally: grande/pequeño, alto/bajo, rápido/lento.'
+      ),
+      LISTEN(
+        'Listen and type the comparison.',
+        'Más rápido que el tren',
+        ['Más rápido que el tren'],
+        'Más with an accent means more, and que introduces the second term of comparison.'
+      ),
+      SPEAK(
+        'Say “The boy is tall” out loud.',
+        'El chico es alto',
+        'El CHEE-co es AHL-to: keep the o vowel crisp and round.'
+      ),
+    ],
+  },
+
+  'spanish-politeness': {
+    id: 'spanish-politeness',
+    title: 'Spanish Politeness & Courtesy',
+    theory: [
+      'Politeness opens doors everywhere in the Spanish-speaking world. Use Disculpe to get attention or apologize politely to an adult, and Perdón when you bump into someone.',
+      'Con permiso is used when squeezing past someone or asking to leave the table. Close with Muchas gracias, and answer with De nada (you are welcome) or No hay problema (no problem).',
+    ],
+    questions: [
+      MCQ(
+        'You need to squeeze past someone in a crowded bus. What do you say?',
+        'Con permiso',
+        ['Con permiso', 'Hola', 'Adiós', 'De nada'],
+        'Con permiso is the universal polite phrase for asking to pass.'
+      ),
+      BUILD(
+        'Say “Excuse me, sir” politely:',
+        ['Disculpe', 'señor'],
+        ['señor', 'Disculpe', 'Gracias', 'Hola'],
+        'Disculpe is the formal usted imperative of disculpar.'
+      ),
+      MCQ(
+        '“Lo siento mucho” means…',
+        'I am very sorry',
+        ['I am very sorry', 'Thank you very much', 'You are welcome', 'Please wait'],
+        'Sentir = to feel. Lo siento mucho literally means “I feel it very much”.'
+      ),
+      BUILD(
+        'Say “Thank you very much”:',
+        ['Muchas', 'gracias'],
+        ['gracias', 'Muchas', 'Mucho', 'De'],
+        'Gracias is feminine plural, so it pairs with muchas, not mucho.'
+      ),
+      MCQ(
+        'Someone says “Gracias”. Which is a friendly reply?',
+        'No hay problema',
+        ['No hay problema', 'Por favor', 'Lo siento', 'Disculpe'],
+        'No hay problema (no problem) or De nada (you are welcome) replies to thanks.'
+      ),
+      MATCH(
+        'Pair each courtesy phrase with its English meaning.',
+        [
+          { left: 'Disculpe', right: 'Excuse me' },
+          { left: 'Lo siento', right: 'I am sorry' },
+          { left: 'Con permiso', right: 'Pardon me (passing)' },
+          { left: 'Muchas gracias', right: 'Thank you very much' },
+          { left: 'De nada', right: 'You are welcome' },
+        ],
+        'Disculpe gets attention; lo siento expresses apology; con permiso clears a path.'
+      ),
+      LISTEN(
+        'Listen and type the sincere apology.',
+        'Lo siento mucho',
+        ['Lo siento mucho'],
+        'Lo siento mucho is the empathetic way to express sympathy or apology.'
+      ),
+      SPEAK(
+        'Ask politely to pass by someone, out loud.',
+        'Con permiso',
+        'Con per-MEE-so: a clear, soft rhythm that lets everyone know you are passing through.'
+      ),
+    ],
+  },
+
+  'spanish-introductions': {
+    id: 'spanish-introductions',
+    title: 'Spanish Introductions & Origins',
+    theory: [
+      'Introduce yourself with Me llamo... (My name is...) or Mi nombre es... (My name is...). Ask someone with ¿Cómo te llamas? (casual) or ¿Cómo se llama usted? (formal).',
+      'Talk about origins with ser + de: ¿De dónde eres? -> Soy de España / Soy de México. Talk about where you live with vivir: Vivo en Madrid. Close an introduction warmly with ¡Mucho gusto! (Pleasure to meet you!).',
+    ],
+    questions: [
+      MCQ(
+        '“¿Cómo te llamas?” asks for…',
+        'Your name',
+        ['Your name', 'Your age', 'Your country', 'Your job'],
+        '¿Cómo te llamas? literally means “How do you call yourself?”.'
+      ),
+      BUILD(
+        'Say “My name is Carlos”:',
+        ['Me', 'llamo', 'Carlos'],
+        ['Carlos', 'Me', 'llamo', 'Te', 'llama'],
+        'Me llamo + name is the most natural way to state your name.'
+      ),
+      MCQ(
+        '“¿De dónde eres?” means…',
+        'Where are you from?',
+        ['Where are you from?', 'Where do you live?', 'Where are you going?', 'Where is the hotel?'],
+        'De dónde = from where; eres = you are (ser).'
+      ),
+      BUILD(
+        'Say “I am from Spain”:',
+        ['Soy', 'de', 'España'],
+        ['España', 'Soy', 'de', 'Estoy', 'en'],
+        'Origins take ser: Soy de España. Location takes estar.'
+      ),
+      MCQ(
+        'A new acquaintance says “Mucho gusto”. What does that mean?',
+        'Nice to meet you',
+        ['Nice to meet you', 'Good luck', 'Have a nice trip', 'Goodbye'],
+        'Mucho gusto = great pleasure / nice to meet you.'
+      ),
+      MATCH(
+        'Pair each introduction phrase with its function.',
+        [
+          { left: 'Me llamo', right: 'Stating your name' },
+          { left: 'Soy de', right: 'Stating your origin' },
+          { left: 'Vivo en', right: 'Stating your residence' },
+          { left: 'Mucho gusto', right: 'Pleased to meet you' },
+          { left: 'Encantado', right: 'Delighted (greeting)' },
+        ],
+        'Me llamo names you, soy de tells your origin, and vivo en tells where you live today.'
+      ),
+      LISTEN(
+        'Listen and type the polite introduction response.',
+        'Mucho gusto',
+        ['Mucho gusto'],
+        'Mucho gusto is the standard, warm response to meeting someone new.'
+      ),
+      SPEAK(
+        'Say where you are from, out loud.',
+        'Soy de España',
+        'Soy deh es-PAH-nyah: the ñ sounds like the "ny" in canyon.'
+      ),
+    ],
+  },
+
+  'spanish-language': {
+    id: 'spanish-language',
+    title: 'Spanish Languages & Understanding',
+    theory: [
+      'Ask about language ability with hablar: ¿Hablas inglés? (Do you speak English?) or formal ¿Habla usted español?. Reply with Hablo un poco de español (I speak a little Spanish).',
+      'When you are lost in a fast conversation, save yourself with: No entiendo (I don’t understand), ¿Puede hablar más despacio, por favor? (Can you speak slower, please?), and ¿Puede repetir? (Can you repeat?).',
+    ],
+    questions: [
+      MCQ(
+        '“No entiendo” means…',
+        'I do not understand',
+        ['I do not understand', 'I do not know', 'I do not speak', 'I cannot hear'],
+        'Entender = to understand. No entiendo is the first life-saving phrase in any language.'
+      ),
+      BUILD(
+        'Ask “Do you speak English?” casually:',
+        ['Hablas', 'inglés'],
+        ['inglés', 'Hablas', 'Habla', 'español'],
+        '¿Hablas inglés? — tú form with friend or peer.'
+      ),
+      MCQ(
+        'You need someone to slow down. What do you say?',
+        'Más despacio, por favor',
+        ['Más despacio, por favor', 'Más rápido, por favor', 'No me gusta', 'Adiós'],
+        'Despacio = slowly; más despacio = more slowly.'
+      ),
+      BUILD(
+        'Say “I speak a little Spanish”:',
+        ['Hablo', 'un', 'poco', 'de', 'español'],
+        ['español', 'Hablo', 'un', 'poco', 'de', 'mucho'],
+        'Hablo = I speak; un poco de = a little bit of.'
+      ),
+      MCQ(
+        '“¿Puede repetir?” asks…',
+        'Can you repeat?',
+        ['Can you repeat?', 'Can you write it down?', 'Can you call someone?', 'Can you translate?'],
+        'Repetir = to repeat. Puede repetir is the formal polite request.'
+      ),
+      MATCH(
+        'Pair each language phrase with what it communicates.',
+        [
+          { left: 'No entiendo', right: 'I do not understand' },
+          { left: 'Más despacio', right: 'Speak slower' },
+          { left: 'Puede repetir', right: 'Ask for a repetition' },
+          { left: 'Un poco', right: 'A little bit' },
+          { left: 'Hablo inglés', right: 'I speak English' },
+        ],
+        'No entiendo admits confusion; más despacio and puede repetir ask for help.'
+      ),
+      LISTEN(
+        'Listen and type the plea for a slower pace.',
+        'Más despacio por favor',
+        ['Más despacio por favor'],
+        'Más despacio = slower; por favor = please.'
+      ),
+      SPEAK(
+        'Say you speak a little Spanish, out loud.',
+        'Hablo un poco de español',
+        'AH-blo oon PO-co deh es-pah-NYOL: remember the h in hablo is completely silent.'
+      ),
+    ],
+  },
+
+  'spanish-money': {
+    id: 'spanish-money',
+    title: 'Spanish Shopping & Money',
+    theory: [
+      'In markets and shops, ask the price with ¿Cuánto cuesta? (singular item) or ¿Cuánto cuestan? (plural items). You can also ask ¿Cuánto es? (How much is it in total?).',
+      'Describe prices with caro (expensive) and barato (cheap): Es demasiado caro (It is too expensive). Payment: ¿Puedo pagar con tarjeta? (Can I pay with card?) or en efectivo (in cash). At a café, ask La cuenta, por favor (The check, please).',
+    ],
+    questions: [
+      MCQ(
+        '“¿Cuánto cuesta?” asks…',
+        'How much does it cost?',
+        ['How much does it cost?', 'Where is it?', 'Do you have more?', 'What time is it?'],
+        'Costar = to cost. ¿Cuánto cuesta? is the primary shopping question.'
+      ),
+      BUILD(
+        'Say “It is very expensive”:',
+        ['Es', 'muy', 'caro'],
+        ['caro', 'Es', 'muy', 'barato'],
+        'Es = it is, muy = very, caro = expensive. Barato is cheap.'
+      ),
+      MCQ(
+        'How do you say “Can I pay with a card?”',
+        '¿Puedo pagar con tarjeta?',
+        ['¿Puedo pagar con tarjeta?', '¿Tiene efectivo?', '¿Cuánto cuesta?', '¿Dónde está el banco?'],
+        'Tarjeta = card; pagar = to pay.'
+      ),
+      BUILD(
+        'Ask for the check at a restaurant:',
+        ['La', 'cuenta', 'por', 'favor'],
+        ['favor', 'La', 'cuenta', 'por', 'el'],
+        'La cuenta, por favor = The bill/check, please.'
+      ),
+      MCQ(
+        '“En efectivo” means…',
+        'In cash',
+        ['In cash', 'By credit card', 'With a discount', 'For free'],
+        'Efectivo = cash. Con tarjeta = by card.'
+      ),
+      MATCH(
+        'Pair each shopping phrase with its meaning.',
+        [
+          { left: 'Cuánto cuesta', right: 'Asking price' },
+          { left: 'Muy caro', right: 'Too expensive' },
+          { left: 'Muy barato', right: 'Very cheap' },
+          { left: 'Con tarjeta', right: 'By card' },
+          { left: 'La cuenta', right: 'The bill' },
+        ],
+        'Cuánto cuesta asks the price, caro/barato evaluates it, and la cuenta asks to pay.'
+      ),
+      LISTEN(
+        'Listen and type the question asked at the market.',
+        'Cuánto cuesta esto',
+        ['Cuánto cuesta esto'],
+        '¿Cuánto cuesta esto? = How much does this cost? Esto is the neutral "this".'
+      ),
+      SPEAK(
+        'Ask for the restaurant check, out loud.',
+        'La cuenta por favor',
+        'Lah KWEN-tah por fah-VOR: clear, courteous, and recognized in every restaurant.'
+      ),
+    ],
+  },
 };

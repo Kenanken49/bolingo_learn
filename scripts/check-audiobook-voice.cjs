@@ -153,7 +153,7 @@ check('defaults are a complete ElevenLabs MP3 configuration', () => {
   const config = voice.parseAudiobookVoiceConfig();
   assert.equal(config.provider, 'elevenlabs');
   assert.equal(config.modelId, 'eleven_turbo_v2_5');
-  assert.equal(config.voiceId, '21m00Tcm4TlvDq8ikWAM');
+  assert.equal(config.voiceId, 'JBFqnCBsd6RMkjVDRZzb');
   assert.equal(config.outputFormat, 'mp3_44100_128');
   assert.equal(config.stability, 0.5);
   assert.equal(config.similarityBoost, 0.75);
@@ -163,6 +163,23 @@ check('defaults are a complete ElevenLabs MP3 configuration', () => {
   assert.ok(config.preview.segment.length > 0);
   assert.ok(Object.isFrozen(config), 'config should be frozen');
   assert.ok(Object.isFrozen(config.preview), 'preview should be frozen');
+});
+
+check('learners can choose between real narrators', () => {
+  const voices = voice.NARRATOR_VOICES;
+  assert.ok(Array.isArray(voices) && voices.length >= 4, 'the picker must offer a real choice of narrators.');
+  const ids = new Set(voices.map((entry) => entry.id));
+  assert.equal(ids.size, voices.length, 'narrator ids must be unique.');
+  for (const entry of voices) {
+    assert.match(String(entry.id), /^[A-Za-z0-9]{20}$/, `${entry.name}: that is not an ElevenLabs voice id.`);
+    assert.ok(entry.name && entry.blurb && entry.tag, `${entry.name}: needs a name, blurb and accent tag.`);
+  }
+  assert.ok(
+    ids.has(voice.AUDIOBOOK_VOICE_DEFAULTS.voiceId),
+    'the default narrator must be one learners can also pick, or the picker opens on a voice it cannot show.'
+  );
+  assert.equal(voice.narratorVoice(voices[1].id)?.name, voices[1].name);
+  assert.equal(voice.narratorVoice('not-a-voice'), null, 'an unknown id must never reach TTS.');
 });
 
 check('environment names map onto one validated config', () => {
@@ -255,7 +272,7 @@ check('ElevenLabs request carries the voice, format and settings', () => {
     apiKey: 'test-key',
   });
   assert.match(request.url, /^https:\/\/api\.elevenlabs\.io\/v1\/text-to-speech\//);
-  assert.match(request.url, /21m00Tcm4TlvDq8ikWAM/);
+  assert.match(request.url, /JBFqnCBsd6RMkjVDRZzb/);
   assert.match(request.url, /output_format=mp3_44100_128/);
   assert.equal(request.headers['xi-api-key'], 'test-key');
   assert.equal(request.headers.Accept, 'audio/mpeg');
@@ -381,7 +398,12 @@ check('the Edge Function imports and uses the shared configuration', () => {
 
 check('both narration paths go through one voice builder', () => {
   const edge = read(EDGE_FUNCTION);
-  assert.match(edge, /async function synthesizeAudio\(narration: string\): Promise<Uint8Array>/);
+  // The builder takes the already-resolved narrator, so a Premium pick and the
+  // default voice travel one code path instead of two divergent ones.
+  assert.match(
+    edge,
+    /async function synthesizeAudio\(\s*narration: string,\s*config: ReturnType<typeof audiobookVoiceFromEnv>,\s*\): Promise<Uint8Array>/
+  );
   assert.equal(
     (edge.match(/buildSpeechRequest\(/g) ?? []).length,
     1,
@@ -392,13 +414,28 @@ check('both narration paths go through one voice builder', () => {
     1,
     'the voice must be resolved once per synthesis, not per narration kind'
   );
-  assert.match(edge, /const mix = await synthesizeAudio\(fullNarration\);/);
-  assert.match(edge, /const seg = await synthesizeAudio\(row\.prompt\.slice\(0, 1000\)\);/);
+  assert.match(edge, /const narratorConfig = withNarrator\(audiobookVoiceFromEnv\(/);
+  assert.match(edge, /const seg = await synthesizeAudio\(row\.prompt\.slice\(0, 1000\), narratorConfig\);/);
   assert.equal(
     (edge.match(/await synthesizeAudio\(/g) ?? []).length,
     2,
-    'there should be exactly one full-mix call and one segment call'
+    'there should be exactly one whole-book call site (per part) and one segment call site'
   );
+  // The audiobook is the whole upload: the extract is split on sentence
+  // boundaries into provider-sized parts, each narrated with the same voice.
+  assert.match(edge, /const parts = narrationParts\(text\);/);
+  assert.match(edge, /const mp3 = await synthesizeAudio\(part, narratorConfig\);/);
+  assert.match(
+    edge,
+    /const MAX_NARRATION_PARTS = Math\.ceil\(MAX_EXTRACT_CHARS \/ 4000\) \+ 8;/,
+    'a runaway guard must bound paid parts while still scaling with the extract window'
+  );
+  // A fixed ceiling silently dropped the end of a long book, which is exactly
+  // what "audiobook from the first page to the last" forbids.
+  assert.doesNotMatch(edge, /MAX_NARRATION_PARTS = 24/);
+  // Nothing is narrated behind the learner's back: the output mode is read
+  // server-side from the profile, not from the request body.
+  assert.match(edge, /const outputMode = !isPremium/);
 });
 
 check('the preview command uses the same builder and writes both samples', () => {
@@ -480,7 +517,7 @@ check('the full-lesson verifier reads a real uploaded lesson and uses the same b
   assert.match(verifier, /upload_source_id/);
   assert.match(verifier, /full-mix\.mp3/);
   assert.match(verifier, /segments\//);
-  assert.match(verifier, /AUDIOBOOK_VOICE_DEFAULTS\.voiceId/);
+  assert.match(verifier, /voice\.STOCK_DEMO_VOICE_ID/);
   assert.match(verifier, /--allow-default-voice/);
   assert.match(verifier, /--plan/);
   assert.match(verifier, /--list/);

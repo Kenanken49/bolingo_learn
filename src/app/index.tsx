@@ -20,7 +20,7 @@ import {
   type ContentRightsItemId,
 } from '../../lib/contentRights';
 import { FREE_WORD_LIMIT, PREMIUM_MONTHLY_WORD_CAP, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
-import { loadLatestAudiobook, type Audiobook } from '../../lib/audiobook';
+import { loadLatestAudiobook, loadLessonAudiobook, type Audiobook } from '../../lib/audiobook';
 import { CURRICULUM, COURSES_META, KIND_META, type CurriculumBlock, type CurriculumUnit } from '../../lib/curriculum';
 import { LABEX_COUNT } from '../../lib/labex';
 import { GOALS, firstBlockForGoal, goalLabel, hasOnboarded, markOnboarded, nextUpBlock, getGoal, setGoal, type GoalId } from '../../lib/onboarding';
@@ -31,6 +31,7 @@ import { chestRewardLabel, rollChestReward, type ChestReward } from '../../lib/c
 import { getDueCount } from '../../lib/srs';
 import { useAmbient } from '../../lib/ambient';
 import { useNatural } from '../../lib/natural';
+import WebCameraCapture from '../../components/WebCameraCapture';
 import PathOrb from '../../components/natural/PathOrb';
 import QuestMeter from '../../components/natural/QuestMeter';
 import ProgressBar from '../../components/natural/ProgressBar';
@@ -389,7 +390,10 @@ export default function PathMap() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [uploads, setUploads] = useState<UploadRow[]>([]);
   const [userLessons, setUserLessons] = useState<UserLesson[]>([]);
+  // Audiobook-only uploads: listenable books with no revision nodes.
+  const [userAudiobooks, setUserAudiobooks] = useState<UserLesson[]>([]);
   const [sandboxOpen, setSandboxOpen] = useState(false);
+  const [webCameraOpen, setWebCameraOpen] = useState(false);
   const [picked, setPicked] = useState<{ uri: string; name: string; mime: string } | null>(null);
   const [uploading, setUploading] = useState(false);
   const [rightsChecks, setRightsChecks] = useState<ContentRightsChecks>({});
@@ -426,8 +430,14 @@ export default function PathMap() {
   const { width: screenWidth } = useWindowDimensions();
   // Narrow phones drop the wordmark and XP chip rather than crushing them.
   const compactHud = screenWidth < 360;
-  // "Bolingo Learn" plus the three chips and the avatar need ~410dp of HUD.
-  const showWordmark = screenWidth >= 420;
+  // The head bar carries the short brand; the full name ("Bolingo Learn") is
+  // for outward-facing surfaces like the store listing and permission sheets.
+  // "Bolingo" fits from 360dp, so it no longer vanishes on 411dp phones.
+  // Measured in the bar: brand row ~282dp, +47dp for the XP chip and ~35dp of
+  // slack for wide numbers. So the chip steps aside below 430dp instead of
+  // truncating the brand; XP stays reachable on the account card.
+  const showWordmark = !compactHud;
+  const showXpChip = !compactHud && screenWidth >= 430;
   const [ambientOn, setAmbientOnState] = useState(false);
   const [screenFocused, setScreenFocused] = useState(true);
   const { error: ambientError, play: playAmbient } = useAmbient(ambientOn && screenFocused && !listening);
@@ -447,14 +457,18 @@ export default function PathMap() {
           .order('created_at', { ascending: false })
           .limit(10);
         setUploads((up as UploadRow[] | null) ?? []);
+        // Audiobook-only uploads are listenable books, not revision nodes, so
+        // they are filtered out of the path list (see upload_output).
         const { data: lessons } = await supabase
           .from('lessons')
-          .select('id,title,upload_source_id')
+          .select('id,title,upload_source_id,audiobook_only:content->>audiobook_only')
           .eq('user_id', p.id)
           .eq('is_user_generated', true)
           .order('created_at', { ascending: false })
           .limit(10);
-        setUserLessons((lessons as UserLesson[] | null) ?? []);
+        const rows = (lessons as (UserLesson & { audiobook_only?: string | null })[] | null) ?? [];
+        setUserLessons(rows.filter((l) => l.audiobook_only !== 'true'));
+        setUserAudiobooks(rows.filter((l) => l.audiobook_only === 'true'));
       }
       // Onboarding state is device-local so first-run guests get the
       // play-first card even before any account exists.
@@ -514,12 +528,25 @@ export default function PathMap() {
     }
   };
 
+  // Scan names its captures after the minute they were taken so a learner's
+  // history stays readable.
+  const scannedName = () => {
+    const stamp = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '');
+    return `Scanned-notes-${stamp}.jpg`;
+  };
+
   // Premium Scan: snap notes with the camera (or pick a gallery photo) and
   // Bingo OCRs + curates a revision node through the normal pipeline — the
   // picked photo flows into uploadPicked() unchanged.
   const scanNotes = async (source: 'camera' | 'library') => {
     if (!isPremium) {
       setSandboxMsg(`Scan is a Premium perk (${PREMIUM_PRICE_LABEL}) — snap your notes and Bingo builds the revision node.`);
+      return;
+    }
+    // A desktop browser has no camera through the picker module (it hands back
+    // a file dialog), so open the real webcam stream instead.
+    if (source === 'camera' && Platform.OS === 'web') {
+      setWebCameraOpen(true);
       return;
     }
     try {
@@ -535,8 +562,7 @@ export default function PathMap() {
       const res = await launcher({ mediaTypes: ['images'], quality: 0.7, exif: false });
       if (res.canceled) return;
       const a = res.assets[0];
-      const stamp = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '');
-      setPicked({ uri: a.uri, name: `Scanned-notes-${stamp}.jpg`, mime: 'image/jpeg' });
+      setPicked({ uri: a.uri, name: scannedName(), mime: 'image/jpeg' });
       setSandboxMsg(null);
     } catch (e) {
       setSandboxMsg(String(e instanceof Error ? e.message : e));
@@ -569,6 +595,15 @@ export default function PathMap() {
       } else {
         const b64 = await readAsStringAsync(picked.uri, { encoding: EncodingType.Base64 });
         bytes = new Uint8Array(decode(b64));
+      }
+      // Some cloud-backed picker URIs copy across as 0 bytes (Google Drive and
+      // Downloads are the usual offenders). Say so before creating a row that
+      // can only fail server-side.
+      if (bytes.byteLength === 0) {
+        setSandboxMsg(
+          'That file came through empty (0 bytes). Open it once in another app, then share/save it to the device and pick it again.'
+        );
+        return;
       }
       const upload = await uploadRawFile(bytes, picked.name, picked.mime, {
         rightsAttestation: attestation,
@@ -622,7 +657,14 @@ export default function PathMap() {
           setAudioMsg('Lesson has no questions yet — wait for generation to finish.');
           return;
         }
-        setAudiobook({ lesson_id: (lesson as { id: number }).id, title: (lesson as { title: string }).title, full_audio_url: null, segments: prompts });
+        setAudiobook({
+          lesson_id: (lesson as { id: number }).id,
+          title: (lesson as { title: string }).title,
+          full_audio_url: null,
+          chapters: [],
+          segments: prompts,
+          narrator_voice: null,
+        });
         setFreeListen(true);
         setListening(true);
         setAudioMsg(null);
@@ -632,6 +674,24 @@ export default function PathMap() {
       const book = await loadLatestAudiobook();
       if (!book) {
         setAudioMsg('No audiobook yet — open the AI Sandbox and upload material first.');
+        return;
+      }
+      setAudiobook(book);
+      setFreeListen(false);
+      setListening(true);
+      setAudioMsg(null);
+    } catch (e) {
+      setAudioMsg(String(e instanceof Error ? e.message : e));
+    }
+  };
+
+  /** Play one specific upload's audiobook (audiobook-only node). */
+  const openAudiobook = async (lessonId: number) => {
+    try {
+      setAudioMsg('Loading your audiobook…');
+      const book = await loadLessonAudiobook(lessonId);
+      if (!book) {
+        setAudioMsg('This book has no audio yet — generation may still be running.');
         return;
       }
       setAudiobook(book);
@@ -940,7 +1000,7 @@ export default function PathMap() {
                 numberOfLines={1}
                 style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: p.ink }}
               >
-                Bolingo Learn
+                Bolingo
               </Text>
             ) : null}
             <View
@@ -963,7 +1023,7 @@ export default function PathMap() {
               {streak}
             </Text>
           </View>
-          {!compactHud ? (
+          {showXpChip ? (
             <View accessibilityLabel={`${xp} experience points`} style={hudChip}>
               <AppIcon name="gem" size={13} color={p.moss} />
               <Text style={{ fontSize: 12.5, fontWeight: '800', color: p.ink }}>
@@ -1715,6 +1775,57 @@ export default function PathMap() {
             </Pressable>
           )}
 
+          {/* Audiobook-only uploads are listenable books, not revision nodes. */}
+          {userAudiobooks.length > 0 && (
+            <View style={{ marginBottom: 32, width: '100%', maxWidth: 384, alignItems: 'center', gap: 20 }}>
+              <Text
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: '800',
+                  letterSpacing: 1.6,
+                  textTransform: 'uppercase',
+                  color: p.berry,
+                }}
+              >
+                Your Audiobooks
+              </Text>
+              {userAudiobooks.map((b, i) => (
+                <PathNode
+                  key={b.id}
+                  state="active"
+                  icon="headset"
+                  label={b.title}
+                  sub="Full audiobook"
+                  offset={WIND[i % WIND.length]}
+                  onPress={() => void openAudiobook(Number(b.id))}
+                />
+              ))}
+            </View>
+          )}
+
+          {/* Premium Philosophy classics: seeded public-domain shelf, offline-ready. */}
+          <View style={{ marginBottom: 32, width: '100%', maxWidth: 384, alignItems: 'center', gap: 20 }}>
+            <Text
+              style={{
+                fontSize: 9.5,
+                fontWeight: '800',
+                letterSpacing: 1.6,
+                textTransform: 'uppercase',
+                color: p.honey,
+              }}
+            >
+              Classics Library
+            </Text>
+            <PathNode
+              state="active"
+              icon="book"
+              label="Philosophy Classics"
+              sub="146 public-domain books · audio + text · offline"
+              offset={WIND[0]}
+              onPress={() => router.push('/audiobooks')}
+            />
+          </View>
+
           {!listening ? (
             <Pressable
               onPress={openAudiobookMode}
@@ -1745,6 +1856,7 @@ export default function PathMap() {
               <AudiobookPlayer
                 title={audiobook.title}
                 segments={audiobook.segments}
+                chapters={audiobook.chapters}
                 fullUrl={audiobook.full_audio_url}
                 freeMode={freeListen}
                 onClose={() => setListening(false)}
@@ -1762,7 +1874,7 @@ export default function PathMap() {
                 color: p.muted,
               }}
             >
-              Free narration uses your device voice over the question prompts. Premium adds one consistent narrator, a continuous full mix and a clip for every question.
+              Free narration uses your device voice over the question prompts. Premium adds a studio narrator you pick, a continuous full mix and a clip for every question.
             </Text>
           ) : null}
           {audioMsg && !listening ? (
@@ -2219,6 +2331,21 @@ export default function PathMap() {
           </View>
         </View>
       </Modal>
+
+      <WebCameraCapture
+        visible={webCameraOpen}
+        onClose={() => setWebCameraOpen(false)}
+        onCaptured={(dataUrl) => {
+          setPicked({ uri: dataUrl, name: scannedName(), mime: 'image/jpeg' });
+          setRightsChecks({});
+          setSandboxMsg(null);
+          setWebCameraOpen(false);
+        }}
+        onChooseFile={() => {
+          setWebCameraOpen(false);
+          void scanNotes('library');
+        }}
+      />
 
       {chestWin && chestReward && shouldCelebrateChest(chestClaim) && chestPhase === 'opening' ? (
         <ChestOpening

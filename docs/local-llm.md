@@ -78,6 +78,23 @@ Fallback unset = primary-only (today's behavior). Every success carries a
 never include URLs — the VPS path embeds its token. Live-tested Oct 28:
 `via: primary`, 16 s, clean content.
 
+`process-upload` uses the same primary→fallback chain for lesson curation
+(Nov 1, 2026), because a hung primary there meant every Premium PDF failed
+while the quiz itself was never attempted. Two rules learned the hard way:
+
+- **Photo Scan needs its own model.** `openai/gpt-oss-120b` is text-only, so
+  `LLM_VISION_MODEL` (plus optional `LLM_VISION_URL`/`LLM_VISION_KEY`)
+  overrides the fallback for OCR. Without it, Scan reuses
+  `LLM_FALLBACK_MODEL` and correctly reports that the model cannot read an
+  image. `meta-llama/llama-4-scout-17b-16e-instruct` is now retired (404
+  `model_not_found`), so it is not a safe default for either path.
+- **A schema probe must never decide the plan.** `process-upload` read
+  `is_premium` and `narrator_voice` in one query; on an environment where
+  `migrations_narrator_voice.sql` had not run, the whole read failed and every
+  paying learner was treated as free ("upgrade to Premium" on their own PDF).
+  Optional columns now have their own best-effort query, and a failed plan
+  read throws instead of silently downgrading.
+
 Primary timeout is 30 s (VPS p99 ~16-20 s): a hung VPS fails over to the
 ~2 s fallback instead of leaving learners staring. Proven Oct 28 with a
 degraded (not dead) primary: `via: fallback` in 2.7 s with a flawless

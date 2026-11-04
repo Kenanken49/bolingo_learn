@@ -12,8 +12,9 @@ import Reanimated, {
 import { useAudioPlayer } from 'expo-audio';
 import { playQuizCorrect, playWrong, preloadRewardCues } from '../lib/sfx';
 import * as Haptics from 'expo-haptics';
-// Hearts gate retired: wrong answers no longer consume hearts (unlimited learning).
-
+// Hearts stay live: a wrong answer costs one, and at zero the parent pauses the
+// session behind the refill sheet (rewarded video, 4-hour wait, or Premium).
+// See docs/admob.md.
 import { fetchExplanation } from '../lib/explain';
 import { getCourseLesson } from '../lib/courses';
 import { getLanguageLesson } from '../lib/languages';
@@ -79,6 +80,11 @@ interface Props {
   progressPct: number;
   hearts: number;
   sessionKind?: BlockKind;
+  /**
+   * Called on every wrong answer. The parent persists the spent heart and, at
+   * zero, pauses the session behind the refill sheet.
+   */
+  onHeartLost?: () => void;
   onHeartsChange: (hearts: number) => void;
   onOutOfHearts: () => void;
   onCorrect: () => void;
@@ -106,6 +112,9 @@ export default function GamifiedCodePlayer({
   questionLabel,
   progressPct,
   sessionKind,
+  hearts,
+  onHeartLost,
+  onOutOfHearts,
   onCorrect,
   onContinue,
   onAnswer,
@@ -293,6 +302,12 @@ export default function GamifiedCodePlayer({
 
   const checkAnswer = async () => {
     if (selectedTokens.length === 0 || feedback) return;
+    // No hearts means no grading: refill first, otherwise the cost would be a
+    // decoration instead of a loop.
+    if (hearts <= 0) {
+      onOutOfHearts();
+      return;
+    }
     setAttemptCount((n) => n + 1);
     const isCorrect = JSON.stringify(selectedTokens) === JSON.stringify(questionData.correctChain);
     onAnswer?.({
@@ -342,8 +357,9 @@ export default function GamifiedCodePlayer({
           await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         } catch {}
       }
-      // Unlimited learning: mistakes never cost hearts and never end the
-      // lesson. The player is a practice space, not a paywall.
+      // Mistakes cost a heart. The pause at zero lives in the parent's sheet,
+      // so the player never has to know what a refill is.
+      onHeartLost?.();
     }
   };
 
@@ -483,27 +499,39 @@ export default function GamifiedCodePlayer({
       </View>
 
       {feedback === null ? (
-        <View className="mb-8 mt-4 flex-row gap-2">
-          {liveChecklist ? (
-            <View className="flex-1">
+        hearts <= 0 ? (
+          <View className="mb-8 mt-4 items-center rounded-3xl border-2 border-red-200 bg-red-50 p-5 dark:border-red-900 dark:bg-red-950">
+            <Text className="text-center font-duo text-lg font-extrabold text-red-700 dark:text-red-300">Out of hearts</Text>
+            <Text className="mt-1 text-center text-sm text-red-700/80 dark:text-red-300/80">
+              Watch a short video, wait for the free refill, or go Premium to keep this session going.
+            </Text>
+            <View className="mt-3 w-full">
+              <DuoButton color="green" onPress={onOutOfHearts} label="Get a heart" title="Refill hearts" />
+            </View>
+          </View>
+        ) : (
+          <View className="mb-8 mt-4 flex-row gap-2">
+            {liveChecklist ? (
+              <View className="flex-1">
+                <DuoButton
+                  color="blue"
+                  onPress={() => setRanTests(true)}
+                  disabled={selectedTokens.length === 0}
+                  label="Run tests without submitting"
+                  title="Run"
+                />
+              </View>
+            ) : null}
+            <View className={liveChecklist ? 'flex-[2]' : 'flex-1'}>
               <DuoButton
-                color="blue"
-                onPress={() => setRanTests(true)}
+                onPress={checkAnswer}
                 disabled={selectedTokens.length === 0}
-                label="Run tests without submitting"
-                title="Run"
+                label="Check answer"
+                title="Check answer"
               />
             </View>
-          ) : null}
-          <View className={liveChecklist ? 'flex-[2]' : 'flex-1'}>
-            <DuoButton
-              onPress={checkAnswer}
-              disabled={selectedTokens.length === 0}
-              label="Check answer"
-              title="Check answer"
-            />
           </View>
-        </View>
+        )
       ) : (
         <Reanimated.View style={bannerStyle} className={`mb-8 rounded-3xl p-5 ${feedback === 'correct' ? 'bg-green-100 dark:bg-green-950' : 'bg-red-100 dark:bg-red-950'}`}>
           <View className="flex-row items-center gap-2">

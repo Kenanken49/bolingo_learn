@@ -91,6 +91,22 @@
       "required": true
     },
     {
+      "id": "uploads",
+      "label": "Upload pipeline",
+      "category": "platform",
+      "command": "node scripts/check-upload-pipeline.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "leaderboard",
+      "label": "Leaderboard XP ledger",
+      "category": "platform",
+      "command": "node scripts/check-leaderboard-xp.cjs",
+      "timeoutSeconds": 60,
+      "required": true
+    },
+    {
       "id": "roleplay",
       "label": "Roleplay personas",
       "category": "curriculum",
@@ -192,6 +208,46 @@
       "category": "voice",
       "command": "node scripts/check-audiobook-voice.cjs",
       "timeoutSeconds": 180,
+      "required": true
+    },
+    {
+      "id": "character-voices",
+      "label": "Character studio voices",
+      "category": "audio",
+      "command": "node scripts/check-character-voices.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "ads",
+      "label": "AdMob rewarded hearts",
+      "category": "monetization",
+      "command": "node scripts/check-ads.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "materials",
+      "label": "Material detection + revision packs",
+      "category": "content",
+      "command": "node scripts/check-materials.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "classics-audiobooks",
+      "label": "Philosophy classics offline shelf",
+      "category": "content",
+      "command": "node scripts/check-classics-audiobooks.cjs",
+      "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "web-publish",
+      "label": "Website publish config",
+      "category": "platform",
+      "command": "node scripts/check-web-publish.cjs",
+      "timeoutSeconds": 120,
       "required": true
     }
   ]

@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 import { advanceStreak } from './streak';
 import { track } from './telemetry';
+import { narratorVoice } from '../supabase/functions/_shared/audiobookVoice';
 
 export const MAX_HEARTS = 5;
 export const REFILL_WAIT_MS = 4 * 3600 * 1000;
@@ -21,6 +22,37 @@ export interface Profile {
   ai_words_reset_at: string;
   /** Owner console only; absent until migrations_quality_ops.sql is applied. */
   is_admin?: boolean;
+  /** Premium audiobook narrator; absent/null means the deployment's TTS_VOICE_ID. */
+  narrator_voice?: string | null;
+  /** What an upload produces; absent falls back to 'both'. */
+  upload_output?: UploadOutput | string | null;
+}
+
+/** Audiobook only, quiz nodes only, or both — see migrations_upload_output.sql. */
+export type UploadOutput = 'both' | 'nodes' | 'audiobook';
+
+export const UPLOAD_OUTPUT_OPTIONS: { id: UploadOutput; label: string; blurb: string }[] = [
+  {
+    id: 'both',
+    label: 'Audiobook + quiz nodes',
+    blurb: 'The whole upload is narrated, and 4-5 quiz nodes are built for review.',
+  },
+  {
+    id: 'audiobook',
+    label: 'Full audiobook only',
+    blurb: 'Just the narration — no quiz nodes are created, and no lesson work is added to your path.',
+  },
+  {
+    id: 'nodes',
+    label: 'Quiz nodes only',
+    blurb: 'Skip the narration (and the voice cost) and only build review questions.',
+  },
+];
+
+/** Narrow whatever the database returns to a value the pipeline understands. */
+export function uploadOutputOf(profile: Pick<Profile, 'upload_output'> | null | undefined): UploadOutput {
+  const raw = profile?.upload_output;
+  return raw === 'nodes' || raw === 'audiobook' ? raw : 'both';
 }
 
 const DEFAULTS = {
@@ -173,11 +205,11 @@ export async function getCompletedLessonIds(userId: string): Promise<Set<string>
 /** Log XP into xp_events for the weekly leaderboard (best-effort, never blocks). */
 async function logXpEvent(userId: string, xp: number): Promise<void> {
   if (xp <= 0) return;
-  try {
-    await supabase.from('xp_events').insert({ user_id: userId, xp });
-  } catch (e) {
-    console.warn('xp_events insert failed (run latest schema.sql):', e);
-  }
+  // Supabase resolves with { error } instead of throwing, so a denied insert
+  // (missing table grant, unapplied migration) used to disappear silently and
+  // the weekly board simply stayed empty. Report it, still never block.
+  const { error } = await supabase.from('xp_events').insert({ user_id: userId, xp });
+  if (error) console.warn('xp_events insert failed (run latest schema.sql):', error.message);
 }
 
 /** Optional non-XP chest payout persisted alongside the completion. */
@@ -273,6 +305,71 @@ export async function grantHearts(userId: string, n: number): Promise<Profile> {
   const hearts = Math.min(MAX_HEARTS, profile.hearts + n);
   const { data, error: upError } = await supabase.from('profiles').update({ hearts }).eq('id', userId).select().single();
   if (upError || !data) throw upError ?? new Error('Could not grant hearts.');
+  return data as Profile;
+}
+
+/**
+ * Choose the narrator that reads this learner's generated audiobooks. The id is
+ * resolved through the same allow-list the Edge Function uses, so a picker can
+ * never aim the pipeline at a voice the deployment has not cleared. Applies to
+ * lessons made from now on — MP3s that already exist keep the narrator that
+ * generated them.
+ */
+export async function setNarratorVoice(userId: string, voiceId: string): Promise<Profile> {
+  const voice = narratorVoice(voiceId);
+  if (!voice) throw new Error('That narrator is not available.');
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ narrator_voice: voice.id })
+    .eq('id', userId)
+    .select()
+    .single();
+  if (error || !data) throw error ?? new Error('Could not save your narrator choice.');
+  return data as Profile;
+}
+
+/**
+ * The public display name: what the weekly board, friends list and profile show
+ * instead of the placeholder "Learner". Uniqueness comes from the database
+ * (profiles_username_key), so two learners can never share a board name.
+ */
+export async function setDisplayName(userId: string, raw: string): Promise<Profile> {
+  const name = raw.trim().replace(/\s+/g, ' ');
+  if (name.length < 3 || name.length > 20) throw new Error('Pick a name between 3 and 20 characters.');
+  if (!/^[\p{L}\p{N} _.-]+$/u.test(name)) {
+    throw new Error('Use letters, numbers, spaces, dots, dashes or underscores.');
+  }
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ username: name })
+    .eq('id', userId)
+    .select()
+    .single();
+  if (error) {
+    if ((error as { code?: string }).code === '23505') {
+      throw new Error('That name is already taken — try another.');
+    }
+    throw new Error(error.message);
+  }
+  if (!data) throw new Error('Could not save your name.');
+  return data as Profile;
+}
+
+/**
+ * Choose what an upload produces. The pipeline reads this server-side for every
+ * file that lands, so the choice applies to uploads made from any device.
+ */
+export async function setUploadOutput(userId: string, output: UploadOutput): Promise<Profile> {
+  if (output !== 'both' && output !== 'nodes' && output !== 'audiobook') {
+    throw new Error('Pick audiobook + nodes, audiobook only, or nodes only.');
+  }
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ upload_output: output })
+    .eq('id', userId)
+    .select()
+    .single();
+  if (error || !data) throw error ?? new Error('Could not save your upload preference.');
   return data as Profile;
 }
 

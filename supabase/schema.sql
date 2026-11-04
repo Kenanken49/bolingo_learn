@@ -34,6 +34,15 @@ alter table public.profiles
 -- Google OAuth import: display name + profile photo shown across the app.
 alter table public.profiles add column if not exists avatar_url text;
 
+-- Audiobook narrator the learner picked (Settings → Audiobook narrator). The
+-- id is only ever honoured if it is on the allow-list in
+-- supabase/functions/_shared/audiobookVoice.ts; see migrations_narrator_voice.sql.
+alter table public.profiles add column if not exists narrator_voice text;
+
+-- What an upload produces: 'both' (audiobook + quiz nodes), 'audiobook' or
+-- 'nodes'. process-upload reads it server-side; see migrations_upload_output.sql.
+alter table public.profiles add column if not exists upload_output text not null default 'both';
+
 -- Users can read/update only their own profile.
 drop policy if exists "Users manage own profile" on public.profiles;
 create policy "Users manage own profile"
@@ -286,6 +295,12 @@ as $$
 $$;
 
 grant execute on function public.get_weekly_leaderboard(int) to authenticated;
+
+-- The client logs its own XP into this table (lib/progress.ts) and friends read
+-- each other's rows. Without the table grant PostgREST answers 403 before RLS
+-- is even consulted, which left the weekly board empty on a freshly restored
+-- database. Policies (above) still limit every row to its owner.
+grant select, insert on public.xp_events to authenticated;
 
 -- ---------------------------------------------------------------------------
 -- Spaced Repetition System (SRS): per-user memory state per quiz item.

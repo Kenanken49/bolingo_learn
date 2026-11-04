@@ -1,5 +1,10 @@
 # Pronunciation engine — Livia & Bingo
 
+> Studio voice layer: Livia, Bingo and Zora also speak on ElevenLabs when the
+> connection allows. That path, its casting and its fallbacks are documented in
+> [character-voices.md](character-voices.md); the device engine below remains the
+> fallback and the offline path.
+
 Language lessons are the one place where a wrong voice teaches a wrong sound, so
 `lib/pronunciation.ts` owns every spoken phrase in a language course. The goal is
 Duolingo-grade delivery: each word is pronounced by a voice native to the

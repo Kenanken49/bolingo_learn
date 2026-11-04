@@ -51,7 +51,13 @@
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { audiobookVoiceFromEnv, buildSpeechRequest } from '../_shared/audiobookVoice.ts';
+import {
+  MAX_TTS_CHARS,
+  audiobookVoiceFromEnv,
+  buildSpeechRequest,
+  narratorVoice,
+  withNarrator,
+} from '../_shared/audiobookVoice.ts';
 import {
   CONTENT_RIGHTS_REQUIRED_MESSAGE,
   hasValidContentRightsAttestation,
@@ -64,6 +70,13 @@ import {
   type TranscriptionResult,
   type TranscriptionSource,
 } from '../_shared/transcription.ts';
+import { classifyMaterial, type MaterialAnalysis } from '../_shared/materialKind.ts';
+import {
+  buildRevisionPack,
+  revisionPackPrompt,
+  validateRevisionPack,
+  type RevisionPack,
+} from '../_shared/revisionPack.ts';
 
 // Browser (web export) invocations are cross-origin — answer preflights.
 const corsHeaders = {
@@ -77,10 +90,27 @@ const OPENAI_BASE_URL = Deno.env.get('OPENAI_BASE_URL') ?? 'https://api.openai.c
 
 // Big-book bounds: full PDFs go through pdf-parse (memory-heavy), so cap the
 // text before anything downstream sees it. Billing counts the capped text.
-const MAX_EXTRACT_CHARS = 60000;
+//
+// 400k chars ≈ a 60k-word book: enough for a complete short-to-mid book to be
+// narrated from the first page to the last. The curation model still only sees
+// the first MAX_CURATION_CHARS, because quiz nodes come from a slice, not the
+// whole work — the audiobook is what needs the full text.
+const MAX_EXTRACT_CHARS = 400000;
+// What the quiz/summary model reads. Small self-hosted models crawl on huge
+// contexts, and 4–5 quiz elements never need more than a chapter.
+const MAX_CURATION_CHARS = 60000;
 // Small self-hosted models (e.g. 1.5B on CPU) crawl on huge contexts —
 // 3.5k chars is plenty for 4-5 quiz elements and ~2x faster than 8k.
 const MAX_LLM_CHARS = 3500;
+// pdf.js keeps every parsed page alive. Parsing all 284 pages of a trade book
+// was enough to kill the 256 MB isolate, and a killed isolate records no
+// reason — the learner just saw "failed". Parse just enough pages to fill the
+// extraction window; 1000 chars/page is deliberately conservative (sparse books
+// run ~1.2k), so a 400-page ceiling is generous without inviting an OOM.
+const PDF_MAX_PAGES = Math.ceil(MAX_EXTRACT_CHARS / 1000);
+// Beyond this the download plus parse is an OOM risk; fail with a real message
+// instead of vanishing mid-pipeline.
+const MAX_PDF_BYTES = 40 * 1024 * 1024;
 
 const CURRICULUM_PROMPT = `You are an elite educational structuralist designing bite-sized mobile lessons (2-5 minutes each, dead-time friendly). Analyze this uploaded text. Extract the top 2-3 core concepts only. Generate a TOTAL of 4-5 interactive quiz elements (mix multiple-choice and drag-and-drop) using this JSON schema: [{ "type": "multiple-choice" | "drag-and-drop", "prompt": "...", "options": ["...", "..."], "answer": "..." }]. Keep prompts short and mobile-friendly. Bolingo Learn's mentors are Livia (female language mentor), Bingo (male owl tutor), and Zora (female build coach). When you invent an example learner or character, use one of them. Never replace the name of a real author, historical figure, public person, or a named person from the source: preserve it exactly, and never attribute invented words or actions to a real person. Return nothing but valid JSON.`;
 
@@ -112,6 +142,14 @@ function coerceQuiz(payload: unknown): QuizItem[] {
 
 async function extractText(fileName: string, bytes: Uint8Array): Promise<string> {
   const lower = fileName.toLowerCase();
+  // A 0-byte object means the client's read or the storage copy produced
+  // nothing. pdf-parse reports this as "PDFDocument: stream must have data",
+  // which told the learner nothing actionable.
+  if (bytes.length === 0) {
+    throw new Error(
+      'This file arrived empty (0 bytes), so there is nothing to read. Send the original file again — if it lives in cloud storage, download it to the phone first and share it from there.',
+    );
+  }
   // Text/Markdown: parsed directly as a string.
   if (lower.endsWith('.txt') || lower.endsWith('.md') || lower.endsWith('.csv')) {
     const text = new TextDecoder().decode(bytes).trim();
@@ -120,10 +158,19 @@ async function extractText(fileName: string, bytes: Uint8Array): Promise<string>
   // PDFs: lightweight text extraction via pdf-parse (npm: specifier works
   // in Supabase Edge Functions' Deno runtime).
   if (lower.endsWith('.pdf')) {
+    if (bytes.length > MAX_PDF_BYTES) {
+      throw new Error(
+        `This PDF is ~${(bytes.length / 1048576).toFixed(0)} MB — the limit is ${MAX_PDF_BYTES / 1048576} MB. Split the book, or send only the chapters you need.`,
+      );
+    }
     const { default: pdfParse } = await import('npm:pdf-parse@1.1.1');
-    const result = await pdfParse(bytes);
+    const result = await pdfParse(bytes, { max: PDF_MAX_PAGES });
     const text = (result?.text ?? '').trim();
-    if (!text) throw new Error('No extractable text found in PDF (scanned image?).');
+    if (!text) {
+      throw new Error(
+        'This PDF has no text layer — it is a scan of the pages. Photograph the pages and use Scan, or send a text-based PDF (e.g. one exported from an ebook reader).',
+      );
+    }
     return text.length > MAX_EXTRACT_CHARS ? text.slice(0, MAX_EXTRACT_CHARS) : text;
   }
   // Photos/scans (Premium Scan): OCR via a vision-capable chat model.
@@ -144,9 +191,14 @@ async function extractText(fileName: string, bytes: Uint8Array): Promise<string>
   throw new Error(`Unsupported file type: ${fileName}`);
 }
 
-const VISION_URL = Deno.env.get('LLM_FALLBACK_URL') ?? '';
-const VISION_KEY = Deno.env.get('LLM_FALLBACK_KEY') ?? '';
-const VISION_MODEL = Deno.env.get('LLM_FALLBACK_MODEL') ?? '';
+// Photo OCR needs a vision model, while lesson curation needs a text one. They
+// share the LLM_FALLBACK_* backend by default, but the model ids differ: the
+// text fallback is openai/gpt-oss-120b, which cannot read an image. Set
+// LLM_VISION_MODEL/URL/KEY to give Scan its own model. (llama-4-scout, the id
+// this used to resolve to, is retired and answers 404 model_not_found.)
+const VISION_URL = Deno.env.get('LLM_VISION_URL') ?? Deno.env.get('LLM_FALLBACK_URL') ?? '';
+const VISION_KEY = Deno.env.get('LLM_VISION_KEY') ?? Deno.env.get('LLM_FALLBACK_KEY') ?? '';
+const VISION_MODEL = Deno.env.get('LLM_VISION_MODEL') ?? Deno.env.get('LLM_FALLBACK_MODEL') ?? '';
 // Phone photos at quality 0.7 land well under this; bigger means the
 // learner should retake closer-up rather than pay OCR on a billboard.
 const MAX_PHOTO_BYTES = 6_000_000;
@@ -209,14 +261,67 @@ async function transcribePhoto(bytes: Uint8Array): Promise<string> {
   return content.length > MAX_EXTRACT_CHARS ? content.slice(0, MAX_EXTRACT_CHARS) : content;
 }
 
-async function generateQuizQuestions(rawText: string): Promise<QuizItem[]> {
+interface LlmBackend {
+  label: string;
+  url: string;
+  key: string;
+  model: string;
+}
+
+// 3.5k chars in, ~1k JSON out: a healthy backend answers in seconds. The
+// ceiling is what a *hung* backend is allowed to cost before the next one is
+// tried, so a dead primary cannot burn the whole worker wall clock.
+const LLM_TIMEOUT_MS = 50_000;
+
+/**
+ * Primary first, then the already-configured LLM_FALLBACK_* backend (the same
+ * one photo OCR uses). A single unreachable primary used to fail every upload
+ * after a 100 s wait; the fallback turns that into a slower success.
+ */
+function llmBackends(): LlmBackend[] {
+  const backends: LlmBackend[] = [];
   const apiKey = Deno.env.get('LLM_API_KEY') ?? '';
-  if (!apiKey) throw new Error('Missing LLM_API_KEY secret.');
-  const res = await fetch(LLM_BASE_URL, {
+  if (apiKey) {
+    backends.push({ label: LLM_MODEL, url: LLM_BASE_URL, key: apiKey, model: LLM_MODEL });
+  }
+  const fallbackUrl = Deno.env.get('LLM_FALLBACK_URL') ?? '';
+  const fallbackKey = Deno.env.get('LLM_FALLBACK_KEY') ?? '';
+  const fallbackModel = Deno.env.get('LLM_FALLBACK_MODEL') ?? '';
+  if (fallbackUrl && fallbackKey && fallbackModel) {
+    backends.push({
+      label: `${fallbackModel} (fallback)`,
+      url: fallbackUrl,
+      key: fallbackKey,
+      model: fallbackModel,
+    });
+  }
+  return backends;
+}
+
+/**
+ * A hosted model may wrap the array in a fence, add a sentence of preamble, or
+ * leak a  thinking block. Take the outermost array rather than requiring the
+ * whole message to be JSON — that strictness is why a perfectly good answer
+ * could fail an upload.
+ */
+function parseQuizContent(content: string): QuizItem[] {
+  const withoutThink = content
+    .replace(/<think>[\s\S]*?<\/think>/gi, '')
+    .replace(/<think>[\s\S]*$/i, '')
+    .replace(/```(?:json)?/gi, '')
+    .trim();
+  const start = withoutThink.indexOf('[');
+  const end = withoutThink.lastIndexOf(']');
+  const candidate = start >= 0 && end > start ? withoutThink.slice(start, end + 1) : withoutThink;
+  return coerceQuiz(JSON.parse(candidate));
+}
+
+async function quizFromBackend(backend: LlmBackend, rawText: string): Promise<QuizItem[]> {
+  const res = await fetch(backend.url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${backend.key}` },
     body: JSON.stringify({
-      model: LLM_MODEL,
+      model: backend.model,
       messages: [
         { role: 'system', content: CURRICULUM_PROMPT },
         { role: 'user', content: rawText.slice(0, MAX_LLM_CHARS) },
@@ -224,13 +329,104 @@ async function generateQuizQuestions(rawText: string): Promise<QuizItem[]> {
       temperature: 0.4,
     }),
     // A hung LLM must fail loudly, not park the row in `processing`.
-    signal: AbortSignal.timeout(100_000),
+    signal: AbortSignal.timeout(LLM_TIMEOUT_MS),
   });
   if (!res.ok) throw new Error(`LLM request failed: ${res.status} ${await res.text()}`);
   const data = await res.json();
   const content: string = data.choices?.[0]?.message?.content ?? '';
-  const json = content.replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  return coerceQuiz(JSON.parse(json));
+  return parseQuizContent(content);
+}
+
+async function generateQuizQuestions(rawText: string): Promise<QuizItem[]> {
+  const backends = llmBackends();
+  if (backends.length === 0) throw new Error('Missing LLM_API_KEY secret.');
+  const problems: string[] = [];
+  // Curation reads a slice: a whole book would blow both the context and the
+  // budget, and 4–5 review nodes only ever come from one chapter anyway.
+  const text = rawText.slice(0, MAX_CURATION_CHARS);
+  for (const backend of backends) {
+    try {
+      return await quizFromBackend(backend, text);
+    } catch (e) {
+      const reason = e instanceof Error ? e.message : String(e);
+      console.warn(`LLM backend ${backend.label} failed: ${reason}`);
+      problems.push(`${backend.label}: ${reason}`);
+    }
+  }
+  // Name every attempt: "failed" alone is what made this class of outage
+  // impossible to diagnose from the app.
+  throw new Error(`The lesson model did not answer — ${problems.join(' | ')}`.slice(0, 500));
+}
+
+/** Outermost JSON object in a model reply (fences, preamble,  thinking included). */
+function parseJsonObject(content: string): Record<string, unknown> | null {
+  const cleaned = content
+    .replace(/<think\b[\s\S]*?<\/think>/gi, '')
+    .replace(/```(?:json)?/gi, '')
+    .trim();
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start < 0 || end <= start) return null;
+  try {
+    const parsed = JSON.parse(cleaned.slice(start, end + 1));
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Ask the model for a revision pack, then merge it over the deterministic one.
+ *
+ * The merge is the safety net: whatever the model omits (or mangles) keeps the
+ * extractive builder's value, so the learner always gets all seven techniques,
+ * and a model reply can never remove material the pipeline already derived.
+ * A total failure returns null and the caller keeps the deterministic pack.
+ */
+async function revisionPackFromModel(
+  text: string,
+  analysis: MaterialAnalysis,
+  fallback: RevisionPack,
+): Promise<RevisionPack | null> {
+  const backends = llmBackends();
+  for (const backend of backends) {
+    try {
+      const res = await fetch(backend.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${backend.key}` },
+        body: JSON.stringify({
+          model: backend.model,
+          messages: [
+            { role: 'system', content: 'You return one JSON object and nothing else.' },
+            { role: 'user', content: revisionPackPrompt(text, analysis) },
+          ],
+          temperature: 0.3,
+        }),
+        signal: AbortSignal.timeout(LLM_TIMEOUT_MS),
+      });
+      if (!res.ok) throw new Error(`${res.status} ${await res.text()}`.slice(0, 200));
+      const data = await res.json();
+      const content: string = data.choices?.[0]?.message?.content ?? '';
+      const parsed = parseJsonObject(content);
+      if (!parsed) throw new Error('model did not return a JSON object');
+      const merged: RevisionPack = {
+        ...fallback,
+        ...parsed,
+        version: 1,
+        kind: analysis.kind,
+        title: fallback.title,
+        detected: analysis,
+        generated: true,
+        generatedAt: new Date().toISOString(),
+      } as RevisionPack;
+      return validateRevisionPack(merged) ? merged : null;
+    } catch (e) {
+      console.warn(`Revision pack backend ${backend.label} failed:`, e instanceof Error ? e.message : e);
+    }
+  }
+  return null;
 }
 
 const FREE_WORD_LIMIT = 1000;
@@ -238,12 +434,52 @@ const PREMIUM_MONTHLY_WORD_CAP = 100_000;
 
 const countWords = (text: string): number => text.trim().split(/\s+/).filter(Boolean).length;
 
-async function synthesizeAudio(narration: string): Promise<Uint8Array> {
+// A book-length upload is narrated in ordered parts: every TTS provider caps
+// one request at MAX_TTS_CHARS. The ceiling is a runaway guard sized for the
+// 400k-character extraction window (~100 parts), not a length limit that silently
+// drops the end of a book.
+const MAX_NARRATION_PARTS = Math.ceil(MAX_EXTRACT_CHARS / 4000) + 8;
+
+/**
+ * Split narration into provider-sized parts without cutting a sentence, so the
+ * audiobook is the whole upload rather than the quiz prompts. Returns [] for
+ * empty text.
+ */
+function narrationParts(text: string, limit: number = MAX_TTS_CHARS): string[] {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (!clean) return [];
+  const sentences = clean.match(/[^.!?]+[.!?]*\s*/g) ?? [clean];
+  const parts: string[] = [];
+  let current = '';
+  for (const sentence of sentences) {
+    if (sentence.length > limit) {
+      // One enormous sentence (a heading run, a wall of OCR): hard-wrap it.
+      if (current.trim()) {
+        parts.push(current.trim());
+        current = '';
+      }
+      for (let i = 0; i < sentence.length; i += limit) {
+        parts.push(sentence.slice(i, i + limit).trim());
+      }
+      continue;
+    }
+    if ((current + sentence).length > limit) {
+      parts.push(current.trim());
+      current = sentence;
+    } else {
+      current += sentence;
+    }
+  }
+  if (current.trim()) parts.push(current.trim());
+  return parts.filter(Boolean).slice(0, MAX_NARRATION_PARTS);
+}
+
+async function synthesizeAudio(
+  narration: string,
+  config: ReturnType<typeof audiobookVoiceFromEnv>,
+): Promise<Uint8Array> {
   const apiKey = Deno.env.get('TTS_API_KEY') ?? '';
   if (!apiKey) throw new Error('Missing TTS_API_KEY secret.');
-  // Parse on every job so a bad deployment secret fails this TTS step with a
-  // precise message, while the already-ready quiz stays usable.
-  const config = audiobookVoiceFromEnv(Deno.env.toObject());
   const request = buildSpeechRequest(config, narration, { apiKey, baseUrl: OPENAI_BASE_URL });
   const res = await fetch(request.url, {
     method: 'POST',
@@ -401,12 +637,39 @@ async function processUpload(
 
     const filePath = `${upload.user_id}/${upload.file_name}`;
 
-    const { data: owner } = await supabase
+    const { data: owner, error: ownerError } = await supabase
       .from('profiles')
       .select('is_premium,ai_words_used,ai_words_reset_at')
       .eq('id', upload.user_id)
       .single();
+    // Never infer the plan from a failed read. A single un-migrated column in
+    // this query made every paying learner look free, so PDFs were rejected
+    // with "upgrade to Premium" even though they had already paid.
+    if (ownerError) throw new Error(`Could not read your plan: ${ownerError.message}`);
     const isPremium = (owner as { is_premium?: boolean } | null)?.is_premium === true;
+    // Read server-side on purpose: the learner's narrator is a stored choice, so
+    // a client cannot ask the pipeline to synthesize with an arbitrary voice.
+    // Its own best-effort query: if migrations_narrator_voice.sql has not run,
+    // the learner loses their voice pick, never the whole upload.
+    const { data: prefRow } = await supabase
+      .from('profiles')
+      .select('narrator_voice,upload_output')
+      .eq('id', upload.user_id)
+      .single();
+    const ownerNarrator = (prefRow as { narrator_voice?: string | null } | null)?.narrator_voice ?? null;
+    // What this upload should produce. Read server-side, so a client cannot ask
+    // for (or skip) paid narration per request, and a learner's stored choice
+    // applies to uploads made from any device.
+    const requestedOutput = (prefRow as { upload_output?: string | null } | null)?.upload_output;
+    // Free tier has no server narration (device voice reads the quiz prompts),
+    // so an audiobook-only preference there would produce nothing at all.
+    const outputMode = !isPremium
+      ? 'nodes'
+      : requestedOutput === 'nodes' || requestedOutput === 'audiobook'
+        ? requestedOutput
+        : 'both';
+    const wantsNodes = outputMode !== 'audiobook';
+    const wantsNarration = outputMode !== 'nodes';
     let aiUsed = (owner as { ai_words_used?: number } | null)?.ai_words_used ?? 0;
     const resetAt = new Date(
       (owner as { ai_words_reset_at?: string } | null)?.ai_words_reset_at ?? new Date(0).toISOString(),
@@ -443,6 +706,18 @@ async function processUpload(
       text = await extractText(upload.file_name, new Uint8Array(await file.arrayBuffer()));
     }
     const words = countWords(text);
+    // What did they actually upload? A book should become an audiobook, a set
+    // of notes should become revision material. The classifier's evidence is
+    // stored with the upload so the app can show why it chose.
+    const analysis: MaterialAnalysis = classifyMaterial({ text, fileName: upload.file_name });
+    console.log(
+      `Material detected: ${analysis.kind} — ${analysis.signals.join(' · ')} (confidence ${analysis.confidence})`,
+    );
+    const { error: kindError } = await supabase
+      .from('user_uploads')
+      .update({ material_kind: analysis.kind, material_analysis: analysis })
+      .eq('id', upload.id);
+    if (kindError) console.warn('Material detection not stored (run migrations_materials.sql):', kindError.message);
     if (!isPremium && words > FREE_WORD_LIMIT) {
       throw new Error(`Free tier caps uploads at ${FREE_WORD_LIMIT} words (this file: ~${words}).`);
     }
@@ -452,11 +727,28 @@ async function processUpload(
         `Monthly AI budget used (${aiUsed.toLocaleString()}/${PREMIUM_MONTHLY_WORD_CAP.toLocaleString()} words).`,
       );
     }
-    const quiz = await generateQuizQuestions(text);
+    // Nodes are optional: an audiobook-only learner never pays for the curation
+    // model, and a nodes-only learner never pays for narration.
+    let quiz: QuizItem[] = [];
+    let curationError: string | null = null;
+    if (wantsNodes) {
+      try {
+        quiz = await generateQuizQuestions(text);
+      } catch (e) {
+        curationError = (e instanceof Error ? e.message : String(e)).slice(0, 300);
+        // Notes survive a failed quiz: the revision pack is what the learner
+        // came for, and a 78-word page cannot fill 4–5 quiz nodes anyway. A book
+        // still fails, because there the quiz nodes are the product.
+        if (analysis.primaryOutput !== 'revision') throw e;
+        console.warn('Quiz generation skipped; revision pack still built:', curationError);
+      }
+    }
     if (isPremium && billable > 0) {
       await supabase.from('profiles').update({ ai_words_used: aiUsed + billable }).eq('id', upload.user_id);
     }
-    if (quiz.length === 0) throw new Error('LLM returned zero quiz elements.');
+    if (wantsNodes && quiz.length === 0 && analysis.primaryOutput !== 'revision') {
+      throw new Error('LLM returned zero quiz elements.');
+    }
 
     // Lesson tagged to the uploading user; questions carry the same owner.
     // lessons.id is INTEGER (pre-existing table) — lesson.id flows through
@@ -482,7 +774,20 @@ async function processUpload(
       title,
       question_count: quiz.length,
       questions: quiz,
-      estimated_minutes: Math.max(2, Math.min(5, Math.ceil(quiz.length * 0.8))),
+      estimated_minutes: quiz.length > 0 ? Math.max(2, Math.min(5, Math.ceil(quiz.length * 0.8))) : 0,
+      // An audiobook-only upload is a listenable book, not a path node: the app
+      // keeps it out of the revision-node list but still offers it as audio.
+      audiobook_only: !wantsNodes,
+      upload_output: outputMode,
+      // What the pipeline decided this upload is, plus the evidence. The lesson
+      // screen shows it ("Book · 84,120 words · 12 sections") so a wrong guess
+      // is visible rather than silently changing what the learner got.
+      material_kind: analysis.kind,
+      material_analysis: analysis,
+      primary_output: analysis.primaryOutput,
+      // A notes upload whose quiz step failed still ships its revision pack;
+      // the reason is kept so the lesson can say why there are no nodes.
+      ...(curationError ? { nodes_error: curationError } : {}),
       ...(transcriptInfo ? { transcript: transcriptInfo } : {}),
     };
     const { data: lesson, error: lessonError } = await supabase
@@ -500,17 +805,47 @@ async function processUpload(
       .single();
     if (lessonError || !lesson) throw new Error(`Lesson insert failed: ${lessonError?.message}`);
 
-    const { error: questionsError } = await supabase.from('questions').insert(
-      quiz.map((q) => ({
-        lesson_id: lesson.id,
-        user_id: upload.user_id,
-        type: q.type,
-        prompt: q.prompt,
-        options: q.options,
-        answer: q.answer,
-      })),
-    );
-    if (questionsError) throw new Error(`Questions insert failed: ${questionsError.message}`);
+    if (quiz.length > 0) {
+      const { error: questionsError } = await supabase.from('questions').insert(
+        quiz.map((q) => ({
+          lesson_id: lesson.id,
+          user_id: upload.user_id,
+          type: q.type,
+          prompt: q.prompt,
+          options: q.options,
+          answer: q.answer,
+        })),
+      );
+      if (questionsError) throw new Error(`Questions insert failed: ${questionsError.message}`);
+    }
+
+    // Revision material (notes / articles / transcripts): the seven memorization
+    // techniques, built from this text. A book skips this — its product is the
+    // audiobook below — and a failed pack never fails the upload: the lesson is
+    // already usable without it.
+    if (analysis.primaryOutput === 'revision') {
+      try {
+        const base = buildRevisionPack({ text, analysis, title });
+        // Premium gets the model's wording; everyone else keeps the deterministic
+        // extractive pack, which costs nothing and invents nothing.
+        const pack = (isPremium ? await revisionPackFromModel(text, analysis, base) : null) ?? base;
+        const { error: packError } = await supabase.from('revision_packs').upsert(
+          {
+            user_id: upload.user_id,
+            upload_id: upload.id,
+            lesson_id: lesson.id,
+            kind: analysis.kind,
+            title,
+            pack,
+            generated_at: new Date().toISOString(),
+          },
+          { onConflict: 'upload_id' },
+        );
+        if (packError) console.warn('Revision pack not stored (run migrations_materials.sql):', packError.message);
+      } catch (packErr) {
+        console.warn('Revision pack skipped:', packErr instanceof Error ? packErr.message : packErr);
+      }
+    }
 
     // STAGED READY: flip to ready immediately so the learner can open the
     // lesson in ~30-60s (PDF parse + one LLM call). Audio fills in after —
@@ -519,53 +854,108 @@ async function processUpload(
     await supabase.from('user_uploads').update({ status: 'ready', error: null }).eq('id', upload.id);
     const earlyResult: ProcessResult = { ok: true, lesson_id: lesson.id, question_count: quiz.length, segment_count: 0 };
 
-    // Audiobook engine (non-blocking): premium gets elite TTS — one full-mix
-    // MP3 plus one segment MP3 per quiz element. Free tier skips server TTS;
-    // the app narrates on-device via expo-speech at $0 cost. TTS failures
-    // only skip audio — the lesson is already ready above.
+    // Audiobook engine (non-blocking): Premium narrates the WHOLE upload, part
+    // by part, so the learner gets a complete audiobook instead of a reading of
+    // five quiz prompts. Per-question clips stay for review navigation when
+    // nodes exist. Free tier skips server TTS; the app narrates on-device via
+    // expo-speech at $0 cost. TTS failures only skip audio — the lesson is
+    // already ready above.
     try {
-      const fullNarration = isPremium ? quiz.map((q) => q.prompt).join('\n').slice(0, 4000) : '';
-      let audioUrl: string | undefined;
-      const segments: Array<{ question_id: string; prompt: string; audio_url: string }> = [];
-      const jobs: Array<Promise<void>> = [];
-      if (fullNarration) {
-        jobs.push(
-          (async () => {
-            const mix = await synthesizeAudio(fullNarration);
-            audioUrl = `${upload.user_id}/audio/${lesson.id}.mp3`;
+      // Nothing to synthesize: nodes-only learner, or free tier (device voice).
+      if (!isPremium || !wantsNarration) return earlyResult;
+      // Resolved once, inside the audio step: a bad deployment secret then fails
+      // here with a precise message while the already-ready node stays usable.
+      const narratorConfig = withNarrator(audiobookVoiceFromEnv(Deno.env.toObject()), ownerNarrator);
+      const audioVoice = narratorVoice(ownerNarrator)?.id ?? narratorConfig.voiceId;
+      const parts = narrationParts(text);
+      if (parts.length === 0) return earlyResult;
+
+      const audioDir = `${upload.user_id}/audio/${lesson.id}`;
+      const partPaths: string[] = [];
+      let audioFailure: string | null = null;
+      // Resume, don't restart: a long book can outlive one worker, and a re-run
+      // (the Retry button, or a later invocation) keeps every part that landed.
+      const { data: existingParts } = await supabase.storage.from('user-materials').list(audioDir, { limit: 200 });
+      const alreadyNarrated = new Set(((existingParts ?? []) as Array<{ name: string }>).map((o) => o.name));
+      // Three requests at a time: a 60k-character book is ~15 parts, and going
+      // wide enough to cut the wait without tripping provider rate limits.
+      const batchSize = 3;
+      for (let start = 0; start < parts.length; start += batchSize) {
+        const batch = parts.slice(start, start + batchSize);
+        const settled = await Promise.allSettled(
+          batch.map(async (part, offset) => {
+            const index = start + offset;
+            const name = `part-${String(index).padStart(2, '0')}.mp3`;
+            const path = `${audioDir}/${name}`;
+            if (alreadyNarrated.has(name)) {
+              partPaths[index] = path;
+              return;
+            }
+            const mp3 = await synthesizeAudio(part, narratorConfig);
             const { error: upError } = await supabase.storage
               .from('user-materials')
-              .upload(audioUrl, mix, { contentType: 'audio/mpeg', upsert: true });
+              .upload(path, mp3, { contentType: 'audio/mpeg', upsert: true });
             if (upError) throw upError;
-          })(),
+            partPaths[index] = path;
+          }),
         );
+        for (const r of settled) {
+          if (r.status === 'rejected') {
+            audioFailure = String(r.reason instanceof Error ? r.reason.message : r.reason).slice(0, 200);
+            console.warn('Narration part skipped:', r.reason);
+          }
+        }
       }
-      const { data: rows } = await supabase
-        .from('questions')
-        .select('id,prompt')
-        .eq('lesson_id', lesson.id)
-        .order('created_at');
-      for (const [i, row] of (((rows ?? []) as Array<{ id: string; prompt: string }>)).entries()) {
-        jobs.push(
-          (async () => {
-            const seg = await synthesizeAudio(row.prompt.slice(0, 1000));
-            const segPath = `${upload.user_id}/audio/${lesson.id}/${i}.mp3`;
-            const { error: segError } = await supabase.storage
-              .from('user-materials')
-              .upload(segPath, seg, { contentType: 'audio/mpeg', upsert: true });
-            if (segError) throw segError;
-            segments.push({ question_id: row.id, prompt: row.prompt, audio_url: segPath });
-          })(),
-        );
+
+      // Ordered, gap-free list the player walks through. A failed part is
+      // recorded, never silently spliced into the middle of the book.
+      const audioChunks = partPaths
+        .map((path, index) => (path ? { index, path, chars: parts[index].length } : null))
+        .filter((chunk): chunk is { index: number; path: string; chars: number } => chunk !== null);
+
+      const segments: Array<{ question_id: string; prompt: string; audio_url: string }> = [];
+      if (quiz.length > 0) {
+        const { data: rows } = await supabase
+          .from('questions')
+          .select('id,prompt')
+          .eq('lesson_id', lesson.id)
+          .order('created_at');
+        const jobs: Array<Promise<void>> = [];
+        for (const [i, row] of (((rows ?? []) as Array<{ id: string; prompt: string }>)).entries()) {
+          jobs.push(
+            (async () => {
+              const seg = await synthesizeAudio(row.prompt.slice(0, 1000), narratorConfig);
+              const segPath = `${audioDir}/${i}.mp3`;
+              const { error: segError } = await supabase.storage
+                .from('user-materials')
+                .upload(segPath, seg, { contentType: 'audio/mpeg', upsert: true });
+              if (segError) throw segError;
+              segments.push({ question_id: row.id, prompt: row.prompt, audio_url: segPath });
+            })(),
+          );
+        }
+        const settled = await Promise.allSettled(jobs);
+        for (const r of settled) {
+          if (r.status === 'rejected') console.warn('TTS job skipped:', r.reason);
+        }
       }
-      const settled = await Promise.allSettled(jobs);
-      for (const r of settled) {
-        if (r.status === 'rejected') console.warn('TTS job skipped:', r.reason);
-      }
-      if (audioUrl || segments.length > 0) {
+
+      if (audioChunks.length > 0 || segments.length > 0) {
         await supabase
           .from('lessons')
-          .update({ content: { ...lessonContent, audio_url: audioUrl, segments } })
+          .update({
+            content: {
+              ...lessonContent,
+              // audio_url stays the first part so older players still play
+              // something; audio_chunks is the complete book, in order.
+              audio_url: audioChunks[0]?.path,
+              audio_chunks: audioChunks,
+              narration_chars: text.length,
+              ...(audioFailure ? { audio_error: audioFailure } : {}),
+              segments,
+              audio_voice: audioVoice,
+            },
+          })
           .eq('id', lesson.id);
       }
       return { ok: true, lesson_id: lesson.id, question_count: quiz.length, segment_count: segments.length };

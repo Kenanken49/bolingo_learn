@@ -50,3 +50,6 @@ supabase/.temp/
 /android
 .env
 .env.local
+
+# Session import artifacts (never ship)
+.cloud-attachments/

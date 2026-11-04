@@ -1,6 +1,7 @@
 /**
  * Quick ElevenLabs TTS check via the shared SDK client.
- * Compile: npx tsc scripts/tts-clip.ts lib/elevenlabs.ts --ignoreConfig \
+ * Compile: npx tsc scripts/tts-clip.ts lib/elevenlabs.ts \
+ *   supabase/functions/_shared/audiobookVoice.ts --ignoreConfig \
  *   --outDir /tmp/tts-build --module commonjs --target es2022 \
  *   --moduleResolution bundler --skipLibCheck --esModuleInterop
  * Run: node --env-file=.env.local /tmp/tts-build/scripts/tts-clip.js "Hello"
@@ -10,12 +11,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { writeFile } from 'node:fs/promises';
 import { getElevenLabsClient } from '../lib/elevenlabs';
+import { AUDIOBOOK_VOICE_DEFAULTS } from '../supabase/functions/_shared/audiobookVoice';
 
 async function main(): Promise<void> {
   const text = process.argv[2] ?? 'Hello from Bolingo Learn. Your audiobook engine is wired.';
   const out = join(tmpdir(), `bolingo-clip-${Date.now()}.mp3`);
 
-  const stream = await getElevenLabsClient().textToSpeech.convert('21m00Tcm4TlvDq8ikWAM', {
+  const stream = await getElevenLabsClient().textToSpeech.convert(AUDIOBOOK_VOICE_DEFAULTS.voiceId, {
     text,
     modelId: 'eleven_multilingual_v2',
   });

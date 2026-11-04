@@ -16,7 +16,7 @@ import { isFlagOn } from './featureFlags';
  * is on.
  */
 export const MPESA_PLAN = 'premium_monthly' as const;
-export const MPESA_PRICE_LABEL = 'KES 770/mo';
+export const MPESA_PRICE_LABEL = 'KSh 770/mo';
 
 const POLL_INTERVAL_MS = 5_000;
 const POLL_TIMEOUT_MS = 120_000;

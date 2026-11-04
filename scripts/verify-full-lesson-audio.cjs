@@ -126,7 +126,7 @@ Options:
   --out <dir>             Write MP3s and manifest here
                           (default: ./.preview-audio/lesson-<id>-<timestamp>)
   --concurrency <n>       Parallel TTS requests, 1-3 (default: 1)
-  --allow-default-voice   Allow the built-in placeholder voice (demo only)
+  --allow-default-voice   Allow ElevenLabs' stock demo voice (demo only)
   --json                  Print a machine-readable result
   --help                  Show this message
 
@@ -647,10 +647,10 @@ async function main() {
   }
   if (
     !options.allowDefaultVoice &&
-    config.voiceId === voice.AUDIOBOOK_VOICE_DEFAULTS.voiceId
+    config.voiceId === voice.STOCK_DEMO_VOICE_ID
   ) {
     throw new Error(
-      'TTS_VOICE_ID is the built-in placeholder voice, not the licensed voice. ' +
+      'TTS_VOICE_ID is ElevenLabs\' stock demo voice, not the licensed narrator. ' +
         'Set the licensed id in .env.local (the same value as the deployment secret), ' +
         'or pass --allow-default-voice for a demo-only run.'
     );
@@ -785,7 +785,7 @@ async function main() {
     fullMixSynthesized: Boolean(fullMix),
     allSegmentsSynthesized: segments.length === jobs.length - 1,
     allMp3sPlayable: artifacts.every((a) => a.frames > 0 && a.seconds > 0.2),
-    licensedVoiceUsed: config.voiceId !== voice.AUDIOBOOK_VOICE_DEFAULTS.voiceId,
+    licensedVoiceUsed: config.voiceId !== voice.STOCK_DEMO_VOICE_ID,
     voiceAccessible: true,
     fullMixCoversAllPrompts: narration.missingPrompts.length === 0,
   };

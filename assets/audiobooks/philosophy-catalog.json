@@ -1,0 +1,3569 @@
+{
+  "version": 1,
+  "source": "https://www.loyalbooks.com/genre/Philosophy?type=all",
+  "fetchedAt": "2026-11-04T00:31:33.886Z",
+  "rights": "Public domain (US): LibriVox narration via archive.org, ebook text via Project Gutenberg / LoyalBooks. See docs/classics-audiobooks.md.",
+  "books": [
+    {
+      "slug": "aesops-fables-volume-1-fables-1-25",
+      "title": "Aesop's Fables",
+      "author": "Aesop",
+      "url": "https://www.loyalbooks.com/book/aesops-fables-volume-1-fables-1-25",
+      "cover": "https://www.loyalbooks.com/image/layout2/Aesops-Fables.jpg",
+      "genres": [
+        "Languages",
+        "Animals",
+        "Kids",
+        "Fairy tales",
+        "Philosophy",
+        "Satire",
+        "Fiction"
+      ],
+      "archiveId": "aesop_fables_volume_one_librivox",
+      "audioZip": "https://archive.org/download/aesop_fables_volume_one_librivox/aesop_fables_volume_one_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks2/AesopsFables64kbps.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Aesops-Fables.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Aesops-Fables.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/1/3/3/11339/11339-h/11339-h.htm",
+      "bundledText": "./texts/aesops-fables-volume-1-fables-1-25.txt"
+    },
+    {
+      "slug": "walden-by-henry-david-thoreau",
+      "title": "Walden",
+      "author": "Henry David Thoreau",
+      "url": "https://www.loyalbooks.com/book/walden-by-henry-david-thoreau",
+      "cover": "https://www.loyalbooks.com/image/layout2/Walden.jpg",
+      "genres": [
+        "Nature",
+        "Non-fiction",
+        "Philosophy",
+        "Biography",
+        "History",
+        "Literature",
+        "Science"
+      ],
+      "archiveId": "walden_librivox",
+      "audioZip": "https://archive.org/download/walden_librivox/walden_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/WaldenPart1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Walden-by-Henry-David-Thoreau.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Walden-by-Henry-David-Thoreau.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/205/205-h/205-h.htm",
+      "bundledText": "./texts/walden-by-henry-david-thoreau.txt"
+    },
+    {
+      "slug": "anthem-by-ayn-rand",
+      "title": "Anthem",
+      "author": "Ayn Rand",
+      "url": "https://www.loyalbooks.com/book/anthem-by-ayn-rand",
+      "cover": "https://www.loyalbooks.com/image/layout2/Anthem.jpg",
+      "genres": [
+        "Fiction",
+        "Philosophy",
+        "Science fiction",
+        "Literature",
+        "Psychology",
+        "Romance",
+        "Science",
+        "Travel",
+        "Fantasy"
+      ],
+      "archiveId": "anthem_librivox",
+      "audioZip": "https://archive.org/download/anthem_librivox/anthem_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/Anthem_Rand_32kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Anthem-by-Ayn-Rand.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Anthem-by-Ayn-Rand.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/2/5/1250/1250-h/1250-h.htm",
+      "bundledText": "./texts/anthem-by-ayn-rand.txt"
+    },
+    {
+      "slug": "as-a-man-thinketh-by-james-allen",
+      "title": "As a Man Thinketh",
+      "author": "James Allen",
+      "url": "https://www.loyalbooks.com/book/as-a-man-thinketh-by-james-allen",
+      "cover": "https://www.loyalbooks.com/image/layout2/as-a-man-thinketh-by-james-allen.jpg",
+      "genres": [
+        "Philosophy",
+        "Psychology",
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Non-fiction"
+      ],
+      "archiveId": "as_a_man_thinketh_mc_librivox",
+      "audioZip": "https://archive.org/download/as_a_man_thinketh_mc_librivox/as_a_man_thinketh_mc_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/AsAManThinketh.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/As-a-Man-Thinketh-by-James-Allen.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/As-a-Man-Thinketh-by-James-Allen.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/4/5/0/4507/4507-h/4507-h.htm",
+      "bundledText": "./texts/as-a-man-thinketh-by-james-allen.txt"
+    },
+    {
+      "slug": "leaves-of-grass-by-walt-whitman",
+      "title": "Leaves of Grass",
+      "author": "Walt Whitman",
+      "url": "https://www.loyalbooks.com/book/leaves-of-grass-by-walt-whitman",
+      "cover": "https://www.loyalbooks.com/image/layout2/Leaves-of-Grass.jpg",
+      "genres": [
+        "Nature",
+        "Classics (antiquity)",
+        "Literature",
+        "History",
+        "Instruction",
+        "Philosophy",
+        "Poetry"
+      ],
+      "archiveId": "leaves_of_grass_librivox",
+      "audioZip": "https://archive.org/download/leaves_of_grass_librivox/leaves_of_grass_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/LeavesOfGrassPart1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Leaves-of-Grass-by-Walt-Whitman.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Leaves-of-Grass-by-Walt-Whitman.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/3/2/1322/1322-h/1322-h.htm",
+      "bundledText": "./texts/leaves-of-grass-by-walt-whitman.txt"
+    },
+    {
+      "slug": "how-to-live-on-twenty-four-hours-a-day-by-arnold-bennett",
+      "title": "How to Live on Twenty-Four Hours a Day",
+      "author": "Arnold Bennett",
+      "url": "https://www.loyalbooks.com/book/how-to-live-on-twenty-four-hours-a-day-by-arnold-bennett",
+      "cover": "https://www.loyalbooks.com/image/layout2/How-to-Live-on-Twenty-Four-Ho.jpg",
+      "genres": [
+        "Advice",
+        "Non-fiction",
+        "Philosophy",
+        "Science",
+        "Economics/Political Economy"
+      ],
+      "archiveId": "twenty-four_hours_a_day_librivox",
+      "audioZip": "https://archive.org/download/twenty-four_hours_a_day_librivox/twenty-four_hours_a_day_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/HowToLiveOnTwentyFourHoursADay.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/How-to-Live-on-Twenty-Four-Hours-a-Day-by-Arnold-Bennett.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/How-to-Live-on-Twenty-Four-Hours-a-Day-by-Arnold-Bennett.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/7/2274/2274-h/2274-h.htm",
+      "bundledText": "./texts/how-to-live-on-twenty-four-hours-a-day-by-arnold-bennett.txt"
+    },
+    {
+      "slug": "uncle-remus-by-joel-chandler-harris",
+      "title": "Uncle Remus",
+      "author": "Joel Chandler Harris",
+      "url": "https://www.loyalbooks.com/book/uncle-remus-by-joel-chandler-harris",
+      "cover": "https://www.loyalbooks.com/image/layout2/Uncle-Remus.jpg",
+      "genres": [
+        "Animals",
+        "Short stories",
+        "Literature",
+        "Music",
+        "Kids",
+        "Humor",
+        "Philosophy",
+        "Fiction"
+      ],
+      "archiveId": "uncle_remus_librivox",
+      "audioZip": "https://archive.org/download/uncle_remus_librivox/uncle_remus_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/UncleRemus.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Uncle-Remus-by-Joel-Chandler-Harris.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Uncle-Remus-by-Joel-Chandler-Harris.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2306/pg2306.html.utf8",
+      "bundledText": "./texts/uncle-remus-by-joel-chandler-harris.txt"
+    },
+    {
+      "slug": "Brothers-Karamazov",
+      "title": "The Brothers Karamazov",
+      "author": "Fyodor Dostoyevsky",
+      "url": "https://www.loyalbooks.com/book/Brothers-Karamazov",
+      "cover": "https://www.loyalbooks.com/image/layout2/Brothers-Karamazov.jpg",
+      "genres": [
+        "Philosophy",
+        "Psychology",
+        "Languages",
+        "Fiction",
+        "Non-fiction",
+        "Literature"
+      ],
+      "archiveId": "brothers_karamazov_1002_librivox",
+      "audioZip": "https://archive.org/download/brothers_karamazov_1002_librivox/brothers_karamazov_1002_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/BrothersKaramazovPart1-64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Brothers-Karamazov.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Brothers-Karamazov.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/8/0/5/28054/28054-h/28054-h.html",
+      "bundledText": "./texts/Brothers-Karamazov.txt"
+    },
+    {
+      "slug": "the-twilight-of-the-idols-by-friedrich-nietzsche",
+      "title": "The Twilight of the Idols or How to Philosophise with the Hammer",
+      "author": "Friedrich Nietzsche",
+      "url": "https://www.loyalbooks.com/book/the-twilight-of-the-idols-by-friedrich-nietzsche",
+      "cover": "https://www.loyalbooks.com/image/layout2/Twilight-of-the-Idols.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "the_twilight_of_the_idols_librivox",
+      "audioZip": "https://archive.org/download/the_twilight_of_the_idols_librivox/the_twilight_of_the_idols_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/TwilightOfTheIdols64kb.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "discourse-on-the-method-by-rene-descartes",
+      "title": "Discourse on the Method of Rightly Conducting One's Reason and of Seeking Truth in the Sciences",
+      "author": "René Descartes",
+      "url": "https://www.loyalbooks.com/book/discourse-on-the-method-by-rene-descartes",
+      "cover": "https://www.loyalbooks.com/image/layout2/Discourse-on-the-Method-of-Ri.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Science"
+      ],
+      "archiveId": "discourse_method_librivox",
+      "audioZip": "https://archive.org/download/discourse_method_librivox/discourse_method_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/MeditationsOnFirstPhilosophy-theDiscourseOnMethod64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Discourse-on-the-Method-by-Rene-Descartes.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Discourse-on-the-Method-by-Rene-Descartes.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/5/59/59-h/59-h.htm",
+      "bundledText": "./texts/discourse-on-the-method-by-rene-descartes.txt"
+    },
+    {
+      "slug": "summa-theologica-prima-pars-questions-1-26-by-thomas-aquinas",
+      "title": "Summa Theologica, Pars Prima",
+      "author": "Saint Thomas Aquinas",
+      "url": "https://www.loyalbooks.com/book/summa-theologica-prima-pars-questions-1-26-by-thomas-aquinas",
+      "cover": "https://www.loyalbooks.com/image/layout2/Summa-Theologica-Pars-Prima-Initial-Questions.jpg",
+      "genres": [
+        "Philosophy",
+        "Religion",
+        "Non-fiction"
+      ],
+      "archiveId": "summa_1_01_jr_0901_librivox",
+      "audioZip": "https://archive.org/download/summa_1_01_jr_0901_librivox/summa_1_01_jr_0901_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/Librivoxm4bCollectionAudiobooks_12/SummaTheologicaQuestions1To26Part1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Summa-Theologica-Prima-Pars-Questions-1-26-by-Thomas-Aquinas.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Summa-Theologica-Prima-Pars-Questions-1-26-by-Thomas-Aquinas.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/17611/pg17611.html.utf8",
+      "bundledText": "./texts/summa-theologica-prima-pars-questions-1-26-by-thomas-aquinas.txt"
+    },
+    {
+      "slug": "leviathan-books-i-and-ii-by-thomas-hobbes",
+      "title": "Leviathan, or The Matter, Forme and Power of a Common Wealth Ecclesiasticall and Civil",
+      "author": "Thomas Hobbes",
+      "url": "https://www.loyalbooks.com/book/leviathan-books-i-and-ii-by-thomas-hobbes",
+      "cover": "https://www.loyalbooks.com/image/layout2/Leviathan-Matter-Forme-1-2.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics",
+        "Science"
+      ],
+      "archiveId": "leviathan_1_2_0802_librivox",
+      "audioZip": "https://archive.org/download/leviathan_1_2_0802_librivox/leviathan_1_2_0802_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks2/Leviathan1and2-64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Leviathan-Books-I-and-Ii-by-Thomas-Hobbes.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Leviathan-Books-I-and-Ii-by-Thomas-Hobbes.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/2/0/3207/3207-h/3207-h.htm",
+      "bundledText": "./texts/leviathan-books-i-and-ii-by-thomas-hobbes.txt"
+    },
+    {
+      "slug": "on-liberty-by-john-stuart-mill",
+      "title": "On Liberty",
+      "author": "John Stuart Mill",
+      "url": "https://www.loyalbooks.com/book/on-liberty-by-john-stuart-mill",
+      "cover": "https://www.loyalbooks.com/image/layout2/On-Liberty.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "on_liberty_librivox",
+      "audioZip": "https://archive.org/download/on_liberty_librivox/on_liberty_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/OnLiberty32kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/On-Liberty-by-John-Stuart-Mill.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/On-Liberty-by-John-Stuart-Mill.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/4/9/0/34901/34901-h/34901-h.htm",
+      "bundledText": "./texts/on-liberty-by-john-stuart-mill.txt"
+    },
+    {
+      "slug": "the-dhammapada-translated-by-f-max-mueller",
+      "title": "The Dhammapada",
+      "author": "Unknown",
+      "url": "https://www.loyalbooks.com/book/the-dhammapada-translated-by-f-max-mueller",
+      "cover": "https://www.loyalbooks.com/image/layout2/Dhammapada.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion",
+        "Classics (antiquity)"
+      ],
+      "archiveId": "dhammapada_0707_librivox",
+      "audioZip": "https://archive.org/download/dhammapada_0707_librivox/dhammapada_0707_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Dhammapada-Translated-by-F-Max-Mueller.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Dhammapada-Translated-by-F-Max-Mueller.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/1/2017/2017-h/2017-h.htm"
+    },
+    {
+      "slug": "a-vindication-of-the-rights-of-woman-by-mary-wollstonecraft",
+      "title": "A Vindication of the Rights of Woman",
+      "author": "Mary Wollstonecraft",
+      "url": "https://www.loyalbooks.com/book/a-vindication-of-the-rights-of-woman-by-mary-wollstonecraft",
+      "cover": "https://www.loyalbooks.com/image/layout2/Vindication-of-the-Rights-of-.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "History",
+        "Science"
+      ],
+      "archiveId": "vindication_woman_librivox",
+      "audioZip": "https://archive.org/download/vindication_woman_librivox/vindication_woman_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/VindicationOfTheRightsOfWoman.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/A-Vindication-of-the-Rights-of-Woman-by-Mary-Wollstonecraft.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Vindication-of-the-Rights-of-Woman-by-Mary-Wollstonecraft.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/3420/pg3420.html.utf8"
+    },
+    {
+      "slug": "two-tactics-of-social-democracy-in-the-democratic-revolution-by-vladimir-ilyich-lenin",
+      "title": "Two Tactics of Social-Democracy in the Democratic Revolution",
+      "author": "Vladimir Ilyich Lenin",
+      "url": "https://www.loyalbooks.com/book/two-tactics-of-social-democracy-in-the-democratic-revolution-by-vladimir-ilyich-lenin",
+      "cover": "https://www.loyalbooks.com/image/layout2/Tactics-of-Social-Democracy.jpg",
+      "genres": [
+        "History",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "two_tactics_cp_librivox",
+      "audioZip": "https://archive.org/download/two_tactics_cp_librivox/two_tactics_cp_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxCollectionM4BAudiobook10/TwoTacticsOfSocial-democracyInTheDemocraticRevolutionPart1_32kb.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "the-book-of-tea-by-okakura-kakuzo",
+      "title": "The Book of Tea",
+      "author": "Okakura Kakuzo",
+      "url": "https://www.loyalbooks.com/book/the-book-of-tea-by-okakura-kakuzo",
+      "cover": "https://www.loyalbooks.com/image/layout2/Book-of-Tea.jpg",
+      "genres": [
+        "Philosophy",
+        "Languages",
+        "Art",
+        "Non-fiction",
+        "History"
+      ],
+      "archiveId": "book_of_tea_librivox",
+      "audioZip": "https://archive.org/download/book_of_tea_librivox/book_of_tea_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxCollectionM4BAudiobook10/BookOfTea_32kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Book-of-Tea-by-Okakura-Kakuzo.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Book-of-Tea-by-Okakura-Kakuzo.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/7/6/769/769-h/769-h.htm"
+    },
+    {
+      "slug": "the-way-of-peace-by-james-allen",
+      "title": "The Way of Peace",
+      "author": "James Allen",
+      "url": "https://www.loyalbooks.com/book/the-way-of-peace-by-james-allen",
+      "cover": "https://www.loyalbooks.com/image/layout2/the-way-of-peace-by-james-allen.jpg",
+      "genres": [
+        "Instruction",
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "the_way_of_peace_0901_librivox",
+      "audioZip": "https://archive.org/download/the_way_of_peace_0901_librivox/the_way_of_peace_0901_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxCollectionM4BAudiobook10/WayOfPeace.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Way-of-Peace-by-James-Allen.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Way-of-Peace-by-James-Allen.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/10740/pg10740.html.utf8"
+    },
+    {
+      "slug": "the-truth-about-jesus-is-he-a-myth-by-m-m-mangasarian",
+      "title": "The Truth About Jesus.  Is He a Myth?",
+      "author": "M. M. Mangasarian",
+      "url": "https://www.loyalbooks.com/book/the-truth-about-jesus-is-he-a-myth-by-m-m-mangasarian",
+      "cover": "https://www.loyalbooks.com/image/layout2/Truth-About-Jesus-Is-He-a-My.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "truth_about_jesus_librivox",
+      "audioZip": "https://archive.org/download/truth_about_jesus_librivox/truth_about_jesus_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/TruthAboutJesus.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Truth-About-Jesus-Is-He-a-Myth-by-M-M-Mangasarian.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Truth-About-Jesus-Is-He-a-Myth-by-M-M-Mangasarian.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6107/pg6107.html.utf8"
+    },
+    {
+      "slug": "ancient-greek-philosopher-scientists",
+      "title": "Ancient Greek Philosopher-Scientists",
+      "author": "Varous",
+      "url": "https://www.loyalbooks.com/book/ancient-greek-philosopher-scientists",
+      "cover": "https://www.loyalbooks.com/image/layout2/Ancient-Greek-Philosopher-Scientists.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "ancient_greek_philosopher_scientists_0809_librivox",
+      "audioZip": "https://archive.org/download/ancient_greek_philosopher_scientists_0809_librivox/ancient_greek_philosopher_scientists_0809_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/AncientGreekPhilosopher-scientists64kb.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "God-and-the-State",
+      "title": "God and the State",
+      "author": "Mikhail Bakunin",
+      "url": "https://www.loyalbooks.com/book/God-and-the-State",
+      "cover": "https://www.loyalbooks.com/image/layout2/God-and-the-State.jpg",
+      "genres": [
+        "Philosophy",
+        "Religion",
+        "Non-fiction"
+      ],
+      "archiveId": "god_and_the_state_librivox",
+      "audioZip": "https://archive.org/download/god_and_the_state_librivox/god_and_the_state_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "orthodoxy-by-gk-chesterton",
+      "title": "Orthodoxy",
+      "author": "G. K. Chesterton",
+      "url": "https://www.loyalbooks.com/book/orthodoxy-by-gk-chesterton",
+      "cover": "https://www.loyalbooks.com/image/layout2/Orthodoxy.jpg",
+      "genres": [
+        "History",
+        "Nature",
+        "Religion",
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "orthodoxy_1202_librivox",
+      "audioZip": "https://archive.org/download/orthodoxy_1202_librivox/orthodoxy_1202_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/Orthodoxy.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Orthodoxy-by-Gk-Chesterton.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Orthodoxy-by-Gk-Chesterton.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/7/6/16769/16769-h/16769-h.htm"
+    },
+    {
+      "slug": "introduction-to-the-philosophy-of-history-by-georg-wilhelm-freidreich-hegel",
+      "title": "Introduction to The Philosophy of History",
+      "author": "Georg Wilhelm Friedrich Hegel",
+      "url": "https://www.loyalbooks.com/book/introduction-to-the-philosophy-of-history-by-georg-wilhelm-freidreich-hegel",
+      "cover": "https://www.loyalbooks.com/image/layout2/Introduction-to-the-philosophy-of-history.jpg",
+      "genres": [
+        "History",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "intro_philosophy_history_dew_librivox",
+      "audioZip": "https://archive.org/download/intro_philosophy_history_dew_librivox/intro_philosophy_history_dew_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxCollectionM4BAudiobook10/IntroductionToThePhilosophyOfHistory_32kb.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "dialogues-concerning-natural-religion-by-david-hume",
+      "title": "Dialogues Concerning Natural Religion",
+      "author": "David Hume",
+      "url": "https://www.loyalbooks.com/book/dialogues-concerning-natural-religion-by-david-hume",
+      "cover": "https://www.loyalbooks.com/image/layout2/Dialogues-Concerning-Natural-.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "dialogues_concerning_natural_religion_lm_librivox",
+      "audioZip": "https://archive.org/download/dialogues_concerning_natural_religion_lm_librivox/dialogues_concerning_natural_religion_lm_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/DialoguesConcerningNaturalReligion.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Dialogues-Concerning-Natural-Religion-by-David-Hume.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Dialogues-Concerning-Natural-Religion-by-David-Hume.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/4/5/8/4583/4583-h/4583-h.htm"
+    },
+    {
+      "slug": "euthyphro-by-plato",
+      "title": "Euthyphro",
+      "author": "Plato",
+      "url": "https://www.loyalbooks.com/book/euthyphro-by-plato",
+      "cover": "https://www.loyalbooks.com/image/layout2/Euthyphro-Plato.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Ancient Texts",
+        "Classics (antiquity)",
+        "Languages"
+      ],
+      "archiveId": "euthyphro_librivox",
+      "audioZip": "https://archive.org/download/euthyphro_librivox/euthyphro_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/SelectPlatonicDialogues64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Euthyphro-by-Plato.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Euthyphro-by-Plato.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/4/1642/1642-h/1642-h.htm"
+    },
+    {
+      "slug": "the-symposium-by-plato",
+      "title": "The Symposium",
+      "author": "Plato",
+      "url": "https://www.loyalbooks.com/book/the-symposium-by-plato",
+      "cover": "https://www.loyalbooks.com/image/layout2/Symposium-Plato.jpg",
+      "genres": [
+        "Ancient Texts",
+        "Non-fiction",
+        "Philosophy",
+        "Classics (antiquity)",
+        "Languages",
+        "Dramatic Works",
+        "Erotica",
+        "Poetry"
+      ],
+      "archiveId": "symposium_0909_librivox",
+      "audioZip": "https://archive.org/download/symposium_0909_librivox/symposium_0909_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/SelectPlatonicDialogues32kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Symposium-by-Plato.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Symposium-by-Plato.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/0/1600/1600-h/1600-h.htm"
+    },
+    {
+      "slug": "some-turns-of-thought-in-modern-philosophy-by-george-santayana",
+      "title": "Some Turns of Thought in Modern Philosophy",
+      "author": "George Santayana",
+      "url": "https://www.loyalbooks.com/book/some-turns-of-thought-in-modern-philosophy-by-george-santayana",
+      "cover": "https://www.loyalbooks.com/image/layout2/Some-Turns-of-Thought-in-Mode.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "turns_thought_modern_philosophy_librivox",
+      "audioZip": "https://archive.org/download/turns_thought_modern_philosophy_librivox/turns_thought_modern_philosophy_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/SomeTurnsOfThoughtInModernPhilosophy.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Some-Turns-of-Thought-in-Modern-Philosophy-by-George-Santayana.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Some-Turns-of-Thought-in-Modern-Philosophy-by-George-Santayana.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/7/1/16712/16712-h/16712-h.htm"
+    },
+    {
+      "slug": "the-joyful-wisdom-by-friedrich-nietzsche",
+      "title": "The Joyful Wisdom",
+      "author": "Friedrich Nietzsche",
+      "url": "https://www.loyalbooks.com/book/the-joyful-wisdom-by-friedrich-nietzsche",
+      "cover": "https://www.loyalbooks.com/image/layout2/joyful_wisdom.jpg",
+      "genres": [
+        "Philosophy",
+        "Poetry",
+        "Religion"
+      ],
+      "archiveId": "joyful_wisdom_0907_librivox",
+      "audioZip": "https://archive.org/download/joyful_wisdom_0907_librivox/joyful_wisdom_0907_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "ion-by-plato",
+      "title": "Ion",
+      "author": "Plato",
+      "url": "https://www.loyalbooks.com/book/ion-by-plato",
+      "cover": "https://www.loyalbooks.com/image/layout2/Ion.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Ancient Texts",
+        "Classics (antiquity)",
+        "Languages"
+      ],
+      "archiveId": "ion_spz_librivox",
+      "audioZip": "https://archive.org/download/ion_spz_librivox/ion_spz_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/SelectPlatonicDialogues32kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Ion-by-Plato.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Ion-by-Plato.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/3/1635/1635-h/1635-h.htm"
+    },
+    {
+      "slug": "Bushido-Soul-of-Japan",
+      "title": "Bushido: The Soul of Japan",
+      "author": "Inazo Nitobe",
+      "url": "https://www.loyalbooks.com/book/Bushido-Soul-of-Japan",
+      "cover": "https://www.loyalbooks.com/image/layout2/Bushido-Soul-of-Japan.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "bushido_0912_librivox",
+      "audioZip": "https://archive.org/download/bushido_0912_librivox/bushido_0912_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/SoulOfJapan.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Bushido-Soul-of-Japan.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Bushido-Soul-of-Japan.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/2/0/9/12096/12096-h/12096-h.htm"
+    },
+    {
+      "slug": "utilitarianism-by-john-stuart-mill",
+      "title": "Utilitarianism",
+      "author": "John Stuart Mill",
+      "url": "https://www.loyalbooks.com/book/utilitarianism-by-john-stuart-mill",
+      "cover": "https://www.loyalbooks.com/image/layout2/Utilitarianism-John-Stuart-Mill.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "utilitarianism_dew_librivox",
+      "audioZip": "https://archive.org/download/utilitarianism_dew_librivox/utilitarianism_dew_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/Utilitarianism64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Utilitarianism-by-John-Stuart-Mill.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Utilitarianism-by-John-Stuart-Mill.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/1/2/2/11224/11224-h/11224-h.htm"
+    },
+    {
+      "slug": "Nicomachean-Ethics-Aristotle",
+      "title": "The Nicomachean Ethics",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/Nicomachean-Ethics-Aristotle",
+      "cover": "https://www.loyalbooks.com/image/layout2/Nicomachean-Ethics-Aristotle.jpg",
+      "genres": [
+        "Classics (antiquity)",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "nicomachean_ethics_ge_librivox",
+      "audioZip": "https://archive.org/download/nicomachean_ethics_ge_librivox/nicomachean_ethics_ge_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks2/NicomacheanEthicsByAristotle64kbps.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "critique-of-practical-reason-by-immanuel-kant",
+      "title": "The Critique of Practical Reason",
+      "author": "Immanuel Kant",
+      "url": "https://www.loyalbooks.com/book/critique-of-practical-reason-by-immanuel-kant",
+      "cover": "https://www.loyalbooks.com/image/layout2/critique-of-practical-reason-by-immanuel-kant.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "critique_practical_0810_librivox",
+      "audioZip": "https://archive.org/download/critique_practical_0810_librivox/critique_practical_0810_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/CritiqueOfPracticalReason.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Critique-of-Practical-Reason-by-Immanuel-Kant.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Critique-of-Practical-Reason-by-Immanuel-Kant.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5683/pg5683.html.utf8"
+    },
+    {
+      "slug": "zadig-or-the-book-of-fate-by-voltaire",
+      "title": "Zadig, or the Book of Fate",
+      "author": "Voltaire",
+      "url": "https://www.loyalbooks.com/book/zadig-or-the-book-of-fate-by-voltaire",
+      "cover": "https://www.loyalbooks.com/image/layout2/zadig-or-the-book-of-fate-by-voltaire.jpg",
+      "genres": [
+        "Fiction",
+        "Philosophy",
+        "Satire",
+        "Literature"
+      ],
+      "archiveId": "zadig_0801_librivox",
+      "audioZip": "https://archive.org/download/zadig_0801_librivox/zadig_0801_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/Zadig.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Zadig-or-the-Book-of-Fate-by-Voltaire.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Zadig-or-the-Book-of-Fate-by-Voltaire.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/9/7/18972/18972-h/18972-h.htm"
+    },
+    {
+      "slug": "two-treatises-of-civil-government-by-john-locke",
+      "title": "Two Treatises of Civil Government",
+      "author": "John Locke",
+      "url": "https://www.loyalbooks.com/book/two-treatises-of-civil-government-by-john-locke",
+      "cover": "https://www.loyalbooks.com/image/layout2/two-treatises-of-civil-government-by-john-locke.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics",
+        "Religion"
+      ],
+      "archiveId": "two_treatises_0902_librivox",
+      "audioZip": "https://archive.org/download/two_treatises_0902_librivox/two_treatises_0902_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/TwoTreatisesOfCivilGovernmentALetterConcerningToleration_Locke_32kb.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "reflections-on-war-and-death-by-sigmund-freud",
+      "title": "Reflections on War and Death",
+      "author": "Sigmund Freud",
+      "url": "https://www.loyalbooks.com/book/reflections-on-war-and-death-by-sigmund-freud",
+      "cover": "https://www.loyalbooks.com/image/layout2/reflections-on-war-and-death-by-sigmund-freud.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics",
+        "Psychology"
+      ],
+      "archiveId": "reflections_on_war_and_death_dew_librivox",
+      "audioZip": "https://archive.org/download/reflections_on_war_and_death_dew_librivox/reflections_on_war_and_death_dew_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/ReflectionsOnWarAndDeath.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Reflections-on-War-and-Death-by-Sigmund-Freud.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Reflections-on-War-and-Death-by-Sigmund-Freud.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/5/8/7/35875/35875-h/35875-h.htm"
+    },
+    {
+      "slug": "the-theory-of-moral-sentiments-by-adam-smith",
+      "title": "The Theory of Moral Sentiments (First Edition)",
+      "author": "Adam Smith",
+      "url": "https://www.loyalbooks.com/book/the-theory-of-moral-sentiments-by-adam-smith",
+      "cover": "https://www.loyalbooks.com/image/layout2/the-theory-of-moral-sentiments-by-adam-smith.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Psychology"
+      ],
+      "archiveId": "theoryofmoralsentiments_0910_librivox",
+      "audioZip": "https://archive.org/download/theoryofmoralsentiments_0910_librivox/theoryofmoralsentiments_0910_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "has-a-frog-a-soul-by-thomas-h-huxley",
+      "title": "Has a Frog a Soul?",
+      "author": "Thomas Henry Huxley",
+      "url": "https://www.loyalbooks.com/book/has-a-frog-a-soul-by-thomas-h-huxley",
+      "cover": "https://www.loyalbooks.com/image/layout2/Has-a-Frog-a-Soul.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Nature",
+        "Non-fiction",
+        "Philosophy",
+        "Psychology"
+      ],
+      "archiveId": "frog_soul_librivox",
+      "audioZip": "https://archive.org/download/frog_soul_librivox/frog_soul_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "bundledAudio": [
+        "./audio/has-a-frog-a-soul-by-thomas-h-huxley/00.mp3"
+      ]
+    },
+    {
+      "slug": "an-introduction-to-metaphysics-by-henri-bergson",
+      "title": "An Introduction to Metaphysics",
+      "author": "Henri Bergson",
+      "url": "https://www.loyalbooks.com/book/an-introduction-to-metaphysics-by-henri-bergson",
+      "cover": "https://www.loyalbooks.com/image/layout2/an-introduction-to-metaphysics-by-henri-bergson.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "introduction_to_metaphysics_0909_librivox",
+      "audioZip": "https://archive.org/download/introduction_to_metaphysics_0909_librivox/introduction_to_metaphysics_0909_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "the-concept-of-nature-by-alfred-north-whitehead",
+      "title": "The Concept of Nature",
+      "author": "Alfred North Whitehead",
+      "url": "https://www.loyalbooks.com/book/the-concept-of-nature-by-alfred-north-whitehead",
+      "cover": "https://www.loyalbooks.com/image/layout2/the-concept-of-nature-by-alfred-north-whitehead.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Science",
+        "Nature"
+      ],
+      "archiveId": "concept_nature_0810_librivox",
+      "audioZip": "https://archive.org/download/concept_nature_0810_librivox/concept_nature_0810_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/ConceptOfNature.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Concept-of-Nature-by-Alfred-North-Whitehead.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Concept-of-Nature-by-Alfred-North-Whitehead.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/8/3/18835/18835-h/18835-h.htm"
+    },
+    {
+      "slug": "she-rab-dong-bu-by-nagarjuna",
+      "title": "She-rab Dong-bu (The Tree of Wisdom)",
+      "author": "Nagarjuna",
+      "url": "https://www.loyalbooks.com/book/she-rab-dong-bu-by-nagarjuna",
+      "cover": "https://www.loyalbooks.com/image/layout2/she-rab-dong-bu-by-nagarjuna.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "she_rab_dong_bu_librivox",
+      "audioZip": "https://archive.org/download/she_rab_dong_bu_librivox/she_rab_dong_bu_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/She-rabDong-butheTreeOfWisdom.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "perpetual-peace-by-immanuel-kant",
+      "title": "Perpetual Peace: A Philosophic Essay",
+      "author": "Immanuel Kant",
+      "url": "https://www.loyalbooks.com/book/perpetual-peace-by-immanuel-kant",
+      "cover": "https://www.loyalbooks.com/image/layout2/Perpetual-Peace-A-Philosophic.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "perpetual_peace_librivox",
+      "audioZip": "https://archive.org/download/perpetual_peace_librivox/perpetual_peace_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "more-goops-and-how-not-to-be-them-by-gelett-burgess",
+      "title": "More Goops and How Not to Be Them",
+      "author": "Gelett Burgess",
+      "url": "https://www.loyalbooks.com/book/more-goops-and-how-not-to-be-them-by-gelett-burgess",
+      "cover": "https://www.loyalbooks.com/image/layout2/More-Goops-and-How-Not-to-Be-.jpg",
+      "genres": [
+        "Kids",
+        "Comedy",
+        "Poetry",
+        "Philosophy"
+      ],
+      "archiveId": "more_goops_librivox",
+      "audioZip": "https://archive.org/download/more_goops_librivox/more_goops_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/More-Goops-and-How-Not-to-Be-Them-by-Gelett-Burgess.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/More-Goops-and-How-Not-to-Be-Them-by-Gelett-Burgess.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/3/0/0/13004/13004-h/13004-h.htm"
+    },
+    {
+      "slug": "golden-sayings-of-epictetus-by-epictetus",
+      "title": "The Golden Sayings of Epictetus",
+      "author": "Epictetus",
+      "url": "https://www.loyalbooks.com/book/golden-sayings-of-epictetus-by-epictetus",
+      "cover": "https://www.loyalbooks.com/image/layout2/golden-sayings-of-epictetus-by-epictetus.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Languages"
+      ],
+      "archiveId": "sayings_epictetus_0711_librivox",
+      "audioZip": "https://archive.org/download/sayings_epictetus_0711_librivox/sayings_epictetus_0711_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/GoldenSayingsOfEpictetusThe.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Golden-Sayings-of-Epictetus-by-Epictetus.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Golden-Sayings-of-Epictetus-by-Epictetus.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/8/7/871/871-h/871-h.htm"
+    },
+    {
+      "slug": "pensees_by_blaise_pascal",
+      "title": "Pensées",
+      "author": "Blaise Pascal",
+      "url": "https://www.loyalbooks.com/book/pensees_by_blaise_pascal",
+      "cover": "https://www.loyalbooks.com/image/layout2/Pensees-Blaise-Pascal.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "pensees_0906_dx_librivox1",
+      "audioZip": "https://archive.org/download/pensees_0906_dx_librivox1/pensees_0906_dx_librivox1_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/PenseesPart1.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Totem-and-Taboo",
+      "title": "Totem and Taboo",
+      "author": "Sigmund Freud",
+      "url": "https://www.loyalbooks.com/book/Totem-and-Taboo",
+      "cover": "https://www.loyalbooks.com/image/layout2/Totem-and-Taboo.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Psychology"
+      ],
+      "archiveId": "totem_and_taboo_1007_librivox",
+      "audioZip": "https://archive.org/download/totem_and_taboo_1007_librivox/totem_and_taboo_1007_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "lectures-on-landscape-by-john-ruskin",
+      "title": "Lectures on Landscape",
+      "author": "John Ruskin",
+      "url": "https://www.loyalbooks.com/book/lectures-on-landscape-by-john-ruskin",
+      "cover": "https://www.loyalbooks.com/image/layout2/Lectures-on-Landscape.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Nature",
+        "Non-fiction",
+        "Philosophy",
+        "Art"
+      ],
+      "archiveId": "lectures_landscape_librivox",
+      "audioZip": "https://archive.org/download/lectures_landscape_librivox/lectures_landscape_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/LecturesOnLandscape.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Lectures-on-Landscape-by-John-Ruskin.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Lectures-on-Landscape-by-John-Ruskin.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/0/1/20019/20019-h/20019-h.htm"
+    },
+    {
+      "slug": "essays-in-radical-empiricism-by-william-james",
+      "title": "Essays in Radical Empiricism",
+      "author": "William James",
+      "url": "https://www.loyalbooks.com/book/essays-in-radical-empiricism-by-william-james",
+      "cover": "https://www.loyalbooks.com/image/layout2/essays-in-radical-empiricism-by-william-james.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Psychology"
+      ],
+      "archiveId": "rad_empiricism_librivox",
+      "audioZip": "https://archive.org/download/rad_empiricism_librivox/rad_empiricism_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/EssaysInRadicalEmpiricism64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Essays-in-Radical-Empiricism-by-William-James.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Essays-in-Radical-Empiricism-by-William-James.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/2/5/4/32547/32547-h/32547-h.htm"
+    },
+    {
+      "slug": "a-letter-concerning-toleration-by-john-locke",
+      "title": "A Letter Concerning Toleration",
+      "author": "John Locke",
+      "url": "https://www.loyalbooks.com/book/a-letter-concerning-toleration-by-john-locke",
+      "cover": "https://www.loyalbooks.com/image/layout2/Letter-Concerning-Toleration.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "letter_concerning_toleration_librivox",
+      "audioZip": "https://archive.org/download/letter_concerning_toleration_librivox/letter_concerning_toleration_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/TwoTreatisesOfCivilGovernmentALetterConcerningToleration_Locke_32kb.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "essay-on-the-creative-imagination-by-theodule-ribot",
+      "title": "Essay on the Creative Imagination",
+      "author": "Théodule Ribot",
+      "url": "https://www.loyalbooks.com/book/essay-on-the-creative-imagination-by-theodule-ribot",
+      "cover": "https://www.loyalbooks.com/image/layout2/essay-on-the-creative-imagination-by-theodule-ribot.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Psychology",
+        "Religion",
+        "Art"
+      ],
+      "archiveId": "essay_creative_imagination_0905_librivox",
+      "audioZip": "https://archive.org/download/essay_creative_imagination_0905_librivox/essay_creative_imagination_0905_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Essay-on-the-Creative-Imagination-by-Theodule-Ribot.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Essay-on-the-Creative-Imagination-by-Theodule-Ribot.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/4/3/26430/26430-h/26430-h.htm"
+    },
+    {
+      "slug": "the-philosophy-of-style-by-herbert-spencer",
+      "title": "The Philosophy of Style",
+      "author": "Herbert Spencer",
+      "url": "https://www.loyalbooks.com/book/the-philosophy-of-style-by-herbert-spencer",
+      "cover": "https://www.loyalbooks.com/image/layout2/the-philosophy-of-style-by-herbert-spencer.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Languages"
+      ],
+      "archiveId": "philosophystyle_gg_librivox",
+      "audioZip": "https://archive.org/download/philosophystyle_gg_librivox/philosophystyle_gg_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/PhilosophyOfStyle.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Philosophy-of-Style-by-Herbert-Spencer.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Philosophy-of-Style-by-Herbert-Spencer.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/5/8/4/5849/5849-h/5849-h.htm"
+    },
+    {
+      "slug": "yang-chus-garden-of-pleasure-by-lieh-tzu",
+      "title": "Yang Chu's Garden of Pleasure",
+      "author": "Lieh Tzu",
+      "url": "https://www.loyalbooks.com/book/yang-chus-garden-of-pleasure-by-lieh-tzu",
+      "cover": "https://www.loyalbooks.com/image/layout2/Yang-Chu-s-Garden-of-Pleasure.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "yang_chus_garden_of_pleasure_librivox",
+      "audioZip": "https://archive.org/download/yang_chus_garden_of_pleasure_librivox/yang_chus_garden_of_pleasure_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks3/YangChusGardenOfPleasure.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "unreality_of_time",
+      "title": "The Unreality of Time",
+      "author": "John McTaggart",
+      "url": "https://www.loyalbooks.com/book/unreality_of_time",
+      "cover": "https://www.loyalbooks.com/image/layout2/Unreality-of-Time.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "unreality_of_time",
+      "audioZip": "https://archive.org/download/unreality_of_time/unreality_of_time_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "stoicism-by-george-stock",
+      "title": "Stoicism",
+      "author": "St. George Stock",
+      "url": "https://www.loyalbooks.com/book/stoicism-by-george-stock",
+      "cover": "https://www.loyalbooks.com/image/layout2/stoicism-by-george-stock.jpg",
+      "genres": [
+        "History",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "stoicism_lkm_librivox",
+      "audioZip": "https://archive.org/download/stoicism_lkm_librivox/stoicism_lkm_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/Stoicism.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "erewhon-by-samuel-butler",
+      "title": "Erewhon",
+      "author": "Samuel Butler",
+      "url": "https://www.loyalbooks.com/book/erewhon-by-samuel-butler",
+      "cover": "https://www.loyalbooks.com/image/layout2/erewhon.jpg",
+      "genres": [
+        "Fiction",
+        "Satire",
+        "Science fiction",
+        "Literature",
+        "Philosophy"
+      ],
+      "archiveId": "erewhon_0902_librivox",
+      "audioZip": "https://archive.org/download/erewhon_0902_librivox/erewhon_0902_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/ErewhonPart1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Erewhon-by-Samuel-Butler.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Erewhon-by-Samuel-Butler.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/0/1906/1906-h/1906-h.htm"
+    },
+    {
+      "slug": "the-life-of-the-spirit-and-the-life-of-today-by-evelyn-underhill",
+      "title": "The Life of the Spirit and the Life of Today",
+      "author": "Evelyn Underhill",
+      "url": "https://www.loyalbooks.com/book/the-life-of-the-spirit-and-the-life-of-today-by-evelyn-underhill",
+      "cover": "https://www.loyalbooks.com/image/layout2/life_of_the_spirit.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "life_ofthe_spirit_mr_librivox",
+      "audioZip": "https://archive.org/download/life_ofthe_spirit_mr_librivox/life_ofthe_spirit_mr_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/LifeOfTheSpiritAndTheLifeOfTodayPart1.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Tractatus-Logico-Philosophicus",
+      "title": "Tractatus Logico-Philosophicus",
+      "author": "Ludwig Wittgenstein",
+      "url": "https://www.loyalbooks.com/book/Tractatus-Logico-Philosophicus",
+      "cover": "https://www.loyalbooks.com/image/layout2/Tractatus-Logico-Philosophicus.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "tractatus_ge_librivox",
+      "audioZip": "https://archive.org/download/tractatus_ge_librivox/tractatus_ge_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Timaeus-Plato",
+      "title": "Timaeus",
+      "author": "Plato",
+      "url": "https://www.loyalbooks.com/book/Timaeus-Plato",
+      "cover": "https://www.loyalbooks.com/image/layout2/Timaeus-Plato.jpg",
+      "genres": [
+        "Ancient Texts",
+        "Classics (antiquity)",
+        "Non-fiction",
+        "Philosophy",
+        "Languages"
+      ],
+      "archiveId": "timaeus_1003_librivox",
+      "audioZip": "https://archive.org/download/timaeus_1003_librivox/timaeus_1003_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/Timaeus64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Timaeus-Plato.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Timaeus-Plato.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/5/7/1572/1572-h/1572-h.htm"
+    },
+    {
+      "slug": "the-praise-of-folly-by-erasmus",
+      "title": "The Praise of Folly",
+      "author": "Desiderius Erasmus",
+      "url": "https://www.loyalbooks.com/book/the-praise-of-folly-by-erasmus",
+      "cover": "https://www.loyalbooks.com/image/layout2/Praise-of-Folly.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion",
+        "Satire"
+      ],
+      "archiveId": "folly_erasmus_0811_librivox",
+      "audioZip": "https://archive.org/download/folly_erasmus_0811_librivox/folly_erasmus_0811_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks2/PraiseOfFolly.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Praise-of-Folly-by-Erasmus.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Praise-of-Folly-by-Erasmus.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9371/pg9371.html.utf8"
+    },
+    {
+      "slug": "Greek-View-of-Life",
+      "title": "The Greek View of Life",
+      "author": "Goldsworthy Lowes Dickinson",
+      "url": "https://www.loyalbooks.com/book/Greek-View-of-Life",
+      "cover": "https://www.loyalbooks.com/image/layout2/Greek-View-of-Life.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Non-fiction",
+        "Philosophy",
+        "Politics",
+        "Religion",
+        "Art"
+      ],
+      "archiveId": "greek_view_life_mg_librivox",
+      "audioZip": "https://archive.org/download/greek_view_life_mg_librivox/greek_view_life_mg_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks2/GreekViewOfLifeByGoldsworthyLowesDickinson64kbps.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Greek-View-of-Life.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Greek-View-of-Life.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6200/pg6200.html.utf8"
+    },
+    {
+      "slug": "herland-by-charlotte-perkins-gilman",
+      "title": "Herland",
+      "author": "Charlotte Perkins Gilman",
+      "url": "https://www.loyalbooks.com/book/herland-by-charlotte-perkins-gilman",
+      "cover": "https://www.loyalbooks.com/image/layout2/herland-by-charlotte-perkins-gilman.jpg",
+      "genres": [
+        "Fiction",
+        "Philosophy",
+        "Science fiction",
+        "Humor",
+        "Literature"
+      ],
+      "archiveId": "herland_0806_librivox",
+      "audioZip": "https://archive.org/download/herland_0806_librivox/herland_0806_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/Herland.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Herland-by-Charlotte-Perkins-Gilman.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Herland-by-Charlotte-Perkins-Gilman.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/32/32-h/32-h.htm"
+    },
+    {
+      "slug": "Treatise-Of-Human-Nature-1",
+      "title": "A Treatise Of Human Nature",
+      "author": "David Hume",
+      "url": "https://www.loyalbooks.com/book/Treatise-Of-Human-Nature-1",
+      "cover": "https://www.loyalbooks.com/image/layout2/Treatise-Of-Human-Nature-1.jpg",
+      "genres": [
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "treatise_human_nature_1_0911_librivox",
+      "audioZip": "https://archive.org/download/treatise_human_nature_1_0911_librivox/treatise_human_nature_1_0911_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Treatise-of-Human-Nature-1.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Treatise-of-Human-Nature.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/4/7/0/4705/4705-h/4705-h.htm"
+    },
+    {
+      "slug": "Soren-Kierkegaard",
+      "title": "Soren Kierkegaard, Various Readings",
+      "author": "Various",
+      "url": "https://www.loyalbooks.com/book/Soren-Kierkegaard",
+      "cover": "https://www.loyalbooks.com/image/layout2/Soren-Kierkegaard.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "kierkegaard_readings_cc_librivox",
+      "audioZip": "https://archive.org/download/kierkegaard_readings_cc_librivox/kierkegaard_readings_cc_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "offences-against-ones-self-paederasty-by-jeremy-bentham",
+      "title": "Offences Against One's Self: Paederasty",
+      "author": "Jeremy Bentham",
+      "url": "https://www.loyalbooks.com/book/offences-against-ones-self-paederasty-by-jeremy-bentham",
+      "cover": "https://www.loyalbooks.com/image/layout2/Offences-Against-Ones-Self-Paederasty.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics"
+      ],
+      "archiveId": "paederasty_librivox",
+      "audioZip": "https://archive.org/download/paederasty_librivox/paederasty_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Phaedo-Plato",
+      "title": "Phaedo",
+      "author": "Plato",
+      "url": "https://www.loyalbooks.com/book/Phaedo-Plato",
+      "cover": "https://www.loyalbooks.com/image/layout2/Phaedo-Plato.jpg",
+      "genres": [
+        "Ancient Texts",
+        "Classics (antiquity)",
+        "Fiction",
+        "History",
+        "Languages",
+        "Philosophy"
+      ],
+      "archiveId": "phaedo_1105_librivox",
+      "audioZip": "https://archive.org/download/phaedo_1105_librivox/phaedo_1105_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Phaedo-Plato.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Phaedo-Plato.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/5/1658/1658-h/1658-h.htm"
+    },
+    {
+      "slug": "Ethics-Benedict-de-Spinoza",
+      "title": "The Ethics",
+      "author": "Benedict de Spinoza",
+      "url": "https://www.loyalbooks.com/book/Ethics-Benedict-de-Spinoza",
+      "cover": "https://www.loyalbooks.com/image/layout2/Ethics-Benedict-de-Spinoza.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "ethics_1010_librivox",
+      "audioZip": "https://archive.org/download/ethics_1010_librivox/ethics_1010_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/EthicsPart1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Ethics-Benedict-De-Spinoza.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Ethics-Benedict-De-Spinoza.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/8/0/3800/3800-h/3800-h.htm"
+    },
+    {
+      "slug": "selected-poems-by-bronte-sisters",
+      "title": "Selected Poems by Currer, Ellis and Acton Bell",
+      "author": "Brontë sisters",
+      "url": "https://www.loyalbooks.com/book/selected-poems-by-bronte-sisters",
+      "cover": "https://www.loyalbooks.com/image/layout2/selected-poems-by-bronte-sisters.jpg",
+      "genres": [
+        "Instruction",
+        "Literature",
+        "Nature",
+        "Philosophy",
+        "Romance",
+        "Religion",
+        "Poetry"
+      ],
+      "archiveId": "selectedpoems_by_currerellisactonbell_ec_librivox",
+      "audioZip": "https://archive.org/download/selectedpoems_by_currerellisactonbell_ec_librivox/selectedpoems_by_currerellisactonbell_ec_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/PoemsByCurreEllisAndActonBell.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Selected-Poems-by-Bronte-Sisters.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/selected-poems-by-bronte-sisters.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1019/pg1019.mobi"
+    },
+    {
+      "slug": "Phaedrus-Plato",
+      "title": "Phaedrus",
+      "author": "Plato",
+      "url": "https://www.loyalbooks.com/book/Phaedrus-Plato",
+      "cover": "https://www.loyalbooks.com/image/layout2/Phaedrus-Plato.jpg",
+      "genres": [
+        "Classics (antiquity)",
+        "Literature",
+        "Non-fiction",
+        "Philosophy",
+        "Ancient Texts",
+        "Languages"
+      ],
+      "archiveId": "phaedrus_1005_librivox",
+      "audioZip": "https://archive.org/download/phaedrus_1005_librivox/phaedrus_1005_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks2/PhaedrusByPlato64kbps.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Phaedrus-Plato.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Phaedrus-Plato.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/3/1636/1636-h/1636-h.htm"
+    },
+    {
+      "slug": "commentaries-on-the-laws-of-england-by-william-blackstone",
+      "title": "Commentaries on the Laws of England (1765)",
+      "author": "William Blackstone",
+      "url": "https://www.loyalbooks.com/book/commentaries-on-the-laws-of-england-by-william-blackstone",
+      "cover": "https://www.loyalbooks.com/image/layout2/commentaries-on-the-laws-of-england-by-william-blackstone.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics"
+      ],
+      "archiveId": "commentaries_blackstone_0810_librivox",
+      "audioZip": "https://archive.org/download/commentaries_blackstone_0810_librivox/commentaries_blackstone_0810_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/CommentariesOnTheLawsOfEnglandBook1Part1.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "the-conquest-of-bread-by-peter-kropotkin",
+      "title": "The Conquest of bread",
+      "author": "Peter Kropotkin",
+      "url": "https://www.loyalbooks.com/book/the-conquest-of-bread-by-peter-kropotkin",
+      "cover": "https://www.loyalbooks.com/image/layout2/the-conquest-of-bread-by-peter-kropotkin.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics",
+        "Science"
+      ],
+      "archiveId": "conquest_of_bread_0809_librivox",
+      "audioZip": "https://archive.org/download/conquest_of_bread_0809_librivox/conquest_of_bread_0809_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/ConquestOfBread.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Conquest-of-Bread-by-Peter-Kropotkin.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Conquest-of-Bread-by-Peter-Kropotkin.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/3/4/2/23428/23428-h/23428-h.htm"
+    },
+    {
+      "slug": "Cherry-Orchard-Anton-Chekhov",
+      "title": "The Cherry Orchard",
+      "author": "Anton Chekhov",
+      "url": "https://www.loyalbooks.com/book/Cherry-Orchard-Anton-Chekhov",
+      "cover": "https://www.loyalbooks.com/image/layout2/Cherry-Orchard-Anton-Chekhov.jpg",
+      "genres": [
+        "Languages",
+        "Comedy",
+        "Fiction",
+        "Historical Fiction",
+        "Philosophy",
+        "Play",
+        "Satire",
+        "Dramatic Works"
+      ],
+      "archiveId": "cherry_orchard_1008_librivox",
+      "audioZip": "https://archive.org/download/cherry_orchard_1008_librivox/cherry_orchard_1008_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/CherryOrchard.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Plays-by-Anton-Chekhov.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Plays-by-Anton-Chekhov.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/7/9/8/7986/7986-h/7986-h.htm"
+    },
+    {
+      "slug": "Categories-Aristotle",
+      "title": "Categories",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/Categories-Aristotle",
+      "cover": "https://www.loyalbooks.com/image/layout2/Categories-Aristotle.jpg",
+      "genres": [
+        "Classics (antiquity)",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "categories_1004_librivox",
+      "audioZip": "https://archive.org/download/categories_1004_librivox/categories_1004_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks2/CategoriesByAristotle64kbps.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "on-the-popular-judgment-by-immanuel-kant",
+      "title": "On the Popular Judgment: That may be Right in Theory, but does not Hold Good in the Praxis",
+      "author": "Immanuel Kant",
+      "url": "https://www.loyalbooks.com/book/on-the-popular-judgment-by-immanuel-kant",
+      "cover": "https://www.loyalbooks.com/image/layout2/on-the-popular-judgment-by-immanuel-kant.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "popularjudgment_librivox",
+      "audioZip": "https://archive.org/download/popularjudgment_librivox/popularjudgment_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/OnThePopularJudgment.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Quest-of-the-Historical-Jesus",
+      "title": "The Quest of the Historical Jesus",
+      "author": "Albert Schweitzer",
+      "url": "https://www.loyalbooks.com/book/Quest-of-the-Historical-Jesus",
+      "cover": "https://www.loyalbooks.com/image/layout2/Quest-of-the-Historical-Jesus.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "quest_historical_jesus_1011_librivox",
+      "audioZip": "https://archive.org/download/quest_historical_jesus_1011_librivox/quest_historical_jesus_1011_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/QuestOfTheHistoricalJesusPart1.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Poems-and-Prose-for-the-Departed-1",
+      "title": "Poems and Prose for the Departed",
+      "author": "Various",
+      "url": "https://www.loyalbooks.com/book/Poems-and-Prose-for-the-Departed-1",
+      "cover": "https://www.loyalbooks.com/image/layout2/Poems-and-Prose-for-the-Departed-1.jpg",
+      "genres": [
+        "Philosophy",
+        "Poetry",
+        "Religion"
+      ],
+      "archiveId": "poems_prose_departed_rg_librivox",
+      "audioZip": "https://archive.org/download/poems_prose_departed_rg_librivox/poems_prose_departed_rg_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/PoemsAndProseForTheDeparted.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "the-moral-equivalent-of-war-by-william-james",
+      "title": "The Moral Equivalent of War",
+      "author": "William James",
+      "url": "https://www.loyalbooks.com/book/the-moral-equivalent-of-war-by-william-james",
+      "cover": "https://www.loyalbooks.com/image/layout2/the-moral-equivalent-of-war-by-william-james.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Non-fiction",
+        "Philosophy",
+        "Politics"
+      ],
+      "archiveId": "moral_equivalent_dew_librivox",
+      "audioZip": "https://archive.org/download/moral_equivalent_dew_librivox/moral_equivalent_dew_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "eleven-theses-on-feuerbach-by-karl-marx",
+      "title": "Eleven Theses on Feuerbach",
+      "author": "Karl Marx",
+      "url": "https://www.loyalbooks.com/book/eleven-theses-on-feuerbach-by-karl-marx",
+      "cover": "https://www.loyalbooks.com/image/layout2/eleven-theses-on-feuerbach-by-karl-marx.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics"
+      ],
+      "archiveId": "11theses_librivox",
+      "audioZip": "https://archive.org/download/11theses_librivox/11theses_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "bundledAudio": [
+        "./audio/eleven-theses-on-feuerbach-by-karl-marx/00.mp3"
+      ]
+    },
+    {
+      "slug": "Arabic-Hidden-Words",
+      "title": "The Arabic Hidden Words",
+      "author": "Bahá'u'lláh",
+      "url": "https://www.loyalbooks.com/book/Arabic-Hidden-Words",
+      "cover": "https://www.loyalbooks.com/image/layout2/Arabic-Hidden-Words.jpg",
+      "genres": [
+        "Advice",
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "arabic_hidden_words_njb_librivox",
+      "audioZip": "https://archive.org/download/arabic_hidden_words_njb_librivox/arabic_hidden_words_njb_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Twentieth-Century-New-Testament",
+      "title": "Twentieth Century New Testament",
+      "author": "Twentieth Century New Testament",
+      "url": "https://www.loyalbooks.com/book/Twentieth-Century-New-Testament",
+      "cover": "https://www.loyalbooks.com/image/layout2/Twentieth-Century-New-Testament.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "twentieth_century_new_testament_1001_librivox",
+      "audioZip": "https://archive.org/download/twentieth_century_new_testament_1001_librivox/twentieth_century_new_testament_1001_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "berkeleys-treatise",
+      "title": "A Treatise Concerning the Principles of Human Knowledge",
+      "author": "George Berkeley",
+      "url": "https://www.loyalbooks.com/book/berkeleys-treatise",
+      "cover": "https://www.loyalbooks.com/image/layout2/berkeleys-treatise.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Psychology",
+        "History"
+      ],
+      "archiveId": "treatise_0905_librivox",
+      "audioZip": "https://archive.org/download/treatise_0905_librivox/treatise_0905_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/TreatiseConcerningfHumanKnowledgePart1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Berkeleys-Treatise.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Berkeleys-Treatise.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/4/7/2/4723/4723-h/4723-h.htm"
+    },
+    {
+      "slug": "unto-this-last-four-essays-on-the-first-principles-of-political-economy-by-john-ruskin",
+      "title": "Unto this Last:  Four Essays on the First Principles of Political Economy",
+      "author": "John Ruskin",
+      "url": "https://www.loyalbooks.com/book/unto-this-last-four-essays-on-the-first-principles-of-political-economy-by-john-ruskin",
+      "cover": "https://www.loyalbooks.com/image/layout2/First-principles-of-political-economy.jpg",
+      "genres": [
+        "Economics/Political Economy",
+        "Non-fiction",
+        "Philosophy",
+        "Politics"
+      ],
+      "archiveId": "unto_this_last_librivox",
+      "audioZip": "https://archive.org/download/unto_this_last_librivox/unto_this_last_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/UntoThisLast.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "the-subjection-of-women-by-john-stuart-mill",
+      "title": "The Subjection of Women",
+      "author": "John Stuart Mill",
+      "url": "https://www.loyalbooks.com/book/the-subjection-of-women-by-john-stuart-mill",
+      "cover": "https://www.loyalbooks.com/image/layout2/the-subjection-of-women-by-john-stuart-mill.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics",
+        "Science"
+      ],
+      "archiveId": "subjection_of_women_0807_librivox",
+      "audioZip": "https://archive.org/download/subjection_of_women_0807_librivox/subjection_of_women_0807_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/SubjectionOfWomen64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/The-Subjection-of-Women-by-John-Stuart-Mill.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Subjection-of-Women-by-John-Stuart-Mill.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/0/8/27083/27083-h/27083-h.htm"
+    },
+    {
+      "slug": "the-new-organon-by-francis-bacon",
+      "title": "The New Organon Or True Directions Concerning The Interpretation of Nature",
+      "author": "Francis Bacon",
+      "url": "https://www.loyalbooks.com/book/the-new-organon-by-francis-bacon",
+      "cover": "https://www.loyalbooks.com/image/layout2/the-new-organon-by-francis-bacon.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "new_organon_0908_librivox",
+      "audioZip": "https://archive.org/download/new_organon_0908_librivox/new_organon_0908_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "fishing-with-a-worm-by-bliss-perry",
+      "title": "Fishing with a Worm",
+      "author": "Bliss Perry",
+      "url": "https://www.loyalbooks.com/book/fishing-with-a-worm-by-bliss-perry",
+      "cover": "https://www.loyalbooks.com/image/layout2/Fishing-with-a-Worm.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Non-fiction",
+        "Philosophy",
+        "Literature"
+      ],
+      "archiveId": "fishing_worm_librivox",
+      "audioZip": "https://archive.org/download/fishing_worm_librivox/fishing_worm_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Fishing-With-a-Worm-by-Bliss-Perry.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/fishing-with-a-worm-by-bliss-perry.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/16369/pg16369-images.mobi"
+    },
+    {
+      "slug": "an-essay-on-the-principle-of-population-by-thomas-malthus",
+      "title": "An Essay on the Principle of Population",
+      "author": "Thomas R. Malthus",
+      "url": "https://www.loyalbooks.com/book/an-essay-on-the-principle-of-population-by-thomas-malthus",
+      "cover": "https://www.loyalbooks.com/image/layout2/an-essay-on-the-principle-of-population-by-thomas-malthus.jpg",
+      "genres": [
+        "Nature",
+        "Non-fiction",
+        "Philosophy",
+        "Science",
+        "Economics/Political Economy"
+      ],
+      "archiveId": "principle_population_0908_librivox",
+      "audioZip": "https://archive.org/download/principle_population_0908_librivox/principle_population_0908_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/PrincipleOfPopulationByThomasMalthus64kbps.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/An-Essay-on-the-Principle-of-Population-by-Thomas-Malthus.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/An-Essay-on-the-Principle-of-Population-by-Thomas-Malthus.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/4/2/3/4239/4239-h/4239-h.htm"
+    },
+    {
+      "slug": "essay-on-the-trial-by-jury-by-lysander-spooner",
+      "title": "Essay on the Trial by Jury",
+      "author": "Lysander Spooner",
+      "url": "https://www.loyalbooks.com/book/essay-on-the-trial-by-jury-by-lysander-spooner",
+      "cover": "https://www.loyalbooks.com/image/layout2/essay-on-the-trial-by-jury-by-lysander-spooner.jpg",
+      "genres": [
+        "History",
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "trial_jury_ba_0811_librivox",
+      "audioZip": "https://archive.org/download/trial_jury_ba_0811_librivox/trial_jury_ba_0811_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxCollectionM4BAudiobook10/EssayOnTheTrialByJuryPart1_32kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Essay-on-the-Trial-by-Jury-by-Lysander-Spooner.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/essay-on-the-trial-by-jury-by-lysander-spooner.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1201/pg1201.mobi"
+    },
+    {
+      "slug": "Introduction-to-Morals-and-Legislation",
+      "title": "An Introduction to the Principles of Morals and Legislation",
+      "author": "Jeremy Bentham",
+      "url": "https://www.loyalbooks.com/book/Introduction-to-Morals-and-Legislation",
+      "cover": "https://www.loyalbooks.com/image/layout2/Introduction-to-Morals-and-Legislation.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Politics"
+      ],
+      "archiveId": "principles_morals_legislation_1001_librivox",
+      "audioZip": "https://archive.org/download/principles_morals_legislation_1001_librivox/principles_morals_legislation_1001_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/IntroductionToThePrinciplesOfMoralsAndLegislationPart1.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "vices-are-not-crimes-by-lysander-spooner",
+      "title": "Vices Are Not Crimes",
+      "author": "Lysander Spooner",
+      "url": "https://www.loyalbooks.com/book/vices-are-not-crimes-by-lysander-spooner",
+      "cover": "https://www.loyalbooks.com/image/layout2/vices-are-not-crimes-by-lysander-spooner.jpg",
+      "genres": [
+        "Economics/Political Economy",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "vicesnotcrimes_0908_librivox",
+      "audioZip": "https://archive.org/download/vicesnotcrimes_0908_librivox/vicesnotcrimes_0908_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks1a/VicesAreNotCrimes.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Soul-Food-George-Watson",
+      "title": "Soul Food",
+      "author": "George Douglas Watson",
+      "url": "https://www.loyalbooks.com/book/Soul-Food-George-Watson",
+      "cover": "https://www.loyalbooks.com/image/layout2/Soul-Food-George-Watson.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "soul_food_1011_librivox",
+      "audioZip": "https://archive.org/download/soul_food_1011_librivox/soul_food_1011_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/SoulFood_64kb.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "year-amongst-the-Persians",
+      "title": "A year amongst the Persians; impressions as to the life, character, and thought",
+      "author": "Edward Granville Browne",
+      "url": "https://www.loyalbooks.com/book/year-amongst-the-Persians",
+      "cover": "https://www.loyalbooks.com/image/layout2/year-amongst-the-Persians.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion",
+        "Travel"
+      ],
+      "archiveId": "year_amongst_persians_1102_librivox",
+      "audioZip": "https://archive.org/download/year_amongst_persians_1102_librivox/year_amongst_persians_1102_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "collected-poems-of-rupert-brook",
+      "title": "Collected Poems of Rupert Brooke",
+      "author": "Rupert Brooke",
+      "url": "https://www.loyalbooks.com/book/collected-poems-of-rupert-brook",
+      "cover": "https://www.loyalbooks.com/image/layout2/Collected-Poems-of-Rupert-Brooke.jpg",
+      "genres": [
+        "Literature",
+        "Memoirs",
+        "Nature",
+        "Philosophy",
+        "Poetry",
+        "Romance"
+      ],
+      "archiveId": "poems_rupert_brooke_gr_librivox1",
+      "audioZip": "https://archive.org/download/poems_rupert_brooke_gr_librivox1/poems_rupert_brooke_gr_librivox1_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Collected-Poems-of-Rupert-Brook.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/collected-poems-of-rupert-brook.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/262/pg262.mobi"
+    },
+    {
+      "slug": "Art-of-Becoming-a-Man",
+      "title": "Letters to His Son on the Art of Becoming a Man of the World and a Gentleman",
+      "author": "Philip Stanhope, 4th Earl of Chesterfield",
+      "url": "https://www.loyalbooks.com/book/Art-of-Becoming-a-Man",
+      "cover": "https://www.loyalbooks.com/image/layout2/Art-of-Becoming-a-Man.jpg",
+      "genres": [
+        "Advice",
+        "Biography",
+        "Memoirs",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "chesterfield_letters_1102_librivox",
+      "audioZip": "https://archive.org/download/chesterfield_letters_1102_librivox/chesterfield_letters_1102_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/LettersToHisSonOnTheArtOfBecomingAManOfTheWorldAndAGentlemanPart1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Art-of-Becoming-a-Man.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Art-of-Becoming-a-Man.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/3/6/3361/3361-h/3361-h.htm"
+    },
+    {
+      "slug": "Good-Sense",
+      "title": "Good Sense",
+      "author": "Baron Paul Henri Thiry d'Holbach",
+      "url": "https://www.loyalbooks.com/book/Good-Sense",
+      "cover": "https://www.loyalbooks.com/image/layout2/Good-Sense.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Psychology",
+        "Religion"
+      ],
+      "archiveId": "good_sense_1004_librivox",
+      "audioZip": "https://archive.org/download/good_sense_1004_librivox/good_sense_1004_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/GoodSensePart1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Good-Sense.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Good-Sense.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/7/3/1/7319/7319-h/7319-h.htm"
+    },
+    {
+      "slug": "Bethink-Yourselves",
+      "title": "Bethink Yourselves!",
+      "author": "Leo Tolstoy",
+      "url": "https://www.loyalbooks.com/book/Bethink-Yourselves",
+      "cover": "https://www.loyalbooks.com/image/layout2/Bethink-Yourselves.jpg",
+      "genres": [
+        "Instruction",
+        "Non-fiction",
+        "Philosophy",
+        "Politics",
+        "Religion",
+        "War stories"
+      ],
+      "archiveId": "bethink_yourselves_db_librivox",
+      "audioZip": "https://archive.org/download/bethink_yourselves_db_librivox/bethink_yourselves_db_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Bethink-Yourselves.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Bethink-Yourselves.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/1/8/27189/27189-h/27189-h.htm"
+    },
+    {
+      "slug": "Metaphysics-Aristotle",
+      "title": "Metaphysics",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/Metaphysics-Aristotle",
+      "cover": "https://www.loyalbooks.com/image/layout2/Metaphysics.jpg",
+      "genres": [
+        "Philosophy",
+        "Science",
+        "Non-fiction"
+      ],
+      "archiveId": "metaphysics_1108_librivox",
+      "audioZip": "https://archive.org/download/metaphysics_1108_librivox/metaphysics_1108_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Soul-of-the-Indian",
+      "title": "The Soul of the Indian",
+      "author": "Charles Alexander Eastman",
+      "url": "https://www.loyalbooks.com/book/Soul-of-the-Indian",
+      "cover": "https://www.loyalbooks.com/image/layout2/Soul-of-the-Indian.jpg",
+      "genres": [
+        "History",
+        "Nature",
+        "Non-fiction",
+        "Religion",
+        "Westerns",
+        "Myths/Legends",
+        "Philosophy"
+      ],
+      "archiveId": "soul_indian_1011_librivox",
+      "audioZip": "https://archive.org/download/soul_indian_1011_librivox/soul_indian_1011_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxCollectionM4BAudiobook10/SoulOfTheIndian_32kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Soul-of-the-Indian.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Soul-of-the-Indian.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/4/340/340-h/340-h.htm"
+    },
+    {
+      "slug": "Light-of-Egypt-2",
+      "title": "The Light of Egypt, vol II",
+      "author": "Thomas H. Burgoyne",
+      "url": "https://www.loyalbooks.com/book/Light-of-Egypt-2",
+      "cover": "https://www.loyalbooks.com/image/layout2/Light-of-Egypt-2.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Psychology",
+        "Religion",
+        "Science"
+      ],
+      "archiveId": "light_of_egypt_vol2_jp_librivox",
+      "audioZip": "https://archive.org/download/light_of_egypt_vol2_jp_librivox/light_of_egypt_vol2_jp_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Light-of-Egypt-2.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Light-of-Egypt.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1650/pg1650.html.utf8"
+    },
+    {
+      "slug": "of-the-injustice-of-counterfeiting-books-by-immanuel-kant",
+      "title": "Of the Injustice of Counterfeiting Books",
+      "author": "Immanuel Kant",
+      "url": "https://www.loyalbooks.com/book/of-the-injustice-of-counterfeiting-books-by-immanuel-kant",
+      "cover": "https://www.loyalbooks.com/image/layout2/of-the-injustice-of-counterfeiting-books-by-immanuel-kant.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "injustice_of_counterfeiting_books_librivox",
+      "audioZip": "https://archive.org/download/injustice_of_counterfeiting_books_librivox/injustice_of_counterfeiting_books_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "three-dialogues-between-hylas-and-philonous-by-george-berkeley",
+      "title": "Three Dialogues Between Hylas and Philonous",
+      "author": "George Berkeley",
+      "url": "https://www.loyalbooks.com/book/three-dialogues-between-hylas-and-philonous-by-george-berkeley",
+      "cover": "https://www.loyalbooks.com/image/layout2/three-dialogues-between-hylas-and-philonous-by-george-berkeley.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "three_dialogues_0908_librivox",
+      "audioZip": "https://archive.org/download/three_dialogues_0908_librivox/three_dialogues_0908_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Three-Dialogues-Between-Hylas-and-Philonous-by-George-Berkeley.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Three-Dialogues-Between-Hylas-and-Philonous-by-George-Berkeley.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/4/7/2/4724/4724-h/4724-h.htm"
+    },
+    {
+      "slug": "Persian-Hidden-Words",
+      "title": "The Persian Hidden Words",
+      "author": "Bahá’u'lláh",
+      "url": "https://www.loyalbooks.com/book/Persian-Hidden-Words",
+      "cover": "https://www.loyalbooks.com/image/layout2/Persian-Hidden-Words.jpg",
+      "genres": [
+        "Advice",
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "persian_words_0101_librivox",
+      "audioZip": "https://archive.org/download/persian_words_0101_librivox/persian_words_0101_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Yoga-Sutras-of-Patanjali-the-Book-of-the-Spir",
+      "title": "The Yoga Sutras of Patanjali",
+      "author": "Patanjali",
+      "url": "https://www.loyalbooks.com/book/Yoga-Sutras-of-Patanjali-the-Book-of-the-Spir",
+      "cover": "https://www.loyalbooks.com/image/layout2/The-Yoga-Sutras-of-Patanjali.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Advice",
+        "Ancient Texts",
+        "Instruction",
+        "Psychology",
+        "Science"
+      ],
+      "archiveId": "yogasutras_1207_librivox",
+      "audioZip": "https://archive.org/download/yogasutras_1207_librivox/yogasutras_1207_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Yoga-Sutras-of-Patanjali-the-Book-of-the-Spir.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Yoga-Sutras-of-Patanjali-the-Book-of-the-Spir.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2526/pg2526.html.utf8"
+    },
+    {
+      "slug": "Representative-Men",
+      "title": "Representative Men",
+      "author": "Ralph Waldo Emerson",
+      "url": "https://www.loyalbooks.com/book/Representative-Men",
+      "cover": "https://www.loyalbooks.com/image/layout2/Representative-Men.jpg",
+      "genres": [
+        "Biography",
+        "Non-fiction",
+        "Philosophy",
+        "Literature",
+        "Essay/Short nonfiction"
+      ],
+      "archiveId": "representative_men_1008_librivox",
+      "audioZip": "https://archive.org/download/representative_men_1008_librivox/representative_men_1008_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Representative-Men.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Representative-Men.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6312/pg6312.html.utf8"
+    },
+    {
+      "slug": "Jew-of-Malta",
+      "title": "The Jew of Malta",
+      "author": "Christopher Marlowe",
+      "url": "https://www.loyalbooks.com/book/Jew-of-Malta",
+      "cover": "https://www.loyalbooks.com/image/layout2/Jew-of-Malta.jpg",
+      "genres": [
+        "Dramatic Works",
+        "Fiction",
+        "Literature",
+        "Philosophy",
+        "Play",
+        "Religion",
+        "Tragedy"
+      ],
+      "archiveId": "jew_ofmalta_1010_librivox",
+      "audioZip": "https://archive.org/download/jew_ofmalta_1010_librivox/jew_ofmalta_1010_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Jew-of-Malta.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Jew-of-Malta.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/9/0/901/901-h/901-h.htm"
+    },
+    {
+      "slug": "Posterior-Analytics-Aristotle",
+      "title": "Posterior Analytics",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/Posterior-Analytics-Aristotle",
+      "cover": "https://www.loyalbooks.com/image/layout2/Posterior-Analytics-Aristotle.jpg",
+      "genres": [
+        "Classics (antiquity)",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "posterior_analytics_ge_librivox",
+      "audioZip": "https://archive.org/download/posterior_analytics_ge_librivox/posterior_analytics_ge_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Selected-Essays",
+      "title": "Selected Essays",
+      "author": "Voltairine de Cleyre",
+      "url": "https://www.loyalbooks.com/book/Selected-Essays",
+      "cover": "https://www.loyalbooks.com/image/layout2/Selected-Essays.jpg",
+      "genres": [
+        "Literature",
+        "Non-fiction",
+        "Philosophy",
+        "Politics"
+      ],
+      "archiveId": "essays_1002_librivox",
+      "audioZip": "https://archive.org/download/essays_1002_librivox/essays_1002_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "On-Union-With-God",
+      "title": "On Union With God",
+      "author": "Albertus Magnus",
+      "url": "https://www.loyalbooks.com/book/On-Union-With-God",
+      "cover": "https://www.loyalbooks.com/image/layout2/On-Union-With-God.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "on_union_with_god_db_librivox",
+      "audioZip": "https://archive.org/download/on_union_with_god_db_librivox/on_union_with_god_db_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/On-Union-With-God.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/On-Union-With-God.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/6/4/0/36402/36402-h/36402-h.htm"
+    },
+    {
+      "slug": "Dawn-of-a-To-morrow",
+      "title": "The Dawn of a To-morrow",
+      "author": "Frances Hodgson Burnett",
+      "url": "https://www.loyalbooks.com/book/Dawn-of-a-To-morrow",
+      "cover": "https://www.loyalbooks.com/image/layout2/Dawn-of-a-To-morrow.jpg",
+      "genres": [
+        "Fiction",
+        "Philosophy",
+        "Religion",
+        "Literature"
+      ],
+      "archiveId": "dawnofato-morrow_la_librivox",
+      "audioZip": "https://archive.org/download/dawnofato-morrow_la_librivox/dawnofato-morrow_la_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/DawnOfATomorrow.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Dawn-of-a-to-Morrow.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Dawn-of-a-To-morrow.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/460/pg460-images.mobi"
+    },
+    {
+      "slug": "Monadology-Gottfried-Leibniz",
+      "title": "The Monadology",
+      "author": "Gottfried Wilhelm Leibniz",
+      "url": "https://www.loyalbooks.com/book/Monadology-Gottfried-Leibniz",
+      "cover": "https://www.loyalbooks.com/image/layout2/Monadology-Gottfried-Leibniz.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Science"
+      ],
+      "archiveId": "monadology_1010_librivox",
+      "audioZip": "https://archive.org/download/monadology_1010_librivox/monadology_1010_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "selections-from-ballads-of-a-cheechako-by-robert-service",
+      "title": "Selections from Ballads of a Cheechako",
+      "author": "Robert W. Service",
+      "url": "https://www.loyalbooks.com/book/selections-from-ballads-of-a-cheechako-by-robert-service",
+      "cover": "https://www.loyalbooks.com/image/layout2/selections-from-ballads-of-a-cheechako-by-robert-service.jpg",
+      "genres": [
+        "Adventure",
+        "Fiction",
+        "Instruction",
+        "Literature",
+        "Nature",
+        "Philosophy",
+        "Poetry"
+      ],
+      "archiveId": "ballads_cheechako_0811_librivox",
+      "audioZip": "https://archive.org/download/ballads_cheechako_0811_librivox/ballads_cheechako_0811_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Selections-from-Ballads-of-a-Cheechako-by-Robert-Service.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/selections-from-ballads-of-a-cheechako-by-robert-service.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/259/pg259.mobi"
+    },
+    {
+      "slug": "marius-the-epicurean-vol-1-by-walter-pater",
+      "title": "Marius the Epicurean",
+      "author": "Walter Pater",
+      "url": "https://www.loyalbooks.com/book/marius-the-epicurean-vol-1-by-walter-pater",
+      "cover": "https://www.loyalbooks.com/image/layout2/marius-the-epicurean-vol-1-by-walter-pater.jpg",
+      "genres": [
+        "Fiction",
+        "Philosophy",
+        "Historical Fiction",
+        "Literature",
+        "Religion"
+      ],
+      "archiveId": "marius_the_epicurean_vol1_0809",
+      "audioZip": "https://archive.org/download/marius_the_epicurean_vol1_0809/marius_the_epicurean_vol1_0809_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks4/MariusTheEpicurean.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Marius-the-Epicurean-vol-1-by-Walter-Pater.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/marius-the-epicurean-vol-1-by-walter-pater.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4057/pg4057.mobi"
+    },
+    {
+      "slug": "Talks-by-Abdul-Baha-Given-in-Paris",
+      "title": "Talks by Abdul Baha Given in Paris",
+      "author": "Abdu’l-Bahá ‘Abbás",
+      "url": "https://www.loyalbooks.com/book/Talks-by-Abdul-Baha-Given-in-Paris",
+      "cover": "https://www.loyalbooks.com/image/layout2/Talks-by-Abdul-Baha-Given-in-Paris.jpg",
+      "genres": [
+        "Instruction",
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "talks_abdulbaha_njb_librivox",
+      "audioZip": "https://archive.org/download/talks_abdulbaha_njb_librivox/talks_abdulbaha_njb_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Girl-Scout-Collection",
+      "title": "Girl Scout Collection",
+      "author": "Various",
+      "url": "https://www.loyalbooks.com/book/Girl-Scout-Collection",
+      "cover": "https://www.loyalbooks.com/image/layout2/Girl-Scout-Collection.jpg",
+      "genres": [
+        "Kids",
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Non-fiction",
+        "Philosophy"
+      ],
+      "archiveId": "girl_scout_collection_1008_blb_librivox",
+      "audioZip": "https://archive.org/download/girl_scout_collection_1008_blb_librivox/girl_scout_collection_1008_blb_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Sophistical-Elenchi-Aristotle",
+      "title": "Sophistical Elenchi",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/Sophistical-Elenchi-Aristotle",
+      "cover": "https://www.loyalbooks.com/image/layout2/Sophistical-Elenchi-Aristotle.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Science"
+      ],
+      "archiveId": "sophisticis_elenchis_1102_librivox",
+      "audioZip": "https://archive.org/download/sophisticis_elenchis_1102_librivox/sophisticis_elenchis_1102_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Fundamental-Principles-of-the-Metaphysic-of-Morals",
+      "title": "Fundamental Principles of the Metaphysic of Morals",
+      "author": "Immanuel Kant",
+      "url": "https://www.loyalbooks.com/book/Fundamental-Principles-of-the-Metaphysic-of-Morals",
+      "cover": "https://www.loyalbooks.com/image/layout2/Fundamental-Principles-of-the-Metaphysic-of-Morals.jpg",
+      "genres": [
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "principles_metaphysic_morals_1109_librivox",
+      "audioZip": "https://archive.org/download/principles_metaphysic_morals_1109_librivox/principles_metaphysic_morals_1109_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Fundamental-Principles-of-the-Metaphysic-of-Morals.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Fundamental-Principles-of-the-Metaphysic-of-Morals.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5682/pg5682.html.utf8"
+    },
+    {
+      "slug": "Kybalion-Three-Initiates",
+      "title": "The Kybalion",
+      "author": "the Three Initiates",
+      "url": "https://www.loyalbooks.com/book/Kybalion-Three-Initiates",
+      "cover": "https://www.loyalbooks.com/image/layout2/The-Kybalion.jpg",
+      "genres": [
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "kybalion_ghs_librivox",
+      "audioZip": "https://archive.org/download/kybalion_ghs_librivox/kybalion_ghs_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Prussian-Officer",
+      "title": "The Prussian Officer and Other Stories",
+      "author": "D. H. Lawrence",
+      "url": "https://www.loyalbooks.com/book/Prussian-Officer",
+      "cover": "https://www.loyalbooks.com/image/layout2/Prussian-Officer.jpg",
+      "genres": [
+        "Adventure",
+        "Fiction",
+        "Historical Fiction",
+        "Literature",
+        "Philosophy",
+        "Politics",
+        "Short stories",
+        "Tragedy",
+        "War stories"
+      ],
+      "archiveId": "prussian_officer_cb_librivox",
+      "audioZip": "https://archive.org/download/prussian_officer_cb_librivox/prussian_officer_cb_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Pantheisticon-John-Toland",
+      "title": "Pantheisticon",
+      "author": "John Toland",
+      "url": "https://www.loyalbooks.com/book/Pantheisticon-John-Toland",
+      "cover": "https://www.loyalbooks.com/image/layout2/Pantheisticon-John-Toland.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "pantheisticon_0911_librivox",
+      "audioZip": "https://archive.org/download/pantheisticon_0911_librivox/pantheisticon_0911_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Divine-Companion",
+      "title": "The Divine Companion",
+      "author": "James Allen",
+      "url": "https://www.loyalbooks.com/book/Divine-Companion",
+      "cover": "https://www.loyalbooks.com/image/layout2/The-Divine-Companion.jpg",
+      "genres": [
+        "Philosophy",
+        "Poetry",
+        "Psychology",
+        "Romance"
+      ],
+      "archiveId": "divine_companion_0705_librivox",
+      "audioZip": "https://archive.org/download/divine_companion_0705_librivox/divine_companion_0705_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Six-Characters-in-Search-of-an-Author",
+      "title": "Six Characters in Search of an Author",
+      "author": "Elizabeth Klett",
+      "url": "https://www.loyalbooks.com/book/Six-Characters-in-Search-of-an-Author",
+      "cover": "https://www.loyalbooks.com/image/layout2/Six-Characters-in-Search-of-an-Author.jpg",
+      "genres": [
+        "Philosophy",
+        "Psychology",
+        "Dramatic Works"
+      ],
+      "archiveId": "sixcharacters_1108_librivox",
+      "audioZip": "https://archive.org/download/sixcharacters_1108_librivox/sixcharacters_1108_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks5/Sixcharactersinsearchauthor.m4b",
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "selected-sketches-letters-stories-by-de-cleyre",
+      "title": "Selected Letters, Sketches and Stories",
+      "author": "Voltairine de Cleyre",
+      "url": "https://www.loyalbooks.com/book/selected-sketches-letters-stories-by-de-cleyre",
+      "cover": "https://www.loyalbooks.com/image/layout2/selected-sketches-letters-stories-by-de-cleyre.jpg",
+      "genres": [
+        "Non-fiction",
+        "Philosophy",
+        "Short stories"
+      ],
+      "archiveId": "selected_letters_sketches_stories_decleyre_0904_unko_librivox2",
+      "audioZip": "https://archive.org/download/selected_letters_sketches_stories_decleyre_0904_unko_librivox2/selected_letters_sketches_stories_decleyre_0904_unko_librivox2_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "De-Anima",
+      "title": "De Anima",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/De-Anima",
+      "cover": "https://www.loyalbooks.com/image/layout2/De-Anima.jpg",
+      "genres": [
+        "Classics (antiquity)",
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "de_anima_ge_librivox",
+      "audioZip": "https://archive.org/download/de_anima_ge_librivox/de_anima_ge_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "On-the-Heavens",
+      "title": "On the Heavens",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/On-the-Heavens",
+      "cover": "https://www.loyalbooks.com/image/layout2/On-the-Heavens.jpg",
+      "genres": [
+        "Ancient Texts",
+        "Classics (antiquity)",
+        "Nature",
+        "Philosophy",
+        "Science",
+        "Non-fiction"
+      ],
+      "archiveId": "ontheheavens_1202_librivox",
+      "audioZip": "https://archive.org/download/ontheheavens_1202_librivox/ontheheavens_1202_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "On-Generation-and-Corruption",
+      "title": "On Generation and Corruption",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/On-Generation-and-Corruption",
+      "cover": "https://www.loyalbooks.com/image/layout2/On-Generation-and-Corruption.jpg",
+      "genres": [
+        "Ancient Texts",
+        "Classics (antiquity)",
+        "Nature",
+        "Philosophy",
+        "Science",
+        "Non-fiction"
+      ],
+      "archiveId": "ongeneration_1203_librivox",
+      "audioZip": "https://archive.org/download/ongeneration_1203_librivox/ongeneration_1203_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Why-Marry-by-Jesse-Lynch-Williams",
+      "title": "Why Marry?",
+      "author": "Jesse Lynch Williams",
+      "url": "https://www.loyalbooks.com/book/Why-Marry-by-Jesse-Lynch-Williams",
+      "cover": "https://www.loyalbooks.com/image/layout2/Why-Marry.jpg",
+      "genres": [
+        "Comedy",
+        "Fiction",
+        "Humor",
+        "Philosophy",
+        "Play",
+        "Romance",
+        "Dramatic Works"
+      ],
+      "archiveId": "whymarry_1112_librivox",
+      "audioZip": "https://archive.org/download/whymarry_1112_librivox/whymarry_1112_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks/WhyMarry_64kb.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Why-Marry-by-Jesse-Lynch-Williams.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Why-Marry-by-Jesse-Lynch-Williams.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/5/3/8/35389/35389-h/35389-h.htm"
+    },
+    {
+      "slug": "Essence-of-Christianity-by-Ludwig-Feuerbach",
+      "title": "The Essence of Christianity",
+      "author": "Ludwig Feuerbach",
+      "url": "https://www.loyalbooks.com/book/Essence-of-Christianity-by-Ludwig-Feuerbach",
+      "cover": "https://www.loyalbooks.com/image/layout2/Essence-of-Christianity-Ludwig-Feuerbach.jpg",
+      "genres": [
+        "Philosophy",
+        "Religion",
+        "Non-fiction"
+      ],
+      "archiveId": "essence_christianity_1108_librivox",
+      "audioZip": "https://archive.org/download/essence_christianity_1108_librivox/essence_christianity_1108_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Catholic-and-Anti-Catholic-History",
+      "title": "Catholic and Anti-Catholic History",
+      "author": "Various",
+      "url": "https://www.loyalbooks.com/book/Catholic-and-Anti-Catholic-History",
+      "cover": "https://www.loyalbooks.com/image/layout2/Catholic-and-Anti-Catholic-History.jpg",
+      "genres": [
+        "Economics/Political Economy",
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Philosophy",
+        "Politics",
+        "Religion",
+        "Non-fiction"
+      ],
+      "archiveId": "catholic_anticatholic_history_1108_librivox",
+      "audioZip": "https://archive.org/download/catholic_anticatholic_history_1108_librivox/catholic_anticatholic_history_1108_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Self-and-Self-management-Essays-about-Existing",
+      "title": "Self and Self-management: Essays about Existing",
+      "author": "Arnold Bennett",
+      "url": "https://www.loyalbooks.com/book/Self-and-Self-management-Essays-about-Existing",
+      "cover": "https://www.loyalbooks.com/image/layout2/Self-and-Self-management-Essays-about-Existing.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Humor",
+        "Philosophy",
+        "Satire",
+        "Non-fiction"
+      ],
+      "archiveId": "self_selfmanagement_rg_librivox",
+      "audioZip": "https://archive.org/download/self_selfmanagement_rg_librivox/self_selfmanagement_rg_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Anticipations-by-H-G-Wells",
+      "title": "Anticipations",
+      "author": "H. G. Wells",
+      "url": "https://www.loyalbooks.com/book/Anticipations-by-H-G-Wells",
+      "cover": "https://www.loyalbooks.com/image/layout2/Anticipations.jpg",
+      "genres": [
+        "History",
+        "Advice",
+        "Economics/Political Economy",
+        "Instruction",
+        "Philosophy",
+        "Politics",
+        "Psychology",
+        "Science",
+        "Non-fiction"
+      ],
+      "archiveId": "anticipations_1206_librivox",
+      "audioZip": "https://archive.org/download/anticipations_1206_librivox/anticipations_1206_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Anticipations-by-H-G-Wells.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Anticipations-by-H-G-Wells.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/2/2/19229/19229-h/19229-h.htm"
+    },
+    {
+      "slug": "Parva-Naturalia",
+      "title": "Parva Naturalia",
+      "author": "Aristotle",
+      "url": "https://www.loyalbooks.com/book/Parva-Naturalia",
+      "cover": "https://www.loyalbooks.com/image/layout2/Parva-Naturalia.jpg",
+      "genres": [
+        "Ancient Texts",
+        "Classics (antiquity)",
+        "Philosophy",
+        "Psychology",
+        "Science",
+        "Non-fiction"
+      ],
+      "archiveId": "parva_naturalia_1111_librivox",
+      "audioZip": "https://archive.org/download/parva_naturalia_1111_librivox/parva_naturalia_1111_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Coming-of-the-Fairies",
+      "title": "The Coming of the Fairies",
+      "author": "Arthur Conan Doyle (1859-1930)",
+      "url": "https://www.loyalbooks.com/book/Coming-of-the-Fairies",
+      "cover": "https://www.loyalbooks.com/image/layout2/The-Coming-of-the-Fairies.jpg",
+      "genres": [
+        "Myths/Legends",
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "coming_fairies_0616",
+      "audioZip": "https://archive.org/download/coming_fairies_0616/coming_fairies_0616_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Zanoni-by-Baron-Edward-Bulwer-Lytton-Lytton",
+      "title": "Zanoni",
+      "author": "Edward George Bulwer-Lytton",
+      "url": "https://www.loyalbooks.com/book/Zanoni-by-Baron-Edward-Bulwer-Lytton-Lytton",
+      "cover": "https://www.loyalbooks.com/image/layout2/Zanoni.jpg",
+      "genres": [
+        "Fiction",
+        "Literature",
+        "Philosophy"
+      ],
+      "archiveId": "zanoni_1111_librivox",
+      "audioZip": "https://archive.org/download/zanoni_1111_librivox/zanoni_1111_librivox_64kb_mp3.zip",
+      "audioM4b": "https://archive.org/download/LibrivoxM4bCollectionAudiobooks1a/ZanoniPart1.m4b",
+      "textUrl": "https://www.loyalbooks.com/download/text/Zanoni-by-Baron-Edward-Bulwer-Lytton-Lytton.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Zanoni-by-Baron-Edward-Bulwer-Lytton-Lytton.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/6/2664/2664-h/2664-h.htm"
+    },
+    {
+      "slug": "Wit-and-Wisdom-of-Chesterton",
+      "title": "Wit and Wisdom of Chesterton",
+      "author": "G. K. Chesterton",
+      "url": "https://www.loyalbooks.com/book/Wit-and-Wisdom-of-Chesterton",
+      "cover": "https://www.loyalbooks.com/image/layout2/Wit-and-Wisdom-of-Chesterton.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Humor",
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "witwisdom_chesterton_1205_libivox",
+      "audioZip": "https://archive.org/download/witwisdom_chesterton_1205_libivox/witwisdom_chesterton_1205_libivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Omens-and-Superstitions-of-Southern-India",
+      "title": "Omens and Superstitions of Southern India",
+      "author": "Edgar Thurston",
+      "url": "https://www.loyalbooks.com/book/Omens-and-Superstitions-of-Southern-India",
+      "cover": "https://www.loyalbooks.com/image/layout2/Omens-and-Superstitions-of-Southern-India.jpg",
+      "genres": [
+        "Myths/Legends",
+        "Philosophy",
+        "Psychology",
+        "Non-fiction"
+      ],
+      "archiveId": "omens_southern_india_1203_librivox",
+      "audioZip": "https://archive.org/download/omens_southern_india_1203_librivox/omens_southern_india_1203_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Omens-and-Superstitions-of-Southern-India.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Omens-and-Superstitions-of-Southern-India.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/3/5/6/9/35690/35690-h/35690-h.htm"
+    },
+    {
+      "slug": "Letters-from-a-Self-Made-Merchant-to-His-Son",
+      "title": "Letters from a Self-Made Merchant to His Son",
+      "author": "George Horace Lorimer",
+      "url": "https://www.loyalbooks.com/book/Letters-from-a-Self-Made-Merchant-to-His-Son",
+      "cover": "https://www.loyalbooks.com/image/layout2/Letters-from-a-Self-Made-Merchant-to-His-Son.jpg",
+      "genres": [
+        "Epistolary fiction",
+        "Fiction",
+        "Literature",
+        "Philosophy",
+        "Humor"
+      ],
+      "archiveId": "letters_merchant_to_son_p_1111",
+      "audioZip": "https://archive.org/download/letters_merchant_to_son_p_1111/letters_merchant_to_son_p_1111_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Letters-from-a-Self-Made-Merchant-to-His-Son.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Letters-from-a-Self-Made-Merchant-to-His-Son.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21959/pg21959-images.mobi"
+    },
+    {
+      "slug": "Religio-Medici-Hydriotaphia-and-the-Letter",
+      "title": "Religio Medici and Hydriotaphia",
+      "author": "Thomas Browne",
+      "url": "https://www.loyalbooks.com/book/Religio-Medici-Hydriotaphia-and-the-Letter",
+      "cover": "https://www.loyalbooks.com/image/layout2/Religio-Medici-and-Hydriotaphia.jpg",
+      "genres": [
+        "Essay/Short nonfiction",
+        "Literature",
+        "Fiction",
+        "Philosophy",
+        "Religion",
+        "Non-fiction"
+      ],
+      "archiveId": "religio_medici_nl_librivox",
+      "audioZip": "https://archive.org/download/religio_medici_nl_librivox/religio_medici_nl_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Religio-Medici-Hydriotaphia-and-the-Letter.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Religio-Medici-Hydriotaphia-and-the-Letter.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/586/pg586.mobi"
+    },
+    {
+      "slug": "Chymical-Wedding-of-Christian-Rosenkreutz",
+      "title": "The Chymical Wedding of Christian Rosenkreutz",
+      "author": "Anonymous",
+      "url": "https://www.loyalbooks.com/book/Chymical-Wedding-of-Christian-Rosenkreutz",
+      "cover": "https://www.loyalbooks.com/image/layout2/The-Chymical-Wedding-of-Christian-Rosenkreutz.jpg",
+      "genres": [
+        "Fiction",
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "chymical_wedding_1201_librivox",
+      "audioZip": "https://archive.org/download/chymical_wedding_1201_librivox/chymical_wedding_1201_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Crime-Its-Cause-and-Treatment-by-Clarence-Darrow",
+      "title": "Crime: Its Cause and Treatment",
+      "author": "Clarence Darrow",
+      "url": "https://www.loyalbooks.com/book/Crime-Its-Cause-and-Treatment-by-Clarence-Darrow",
+      "cover": "https://www.loyalbooks.com/image/layout2/Crime-Its-Cause-and-Treatment.jpg",
+      "genres": [
+        "Science",
+        "Philosophy",
+        "Psychology",
+        "Non-fiction"
+      ],
+      "archiveId": "crime_causeandtreatment_1209_librivox",
+      "audioZip": "https://archive.org/download/crime_causeandtreatment_1209_librivox/crime_causeandtreatment_1209_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Crime-its-Cause-and-Treatment-by-Clarence-Darrow.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Crime-its-Cause-and-Treatment-by-Clarence-Darrow.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/1/2/0/2/12027/12027-h/12027-h.htm"
+    },
+    {
+      "slug": "On-the-Laws",
+      "title": "On the Laws",
+      "author": "Marcus Tullius Cicero",
+      "url": "https://www.loyalbooks.com/book/On-the-Laws",
+      "cover": "https://www.loyalbooks.com/image/layout2/On-the-Laws.jpg",
+      "genres": [
+        "Classics (antiquity)",
+        "Philosophy",
+        "Politics",
+        "Non-fiction"
+      ],
+      "archiveId": "on_the_laws_1209_librivox",
+      "audioZip": "https://archive.org/download/on_the_laws_1209_librivox/on_the_laws_1209_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Ethics-of-Belief",
+      "title": "The Ethics of Belief",
+      "author": "William Kingdon Clifford",
+      "url": "https://www.loyalbooks.com/book/Ethics-of-Belief",
+      "cover": "https://www.loyalbooks.com/image/layout2/The-Ethics-of-Belief.jpg",
+      "genres": [
+        "Advice",
+        "Essay/Short nonfiction",
+        "Fiction",
+        "Philosophy",
+        "Non-fiction"
+      ],
+      "archiveId": "ethicsofbelief_1204_librivox",
+      "audioZip": "https://archive.org/download/ethicsofbelief_1204_librivox/ethicsofbelief_1204_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Autobiography-of-a-Slander",
+      "title": "The Autobiography of a Slander",
+      "author": "Edna Lyall",
+      "url": "https://www.loyalbooks.com/book/Autobiography-of-a-Slander",
+      "cover": "https://www.loyalbooks.com/image/layout2/The-Autobiography-of-a-Slander.jpg",
+      "genres": [
+        "Fiction",
+        "Literature",
+        "Philosophy",
+        "Short stories"
+      ],
+      "archiveId": "autobiography_slander_1202_librivox",
+      "audioZip": "https://archive.org/download/autobiography_slander_1202_librivox/autobiography_slander_1202_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Autobiography-of-a-Slander-by-Edna-Lyall.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Autobiography-of-a-Slander.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1273/pg1273.mobi"
+    },
+    {
+      "slug": "Creative-Unity-by-Rabindranath-Tagore",
+      "title": "Creative Unity",
+      "author": "Rabindranath Tagore",
+      "url": "https://www.loyalbooks.com/book/Creative-Unity-by-Rabindranath-Tagore",
+      "cover": "https://www.loyalbooks.com/image/layout2/Creative-Unity.jpg",
+      "genres": [
+        "Philosophy",
+        "Literature",
+        "Memoirs",
+        "Non-fiction"
+      ],
+      "archiveId": "creative_unity_1209_librivox",
+      "audioZip": "https://archive.org/download/creative_unity_1209_librivox/creative_unity_1209_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Creative-Unity-by-Rabindranath-Tagore.txt",
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Creative-Unity-by-Rabindranath-Tagore.epub",
+      "gutenbergUrl": "https://www.gutenberg.org/dirs/2/3/1/3/23136/23136-h/23136-h.htm"
+    },
+    {
+      "slug": "Rubaiyat-of-Omar-Khayyam",
+      "title": "Rubáiyát of Omar Khayyám (Le Gallienne)",
+      "author": "Omar Khayyám",
+      "url": "https://www.loyalbooks.com/book/Rubaiyat-of-Omar-Khayyam",
+      "cover": "https://www.loyalbooks.com/image/layout2/Rubaiyat-of-Omar-Khayyam.jpg",
+      "genres": [
+        "Philosophy",
+        "Poetry"
+      ],
+      "archiveId": "rubaiyat_1206_librivox",
+      "audioZip": "https://archive.org/download/rubaiyat_1206_librivox/rubaiyat_1206_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "Awakening-of-the-Soul-by-Ibn-Tufayl",
+      "title": "The Awakening of the Soul",
+      "author": "Muhammad ibn 'Abd al-Malik Ibn Tufayl",
+      "url": "https://www.loyalbooks.com/book/Awakening-of-the-Soul-by-Ibn-Tufayl",
+      "cover": "https://www.loyalbooks.com/image/layout2/Awakening-of-the-Soul-by-Ibn-Tufayl.jpg",
+      "genres": [
+        "Philosophy"
+      ],
+      "archiveId": null,
+      "audioZip": null,
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Awakening-of-the-Soul-by-Ibn-Tufayl.txt",
+      "epubUrl": null,
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/34572/pg34572-images.epub"
+    },
+    {
+      "slug": "Searchlights_on_Health_by_B_G_Jefferis",
+      "title": "Searchlights on Health",
+      "author": "B. G. Jefferis and J. L. Nichols",
+      "url": "https://www.loyalbooks.com/book/Searchlights_on_Health_by_B_G_Jefferis",
+      "cover": "https://www.loyalbooks.com/image/layout2/4.jpg",
+      "genres": [
+        "History",
+        "Science",
+        "Philosophy"
+      ],
+      "archiveId": null,
+      "audioZip": null,
+      "audioM4b": null,
+      "textUrl": "https://www.loyalbooks.com/download/text/Searchlights-on-Health-by-B-G-Jefferis.txt",
+      "epubUrl": null,
+      "gutenbergUrl": "https://www.gutenberg.org/cache/epub/13444/pg13444-images.epub"
+    },
+    {
+      "slug": "Bhagvad-Gita-Treatise-of-Self-help",
+      "title": "Bhagvad-Gita: Treatise of Self-help",
+      "author": "BS Murthy",
+      "url": "https://www.loyalbooks.com/book/Bhagvad-Gita-Treatise-of-Self-help",
+      "cover": "https://www.loyalbooks.com/image/layout2/Bhagvad-Gita-Treatise-of-Self-help.jpg",
+      "genres": [
+        "Religion",
+        "Philosophy",
+        "Literature",
+        "Poetry",
+        "Self Published"
+      ],
+      "archiveId": null,
+      "audioZip": null,
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": "https://www.loyalbooks.com/download/epub/Bhagvad-Gita-Treatise-of-Self-help.epub",
+      "gutenbergUrl": null
+    },
+    {
+      "slug": "antichrist_librivox_",
+      "title": "The Antichrist",
+      "author": "Friedrich Nietzsche",
+      "url": "https://archive.org/details/antichrist_librivox_",
+      "cover": "https://archive.org/services/img/antichrist_librivox_",
+      "genres": [
+        "Philosophy",
+        "Literature"
+      ],
+      "archiveId": "antichrist_librivox_",
+      "audioZip": "https://archive.org/download/antichrist_librivox_/antichrist_librivox__64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "beyond_good_and_evil_librivox",
+      "title": "Beyond Good and Evil",
+      "author": "Friedrich Nietzsche",
+      "url": "https://archive.org/details/beyond_good_and_evil_librivox",
+      "cover": "https://archive.org/services/img/beyond_good_and_evil_librivox",
+      "genres": [
+        "Philosophy"
+      ],
+      "archiveId": "beyond_good_and_evil_librivox",
+      "audioZip": "https://archive.org/download/beyond_good_and_evil_librivox/beyond_good_and_evil_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "your_invisible_power_2104_librivox",
+      "title": "Your Invisible Power",
+      "author": "Genevieve Behrend",
+      "url": "https://archive.org/details/your_invisible_power_2104_librivox",
+      "cover": "https://archive.org/services/img/your_invisible_power_2104_librivox",
+      "genres": [
+        "Philosophy",
+        "Psychology"
+      ],
+      "archiveId": "your_invisible_power_2104_librivox",
+      "audioZip": "https://archive.org/download/your_invisible_power_2104_librivox/your_invisible_power_2104_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "meditations_0708_librivox",
+      "title": "Meditations",
+      "author": "Marcus Aurelius",
+      "url": "https://archive.org/details/meditations_0708_librivox",
+      "cover": "https://archive.org/services/img/meditations_0708_librivox",
+      "genres": [
+        "Philosophy",
+        "Essay/Short nonfiction",
+        "Classics (antiquity)",
+        "Advice",
+        "Instruction"
+      ],
+      "archiveId": "meditations_0708_librivox",
+      "audioZip": "https://archive.org/download/meditations_0708_librivox/meditations_0708_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "alcibiades1_1212_librivox",
+      "title": "Alcibiades I",
+      "author": "Plato",
+      "url": "https://archive.org/details/alcibiades1_1212_librivox",
+      "cover": "https://archive.org/services/img/alcibiades1_1212_librivox",
+      "genres": [
+        "Philosophy",
+        "Literature",
+        "Classics (antiquity)"
+      ],
+      "archiveId": "alcibiades1_1212_librivox",
+      "audioZip": "https://archive.org/download/alcibiades1_1212_librivox/alcibiades1_1212_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "candide_librivox",
+      "title": "Candide",
+      "author": "Voltaire",
+      "url": "https://archive.org/details/candide_librivox",
+      "cover": "https://archive.org/services/img/candide_librivox",
+      "genres": [
+        "Philosophy",
+        "Literature",
+        "Satire"
+      ],
+      "archiveId": "candide_librivox",
+      "audioZip": "https://archive.org/download/candide_librivox/candide_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "mental_efficiency_rg_librivox",
+      "title": "Mental Efficiency and Other Hints to Men and Women",
+      "author": "Arnold Bennett",
+      "url": "https://archive.org/details/mental_efficiency_rg_librivox",
+      "cover": "https://archive.org/services/img/mental_efficiency_rg_librivox",
+      "genres": [
+        "Philosophy",
+        "Psychology"
+      ],
+      "archiveId": "mental_efficiency_rg_librivox",
+      "audioZip": "https://archive.org/download/mental_efficiency_rg_librivox/mental_efficiency_rg_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "the_consolation_of_philosophy_librivox",
+      "title": "The Consolation of Philosophy",
+      "author": "Boethius",
+      "url": "https://archive.org/details/the_consolation_of_philosophy_librivox",
+      "cover": "https://archive.org/services/img/the_consolation_of_philosophy_librivox",
+      "genres": [
+        "Philosophy",
+        "Literature"
+      ],
+      "archiveId": "the_consolation_of_philosophy_librivox",
+      "audioZip": "https://archive.org/download/the_consolation_of_philosophy_librivox/the_consolation_of_philosophy_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "sayings_of_confucius_librivox",
+      "title": "The Sayings of Confucius",
+      "author": "Confucius",
+      "url": "https://archive.org/details/sayings_of_confucius_librivox",
+      "cover": "https://archive.org/services/img/sayings_of_confucius_librivox",
+      "genres": [
+        "Philosophy",
+        "Literature"
+      ],
+      "archiveId": "sayings_of_confucius_librivox",
+      "audioZip": "https://archive.org/download/sayings_of_confucius_librivox/sayings_of_confucius_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "platos_republic_0902_librivox1",
+      "title": "Plato's Republic",
+      "author": "Plato",
+      "url": "https://archive.org/details/platos_republic_0902_librivox1",
+      "cover": "https://archive.org/services/img/platos_republic_0902_librivox1",
+      "genres": [
+        "Philosophy",
+        "Classics (antiquity)"
+      ],
+      "archiveId": "platos_republic_0902_librivox1",
+      "audioZip": "https://archive.org/download/platos_republic_0902_librivox1/platos_republic_0902_librivox1_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "lifes_turmoil_af_0901_librivox",
+      "title": "Above Life's Turmoil",
+      "author": "James Allen",
+      "url": "https://archive.org/details/lifes_turmoil_af_0901_librivox",
+      "cover": "https://archive.org/services/img/lifes_turmoil_af_0901_librivox",
+      "genres": [
+        "Philosophy"
+      ],
+      "archiveId": "lifes_turmoil_af_0901_librivox",
+      "audioZip": "https://archive.org/download/lifes_turmoil_af_0901_librivox/lifes_turmoil_af_0901_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "confessions_augustine_0911_librivox",
+      "title": "Confessions",
+      "author": "Saint Augustine of Hippo",
+      "url": "https://archive.org/details/confessions_augustine_0911_librivox",
+      "cover": "https://archive.org/services/img/confessions_augustine_0911_librivox",
+      "genres": [
+        "Philosophy",
+        "Literature",
+        "Biography"
+      ],
+      "archiveId": "confessions_augustine_0911_librivox",
+      "audioZip": "https://archive.org/download/confessions_augustine_0911_librivox/confessions_augustine_0911_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "politics_0802_librivox",
+      "title": "Politics",
+      "author": "Aristotle",
+      "url": "https://archive.org/details/politics_0802_librivox",
+      "cover": "https://archive.org/services/img/politics_0802_librivox",
+      "genres": [
+        "Philosophy",
+        "Politics",
+        "Literature",
+        "Classics (antiquity)"
+      ],
+      "archiveId": "politics_0802_librivox",
+      "audioZip": "https://archive.org/download/politics_0802_librivox/politics_0802_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "democracy_america_vol1_0709",
+      "title": "Democracy in America Vol. I",
+      "author": "Alexis de Tocqueville",
+      "url": "https://archive.org/details/democracy_america_vol1_0709",
+      "cover": "https://archive.org/services/img/democracy_america_vol1_0709",
+      "genres": [
+        "Philosophy",
+        "Politics",
+        "History"
+      ],
+      "archiveId": "democracy_america_vol1_0709",
+      "audioZip": "https://archive.org/download/democracy_america_vol1_0709/democracy_america_vol1_0709_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "whatibelieve_1101_librivox",
+      "title": "What I Believe",
+      "author": "Leo Tolstoy",
+      "url": "https://archive.org/details/whatibelieve_1101_librivox",
+      "cover": "https://archive.org/services/img/whatibelieve_1101_librivox",
+      "genres": [
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "whatibelieve_1101_librivox",
+      "audioZip": "https://archive.org/download/whatibelieve_1101_librivox/whatibelieve_1101_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "sadhana_realisation_librivox",
+      "title": "Sadhana, the Realisation of Life",
+      "author": "Rabindranath Tagore",
+      "url": "https://archive.org/details/sadhana_realisation_librivox",
+      "cover": "https://archive.org/services/img/sadhana_realisation_librivox",
+      "genres": [
+        "Philosophy",
+        "Fiction"
+      ],
+      "archiveId": "sadhana_realisation_librivox",
+      "audioZip": "https://archive.org/download/sadhana_realisation_librivox/sadhana_realisation_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "city_of_god_ds_librivox",
+      "title": "The City of God",
+      "author": "Augustine of Hippo, St.",
+      "url": "https://archive.org/details/city_of_god_ds_librivox",
+      "cover": "https://archive.org/services/img/city_of_god_ds_librivox",
+      "genres": [
+        "Philosophy",
+        "Religion",
+        "Literature"
+      ],
+      "archiveId": "city_of_god_ds_librivox",
+      "audioZip": "https://archive.org/download/city_of_god_ds_librivox/city_of_god_ds_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "zarathustra_0809_librivox",
+      "title": "Thus Spake Zarathustra: A Book for All and None",
+      "author": "Friedrich Nietzsche",
+      "url": "https://archive.org/details/zarathustra_0809_librivox",
+      "cover": "https://archive.org/services/img/zarathustra_0809_librivox",
+      "genres": [
+        "Philosophy",
+        "Literature",
+        "Advice"
+      ],
+      "archiveId": "zarathustra_0809_librivox",
+      "audioZip": "https://archive.org/download/zarathustra_0809_librivox/zarathustra_0809_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "meditations_descartes_dew_librivox",
+      "title": "Meditations on First Philosophy",
+      "author": "Ren&eacute; Descartes",
+      "url": "https://archive.org/details/meditations_descartes_dew_librivox",
+      "cover": "https://archive.org/services/img/meditations_descartes_dew_librivox",
+      "genres": [
+        "Philosophy",
+        "Essay/Short nonfiction",
+        "Instruction"
+      ],
+      "archiveId": "meditations_descartes_dew_librivox",
+      "audioZip": "https://archive.org/download/meditations_descartes_dew_librivox/meditations_descartes_dew_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "faeriequeene_1401_librivox",
+      "title": "The Faerie Queene",
+      "author": "Edmund Spenser",
+      "url": "https://archive.org/details/faeriequeene_1401_librivox",
+      "cover": "https://archive.org/services/img/faeriequeene_1401_librivox",
+      "genres": [
+        "Philosophy",
+        "Psychology",
+        "Politics",
+        "Literature",
+        "Poetry",
+        "Satire"
+      ],
+      "archiveId": "faeriequeene_1401_librivox",
+      "audioZip": "https://archive.org/download/faeriequeene_1401_librivox/faeriequeene_1401_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "studies_pessimism_librivox",
+      "title": "Studies in Pessimism",
+      "author": "Arthur Schopenhauer",
+      "url": "https://archive.org/details/studies_pessimism_librivox",
+      "cover": "https://archive.org/services/img/studies_pessimism_librivox",
+      "genres": [
+        "Philosophy"
+      ],
+      "archiveId": "studies_pessimism_librivox",
+      "audioZip": "https://archive.org/download/studies_pessimism_librivox/studies_pessimism_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "problems_of_philosophy_librivox",
+      "title": "The Problems of Philosophy",
+      "author": "Bertrand Russell",
+      "url": "https://archive.org/details/problems_of_philosophy_librivox",
+      "cover": "https://archive.org/services/img/problems_of_philosophy_librivox",
+      "genres": [
+        "Philosophy"
+      ],
+      "archiveId": "problems_of_philosophy_librivox",
+      "audioZip": "https://archive.org/download/problems_of_philosophy_librivox/problems_of_philosophy_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "utopia_j_librivox",
+      "title": "Utopia",
+      "author": "Sir Thomas More",
+      "url": "https://archive.org/details/utopia_j_librivox",
+      "cover": "https://archive.org/services/img/utopia_j_librivox",
+      "genres": [
+        "Philosophy",
+        "Literature",
+        "Fantasy"
+      ],
+      "archiveId": "utopia_j_librivox",
+      "audioZip": "https://archive.org/download/utopia_j_librivox/utopia_j_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "majesty_calmness_af_librivox",
+      "title": "The Majesty of Calmness",
+      "author": "William George Jordan",
+      "url": "https://archive.org/details/majesty_calmness_af_librivox",
+      "cover": "https://archive.org/services/img/majesty_calmness_af_librivox",
+      "genres": [
+        "Philosophy",
+        "Psychology",
+        "Instruction"
+      ],
+      "archiveId": "majesty_calmness_af_librivox",
+      "audioZip": "https://archive.org/download/majesty_calmness_af_librivox/majesty_calmness_af_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "mindandbrain_0801",
+      "title": "The Mind and the Brain",
+      "author": "Alfred Binet",
+      "url": "https://archive.org/details/mindandbrain_0801",
+      "cover": "https://archive.org/services/img/mindandbrain_0801",
+      "genres": [
+        "Philosophy",
+        "Psychology"
+      ],
+      "archiveId": "mindandbrain_0801",
+      "audioZip": "https://archive.org/download/mindandbrain_0801/mindandbrain_0801_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "necessityofatheism_1205_librivox",
+      "title": "The Necessity of Atheism",
+      "author": "David Marshall Brooks",
+      "url": "https://archive.org/details/necessityofatheism_1205_librivox",
+      "cover": "https://archive.org/services/img/necessityofatheism_1205_librivox",
+      "genres": [
+        "Philosophy",
+        "Religion",
+        "Fiction",
+        "Myths/Legends"
+      ],
+      "archiveId": "necessityofatheism_1205_librivox",
+      "audioZip": "https://archive.org/download/necessityofatheism_1205_librivox/necessityofatheism_1205_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "bookoflife_1212_librivox",
+      "title": "The Book of Life",
+      "author": "Upton Sinclair",
+      "url": "https://archive.org/details/bookoflife_1212_librivox",
+      "cover": "https://archive.org/services/img/bookoflife_1212_librivox",
+      "genres": [
+        "Philosophy",
+        "Psychology",
+        "Fiction",
+        "Literature",
+        "Essay/Short nonfiction"
+      ],
+      "archiveId": "bookoflife_1212_librivox",
+      "audioZip": "https://archive.org/download/bookoflife_1212_librivox/bookoflife_1212_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "soul_or_rational_psychology_1703_librivox",
+      "title": "The Soul or Rational Psychology",
+      "author": "Emanuel Swedenborg",
+      "url": "https://archive.org/details/soul_or_rational_psychology_1703_librivox",
+      "cover": "https://archive.org/services/img/soul_or_rational_psychology_1703_librivox",
+      "genres": [
+        "Philosophy",
+        "Psychology",
+        "Science"
+      ],
+      "archiveId": "soul_or_rational_psychology_1703_librivox",
+      "audioZip": "https://archive.org/download/soul_or_rational_psychology_1703_librivox/soul_or_rational_psychology_1703_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "kingdom_of_god_1004_librivox",
+      "title": "The Kingdom of God is within you",
+      "author": "Leo Tolstoy",
+      "url": "https://archive.org/details/kingdom_of_god_1004_librivox",
+      "cover": "https://archive.org/services/img/kingdom_of_god_1004_librivox",
+      "genres": [
+        "Philosophy",
+        "Religion",
+        "Literature"
+      ],
+      "archiveId": "kingdom_of_god_1004_librivox",
+      "audioZip": "https://archive.org/download/kingdom_of_god_1004_librivox/kingdom_of_god_1004_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "paradiselost_1411_librivox",
+      "title": "Paradise Lost",
+      "author": "John Milton",
+      "url": "https://archive.org/details/paradiselost_1411_librivox",
+      "cover": "https://archive.org/services/img/paradiselost_1411_librivox",
+      "genres": [
+        "Philosophy",
+        "Religion",
+        "Poetry"
+      ],
+      "archiveId": "paradiselost_1411_librivox",
+      "audioZip": "https://archive.org/download/paradiselost_1411_librivox/paradiselost_1411_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "critique_pure_reason_0709_librivox",
+      "title": "The Critique of Pure Reason",
+      "author": "Immanuel Kant",
+      "url": "https://archive.org/details/critique_pure_reason_0709_librivox",
+      "cover": "https://archive.org/services/img/critique_pure_reason_0709_librivox",
+      "genres": [
+        "Philosophy",
+        "Science"
+      ],
+      "archiveId": "critique_pure_reason_0709_librivox",
+      "audioZip": "https://archive.org/download/critique_pure_reason_0709_librivox/critique_pure_reason_0709_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "of_the_shortness_of_life_1102_librivox",
+      "title": "Of the Shortness of Life",
+      "author": "Lucius Annaeus Seneca",
+      "url": "https://archive.org/details/of_the_shortness_of_life_1102_librivox",
+      "cover": "https://archive.org/services/img/of_the_shortness_of_life_1102_librivox",
+      "genres": [
+        "Philosophy"
+      ],
+      "archiveId": "of_the_shortness_of_life_1102_librivox",
+      "audioZip": "https://archive.org/download/of_the_shortness_of_life_1102_librivox/of_the_shortness_of_life_1102_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "crimeandpunishment_1911_librivox",
+      "title": "Crime and Punishment (Version 4 Dramatic Reading)",
+      "author": "Fyodor Dostoyevsky",
+      "url": "https://archive.org/details/crimeandpunishment_1911_librivox",
+      "cover": "https://archive.org/services/img/crimeandpunishment_1911_librivox",
+      "genres": [
+        "Philosophy",
+        "Fiction",
+        "Literature",
+        "Tragedy",
+        "Advice"
+      ],
+      "archiveId": "crimeandpunishment_1911_librivox",
+      "audioZip": "https://archive.org/download/crimeandpunishment_1911_librivox/crimeandpunishment_1911_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "economics_1408_librivox",
+      "title": "Economics",
+      "author": "Aristotle",
+      "url": "https://archive.org/details/economics_1408_librivox",
+      "cover": "https://archive.org/services/img/economics_1408_librivox",
+      "genres": [
+        "Philosophy",
+        "Religion",
+        "Economics/Political Economy",
+        "Classics (antiquity)"
+      ],
+      "archiveId": "economics_1408_librivox",
+      "audioZip": "https://archive.org/download/economics_1408_librivox/economics_1408_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "enchiridion_librivox",
+      "title": "The Enchiridion",
+      "author": "Epictetus",
+      "url": "https://archive.org/details/enchiridion_librivox",
+      "cover": "https://archive.org/services/img/enchiridion_librivox",
+      "genres": [
+        "Philosophy",
+        "Fiction"
+      ],
+      "archiveId": "enchiridion_librivox",
+      "audioZip": "https://archive.org/download/enchiridion_librivox/enchiridion_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "antifederalist_0707_librivox",
+      "title": "The Anti-Federalist Papers",
+      "author": "Patrick Henry",
+      "url": "https://archive.org/details/antifederalist_0707_librivox",
+      "cover": "https://archive.org/services/img/antifederalist_0707_librivox",
+      "genres": [
+        "Philosophy",
+        "Politics",
+        "Literature"
+      ],
+      "archiveId": "antifederalist_0707_librivox",
+      "audioZip": "https://archive.org/download/antifederalist_0707_librivox/antifederalist_0707_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "eryxias_ge_1404_librivox",
+      "title": "Eryxias",
+      "author": "Plato",
+      "url": "https://archive.org/details/eryxias_ge_1404_librivox",
+      "cover": "https://archive.org/services/img/eryxias_ge_1404_librivox",
+      "genres": [
+        "Philosophy",
+        "Economics/Political Economy",
+        "Classics (antiquity)",
+        "Advice"
+      ],
+      "archiveId": "eryxias_ge_1404_librivox",
+      "audioZip": "https://archive.org/download/eryxias_ge_1404_librivox/eryxias_ge_1404_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "all_of_grace_1011_librivox",
+      "title": "All of Grace",
+      "author": "Charles H. Spurgeon",
+      "url": "https://archive.org/details/all_of_grace_1011_librivox",
+      "cover": "https://archive.org/services/img/all_of_grace_1011_librivox",
+      "genres": [
+        "Philosophy",
+        "Religion"
+      ],
+      "archiveId": "all_of_grace_1011_librivox",
+      "audioZip": "https://archive.org/download/all_of_grace_1011_librivox/all_of_grace_1011_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "discourse_inequality_ej_librivox",
+      "title": "A Discourse Upon the Origin and the Foundation of the Inequality Among Mankind",
+      "author": "Jean-Jacques Rousseau",
+      "url": "https://archive.org/details/discourse_inequality_ej_librivox",
+      "cover": "https://archive.org/services/img/discourse_inequality_ej_librivox",
+      "genres": [
+        "Philosophy",
+        "Politics"
+      ],
+      "archiveId": "discourse_inequality_ej_librivox",
+      "audioZip": "https://archive.org/download/discourse_inequality_ej_librivox/discourse_inequality_ej_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "formation_distribution_wealth_1503_librivox",
+      "title": "Reflections on the Formation and Distribution of Wealth",
+      "author": "Anne Robert Jacques Turgot",
+      "url": "https://archive.org/details/formation_distribution_wealth_1503_librivox",
+      "cover": "https://archive.org/services/img/formation_distribution_wealth_1503_librivox",
+      "genres": [
+        "Philosophy",
+        "Economics/Political Economy",
+        "History"
+      ],
+      "archiveId": "formation_distribution_wealth_1503_librivox",
+      "audioZip": "https://archive.org/download/formation_distribution_wealth_1503_librivox/formation_distribution_wealth_1503_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    },
+    {
+      "slug": "apology_rz_librivox",
+      "title": "The Apology of Socrates",
+      "author": "Plato",
+      "url": "https://archive.org/details/apology_rz_librivox",
+      "cover": "https://archive.org/services/img/apology_rz_librivox",
+      "genres": [
+        "Philosophy",
+        "Literature",
+        "History",
+        "Classics (antiquity)"
+      ],
+      "archiveId": "apology_rz_librivox",
+      "audioZip": "https://archive.org/download/apology_rz_librivox/apology_rz_librivox_64kb_mp3.zip",
+      "audioM4b": null,
+      "textUrl": null,
+      "epubUrl": null,
+      "gutenbergUrl": null,
+      "source": "archive.org"
+    }
+  ]
+}

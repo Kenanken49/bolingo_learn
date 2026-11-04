@@ -222,18 +222,33 @@ comment on table public.language_courses is
 comment on table public.language_lessons is
   'Lesson content: theory (jsonb string[]) and questions (jsonb CourseQuestion[]). Edits apply without an app release.';
 
--- Seed: ON CONFLICT DO NOTHING so dashboard edits survive re-runs.
+-- Seed: DO UPDATE. The database is what the app reads first, so a row that was
+-- seeded before the repo gained richer content (question kinds, listen/speak/
+-- match items, new theory) would otherwise shadow the bundle forever: a stale
+-- row silently downgraded every language lesson to plain tap-to-choose items.
+-- Regenerating and re-running this file is the publish step — it intentionally
+-- replaces dashboard edits with the reviewed content in the repo. To keep a
+-- dashboard-only change, copy it into lib/languages.ts before publishing.
 insert into public.language_courses (id, title, icon, blurb, position, published)
 select x.id, x.title, x.icon, x.blurb, x.position, true
 from jsonb_to_recordset($catalog_courses$${courseJson}$catalog_courses$::jsonb)
   as x(id text, title text, icon text, blurb text, position integer)
-on conflict (id) do nothing;
+on conflict (id) do update set
+  title = excluded.title,
+  icon = excluded.icon,
+  blurb = excluded.blurb,
+  position = excluded.position;
 
 insert into public.language_lessons (id, course_id, title, theory, questions, position, published)
 select x.id, x.course_id, x.title, x.theory, x.questions, x.position, true
 from jsonb_to_recordset($catalog_lessons$${jsonLines(lessonRows)}$catalog_lessons$::jsonb)
   as x(id text, course_id text, title text, theory jsonb, questions jsonb, position integer)
-on conflict (id) do nothing;
+on conflict (id) do update set
+  course_id = excluded.course_id,
+  title = excluded.title,
+  theory = excluded.theory,
+  questions = excluded.questions,
+  position = excluded.position;
 `;
 }
 

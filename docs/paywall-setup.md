@@ -4,17 +4,17 @@ Code is wired to these exact ids — create them verbatim:
 
 - RevenueCat entitlement: `premium`
 - RevenueCat offering: `default` (monthly package inside)
-- Product id (both stores): `bolingo_premium_monthly` — $7.70/mo
+- Product id (both stores): `bolingo_premium_monthly` — KSh 770/mo
 
 ## 1. Google Play
 
 1. Play Console → your app → Monetize → Products → Subscriptions → Create:
-   id `bolingo_premium_monthly`, 1-month billing period, $7.70 (or local equivalent), grace period on.
+   id `bolingo_premium_monthly`, 1-month billing period, KSh 770 (set the Kenya price explicitly), grace period on.
 2. Copy the service-account JSON key (Monetize → API access) — RevenueCat needs it next.
 
 ## 2. App Store
 
-1. App Store Connect → your app → Subscriptions → create group "Premium", product id `bolingo_premium_monthly`, $7.99 tier (closest to $7.70), 1 month.
+1. App Store Connect → your app → Subscriptions → create group "Premium", product id `bolingo_premium_monthly`, the tier closest to KSh 770, 1 month.
 2. Fill the subscription display name/description + review screenshot (use store-listing.md shot #7), submit for review alongside the build.
 3. App Store Connect → Users and Access → Keys: create an In-App Purchase key (p8) + Issuer ID for RevenueCat.
 

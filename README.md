@@ -232,8 +232,7 @@ Zora's build-coach surfaces now render the Figma-frame portrait
 
 ## Language courses
 
-English carries seventeen nodes and Swahili twenty-one; Spanish, French and
-German carry fifteen. The newest lessons are original Bolingo Learn material built
+English carries nineteen nodes, Spanish, French, and German carry twenty nodes, and Swahili twenty-two. The lessons are original Bolingo Learn material built
 around beginner survival topics:
 
 - **Swahili** — [Questions & Negation](lib/swahili-plus.ts), [Adjectives &
@@ -312,7 +311,7 @@ so their path nodes open when the catalog cannot be read; a successful remote
 read stays authoritative and hides an unpublished row online. The generated
 migration
 [supabase/migrations_language_catalog.sql](supabase/migrations_language_catalog.sql)
-creates the tables and seeds all 86 built-in lessons (`npm run catalog:sql`
+creates the tables and seeds all 104 built-in lessons (`npm run catalog:sql`
 regenerates it, `npm run check:catalog` guards it). The learning path itself —
 which lesson sits where — remains code in `lib/curriculum.ts`, so a brand-new
 lesson still needs a path block; see [docs/language-catalog.md](docs/language-catalog.md).
@@ -448,8 +447,10 @@ percentile logic and verifies the route still measures the real component.
 Expo Router (`src/app/`) drives the habit loop:
 
 1. **Path Map** (`/`): Duolingo-style winding track of circular nodes — 🔥 streak / ⭐ XP / ❤ hearts top bar; completed nodes turn gold 🏆, the active node pulses, locked nodes are greyed 🔒 (sequential unlock once signed in). The **🧠 AI Sandbox** FAB opens an upload panel (text, PDFs and photos via the system picker → `user-materials` → pipeline); each finished upload renders a **My Custom Revision** node, with in-flight uploads shown as ⏳ nodes and live statuses.
+
+   The pipeline first decides **what was uploaded** (`supabase/functions/_shared/materialKind.ts`): a chaptered **book** is narrated from its first character to its last (resumable parts, chapter offsets), while **notes**, **articles** and **transcripts** get a **revision pack** built on the seven memorization techniques — active recall, spaced repetition, flashcards, chunking, mind map, memory palace and teach-it — in `components`-free form at `src/app/revision/[uploadId].tsx`. See [docs/materials.md](docs/materials.md).
 2. **Quiz Player** (`/quiz/[lessonId]` + [components/GamifiedCodePlayer.tsx](components/GamifiedCodePlayer.tsx)): the reusable core game engine — tap-token assembly (`correctChain` vs `scrambledTokens`), animated top progress bar, hearts via `progress.ts`, cheerful/soft correction chimes from [assets/sounds.ts](assets/sounds.ts) on `expo-audio`, and the 🔊 audiobook anchor (plays the generated narration URL when present, premium-locked hint otherwise). The screen is a thin wrapper: loads demo or Supabase questions (multiple-choice collapses to one token, drag-and-drop splits the stored answer chain), attaches signed segment URLs as `audioUrl`, and handles completion/streak.
-3. **Loss-Aversion Screen** (`/refill`, modal): real AdMob rewarded video (+1 heart only on `EARNED_REWARD`, [lib/ads.ts](lib/ads.ts) unit config with Google test ids in dev), live 4-hour countdown from `hearts_refilled_at`, Premium upgrade (honest placeholder — RevenueCat/Stripe plugs in here). Meta Audience Network skipped (deprecated); AdMob serves iOS + Android.
+3. **Loss-Aversion Screen** (`/refill`, modal) and the **out-of-hearts sheet** (`components/OutOfHeartsSheet.tsx`) that the quiz player raises the moment a heart hits zero: real AdMob rewarded video (+1 heart only on `EARNED_REWARD`, [lib/ads.ts](lib/ads.ts) unit config with Google test ids in dev), live 4-hour countdown from `hearts_refilled_at`, Premium upgrade (honest placeholder — RevenueCat/Stripe plugs in here). Guests never spend hearts (no account to refill) and Premium never sees an ad. See [docs/admob.md](docs/admob.md). Meta Audience Network skipped (deprecated); AdMob serves iOS + Android.
 
 Progress helpers live in [lib/progress.ts](lib/progress.ts) (`getProfile`, `completeLesson`, `loseHeart`, `grantHearts`, `refillWaitRemaining`); guest mode plays with local state only.
 
@@ -473,6 +474,101 @@ npx eas-cli env:set --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value <key> \
 
 Install the dev build, open it, then run `npx expo start --dev-client` and scan the QR.
 
+If the CLI aborts before running with `MODULE_NOT_FOUND` (e.g. `Cannot find module 'domino'`) or `ERR_INVALID_ARG_TYPE`, npm's cached copy of `eas-cli` is broken — not the project. Install it into the project instead, which skips the lifecycle scripts that crash under Node 24, and call the local binary:
+
+```bash
+npm install --no-save --ignore-scripts eas-cli@27.2.0
+npx eas-cli build --profile preview --platform android
+```
+
+### Local Android toolchain (SDK on C:, AVD + Gradle on D:)
+
+The SDK binaries are installed by Android Studio on `C:`, but the two directories that actually grow live on the `D:` volume, where there is space. Nothing exports them, so a plain `npx expo run:android` looks in `%USERPROFILE%\.android\avd` and `%USERPROFILE%\.gradle`, finds neither, and re-downloads the Gradle graph onto `C:`.
+
+| Path | Holds | Wired by |
+| --- | --- | --- |
+| `C:\Users\<you>\AppData\Local\Android\Sdk` | platform-tools, platform 37, build-tools, NDK 27.1.12297006 | `android/local.properties` (`sdk.dir`) |
+| `D:\android-sdk-cmake` | CMake | `android/local.properties` (`cmake.dir`) |
+| `D:\android-avd` | emulator AVDs (`Medium_Phone`, `Medium_Phone_API_37.0`) | `ANDROID_AVD_HOME` |
+| `D:\gradle-home` | Gradle 9.4.1 wrapper distro + dependency caches | `GRADLE_USER_HOME` |
+
+Source the helper before any Android command — it exports those variables for the current shell and prints what it found:
+
+```bash
+source scripts/android-env.sh          # export into this shell
+source scripts/android-env.sh --check  # export, then verify SDK, AVDs and caches
+
+emulator -list-avds                    # Medium_Phone, Medium_Phone_API_37.0
+emulator -avd Medium_Phone &
+npx expo run:android                   # Gradle now writes to D:\gradle-home
+```
+
+To make it permanent instead of per-shell, set the same names once (user scope, no admin needed) and reopen the terminal:
+
+```bash
+setx ANDROID_AVD_HOME "D:\android-avd"
+setx GRADLE_USER_HOME "D:\gradle-home"
+```
+
+Both are optional: without them the build still works, it just fills `C:` (58 GB free, versus 801 GB on `D:`). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+
+#### Windows native build prerequisites
+
+React Native's CMake targets mirror each source file's absolute path into the object directory, so reanimated's `Common/cpp/reanimated/CSS/common/filters` becomes a 260-character path under `node_modules`. Two machine settings are required, and without them the build dies in the native stage:
+
+```text
+ninja: error: mkdir(CMakeFiles/reanimated.dir/C_/Users/.../CSS/common/filters): No such file or directory
+```
+
+1. **Long paths enabled** (one-time, admin):
+   ```bash
+   reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+   ```
+2. **ninja ≥ 1.11** on the CMake path. The Android CMake 3.22 in `D:\android-sdk-cmake` bundles ninja 1.10.2, which predates Windows long-path support and still fails after step 1. Replace just that binary and keep the original next to it:
+   ```bash
+   cp D:/android-sdk-cmake/bin/ninja.exe D:/android-sdk-cmake/bin/ninja-1.10.2.exe.bak
+   curl -sL -o /tmp/ninja.zip https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-win.zip
+   powershell -Command "Expand-Archive -Path /tmp/ninja.zip -DestinationPath /tmp/ninja -Force"
+   cp /tmp/ninja/ninja.exe D:/android-sdk-cmake/bin/ninja.exe
+   ```
+
+A release APK builds and installs on an emulator with:
+
+```bash
+source scripts/android-env.sh
+cd android && ./gradlew :app:assembleRelease      # ~25 min cold, app/build/outputs/apk/release/app-release.apk
+adb install -r app/build/outputs/apk/release/app-release.apk
+```
+
+Delete `node_modules/*/android/.cxx` after changing CMake, ninja or the long-path setting to force a clean native configure.
+
+#### OTA channel for a local release build
+
+The update *channel* is not a native build field — it is the `expo-channel-name` request header the app sends to EAS. EAS Build writes it from the profile in `eas.json`; a local `gradlew` build has no profile, so name it at prebuild time (`app.config.js` turns the variable into `updates.requestHeaders`, and prebuild writes the manifest meta-data):
+
+```bash
+source scripts/android-env.sh
+export EXPO_UPDATES_CHANNEL=preview       # omit it and the build has no channel at all
+npx expo prebuild --platform android --clean
+# --clean regenerates android/ and drops local.properties: restore sdk.dir and cmake.dir
+cd android && ./gradlew :app:assembleRelease
+```
+
+Confirm it landed before installing — the channel is plain manifest meta-data:
+
+```bash
+unzip -p app/build/outputs/apk/release/app-release.apk AndroidManifest.xml | tr -d '\000' | grep -a expo-channel-name
+```
+
+The channel also has to point at a branch, or every update check answers "no update available" while the build looks healthy:
+
+```bash
+npx eas-cli@latest channel:create preview --branch preview
+npx eas-cli@latest channel:list
+```
+
+After that a published update reaches the installed local APK on its next launch, as long as `runtimeVersion` still matches.
+
 ### Dependency parity
 
 `npx expo-doctor` must end with `20/20 checks passed`. It lags silently: the SDK
@@ -493,19 +589,19 @@ not fixable here, and not reachable from the app bundle.
 `runtimeVersion` tracks the app version, so JS-only changes (screens, quiz logic, styles) ship instantly. `expo-updates` is a real dependency — without it the app cannot check for an update at all, and `eas update` refuses to publish.
 
 ```bash
- bunx eas-cli update --branch preview --environment preview -p all --message "Tweak lesson copy"
- bunx eas-cli update --branch production --environment production -p all --message "Fix quiz scoring"
+npx eas-cli@latest update --branch preview --environment preview -p all --message "Tweak lesson copy"
+npx eas-cli@latest update --branch production --environment production -p all --message "Fix quiz scoring"
 ```
 
-The flag is `-p/--platform` (there is no `--platforms`), and a non-interactive publish must name `--environment`. A published rollout only reaches builds that were made with a channel: `preview` and `production` both carry one, the `development` profile does not, so a dev client always runs whatever the Metro bundler serves. Native changes (new SDKs, AdMob/RevenueCat config, splash/icon, adding `expo-updates` itself) still need a rebuild — OTA covers JS only.
+The flag is `-p/--platform` (there is no `--platforms`), and a non-interactive publish must name `--environment`. A published rollout only reaches builds that were made with a channel: `preview` and `production` both carry one, a local release build carries whichever channel `EXPO_UPDATES_CHANNEL` named at prebuild, and the `development` profile carries none — so a dev client always runs whatever the Metro bundler serves. Native changes (new SDKs, AdMob/RevenueCat config, splash/icon, adding `expo-updates` itself) still need a rebuild — OTA covers JS only.
 
 ## Premium paywall (RevenueCat)
 
-`/paywall` (modal, linked from the Path tier badge and refill): loads the current offering's monthly package via `Purchases.getOfferings()`, `purchasePackage` on subscribe, `restorePurchases`, and syncs the `premium` entitlement into `profiles.is_premium` ([lib/purchases.ts](lib/purchases.ts)). Setup: create the `premium` entitlement + $7.70/mo product in RevenueCat, add `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` / `EXPO_PUBLIC_REVENUECAT_IOS_KEY`. `__DEV__` includes a debug premium toggle (needs `EXPO_PUBLIC_DEBUG_PREMIUM=1` for the auto-unlock path).
+`/paywall` (modal, linked from the Path tier badge and refill): loads the current offering's monthly package via `Purchases.getOfferings()`, `purchasePackage` on subscribe, `restorePurchases`, and syncs the `premium` entitlement into `profiles.is_premium` ([lib/purchases.ts](lib/purchases.ts)). Setup: create the `premium` entitlement + KSh 770/mo product in RevenueCat, add `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` / `EXPO_PUBLIC_REVENUECAT_IOS_KEY`. `__DEV__` includes a debug premium toggle (needs `EXPO_PUBLIC_DEBUG_PREMIUM=1` for the auto-unlock path).
 
 ## Freemium fence (cost control)
 
-AI/TTS burn is fenced behind Premium ($7.70/mo — wire RevenueCat/Stripe where the upgrade buttons point):
+AI/TTS burn is fenced behind Premium (KSh 770/mo — wire RevenueCat/Stripe where the upgrade buttons point):
 
 - **Free:** raw text files only (picker filters to `text/*`), ≤1,000 words per upload (client pre-check in `lib/tiers.ts` + authoritative Edge Function enforcement), and no server TTS — Listen mode and quiz narration use the phone's built-in robot voice via `expo-speech` ([lib/voice.ts](lib/voice.ts)), $0.
 - **Premium:** PDF, photo-scan and consented audio/video uploads, smart LLM compilation, elite ElevenLabs/OpenAI voices, and a 100,000-word monthly ceiling (`profiles.ai_words_used` / `ai_words_reset_at`, 30-day rolling reset; a 500-page book bills past the cap and is rejected). Server enforces everything — the client check is UX only. Audio/video is transcribed by Deepgram (signed URL, recommended) or an OpenAI-compatible endpoint before curation; see [docs/transcription.md](docs/transcription.md). See [docs/audiobook-voice.md](docs/audiobook-voice.md) for ElevenLabs setup, voice-consent requirements and the exact free/premium playback behavior.
@@ -522,11 +618,12 @@ Tapping **🎧 Listen to Audiobook Mode** on the home screen loads the newest us
 
 ## Async curriculum pipeline
 
-User Uploads ➔ Storage (private `user-materials` bucket) ➔ `process-upload` Edge Function (fires on upload) ➔ LLM (DeepSeek default, GPT-4o supported) curates JSON quiz ➔ TTS (ElevenLabs default, OpenAI supported) generates the audiobook.
+User Uploads ➔ Storage (private `user-materials` bucket) ➔ `process-upload` Edge Function (fires on upload) ➔ TTS (ElevenLabs default, OpenAI supported) narrates the whole upload as an audiobook ➔ LLM (DeepSeek default, GPT-4o supported) optionally curates JSON quiz nodes. What an upload produces follows the learner's `upload_output` preference: `both` (default), `audiobook`, or `nodes`.
 
 1. Client uploads via `uploadRawFile()` in [lib/uploads.ts](lib/uploads.ts) — file lands at `<user_id>/<file_name>`, a `user_uploads` row is created (`processing`), and `process-upload` is invoked.
-2. **AI Curation Engine:** the function extracts text — Text/Markdown parsed directly as a string, PDFs via the lightweight `pdf-parse` wrapper (`npm:pdf-parse` in the Deno runtime), photos via vision OCR, and audio/video via the consented transcription path (Deepgram signed URL, or an OpenAI-compatible Whisper endpoint for clips under 25 MB). The transcript is cached on the upload row before curation, so a retry does not pay the provider twice; see [docs/transcription.md](docs/transcription.md). It sends the text to a cost-effective LLM (DeepSeek-V3 default via `LLM_MODEL=deepseek-chat`, or GPT-4o-mini via `LLM_BASE_URL`/`LLM_MODEL`) with strict instructions — top 2–3 concepts, 4–5 quiz elements, JSON schema `[{ type: multiple-choice | drag-and-drop, prompt, options, answer }]`, nothing but valid JSON. The payload is schema-validated, then inserted as one `lessons` row (`is_user_generated = true`, tagged to the user, linked via `upload_source_id`) plus one `questions` row per element.
-3. **Audiobook engine:** it synthesizes narration audio and stores it in the same bucket — one full-mix `<user_id>/audio/<lesson_id>.mp3` plus one segment MP3 per quiz element (`<user_id>/audio/<lesson_id>/<n>.mp3`, failures non-fatal) — records the segment manifest in the lesson, and flips the upload to `ready` (or `failed` on error). Voice knobs are validated in one shared module (`TTS_PROVIDER`, `TTS_MODEL_ID`, `TTS_VOICE_ID`, `TTS_VOICE`, `TTS_OUTPUT_FORMAT` and the ElevenLabs voice settings); `npm run audio:voice` validates them without spending a token, and `npm run audio:preview` verifies the configured voice with a read-only lookup, then writes a short full-mix sample plus a segment sample. See [docs/audiobook-voice.md](docs/audiobook-voice.md).
+2. **Text extraction:** Text/Markdown is parsed directly as a string, PDFs via the lightweight `pdf-parse` wrapper (`npm:pdf-parse` in the Deno runtime, capped at the first 60 pages because only the first 60k characters are ever used), photos via vision OCR, and audio/video via the consented transcription path (Deepgram signed URL, or an OpenAI-compatible Whisper endpoint for clips under 25 MB). The transcript is cached on the upload row before curation, so a retry does not pay the provider twice; see [docs/transcription.md](docs/transcription.md).
+3. **Audiobook engine (the whole upload):** Premium narration is the uploaded text, not a reading of its questions. Because every provider caps one request (`MAX_TTS_CHARS`, 4,000), the extract is split on sentence boundaries into ordered parts (`<user_id>/audio/<lesson_id>/part-NN.mp3`, three synthesized at a time) and stored on the lesson as `audio_chunks`; `audio_url` stays the first part for older players, and a failed part is recorded as `audio_error` instead of silently splicing a gap into the book. One segment MP3 per quiz element (`<user_id>/audio/<lesson_id>/<n>.mp3`) is kept for review navigation when nodes exist. Uploads flip to `ready` as soon as the lesson row exists. Learners choose this in Settings → Upload output (`profiles.upload_output`, see `migrations_upload_output.sql`).
+4. **AI Curation Engine (optional):** skipped entirely for `upload_output = 'audiobook'`, so an audiobook-only learner never pays for the curation model. Otherwise the text goes to a cost-effective LLM (DeepSeek-V3 default via `LLM_MODEL=deepseek-chat`, or GPT-4o-mini via `LLM_BASE_URL`/`LLM_MODEL`) with strict instructions — top 2–3 concepts, 4–5 quiz elements, JSON schema `[{ type: multiple-choice | drag-and-drop, prompt, options, answer }]`, nothing but valid JSON. The payload is schema-validated, then inserted as one `lessons` row (`is_user_generated = true`, tagged to the user, linked via `upload_source_id`) plus one `questions` row per element. An audiobook-only lesson is tagged `audiobook_only` and stays out of the revision-node list. Voice knobs are validated in one shared module (`TTS_PROVIDER`, `TTS_MODEL_ID`, `TTS_VOICE_ID`, `TTS_VOICE`, `TTS_OUTPUT_FORMAT` and the ElevenLabs voice settings); `npm run audio:voice` validates them without spending a token, and `npm run audio:preview` verifies the configured voice with a read-only lookup, then writes a short full-mix sample plus a segment sample. See [docs/audiobook-voice.md](docs/audiobook-voice.md).
 
 ### Names, characters and training
 

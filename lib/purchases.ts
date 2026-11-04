@@ -11,8 +11,8 @@ export const PREMIUM_PRODUCT_IDS = {
 } as const;
 /** Offering identifier in the RevenueCat dashboard. */
 export const PREMIUM_OFFERING_ID = 'default';
-/** $7.70/mo reference price shown before offerings load. */
-export const PREMIUM_PRICE_LABEL = '$7.70/mo';
+/** KSh 770/mo reference price shown before offerings load. */
+export const PREMIUM_PRICE_LABEL = 'KSh 770/mo';
 
 let configured = false;
 const native = Platform.OS === 'android' || Platform.OS === 'ios';

@@ -1,6 +1,6 @@
 import { View, type StyleProp, type TextStyle } from 'react-native';
 import Text from './ui/Text';
-import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNatural } from '../lib/natural';
 
 /**
@@ -128,9 +128,10 @@ export type AppIconName =
   | 'shield'
   | 'scale'
   | 'shuffle'
-  | 'time';
+  | 'time'
+  | 'download';
 
-type Glyph = { lib: 'ion' | 'mci' | 'fa'; glyph: string };
+type Glyph = { lib: 'ion' | 'mci'; glyph: string };
 
 const MAP: Record<AppIconName, Glyph> = {
   flame: { lib: 'ion', glyph: 'flame' },
@@ -176,7 +177,7 @@ const MAP: Record<AppIconName, Glyph> = {
   plus: { lib: 'ion', glyph: 'add' },
   bell: { lib: 'ion', glyph: 'notifications' },
   calendar: { lib: 'ion', glyph: 'calendar' },
-  google: { lib: 'fa', glyph: 'google' },
+  google: { lib: 'ion', glyph: 'logo-google' },
   folder: { lib: 'ion', glyph: 'folder' },
   map: { lib: 'ion', glyph: 'map' },
   sparkles: { lib: 'ion', glyph: 'sparkles' },
@@ -214,6 +215,7 @@ const MAP: Record<AppIconName, Glyph> = {
   scale: { lib: 'mci', glyph: 'scale-balance' },
   shuffle: { lib: 'ion', glyph: 'shuffle' },
   time: { lib: 'ion', glyph: 'time' },
+  download: { lib: 'ion', glyph: 'cloud-download' },
 };
 
 /**
@@ -338,6 +340,5 @@ export default function AppIcon({
   const paint = useLegacyInk(color);
   const m = MAP[name];
   if (m.lib === 'mci') return <MaterialCommunityIcons name={m.glyph as never} size={size} color={paint} style={style} />;
-  if (m.lib === 'fa') return <FontAwesome name={m.glyph as never} size={size} color={paint} style={style} />;
   return <Ionicons name={m.glyph as never} size={size} color={paint} style={style} />;
 }

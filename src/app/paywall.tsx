@@ -383,7 +383,7 @@ export default function Paywall() {
           <View className="flex-row items-start gap-2">
             <AppIcon name="sparkles" size={16} color="#B45309" />
             <Text className="flex-1 text-xs leading-5 text-amber-900 dark:text-amber-100">
-              One subscription: import any file, hear one human-like narrator, unlock roleplay, and never wait for a heart.
+              One subscription: import any file, hear a human-like narrator you choose, unlock roleplay, and never wait for a heart.
             </Text>
           </View>
         </View>
@@ -417,7 +417,7 @@ export default function Paywall() {
           </View>
         ))}
         <Text className="mt-3 border-t border-slate-100 pt-2 text-xs leading-4 text-slate-500 dark:border-slate-800 dark:text-slate-400">
-          Free narration uses your device voice over the question prompts. Premium generates one consistent narrator, a continuous full mix and a clip for every question. Livia, Bingo and Zora stay on-device on both plans.
+          Free narration uses your device voice over the question prompts. Premium generates a continuous full mix and a clip for every question, in the studio narrator you pick. Livia, Bingo and Zora speak in their own studio voices when the connection allows, and fall back to your device voice when it does not.
         </Text>
       </View>
 

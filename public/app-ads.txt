@@ -1,0 +1,9 @@
+# AdMob app-ads.txt — proves this site belongs to the AdMob account owner.
+#
+# REPLACE pub-0000000000000000 with the real publisher id from the AdMob
+# console (Settings → Account information → Publisher ID), then redeploy.
+# Until then this file is a placeholder: authorized-seller verification fails
+# closed and no web-ad revenue is affected (the app's only ad is the native
+# rewarded video, which does not read this file — but AdMob account approval
+# and invalid-traffic standing do depend on it once the site is linked).
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

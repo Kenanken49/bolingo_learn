@@ -665,4 +665,324 @@ export const GERMAN_PLUS: Record<string, CourseLesson> = {
       ),
     ],
   },
+
+  'german-adjectives': {
+    id: 'german-adjectives',
+    title: 'German Adjectives & Comparison',
+    theory: [
+      'Predicative adjectives (after sein or werden) never take endings: Das Auto ist schnell, Die Autos sind schnell. Only attributive adjectives before a noun decline.',
+      'Compare with -er + als: schneller als der Zug (faster than the train). For equality, use so... wie: Er ist so groß wie ich (He is as tall as me). Irregulars: gut -> besser -> am besten; viel -> mehr -> am meisten.',
+    ],
+    questions: [
+      MCQ(
+        'In “Das Haus ist schön”, why does “schön” have no ending?',
+        'It sits after the verb sein (predicative)',
+        [
+          'It sits after the verb sein (predicative)',
+          'Because Haus is neuter',
+          'Because schön is irregular',
+          'It is an error in German',
+        ],
+        'Predicative adjectives after sein/werden never take case endings in German.'
+      ),
+      BUILD(
+        'Say “The car is fast”:',
+        ['Das', 'Auto', 'ist', 'schnell'],
+        ['schnell', 'Das', 'Auto', 'ist', 'schnelle'],
+        'Predicative: ist schnell, without any suffix.'
+      ),
+      MCQ(
+        '“Schneller als der Zug” means…',
+        'Faster than the train',
+        ['Faster than the train', 'Slower than the train', 'Next to the train', 'As fast as the train'],
+        'Comparative suffix -er plus als means faster than.'
+      ),
+      BUILD(
+        'Say “He is as tall as Lukas”:',
+        ['Er', 'ist', 'so', 'groß', 'wie', 'Lukas'],
+        ['wie', 'Er', 'ist', 'so', 'groß', 'Lukas', 'als'],
+        'So... wie expresses equality: as tall as.'
+      ),
+      MCQ(
+        'What is the comparative form of “gut” (good)?',
+        'Besser',
+        ['Besser', 'Guter', 'Mehr gut', 'Bestens'],
+        'Gut is irregular: gut -> besser -> am besten.'
+      ),
+      MATCH(
+        'Pair each German adjective with its opposite.',
+        [
+          { left: 'Groß', right: 'Klein' },
+          { left: 'Schnell', right: 'Langsam' },
+          { left: 'Gut', right: 'Schlecht' },
+          { left: 'Heiß', right: 'Kalt' },
+          { left: 'Einfach', right: 'Schwer' },
+        ],
+        'German adjective pairs: groß/klein, schnell/langsam, gut/schlecht.'
+      ),
+      LISTEN(
+        'Listen and type the comparison.',
+        'Schneller als der Zug',
+        ['Schneller als der Zug'],
+        'Schneller = faster; als = than (used with comparatives).'
+      ),
+      SPEAK(
+        'Say “The car is fast” out loud in German.',
+        'Das Auto ist schnell',
+        'dahs OW-toh ist SHNELL: the sch- makes a crisp sh sound.'
+      ),
+    ],
+  },
+
+  'german-politeness': {
+    id: 'german-politeness',
+    title: 'German Politeness & Courtesy',
+    theory: [
+      'German manners use clear, direct courtesy words. Entschuldigung (excuse me) opens questions to strangers or apologizes for small mishaps; Verzeihung is a slightly more formal variant.',
+      'Es tut mir leid expresses heartfelt sympathy or deep apology. Bitte means please and you are welcome; Danke schön (thank you very much) is answered warmly with Gern geschehen (gladly done) or Keine Ursache (no trouble).',
+    ],
+    questions: [
+      MCQ(
+        'You bump into someone at the train station. What do you say?',
+        'Entschuldigung',
+        ['Entschuldigung', 'Tschüss', 'Guten Appetit', 'Keine Ahnung'],
+        'Entschuldigung is the natural, universal apology for bumping into someone.'
+      ),
+      BUILD(
+        'Say “Excuse me, please”:',
+        ['Entschuldigung', 'bitte'],
+        ['bitte', 'Entschuldigung', 'Danke', 'Hallo'],
+        'Entschuldigung, bitte softens your entrance before asking a question.'
+      ),
+      MCQ(
+        '“Es tut mir leid” means…',
+        'I am sorry',
+        ['I am sorry', 'Thank you very much', 'You are welcome', 'Good evening'],
+        'Es tut mir leid literally means “It does sorrow to me”.'
+      ),
+      BUILD(
+        'Say “Thank you very much”:',
+        ['Danke', 'schön'],
+        ['schön', 'Danke', 'Sehr', 'Bitte'],
+        'Danke schön or Vielen Dank is the warm, standard thank-you.'
+      ),
+      MCQ(
+        'Someone says “Vielen Dank”. What is a friendly reply?',
+        'Gern geschehen',
+        ['Gern geschehen', 'Es tut mir leid', 'Entschuldigung', 'Auf Wiedersehen'],
+        'Gern geschehen (gladly done) or Bitte schön replies to thanks.'
+      ),
+      MATCH(
+        'Pair each German courtesy word with its meaning.',
+        [
+          { left: 'Entschuldigung', right: 'Excuse me' },
+          { left: 'Es tut mir leid', right: 'I am sorry' },
+          { left: 'Danke schön', right: 'Thank you very much' },
+          { left: 'Gern geschehen', right: 'My pleasure / gladly done' },
+          { left: 'Bitte schön', right: 'You are welcome' },
+        ],
+        'Entschuldigung gains attention, es tut mir leid apologizes, and gern geschehen answers thanks.'
+      ),
+      LISTEN(
+        'Listen and type the sincere German apology.',
+        'Es tut mir sehr leid',
+        ['Es tut mir sehr leid'],
+        'Sehr adds "very": Es tut mir sehr leid = I am very sorry.'
+      ),
+      SPEAK(
+        'Say “Excuse me” out loud in German.',
+        'Entschuldigung bitte',
+        'ent-SHOOL-dee-goong BIT-teh: articulate the three clear syllables.'
+      ),
+    ],
+  },
+
+  'german-introductions': {
+    id: 'german-introductions',
+    title: 'German Introductions & Origins',
+    theory: [
+      'Introduce yourself with Ich heiße... (My name is...) or Mein Name ist... (My name is...). Ask someone with Wie heißen Sie? (formal) or Wie heißt du? (casual).',
+      'Talk about origins with kommen aus: Woher kommen Sie? -> Ich komme aus Deutschland / Ich komme aus den USA. Residence uses wohnen in: Ich wohne in Berlin. Close an introduction politely with Freut mich (Pleased to meet you).',
+    ],
+    questions: [
+      MCQ(
+        '“Wie heißen Sie?” asks for…',
+        'Your name (formal)',
+        ['Your name (formal)', 'Your age', 'Where you live', 'Your country'],
+        'Wie heißen Sie? is the polite formal way to ask a stranger their name.'
+      ),
+      BUILD(
+        'Say “My name is Thomas”:',
+        ['Ich', 'heiße', 'Thomas'],
+        ['Thomas', 'Ich', 'heiße', 'Du', 'heißt'],
+        'Ich heiße + name is the most common German introduction.'
+      ),
+      MCQ(
+        '“Woher kommen Sie?” means…',
+        'Where do you come from?',
+        ['Where do you come from?', 'Where are you going?', 'Where do you work?', 'Where is the hotel?'],
+        'Woher = from where; kommen = to come; Sie = formal you.'
+      ),
+      BUILD(
+        'Say “I live in Berlin”:',
+        ['Ich', 'wohne', 'in', 'Berlin'],
+        ['Berlin', 'Ich', 'wohne', 'in', 'aus'],
+        'Wohnen + in + city: Ich wohne in Berlin.'
+      ),
+      MCQ(
+        'When introduced, someone says “Freut mich”. What does that mean?',
+        'Pleased to meet you',
+        ['Pleased to meet you', 'Goodbye', 'Good morning', 'Good night'],
+        'Freut mich (short for Es freut mich) = It pleases me / Pleased to meet you.'
+      ),
+      MATCH(
+        'Pair each introduction phrase with its role.',
+        [
+          { left: 'Ich heiße', right: 'Stating your name' },
+          { left: 'Ich komme aus', right: 'Stating where you are from' },
+          { left: 'Ich wohne in', right: 'Stating where you live' },
+          { left: 'Freut mich', right: 'Pleased to meet you' },
+          { left: 'Woher kommst du', right: 'Where are you from (casual)' },
+        ],
+        'Ich heiße gives your name, komme aus gives your homeland, and wohne in gives your town.'
+      ),
+      LISTEN(
+        'Listen and type the polite introduction greeting.',
+        'Sehr erfreut Sie kennenzulernen',
+        ['Sehr erfreut Sie kennenzulernen'],
+        'Sehr erfreut = very pleased; kennenzulernen = to get to know.'
+      ),
+      SPEAK(
+        'Say where you come from, out loud in German.',
+        'Ich komme aus Deutschland',
+        'ikh KOH-meh ows DOYTCH-lahnt: aus takes dative and Deutschland is Germany.'
+      ),
+    ],
+  },
+
+  'german-language': {
+    id: 'german-language',
+    title: 'German Languages & Understanding',
+    theory: [
+      'Ask about languages with sprechen: Sprechen Sie Englisch? (Do you speak English?) or casual Sprichst du Deutsch?. Answer with Ich spreche ein bisschen Deutsch (I speak a little German).',
+      'When overwhelmed by fast German, rescue yourself with: Ich verstehe nicht (I don’t understand), Können Sie das bitte wiederholen? (Can you please repeat that?), and Bitte sprechen Sie langsamer (Please speak slower).',
+    ],
+    questions: [
+      MCQ(
+        '“Ich verstehe nicht” means…',
+        'I do not understand',
+        ['I do not understand', 'I do not speak', 'I do not want', 'I do not hear'],
+        'Verstehen = to understand. Ich verstehe nicht saves any awkward moment.'
+      ),
+      BUILD(
+        'Ask “Do you speak English?” formally:',
+        ['Sprechen', 'Sie', 'Englisch'],
+        ['Englisch', 'Sprechen', 'Sie', 'Sprichst', 'du'],
+        'Sprechen Sie Englisch? — verb first for yes/no question, capital Sie for respect.'
+      ),
+      MCQ(
+        'You need someone to speak more slowly. What do you say?',
+        'Bitte sprechen Sie langsamer.',
+        ['Bitte sprechen Sie langsamer.', 'Bitte sprechen Sie schneller.', 'Ich verstehe alles.', 'Auf Wiedersehen.'],
+        'Langsam = slow; langsamer = slower.'
+      ),
+      BUILD(
+        'Say “I speak a little German”:',
+        ['Ich', 'spreche', 'ein', 'bisschen', 'Deutsch'],
+        ['Deutsch', 'Ich', 'spreche', 'ein', 'bisschen', 'viel'],
+        'Ein bisschen = a little bit. Ich spreche ein bisschen Deutsch.'
+      ),
+      MCQ(
+        '“Können Sie das bitte wiederholen?” asks…',
+        'Can you please repeat that?',
+        ['Can you please repeat that?', 'Can you please write that?', 'Can you speak louder?', 'Can you help me?'],
+        'Wiederholen = to repeat; können = modal verb can.'
+      ),
+      MATCH(
+        'Pair each language phrase with what it communicates.',
+        [
+          { left: 'Ich verstehe nicht', right: 'I do not understand' },
+          { left: 'Bitte langsamer', right: 'Speak slower' },
+          { left: 'Bitte wiederholen', right: 'Please repeat' },
+          { left: 'Ein bisschen', right: 'A little bit' },
+          { left: 'Sprechen Sie Englisch', right: 'Do you speak English' },
+        ],
+        'Ich verstehe nicht admits the gap; langsamer and wiederholen ask for adjustments.'
+      ),
+      LISTEN(
+        'Listen and type the polite request for slower speech in German.',
+        'Bitte sprechen Sie etwas langsamer',
+        ['Bitte sprechen Sie etwas langsamer'],
+        'Etwas = somewhat / a bit; langsamer = slower.'
+      ),
+      SPEAK(
+        'Say you speak a little German, out loud.',
+        'Ich spreche ein bisschen Deutsch',
+        'ikh SHPREH-kheh ayn BIS-khen DOYTCH: crisp and clear.'
+      ),
+    ],
+  },
+
+  'german-money': {
+    id: 'german-money',
+    title: 'German Shopping & Money',
+    theory: [
+      'In stores and bakeries, ask the price with Wie viel kostet das? (How much does that cost?) or Was kostet das?.',
+      'Assess prices with Das ist zu teuer (That is too expensive) or Das ist günstig (That is reasonably priced / good value). Payment: Kann ich mit Karte zahlen? (Can I pay with card?) or Bar zahlen (pay in cash). At a restaurant: Die Rechnung, bitte (The check, please).',
+    ],
+    questions: [
+      MCQ(
+        '“Wie viel kostet das?” asks…',
+        'How much does that cost?',
+        ['How much does that cost?', 'What is that called?', 'Where is that from?', 'Who made that?'],
+        'Wie viel = how much; kosten = to cost.'
+      ),
+      BUILD(
+        'Say “That is too expensive” in German:',
+        ['Das', 'ist', 'zu', 'teuer'],
+        ['teuer', 'Das', 'ist', 'zu', 'billig'],
+        'Zu = too (excessive); teuer = expensive. Billig = cheap.'
+      ),
+      MCQ(
+        'How do you ask “Can I pay by card?” in German?',
+        'Kann ich mit Karte zahlen?',
+        ['Kann ich mit Karte zahlen?', 'Haben Sie Kleingeld?', 'Wo ist der Geldautomat?', 'Kostet das extra?'],
+        'Karte = card; zahlen = to pay.'
+      ),
+      BUILD(
+        'Ask for the check at a German restaurant:',
+        ['Die', 'Rechnung', 'bitte'],
+        ['bitte', 'Die', 'Rechnung', 'Der', 'Kellner'],
+        'Die Rechnung, bitte = The check/bill, please.'
+      ),
+      MCQ(
+        '“Bar zahlen” means…',
+        'To pay with cash',
+        ['To pay with cash', 'To pay with card', 'To drink at the bar', 'To pay tomorrow'],
+        'Bar = cash in German: Barzahlung or bar zahlen.'
+      ),
+      MATCH(
+        'Pair each German shopping phrase with its meaning.',
+        [
+          { left: 'Wie viel kostet das', right: 'How much does that cost' },
+          { left: 'Zu teuer', right: 'Too expensive' },
+          { left: 'Mit Karte', right: 'With card' },
+          { left: 'Bar zahlen', right: 'Pay cash' },
+          { left: 'Die Rechnung bitte', right: 'The check please' },
+        ],
+        'Wie viel kostet asks the price, teuer assesses it, and die Rechnung asks to settle.'
+      ),
+      LISTEN(
+        'Listen and type the price question.',
+        'Was kostet das bitte',
+        ['Was kostet das bitte'],
+        'Was kostet das? is the everyday short form of Wie viel kostet das?.'
+      ),
+      SPEAK(
+        'Ask for the restaurant check, out loud in German.',
+        'Die Rechnung bitte',
+        'dee REKH-noong BIT-teh: polite, standard, and used in every German café or gasthaus.'
+      ),
+    ],
+  },
 };

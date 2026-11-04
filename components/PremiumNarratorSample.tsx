@@ -41,8 +41,8 @@ export default function PremiumNarratorSample({ playing, onToggle, className = '
         </Pressable>
       </View>
       <Text className="mt-1.5 text-[11px] leading-4 text-amber-900/80 dark:text-amber-100/80">
-        The licensed audiobook voice Premium uses, bundled on this device. Play it as often as you like — it uses no
-        TTS credits.
+        A fixed studio recording bundled on this device — play it as often as you like, it uses no TTS credits. The
+        narrator you choose reads the audiobook generated from your own uploads.
       </Text>
     </View>
   );

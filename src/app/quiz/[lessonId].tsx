@@ -15,8 +15,9 @@ import DuoButton from '../../../components/DuoButton';
 import AppIcon, { type AppIconName } from '../../../components/AppIcon';
 import AskBingo from '../../../components/AskBingo';
 import Mascot from '../../../components/AfricanMascots';
+import OutOfHeartsSheet from '../../../components/OutOfHeartsSheet';
 import { supabase, toDbLessonId } from '../../../lib/supabase';
-import { completeLesson, getProfile, MAX_HEARTS } from '../../../lib/progress';
+import { completeLesson, getProfile, grantHearts, loseHeart, MAX_HEARTS } from '../../../lib/progress';
 import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
 import { getLanguageLessonAsync, isLanguageLessonId } from '../../../lib/languageCatalog';
@@ -86,6 +87,9 @@ export default function QuizPlayer() {
   const [index, setIndex] = useState(0);
   const [hearts, setHearts] = useState(MAX_HEARTS);
   const [userId, setUserId] = useState<string | null>(null);
+  // Premium learners never lose hearts, so the refill sheet must never offer
+  // them an ad. The flag rides along with every profile read.
+  const [isPremium, setIsPremium] = useState(false);
   // One record per question: the first response and the latest practice
   // response. Guided lessons count the final answer; labs/exams count the
   // first, so retrying can never inflate mastery.
@@ -121,6 +125,7 @@ export default function QuizPlayer() {
       const rp = await getProfile();
       setUserId(rp?.id ?? null);
       setHearts(rp?.hearts ?? MAX_HEARTS);
+      setIsPremium(rp?.is_premium ?? false);
       if (!rp) {
         setQuestions([]);
         setReviewEmpty(true);
@@ -259,6 +264,7 @@ export default function QuizPlayer() {
     const p = await getProfile();
     setUserId(p?.id ?? null);
     setHearts(p?.hearts ?? MAX_HEARTS);
+    setIsPremium(p?.is_premium ?? false);
     // Kiki v3 loads its brain alongside the profile (best-effort, never blocks).
     void loadKiki(p?.id ?? null);
     // SRS injection: subtly weave up to 2 due memory cards from OTHER lessons
@@ -337,11 +343,54 @@ export default function QuizPlayer() {
     useCallback(() => {
       getProfile()
         .then((p) => {
-          if (p) setHearts(p.hearts);
+          if (p) {
+            setHearts(p.hearts);
+            setIsPremium(p.is_premium);
+          }
         })
         .catch(() => {});
     }, [])
   );
+
+  /**
+   * Spend a heart. Signed-in learners persist it through progress.ts (which
+   * waives the cost for Premium); guests keep a session-local count, exactly
+   * like the rest of guest mode.
+   */
+  const handleHeartLost = useCallback(async () => {
+    // Guests keep their hearts: there is no account to hold a refill, so
+    // charging them would dead-end the lesson (no ad reward, no regen).
+    if (!userId) return;
+    try {
+      const p = await loseHeart(userId);
+      setHearts(p.hearts);
+    } catch {
+      // Never break the lesson over a failed write: the learner keeps playing.
+    }
+  }, [userId]);
+
+  /** The rewarded video completed — persist the heart before closing the sheet. */
+  const grantHeart = useCallback(async () => {
+    if (!userId) {
+      setHearts((h) => Math.min(MAX_HEARTS, h + 1));
+      return;
+    }
+    try {
+      const p = await grantHearts(userId, 1);
+      setHearts(p.hearts);
+    } catch {
+      // The sheet stays open; the learner can retry or take the free refill.
+    }
+  }, [userId]);
+
+  // Zero hearts pauses the session behind the refill sheet: ad, 4-hour wait or
+  // Premium. Derived, never stored, so a refilled heart closes the sheet and a
+  // spent one reopens it with no extra state to keep in sync.
+  const outOfHearts = (questions?.length ?? 0) > 0 && hearts <= 0;
+
+  useEffect(() => {
+    if (outOfHearts) track('hearts_depleted', { lessonId });
+  }, [outOfHearts, lessonId]);
 
   const q = questions?.[index];
   // Sessions that contain a runnable or free-response exercise get coach copy
@@ -653,6 +702,7 @@ export default function QuizPlayer() {
             hearts={hearts}
             sessionKind={sessionKind}
             onHeartsChange={setHearts}
+            onHeartLost={handleHeartLost}
             onOutOfHearts={() => router.push('/refill')}
             onCorrect={() => {}}
             onAnswer={handleAnswer}
@@ -676,7 +726,7 @@ export default function QuizPlayer() {
                 isLanguageLesson
                   ? ['volume', 'Hear Livia', 'Livia pronounces the phrase in its native voice — tap 🐢 to hear it slowly. Bingo can read the question too.']
                   : ['play', 'Run tests', 'Check your code like a real dev — free, no hearts lost.'],
-                ['checkCircle', 'Check answer', 'Correct earns +10 XP. Wrong never costs hearts.'],
+                ['checkCircle', 'Check answer', 'Correct earns +10 XP. A wrong answer costs a heart — at zero, a short video gives one back.'],
               ].map(([icon, title, body]) => (
               <View key={title} className="mt-3 flex-row items-start">
                 <AppIcon name={icon as AppIconName} size={26} color="#0F172A" />
@@ -706,6 +756,15 @@ export default function QuizPlayer() {
         theory={lessonTheory}
         strongFirst={isLanguageLesson}
         userId={userId}
+      />
+      <OutOfHeartsSheet
+        visible={outOfHearts}
+        hearts={hearts}
+        isPremium={isPremium}
+        onEarned={grantHeart}
+        onClose={() => router.replace('/')}
+        onOpenAllOptions={() => router.push('/refill')}
+        onOpenPremium={() => router.push('/paywall')}
       />
       <StatusBar style="auto" />
     </View>

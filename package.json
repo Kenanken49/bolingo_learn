@@ -94,17 +94,24 @@
     "check:subtitles": "node scripts/check-subtitle-import.cjs",
     "check:rights": "node scripts/check-content-rights.cjs",
     "check:transcription": "node scripts/check-transcription-pipeline.cjs",
+    "check:uploads": "node scripts/check-upload-pipeline.cjs",
     "check:roleplay": "node scripts/check-roleplay-personas.cjs",
     "check:mpesa": "node scripts/check-mpesa.cjs",
     "gate": "node scripts/run-quality-gates.cjs",
     "gate:publish": "node scripts/run-quality-gates.cjs --publish",
     "check:quality-ops": "node scripts/check-quality-ops.cjs",
-    "test": "node scripts/check-celebration-duration.cjs && node scripts/check-celebration-benchmark.cjs && node scripts/check-results-celebration.cjs && node scripts/check-speak-back.cjs && node scripts/check-voice-casting.cjs && node scripts/check-cold-tts-session.cjs && node scripts/check-fliki-swahili.cjs && node scripts/check-audiobook-voice.cjs && node scripts/check-language-catalog.cjs && node scripts/check-curriculum-quality.cjs && node scripts/check-exercise-solutions.cjs && node scripts/check-transcript-import.cjs && node scripts/check-subtitle-import.cjs && node scripts/check-content-rights.cjs && node scripts/check-transcription-pipeline.cjs && node scripts/check-roleplay-personas.cjs && node scripts/check-mpesa.cjs && node scripts/check-labex.cjs && node scripts/check-labex-sandbox.cjs && node scripts/check-vm.cjs && node scripts/check-guided.cjs && node scripts/check-quality-ops.cjs",
+    "test": "node scripts/check-classics-audiobooks.cjs && node scripts/check-celebration-duration.cjs && node scripts/check-celebration-benchmark.cjs && node scripts/check-results-celebration.cjs && node scripts/check-speak-back.cjs && node scripts/check-voice-casting.cjs && node scripts/check-cold-tts-session.cjs && node scripts/check-fliki-swahili.cjs && node scripts/check-audiobook-voice.cjs && node scripts/check-character-voices.cjs && node scripts/check-language-catalog.cjs && node scripts/check-curriculum-quality.cjs && node scripts/check-exercise-solutions.cjs && node scripts/check-transcript-import.cjs && node scripts/check-subtitle-import.cjs && node scripts/check-content-rights.cjs && node scripts/check-transcription-pipeline.cjs && node scripts/check-upload-pipeline.cjs && node scripts/check-leaderboard-xp.cjs && node scripts/check-roleplay-personas.cjs && node scripts/check-mpesa.cjs && node scripts/check-labex.cjs && node scripts/check-labex-sandbox.cjs && node scripts/check-vm.cjs && node scripts/check-guided.cjs && node scripts/check-ads.cjs && node scripts/check-materials.cjs && node scripts/check-quality-ops.cjs && node scripts/check-web-publish.cjs",
     "import:labex": "node scripts/import-labex.cjs",
     "check:labex": "node scripts/check-labex.cjs",
     "check:vm": "node scripts/check-vm.cjs",
     "check:sandbox": "node scripts/check-labex-sandbox.cjs",
-    "check:guided": "node scripts/check-guided.cjs"
+    "check:guided": "node scripts/check-guided.cjs",
+    "check:leaderboard": "node scripts/check-leaderboard-xp.cjs",
+    "check:characters": "node scripts/check-character-voices.cjs",
+    "check:ads": "node scripts/check-ads.cjs",
+    "check:materials": "node scripts/check-materials.cjs",
+    "check:audiobooks": "node scripts/check-classics-audiobooks.cjs",
+    "check:web": "node scripts/check-web-publish.cjs"
   },
   "private": true
 }

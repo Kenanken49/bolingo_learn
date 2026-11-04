@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { setAudioModeAsync } from 'expo-audio';
+import * as Updates from 'expo-updates';
 import {
   useFonts,
   Roboto_400Regular,
@@ -11,6 +12,7 @@ import {
   Roboto_700Bold,
   Roboto_800ExtraBold,
 } from '@expo-google-fonts/roboto';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { cssInterop, useColorScheme } from 'nativewind';
 import Animated from 'react-native-reanimated';
 import { initTheme, useTheme } from '../../lib/theme';
@@ -18,9 +20,18 @@ import { configureReminderHandler, ensureReminderScheduled } from '../../lib/rem
 import { themeForPath } from '../../lib/jungle';
 import ExpeditionBackdrop from '../../components/jungle/ExpeditionBackdrop';
 import { initTelemetry, trackScreen } from '../../lib/telemetry';
+import { startAds } from '../../lib/adsRuntime';
+import { setStudioLinePlayer } from '../../lib/pronunciation';
+import { playStudioLine, stopStudioLine } from '../../lib/studioVoices';
 
 // Hold the splash until Roboto is ready — no FOUT swap from the OS face.
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+// Livia, Bingo and Zora speak on ElevenLabs when the character-voice function
+// answers, and on the device voice when it does not (offline, signed out,
+// Swahili, provider outage). Registering here means every screen that already
+// calls speakAs/speakSegments gets the studio voice with no per-screen change.
+setStudioLinePlayer(playStudioLine, stopStudioLine);
 
 // Reanimated's views skip NativeWind's automatic interop, which silently drops
 // className backgrounds on every Animated.View (combo banner, quiz feedback,
@@ -44,11 +55,17 @@ function ThemeSync() {
 }
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  // Icon fonts load here at boot, not lazily on first glyph: a slow network
+  // used to fetch FontAwesome mid-session and trip expo-font's 12s timeout
+  // into an uncaught red screen. Failures land in fontError (never thrown),
+  // so the splash still hides and the app stays usable with text fallbacks.
+  const [fontsLoaded, fontError] = useFonts({
     Roboto_400Regular,
     Roboto_600SemiBold,
     Roboto_700Bold,
     Roboto_800ExtraBold,
+    ...Ionicons.font,
+    ...MaterialCommunityIcons.font,
   });
   const pathname = usePathname();
   const habitat = themeForPath(pathname);
@@ -56,11 +73,26 @@ export default function RootLayout() {
   // effect runs, so there is no white flash on launch.
   const [theme] = useTheme();
   useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
-  }, [fontsLoaded]);
+    if (fontsLoaded || fontError) SplashScreen.hideAsync().catch(() => {});
+  }, [fontsLoaded, fontError]);
   // Ambient bed and audiobook both need to survive the iOS silent switch.
   useEffect(() => {
     setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
+  }, []);
+  // OTA live: production/preview builds check EAS Update on launch and
+  // apply JS-only updates instantly (native changes still need a rebuild).
+  useEffect(() => {
+    if (__DEV__) return;
+    (async () => {
+      try {
+        if (!Updates.isEnabled) return;
+        const check = await Updates.checkForUpdateAsync();
+        if (check.isAvailable) {
+          await Updates.fetchUpdateAsync();
+          await Updates.reloadAsync();
+        }
+      } catch {}
+    })();
   }, []);
   // Local reminders: foreground banner contract + one-time reconciliation so
   // an opted-in daily nudge survives restarts and OS schedule clears.
@@ -72,6 +104,11 @@ export default function RootLayout() {
   // The Settings opt-out clears the queue immediately (lib/telemetry.ts).
   useEffect(() => {
     void initTelemetry();
+  }, []);
+  // AdMob: UMP consent, then SDK init. Fire-and-forget — the rewarded hook
+  // holds its ad instance back until this resolves, so nothing loads early.
+  useEffect(() => {
+    void startAds();
   }, []);
   useEffect(() => {
     trackScreen(pathname);
@@ -107,10 +144,12 @@ export default function RootLayout() {
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="quiz/[lessonId]" />
+      <Stack.Screen name="revision/[uploadId]" />
       <Stack.Screen name="refill" options={{ presentation: 'modal' }} />
       <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
       <Stack.Screen name="auth" options={{ presentation: 'modal' }} />
       <Stack.Screen name="uploads" />
+      <Stack.Screen name="audiobooks" />
       <Stack.Screen name="settings" />
       <Stack.Screen name="admin" />
       <Stack.Screen name="results" />

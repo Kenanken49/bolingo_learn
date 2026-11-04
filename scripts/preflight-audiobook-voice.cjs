@@ -205,7 +205,7 @@ function usage() {
 
 Options:
   --json                  Print a machine-readable result
-  --allow-default-voice   Allow the built-in placeholder voice (demo only)
+  --allow-default-voice   Allow ElevenLabs' stock demo voice (demo only)
   --consent <file>        Completed, active cloned-voice consent record (JSON)
   --base-url <url>        Override the ElevenLabs API origin (tests only)
   --help                  Show this message
@@ -324,10 +324,10 @@ async function main() {
 
   if (
     !options.allowDefaultVoice &&
-    config.voiceId === voice.AUDIOBOOK_VOICE_DEFAULTS.voiceId
+    config.voiceId === voice.STOCK_DEMO_VOICE_ID
   ) {
     throw new Error(
-      'TTS_VOICE_ID is the built-in placeholder voice, not the licensed voice. ' +
+      'TTS_VOICE_ID is ElevenLabs\' stock demo voice, not the licensed narrator. ' +
         'Set the licensed id in .env.local (or pass --allow-default-voice for a demo-only run).'
     );
   }
