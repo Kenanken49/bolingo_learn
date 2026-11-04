@@ -9,7 +9,8 @@ import { PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import { useNatural } from '../../lib/natural';
 import AppIcon from '../../components/AppIcon';
 import AudiobookPlayer from '../../components/AudiobookPlayer';
-import type { AudioChapter } from '../../lib/audiobook';
+import { supabase } from '../../lib/supabase';
+import { loadLessonAudiobook, type Audiobook, type AudioChapter } from '../../lib/audiobook';
 import {
   CLASSICS,
   downloadBook,
@@ -74,6 +75,12 @@ export default function ClassicsLibrary() {
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [daily, setDaily] = useState<DailyDownload | null>(null);
+  // The learner's own generated books (uploads flagged audio-only, or any
+  // generated lesson with narration) — the play door the Library promises.
+  const [userBooks, setUserBooks] = useState<{ id: number; title: string }[]>([]);
+  const [userPlayer, setUserPlayer] = useState<Audiobook | null>(null);
+  const [userBusy, setUserBusy] = useState(false);
+  const [userNotice, setUserNotice] = useState<string | null>(null);
   const [reader, setReader] = useState<ReaderState | null>(null);
   const [player, setPlayer] = useState<PlayerState | null>(null);
   const statusToken = useRef(0);
@@ -106,6 +113,16 @@ export default function ClassicsLibrary() {
         try {
           const prof = await getProfile().catch(() => null);
           if (alive) setProfile(prof);
+          if (prof) {
+            const { data } = await supabase
+              .from('lessons')
+              .select('id,title')
+              .eq('user_id', prof.id)
+              .eq('is_user_generated', true)
+              .order('created_at', { ascending: false })
+              .limit(10);
+            if (alive) setUserBooks((data as { id: number; title: string }[] | null) ?? []);
+          }
         } catch {}
         await refreshStatuses().catch(() => {});
         try {
@@ -149,6 +166,20 @@ export default function ClassicsLibrary() {
     if (isPremium) return true;
     setNotice(`Philosophy Classics is a Premium perk (${PREMIUM_PRICE_LABEL}). Your downloads and offline shelf unlock with Premium.`);
     return false;
+  };
+
+  const openUserBook = async (lessonId: number, title: string) => {
+    setUserBusy(true);
+    setUserNotice(null);
+    try {
+      const book = await loadLessonAudiobook(lessonId);
+      if (!book) throw new Error('This book has no audio yet — generation may still be running.');
+      setUserPlayer(book);
+    } catch (e) {
+      setUserNotice(`${title}: ${String(e instanceof Error ? e.message : e)}`);
+    } finally {
+      setUserBusy(false);
+    }
   };
 
   const openReader = async (book: ClassicBook) => {
@@ -517,6 +548,49 @@ export default function ClassicsLibrary() {
           contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
+          {userBooks.length > 0 ? (
+            <>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 6, marginBottom: 2 }}>
+                <AppIcon name="headset" size={16} color={p.moss} />
+                <Text style={{ fontSize: 15, fontWeight: '800', color: p.ink }}>Your audiobooks</Text>
+              </View>
+              <Text style={{ fontSize: 11.5, fontWeight: '600', color: p.muted, marginBottom: 2 }}>
+                {userBooks.length} generated from your uploads · tap to listen
+              </Text>
+              {userBooks.map((b) => (
+                <Pressable
+                  key={`user-${b.id}`}
+                  onPress={() => void openUserBook(b.id, b.title)}
+                  disabled={userBusy}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Play ${b.title}`}
+                  style={{
+                    marginTop: 6,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 10,
+                    borderRadius: 14,
+                    borderWidth: 1,
+                    borderColor: p.line,
+                    backgroundColor: p.surface,
+                    paddingVertical: 10,
+                    paddingHorizontal: 12,
+                    opacity: userBusy ? 0.6 : 1,
+                  }}
+                >
+                  <View style={{ width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: p.moss }}>
+                    <AppIcon name="play" size={17} color="#0D120B" />
+                  </View>
+                  <Text numberOfLines={1} style={{ flex: 1, fontSize: 13.5, fontWeight: '700', color: p.ink }}>
+                    {b.title}
+                  </Text>
+                </Pressable>
+              ))}
+              {userNotice ? (
+                <Text style={{ marginTop: 6, fontSize: 12, fontWeight: '600', color: p.muted }}>{userNotice}</Text>
+              ) : null}
+            </>
+          ) : null}
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 6, marginBottom: 2 }}>
             <AppIcon name="headset" size={16} color={p.moss} />
             <Text style={{ fontSize: 15, fontWeight: '800', color: p.ink }}>Listen to Audiobook Mode</Text>
@@ -552,6 +626,41 @@ export default function ClassicsLibrary() {
             <Text style={{ fontSize: 12, fontWeight: '600', color: p.muted }}>{notice}</Text>
           </View>
         ) : null}
+
+        <Modal visible={userPlayer !== null} animationType="slide" onRequestClose={() => setUserPlayer(null)}>
+          <SafeAreaView style={{ flex: 1, backgroundColor: p.isDark ? '#010603' : '#F3F7EE' }} edges={['top', 'bottom']}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
+              <Pressable
+                onPress={() => setUserPlayer(null)}
+                accessibilityRole="button"
+                accessibilityLabel="Close player"
+                style={{ width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: p.surface, borderWidth: 1, borderColor: p.line }}
+              >
+                <AppIcon name="close" size={17} color={p.ink} />
+              </Pressable>
+              <View style={{ flex: 1 }}>
+                <Text numberOfLines={1} style={{ fontSize: 15, fontWeight: '800', color: p.ink }}>
+                  Now playing
+                </Text>
+                <Text style={{ fontSize: 11, fontWeight: '600', color: p.muted }}>
+                  {userPlayer ? userPlayer.title : ''}
+                </Text>
+              </View>
+            </View>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 16, paddingBottom: 40 }}>
+              {userPlayer ? (
+                <AudiobookPlayer
+                  key={`user-${userPlayer.lesson_id}`}
+                  title={userPlayer.title}
+                  segments={userPlayer.segments}
+                  chapters={userPlayer.chapters}
+                  fullUrl={userPlayer.full_audio_url}
+                  onClose={() => setUserPlayer(null)}
+                />
+              ) : null}
+            </ScrollView>
+          </SafeAreaView>
+        </Modal>
 
         <Modal visible={player !== null} animationType="slide" onRequestClose={() => setPlayer(null)}>
           <SafeAreaView style={{ flex: 1, backgroundColor: p.isDark ? '#010603' : '#F3F7EE' }} edges={['top', 'bottom']}>

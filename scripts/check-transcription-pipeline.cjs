@@ -30,7 +30,8 @@ const ts = require('typescript');
 const ROOT = path.resolve(__dirname, '..');
 const MODULE = path.join(ROOT, 'supabase', 'functions', '_shared', 'transcription.ts');
 const EDGE_FUNCTION = path.join(ROOT, 'supabase', 'functions', 'process-upload', 'index.ts');
-const UI = path.join(ROOT, 'src', 'app', 'index.tsx');
+// The AI Sandbox creator lives on the My uploads screen (Library hub).
+const UI = path.join(ROOT, 'src', 'app', 'uploads.tsx');
 const SCHEMA = path.join(ROOT, 'supabase', 'schema.sql');
 const MIGRATION = path.join(ROOT, 'supabase', 'migrations_transcription.sql');
 const DOC = path.join(ROOT, 'docs', 'transcription.md');

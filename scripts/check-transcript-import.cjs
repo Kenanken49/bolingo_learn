@@ -47,12 +47,13 @@ const expectedJson = `${JSON.stringify(drafts, null, 2)}\n`;
 let actualJson = '';
 let actualSql = '';
 try {
-  actualJson = fs.readFileSync(paths.json, 'utf8');
+  // Line-ending agnostic: checkouts may carry CRLF while the generator emits LF.
+  actualJson = fs.readFileSync(paths.json, 'utf8').replace(/\r?\n/g, '\n');
 } catch {
   fail(`${path.relative(ROOT, paths.json)} is missing — run the transcript importer.`);
 }
 try {
-  actualSql = fs.readFileSync(paths.sql, 'utf8');
+  actualSql = fs.readFileSync(paths.sql, 'utf8').replace(/\r?\n/g, '\n');
 } catch {
   fail(`${path.relative(ROOT, paths.sql)} is missing — run the transcript importer.`);
 }

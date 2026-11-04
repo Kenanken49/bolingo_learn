@@ -28,7 +28,8 @@ const LIB = path.join(ROOT, 'lib', 'classicsAudiobooks.ts');
 const DAILY = path.join(ROOT, 'lib', 'classicsDailyLimit.ts');
 const SCREEN = path.join(ROOT, 'src', 'app', 'audiobooks.tsx');
 const LAYOUT = path.join(ROOT, 'src', 'app', '_layout.tsx');
-const HOME = path.join(ROOT, 'src', 'app', 'index.tsx');
+// The shelf entry lives in the Library hub, not the dashboard home.
+const HOME = path.join(ROOT, 'src', 'app', 'library.tsx');
 const DOCS = path.join(ROOT, 'docs', 'classics-audiobooks.md');
 const GATES = path.join(ROOT, 'content', 'quality', 'gates.json');
 const PACKAGE = path.join(ROOT, 'package.json');
@@ -200,8 +201,8 @@ check('The screen renders LoyalBooks categories and gates premium', () => {
 
 check('The route, home entry, icons and registrations exist', () => {
   assert(read(LAYOUT).includes('name="audiobooks"'), 'the route must be registered in _layout.tsx');
-  assert(read(HOME).includes("router.push('/audiobooks')"), 'the home path must link the classics shelf');
-  assert(read(HOME).includes('Philosophy Classics'), 'the home entry must name the shelf');
+  assert(read(HOME).includes("router.push('/audiobooks')"), 'the Library hub must link the classics shelf');
+  assert(read(HOME).includes('Audiobooks'), 'the Library entry must name the shelf');
   assert(/download:\s*\{[^}]*cloud-download/.test(read(APPICON)), 'AppIcon must ship a download glyph');
   assert(fs.existsSync(DOCS), 'docs/classics-audiobooks.md is missing');
   const docs = read(DOCS);

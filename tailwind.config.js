@@ -44,6 +44,31 @@ module.exports = {
         sans: ['Roboto_400Regular', 'Roboto', 'system-ui', 'sans-serif'],
       },
       colors: {
+        // Dashboard wireframe palette (light-first). `dash` names the
+        // wireframe's surfaces; every screen under the new IA uses these
+        // with `dark:` variants for the toggle's dark appearance.
+        dash: {
+          bg: '#F8F9FC',
+          card: '#FFFFFF',
+          ink: '#0F172A',
+          muted: '#64748B',
+          faint: '#94A3B8',
+          line: '#E8EAF0',
+          pill: '#E0F2FE',
+          pillink: '#0284C7',
+          hero: '#111827',
+          cyan: '#22D3EE',
+          deepcyan: '#06B6D4',
+          gold: '#92400E',
+          goldbg: '#FEF3C7',
+          lav: '#F5F3FF',
+          // Dark appearance of the same surfaces.
+          dink: '#F1F5F9',
+          dmuted: '#94A3B8',
+          dcard: '#131A29',
+          dbg: '#0B0F1A',
+          dline: '#232D45',
+        },
         // True-black OLED neutrals. 950 is #000 so `dark:bg-slate-950` is
         // actually off pixels, not blue-black; 900 is the raised panel.
         slate: {

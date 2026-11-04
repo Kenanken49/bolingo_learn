@@ -1,17 +1,16 @@
 import { useSyncExternalStore } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-/**
- * Platform appearance. QD-OLED (true black + quantum-dot colour) is the
- * product default; Light stays available as an accessibility option.
+import AsyncStorage from '@react-native-async-storage/async-storage';/**
+ * Platform appearance. The dashboard redesign ships light-first (matching
+ * the approved wireframe); Dark stays available via the sun/moon toggle.
  */
+
 export type ThemeName = 'light' | 'dark';
 
-// New key: the QD-OLED redesign ships as the default, so an older saved
-// light choice must not keep the old palette on upgraded installs.
-const KEY = 'bolingo.theme.qdoled';
+// New key: the dashboard redesign ships light, so an older saved choice
+// must not keep a previous palette on upgraded installs.
+const KEY = 'bolingo.theme.dashboard';
 
-let current: ThemeName = 'dark';
+let current: ThemeName = 'light';
 const listeners = new Set<() => void>();
 
 function emit() {

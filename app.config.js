@@ -42,7 +42,7 @@ module.exports = ({ config }) => ({
   // QD-OLED is the default, but Light remains a supported appearance.
   userInterfaceStyle: 'automatic',
   splash: {
-    backgroundColor: '#000000',
+    backgroundColor: '#F8F9FC',
     resizeMode: 'contain',
   },
   runtimeVersion: { policy: 'appVersion' },
@@ -81,7 +81,7 @@ module.exports = ({ config }) => ({
     favicon: './assets/favicon.png',
     bundler: 'metro',
     themeColor: '#000000',
-    backgroundColor: '#000000',
+    backgroundColor: '#F8F9FC',
   },
   plugins: [
     'expo-router',

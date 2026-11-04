@@ -29,7 +29,9 @@ const CHEST_GATE = path.join(ROOT, 'lib', 'chestGate.ts');
 const CHEST_REWARDS = path.join(ROOT, 'lib', 'chestRewards.ts');
 const STREAK = path.join(ROOT, 'lib', 'streak.ts');
 const SCREEN = path.join(ROOT, 'src', 'app', 'results.tsx');
-const PATH_SCREEN = path.join(ROOT, 'src', 'app', 'index.tsx');
+// The unit chest lives on the curriculum unit screen (its capstone moment),
+// not the dashboard home.
+const PATH_SCREEN = path.join(ROOT, 'src', 'app', 'curriculum', '[unitId].tsx');
 const CHEST_OPENING = path.join(ROOT, 'components', 'ChestOpening.tsx');
 
 let failures = 0;
@@ -207,7 +209,7 @@ const chestWiring = [
     () =>
       assert.match(
         pathScreen,
-        /import \{ canClaimChest, shouldCelebrateChest, type ChestClaim \} from '\.\.\/\.\.\/lib\/chestGate';/
+        /import \{ canClaimChest, shouldCelebrateChest, type ChestClaim \} from '\.\.\/\.\.\/\.\.\/lib\/chestGate';/
       ),
   ],
   [
@@ -224,8 +226,16 @@ const chestWiring = [
     'the rolled reward is persisted before the award is shown',
     () => {
       const rollAt = pathScreen.indexOf('const reward = rollChestReward();');
-      const writeAt = pathScreen.indexOf(
-        "await completeLesson(profile.id, reward.kind === 'xp' ? reward.amount : 0, id, {"
+      // The unit screen pays out for the unit owner (unitUserId); the old
+      // path screen used the loaded profile — either identifier is fine as
+      // long as the roll precedes the write.
+      const writeAt = Math.max(
+        pathScreen.indexOf(
+          "await completeLesson(profile.id, reward.kind === 'xp' ? reward.amount : 0, id, {"
+        ),
+        pathScreen.indexOf(
+          "await completeLesson(unitUserId, reward.kind === 'xp' ? reward.amount : 0, id, {"
+        )
       );
       const awardAt = pathScreen.indexOf('setChestClaim({ ...claim, awarded: true });');
       assert.ok(rollAt >= 0, 'the claim must roll a reward');

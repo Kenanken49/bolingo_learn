@@ -2,11 +2,25 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Pressable, ScrollView, ActivityIndicator, Alert, Platform } from 'react-native';
 import Text from '../../components/ui/Text';
 import { router, useFocusEffect } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import Shell from '../../components/dashboard/Shell';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+import { readAsStringAsync, EncodingType } from 'expo-file-system/legacy';
+import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../lib/supabase';
 import { getProfile, type Profile } from '../../lib/progress';
-import { isMediaUpload } from '../../lib/contentRights';
+import { uploadRawFile, waitForUploadReady } from '../../lib/uploads';
+import {
+  CONTENT_RIGHTS_ITEMS,
+  CONTENT_RIGHTS_REQUIRED_MESSAGE,
+  buildContentRightsAttestation,
+  isMediaUpload,
+  type ContentRightsChecks,
+  type ContentRightsItemId,
+} from '../../lib/contentRights';
+import { FREE_WORD_LIMIT, PREMIUM_PRICE_LABEL } from '../../lib/tiers';
 import AppIcon from '../../components/AppIcon';
+import WebCameraCapture from '../../components/WebCameraCapture';
 
 interface Upload {
   id: string;
@@ -79,6 +93,144 @@ export default function Uploads() {
   const [audiobookOnlyIds, setAudiobookOnlyIds] = useState<Set<string>>(new Set());
   const [pendingName, setPendingName] = useState<string | null>(null);
   const [clearing, setClearing] = useState(false);
+  // AI Sandbox creator: picking, scanning and uploading live here now — the
+  // Library hub owns the whole upload journey, list included.
+  const [picked, setPicked] = useState<{ uri: string; name: string; mime: string } | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [rightsChecks, setRightsChecks] = useState<ContentRightsChecks>({});
+  const [sandboxMsg, setSandboxMsg] = useState<string | null>(null);
+  const [webCameraOpen, setWebCameraOpen] = useState(false);
+
+  const isPremium = profile?.is_premium === true;
+  const pickedIsMedia = picked ? isMediaUpload(picked.name, picked.mime) : false;
+  const rightsComplete =
+    !pickedIsMedia || CONTENT_RIGHTS_ITEMS.every((item) => rightsChecks[item.id] === true);
+
+  const toggleRightsItem = (id: ContentRightsItemId) => {
+    setRightsChecks((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const pickFile = async () => {
+    try {
+      const res = await DocumentPicker.getDocumentAsync({
+        // Free tier: raw text only. Premium unlocks PDF, text, CSV, photo Scan
+        // and consented audio/video transcription.
+        type: isPremium
+          ? ['application/pdf', 'text/*', 'image/*', 'audio/*', 'video/*']
+          : ['text/*'],
+        copyToCacheDirectory: true,
+      });
+      if (res.canceled) return;
+      const a = res.assets[0];
+      setPicked({ uri: a.uri, name: a.name ?? 'upload', mime: a.mimeType ?? 'application/octet-stream' });
+      setRightsChecks({});
+      setSandboxMsg(null);
+    } catch (e) {
+      setSandboxMsg(String(e instanceof Error ? e.message : e));
+    }
+  };
+
+  // Scan names its captures after the minute they were taken so a learner's
+  // history stays readable.
+  const scannedName = () => {
+    const stamp = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '');
+    return `Scanned-notes-${stamp}.jpg`;
+  };
+
+  // Premium Scan: snap notes with the camera (or pick a gallery photo) and
+  // Bingo OCRs + curates a revision node through the normal pipeline — the
+  // picked photo flows into uploadPicked() unchanged.
+  const scanNotes = async (source: 'camera' | 'library') => {
+    if (!isPremium) {
+      setSandboxMsg(`Scan is a Premium perk (${PREMIUM_PRICE_LABEL}) — snap your notes and Bingo builds the revision node.`);
+      return;
+    }
+    // A desktop browser has no camera through the picker module (it hands back
+    // a file dialog), so open the real webcam stream instead.
+    if (source === 'camera' && Platform.OS === 'web') {
+      setWebCameraOpen(true);
+      return;
+    }
+    try {
+      const perm =
+        source === 'camera'
+          ? await ImagePicker.requestCameraPermissionsAsync()
+          : await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!perm.granted) {
+        setSandboxMsg('Photo permission denied — allow access in system settings, then try again.');
+        return;
+      }
+      const launcher = source === 'camera' ? ImagePicker.launchCameraAsync : ImagePicker.launchImageLibraryAsync;
+      const res = await launcher({ mediaTypes: ['images'], quality: 0.7, exif: false });
+      if (res.canceled) return;
+      const a = res.assets[0];
+      setPicked({ uri: a.uri, name: scannedName(), mime: 'image/jpeg' });
+      setSandboxMsg(null);
+    } catch (e) {
+      setSandboxMsg(String(e instanceof Error ? e.message : e));
+    }
+  };
+
+  const uploadPicked = async () => {
+    if (!profile) {
+      setSandboxMsg('Sign in first — uploads are tagged to your account.');
+      return;
+    }
+    if (!picked) {
+      setSandboxMsg('Pick a file first — PDF, text, photo, audio or video.');
+      return;
+    }
+    const media = isMediaUpload(picked.name, picked.mime);
+    const attestation = media ? buildContentRightsAttestation(rightsChecks) : null;
+    if (media && !attestation) {
+      setSandboxMsg(CONTENT_RIGHTS_REQUIRED_MESSAGE);
+      return;
+    }
+    setUploading(true);
+    setSandboxMsg(null);
+    try {
+      // expo-file-system has no web implementation — read blob: URIs with fetch instead.
+      let bytes: Uint8Array;
+      if (Platform.OS === 'web') {
+        const buf = await (await fetch(picked.uri)).arrayBuffer();
+        bytes = new Uint8Array(buf);
+      } else {
+        const b64 = await readAsStringAsync(picked.uri, { encoding: EncodingType.Base64 });
+        bytes = new Uint8Array(decode(b64));
+      }
+      // Some cloud-backed picker URIs copy across as 0 bytes (Google Drive and
+      // Downloads are the usual offenders). Say so before creating a row that
+      // can only fail server-side.
+      if (bytes.byteLength === 0) {
+        setSandboxMsg(
+          'That file came through empty (0 bytes). Open it once in another app, then share/save it to the device and pick it again.'
+        );
+        return;
+      }
+      const upload = await uploadRawFile(bytes, picked.name, picked.mime, {
+        rightsAttestation: attestation,
+      });
+      setPicked(null);
+      setRightsChecks({});
+      setSandboxMsg('Uploaded! The AI is generating your custom path node…');
+      refresh();
+      // Wait for the pipeline, then surface the finished node.
+      waitForUploadReady(upload.id)
+        .then((finished) => {
+          setSandboxMsg(
+            finished.status === 'failed'
+              ? finished.error ?? 'Generation hit an error — check the node status below.'
+              : 'Your custom revision node is ready!'
+          );
+          refresh();
+        })
+        .catch(() => setSandboxMsg('Generation hit an error — check the node status below.'));
+    } catch (e) {
+      setSandboxMsg(String(e instanceof Error ? e.message : e));
+    } finally {
+      setUploading(false);
+    }
+  };
   const pendingRef = useRef<PendingDelete | null>(null);
   const commitRef = useRef<(u: Upload, userId: string) => void>(() => {});
 
@@ -348,13 +500,135 @@ export default function Uploads() {
   };
 
   return (
-    <View className="flex-1">
+    <Shell active="/library" eyebrow="Library" greeting="My uploads" profile={profile}>
+      <View className="flex-1">
       <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
         <View className="flex-row items-center gap-2">
           <AppIcon name="book" size={26} color="#0F172A" />
           <Text className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">My uploads</Text>
         </View>
         <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">Every file you’ve sent to the AI Sandbox.</Text>
+
+        {/* AI Sandbox creator: pick, scan, confirm rights, generate. */}
+        <View className="mt-4 w-full max-w-sm rounded-3xl border border-dash-line bg-dash-card p-4 dark:border-dash-dline dark:bg-dash-dcard">
+          <View className="flex-row items-center gap-2">
+            <View className="h-9 w-9 items-center justify-center rounded-xl bg-dash-pill dark:bg-dash-dbg">
+              <AppIcon name="brain" size={19} color="#0284C7" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-[15px] font-extrabold text-dash-ink dark:text-dash-dink">New upload</Text>
+              <Text className="text-[10.5px] font-semibold text-dash-muted dark:text-dash-dmuted">
+                {isPremium
+                  ? `PDF · text · photo · audio · video — Bingo builds a revision node.`
+                  : `Free tier: text files up to ${FREE_WORD_LIMIT} words. Premium (${PREMIUM_PRICE_LABEL}) adds PDFs, scans, audio/video.`}
+              </Text>
+            </View>
+          </View>
+          <Pressable
+            onPress={() => void pickFile()}
+            accessibilityRole="button"
+            accessibilityLabel="Pick a file to upload"
+            className="mt-3 items-center rounded-2xl border-2 border-dashed border-dash-line bg-dash-bg py-4 dark:border-dash-dline dark:bg-dash-dbg"
+          >
+            <AppIcon name="upload" size={26} color="#94A3B8" />
+            <Text className="mt-1 text-[13px] font-extrabold text-dash-ink dark:text-dash-dink">Tap to pick a file</Text>
+            <Text className="text-[10.5px] font-semibold text-dash-muted dark:text-dash-dmuted">
+              {isPremium ? 'PDF · TXT · Photo · Audio · Video' : 'TXT · MD · CSV (Free)'}
+            </Text>
+          </Pressable>
+          {isPremium ? (
+            <View className="mt-2 flex-row gap-2">
+              <Pressable
+                onPress={() => void scanNotes('camera')}
+                accessibilityRole="button"
+                accessibilityLabel="Scan notes with camera"
+                className="flex-1 items-center rounded-xl bg-dash-cyan py-2.5"
+              >
+                <Text className="text-[12px] font-extrabold text-[#062A33]">Take photo</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => void scanNotes('library')}
+                accessibilityRole="button"
+                accessibilityLabel="Pick a photo from gallery"
+                className="flex-1 items-center rounded-xl border border-dash-line py-2.5 dark:border-dash-dline"
+              >
+                <Text className="text-[12px] font-extrabold text-dash-pillink">From gallery</Text>
+              </Pressable>
+            </View>
+          ) : null}
+          {picked ? (
+            <View className="mt-2 rounded-xl border border-dash-line bg-dash-bg p-2.5 dark:border-dash-dline dark:bg-dash-dbg">
+              <Text numberOfLines={1} className="text-[12px] font-bold text-dash-ink dark:text-dash-dink">
+                {picked.name}
+              </Text>
+              <Text className="text-[10px] font-semibold text-dash-muted dark:text-dash-dmuted">{picked.mime}</Text>
+            </View>
+          ) : null}
+          {pickedIsMedia ? (
+            <View className="mt-2 rounded-2xl border border-dash-line bg-dash-bg p-3 dark:border-dash-dline dark:bg-dash-dbg">
+              <View className="flex-row items-center gap-2">
+                <AppIcon name="shield" size={16} color="#B45309" />
+                <Text className="flex-1 text-[12px] font-extrabold text-dash-ink dark:text-dash-dink">
+                  Content rights
+                </Text>
+                <Text className={`text-[9.5px] font-extrabold ${rightsComplete ? 'text-emerald-500' : 'text-red-500'}`}>
+                  {rightsComplete ? 'CONFIRMED' : 'REQUIRED'}
+                </Text>
+              </View>
+              <Text className="mt-1 text-[10.5px] font-semibold leading-[15px] text-dash-muted dark:text-dash-dmuted">
+                Audio and video need confirmed rights before the AI can transcribe and narrate them.
+              </Text>
+              {CONTENT_RIGHTS_ITEMS.map((item) => {
+                const checked = rightsChecks[item.id] === true;
+                return (
+                  <Pressable
+                    key={item.id}
+                    onPress={() => toggleRightsItem(item.id)}
+                    accessibilityRole="checkbox"
+                    accessibilityLabel={item.label}
+                    accessibilityState={{ checked }}
+                    className="mt-2 flex-row items-start gap-2"
+                  >
+                    <View
+                      className={`mt-0.5 h-[18px] w-[18px] items-center justify-center rounded-[5px] border ${checked ? 'border-dash-pillink bg-dash-pillink' : 'border-dash-line bg-transparent dark:border-dash-dline'}`}
+                    >
+                      {checked ? <AppIcon name="check" size={12} color="#FFFFFF" /> : null}
+                    </View>
+                    <Text className="flex-1 text-[10.8px] font-semibold leading-[15px] text-dash-ink dark:text-dash-dink">
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+              {!rightsComplete ? (
+                <Text className="mt-2 text-[10px] font-bold text-red-500">
+                  Confirm every item to unlock upload.
+                </Text>
+              ) : null}
+            </View>
+          ) : null}
+          <Pressable
+            onPress={() => void uploadPicked()}
+            disabled={uploading || (pickedIsMedia && !rightsComplete)}
+            accessibilityRole="button"
+            accessibilityLabel={pickedIsMedia && !rightsComplete ? 'Confirm rights to upload' : 'Generate my node'}
+            className="mt-3 items-center rounded-2xl bg-dash-cyan py-3"
+            style={{ opacity: uploading ? 0.5 : pickedIsMedia && !rightsComplete ? 0.45 : 1 }}
+          >
+            {uploading ? (
+              <ActivityIndicator color="#062A33" />
+            ) : (
+              <Text className="text-[13.5px] font-extrabold text-[#062A33]">
+                {pickedIsMedia && !rightsComplete ? 'Confirm rights to upload' : 'Generate my node'}
+              </Text>
+            )}
+          </Pressable>
+          {sandboxMsg ? (
+            <Text className="mt-2 text-center text-[11.5px] font-semibold text-dash-muted dark:text-dash-dmuted">
+              {sandboxMsg}
+            </Text>
+          ) : null}
+        </View>
         {uploads.some((x) => x.status === 'failed') && (
           <Pressable onPress={clearFailed} disabled={clearing} className="mt-3 rounded-2xl bg-red-50 dark:bg-red-950 px-4 py-2">
             <View className="flex-row items-center justify-center gap-1.5">
@@ -470,11 +744,24 @@ export default function Uploads() {
           </View>
         )}
 
-        <Pressable onPress={() => router.replace('/')} className="mt-4 items-center">
-          <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
+        <Pressable onPress={() => router.replace('/library')} className="mt-4 items-center">
+          <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Library</Text>
         </Pressable>
-        <StatusBar style="auto" />
       </ScrollView>
+      <WebCameraCapture
+        visible={webCameraOpen}
+        onClose={() => setWebCameraOpen(false)}
+        onCaptured={(dataUrl) => {
+          setPicked({ uri: dataUrl, name: scannedName(), mime: 'image/jpeg' });
+          setRightsChecks({});
+          setSandboxMsg(null);
+          setWebCameraOpen(false);
+        }}
+        onChooseFile={() => {
+          setWebCameraOpen(false);
+          void scanNotes('library');
+        }}
+      />
       {pendingName ? (
         <View className="absolute bottom-6 left-0 right-0 items-center px-4">
           <View className="w-full max-w-md flex-row items-center gap-3 rounded-2xl bg-slate-900 px-4 py-3 dark:bg-slate-100">
@@ -493,6 +780,7 @@ export default function Uploads() {
           </View>
         </View>
       ) : null}
-    </View>
+      </View>
+    </Shell>
   );
 }

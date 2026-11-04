@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { getProfile } from '../../../lib/progress';
-import { View, Pressable, ScrollView } from 'react-native';
+import { completeLesson, getCompletedLessonIds, getProfile } from '../../../lib/progress';
+import { Alert, View, Pressable, ScrollView } from 'react-native';
+import { canClaimChest, shouldCelebrateChest, type ChestClaim } from '../../../lib/chestGate';
+import { chestRewardLabel, rollChestReward, type ChestReward } from '../../../lib/chestRewards';
+import ChestOpening from '../../../components/ChestOpening';
+import Celebration, { FULL_CELEBRATION_MS } from '../../../components/Celebration';
+import { playCelebration } from '../../../lib/sfx';
 import Text from '../../../components/ui/Text';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -22,9 +27,55 @@ export default function CurriculumUnit() {
   const unit = useMemo(() => CURRICULUM.find((u) => u.id === unitId) ?? CURRICULUM[0], [unitId]);
   const [open, setOpen] = useState<Record<string, boolean>>({ 'Learn the theory': true });
   const [unitUserId, setUnitUserId] = useState<string | null>(null);
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  // Unit chest ceremony: the claim is awarded only for a finished unit, so
+  // the opening and the storm can never celebrate an incomplete claim.
+  const [chestClaim, setChestClaim] = useState<ChestClaim | null>(null);
+  const [chestReward, setChestReward] = useState<ChestReward | null>(null);
+  const [chestWin, setChestWin] = useState<string | null>(null);
+  const [chestPhase, setChestPhase] = useState<'opening' | 'storm'>('opening');
   useEffect(() => {
-    getProfile().then((p) => setUnitUserId(p?.id ?? null)).catch(() => {});
+    getProfile()
+      .then((p) => {
+        setUnitUserId(p?.id ?? null);
+        if (p) getCompletedLessonIds(p.id).then(setCompleted).catch(() => {});
+      })
+      .catch(() => {});
   }, []);
+
+  const isBlockDone = (b: { id: string; lessonId: string }) =>
+    completed.has(b.lessonId) || completed.has(b.id);
+  const chestRewardText = chestReward ? chestRewardLabel(chestReward) : '';
+
+  // Variable reward, one-shot per unit (tracked as a completion so it
+  // survives reinstalls and syncs across devices like everything else).
+  const claimChest = async () => {
+    const id = `chest:${unit.id}`;
+    if (!unitUserId) {
+      router.push('/auth');
+      return;
+    }
+    const claim = {
+      unitComplete: unit.blocks.every(isBlockDone),
+      alreadyClaimed: completed.has(id),
+    };
+    if (!canClaimChest(claim)) return;
+    const reward = rollChestReward();
+    try {
+      await completeLesson(unitUserId, reward.kind === 'xp' ? reward.amount : 0, id, {
+        gems: reward.kind === 'gems' ? reward.amount : 0,
+        streakFreezes: reward.kind === 'streak_freeze' ? reward.amount : 0,
+      });
+      setChestClaim({ ...claim, awarded: true });
+      setChestReward(reward);
+      setChestPhase('opening');
+      setChestWin(unit.title);
+      const done = await getCompletedLessonIds(unitUserId).catch(() => null);
+      if (done) setCompleted(done);
+    } catch {
+      Alert.alert('Claim failed', 'Check your connection and try again.');
+    }
+  };
 
   if (!unit) {
     return (
@@ -190,8 +241,61 @@ export default function CurriculumUnit() {
           <AppIcon name="next" size={20} color="#FFFFFF" />
         </View>
       </Pressable>
+      {/* Unit chest: finishing every block unlocks one variable roll. */}
+      {unit.blocks.every(isBlockDone) && !completed.has(`chest:${unit.id}`) ? (
+        <Pressable
+          onPress={() => void claimChest()}
+          accessibilityRole="button"
+          accessibilityLabel={`Claim unit chest for ${unit.title}`}
+          className="mt-4 items-center rounded-2xl bg-dash-hero py-4"
+        >
+          <View className="flex-row items-center justify-center gap-1.5">
+            <AppIcon name="gift" size={20} color="#FBBF24" />
+            <Text className="text-lg font-extrabold text-white">Claim unit chest</Text>
+          </View>
+          <Text className="mt-0.5 text-xs font-bold text-slate-300">XP · gems · streak freeze</Text>
+        </Pressable>
+      ) : null}
       <StatusBar style="auto" />
     </ScrollView>
+      {chestWin && chestReward && shouldCelebrateChest(chestClaim) && chestPhase === 'opening' ? (
+        <ChestOpening
+          key={`open-${chestWin}`}
+          title={chestWin}
+          rewardLabel={chestRewardText}
+          onOpened={() => {
+            if (!shouldCelebrateChest(chestClaim)) return;
+            setChestPhase('storm');
+            void playCelebration();
+          }}
+        />
+      ) : null}
+      {chestWin && chestReward && shouldCelebrateChest(chestClaim) && chestPhase === 'storm' ? (
+        <Celebration
+          key={`storm-${chestWin}`}
+          duration={FULL_CELEBRATION_MS}
+          onDone={() => {
+            setChestWin(null);
+            setChestClaim(null);
+            setChestReward(null);
+          }}
+        />
+      ) : null}
+      {chestWin && chestReward && shouldCelebrateChest(chestClaim) && chestPhase === 'storm' ? (
+        <View pointerEvents="none" className="absolute left-0 right-0 top-[78px] items-center">
+          <View accessible accessibilityLabel={`Unit chest claimed: ${chestRewardText} for ${chestWin}`} className="max-w-[320px] flex-row items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 dark:border-amber-800 dark:bg-amber-950">
+            <AppIcon name={chestReward?.kind === 'gems' ? 'gem' : chestReward?.kind === 'streak_freeze' ? 'shield' : 'star'} size={17} color="#B45309" />
+            <View className="shrink">
+              <Text className="text-[12.5px] font-black text-dash-ink dark:text-dash-dink">
+                Chest claimed · {chestRewardText}
+              </Text>
+              <Text numberOfLines={1} className="text-[10.5px] font-bold text-dash-muted dark:text-dash-dmuted">
+                {chestWin}
+              </Text>
+            </View>
+          </View>
+        </View>
+      ) : null}
       {/* Super Intelligent help on every unit path: Bingo knows the unit. */}
       <AskBingo
         lessonTitle={unit.title}

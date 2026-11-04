@@ -129,14 +129,15 @@ for (const [name, mime] of [
 /* ---- The gate is wired into both upload paths and persisted ---- */
 const read = (relative) => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 const uploads = read('lib/uploads.ts');
-const screen = read('src/app/index.tsx');
+// The AI Sandbox creator lives on the My uploads screen (Library hub).
+const screen = read('src/app/uploads.tsx');
 const edge = read('supabase/functions/process-upload/index.ts');
 const schema = read('supabase/schema.sql');
 const migration = read('supabase/migrations_content_rights.sql');
 
 for (const [label, source] of [
   ['lib/uploads.ts', uploads],
-  ['src/app/index.tsx', screen],
+  ['src/app/uploads.tsx', screen],
   ['process-upload', edge],
 ]) {
   check(source.includes('isMediaUpload'), `${label}: media detection is missing.`);

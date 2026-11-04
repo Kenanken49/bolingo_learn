@@ -17,8 +17,6 @@ import { cssInterop, useColorScheme } from 'nativewind';
 import Animated from 'react-native-reanimated';
 import { initTheme, useTheme } from '../../lib/theme';
 import { configureReminderHandler, ensureReminderScheduled } from '../../lib/reminders';
-import { themeForPath } from '../../lib/jungle';
-import ExpeditionBackdrop from '../../components/jungle/ExpeditionBackdrop';
 import { initTelemetry, trackScreen } from '../../lib/telemetry';
 import { startAds } from '../../lib/adsRuntime';
 import { setStudioLinePlayer } from '../../lib/pronunciation';
@@ -68,9 +66,8 @@ export default function RootLayout() {
     ...MaterialCommunityIcons.font,
   });
   const pathname = usePathname();
-  const habitat = themeForPath(pathname);
-  // Paint the QD-OLED canvas on the very first frame, before the class sync
-  // effect runs, so there is no white flash on launch.
+  // Paint the dashboard canvas on the very first frame, before the class
+  // sync effect runs, so there is no dark flash on launch (light-first).
   const [theme] = useTheme();
   useEffect(() => {
     if (fontsLoaded || fontError) SplashScreen.hideAsync().catch(() => {});
@@ -115,34 +112,34 @@ export default function RootLayout() {
   }, [pathname]);
   if (!fontsLoaded) return null;
   const dark = theme === 'dark';
-  // React Navigation paints its scene container with the navigation theme's
-  // background — left on the stock light #F2F2F2 it covered the OLED canvas
-  // (and the expedition backdrop) on every route except the hand-styled home.
+  // Keep the scene container transparent so the dashboard canvas shows through.
   const navTheme = {
     ...(dark ? DarkTheme : DefaultTheme),
     dark,
     colors: {
       ...(dark ? DarkTheme : DefaultTheme).colors,
       background: 'transparent',
-      card: dark ? '#06060A' : '#FFFFFF',
-      text: dark ? '#F7F7FF' : '#0B0B14',
-      border: dark ? '#1E1E2C' : '#DCDDE9',
-      primary: dark ? '#00E5FF' : '#0089A8',
+      card: dark ? '#131A29' : '#FFFFFF',
+      text: dark ? '#F1F5F9' : '#0F172A',
+      border: dark ? '#232D45' : '#E8EAF0',
+      primary: dark ? '#22D3EE' : '#0284C7',
       notification: dark ? '#FF2DAA' : '#D6008A',
     },
   };
   return (
     <View
-      className="flex-1 bg-[#F4F5FA] dark:bg-black"
-      style={{ backgroundColor: theme === 'dark' ? '#010603' : '#F3F7EE' }}
+      className="flex-1 bg-dash-bg dark:bg-dash-dbg"
+      style={{ backgroundColor: theme === 'dark' ? '#0B0F1A' : '#F8F9FC' }}
     >
       <ThemeSync />
-      {/* The expedition is one continuous place: every route swaps the bird,
-          accents and canopy layout behind the content. */}
-      <ExpeditionBackdrop screen={habitat.key} />
     <ThemeProvider value={navTheme}>
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
       <Stack.Screen name="index" />
+      <Stack.Screen name="explore" />
+      <Stack.Screen name="mylearning" />
+      <Stack.Screen name="aitutor" />
+      <Stack.Screen name="library" />
+      <Stack.Screen name="community" />
       <Stack.Screen name="quiz/[lessonId]" />
       <Stack.Screen name="revision/[uploadId]" />
       <Stack.Screen name="refill" options={{ presentation: 'modal' }} />

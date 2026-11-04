@@ -14,11 +14,11 @@
      any route never flashes the browser's white. */
   html,
   body {
-    background-color: #F3F7EE;
+    background-color: #F8F9FC;
   }
 
   html.dark,
   html.dark body {
-    background-color: #010603;
+    background-color: #0B0F1A;
   }
 }

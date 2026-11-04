@@ -28,8 +28,12 @@ const read = (relative) => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 
 const edge = read('supabase/functions/process-upload/index.ts');
 const uploads = read('lib/uploads.ts');
-const sandbox = read('src/app/index.tsx');
+// The AI Sandbox creator lives on the My uploads screen (Library hub),
+// not the dashboard home.
+const sandbox = read('src/app/uploads.tsx');
 const uploadsScreen = read('src/app/uploads.tsx');
+const myLearning = read('src/app/mylearning.tsx');
+const audiobooksScreen = read('src/app/audiobooks.tsx');
 
 const failures = [];
 const check = (condition, message) => {
@@ -255,13 +259,16 @@ check(
   'Settings: the upload-output preference cannot be changed.'
 );
 check(
-  /l\.audiobook_only !== 'true'/.test(sandbox),
-  'Path list: audiobook-only uploads still appear as revision nodes.'
+  // My learning lists curriculum units only: user uploads can never appear
+  // as revision nodes because the screen never queries generated lessons.
+  !/is_user_generated/.test(myLearning),
+  'My learning: user uploads can leak into the learning path — the screen must stay curriculum-only.'
 );
 check(
-  /setUserAudiobooks\(rows\.filter\(\(l\) => l\.audiobook_only === 'true'\)\)/.test(sandbox) &&
-    /userAudiobooks\.map/.test(sandbox),
-  'Path list: an audiobook-only upload has no door — the learner can never press play on it.'
+  /loadLessonAudiobook/.test(audiobooksScreen) &&
+    /is_user_generated/.test(audiobooksScreen) &&
+    /setUserPlayer/.test(audiobooksScreen),
+  'Audiobooks: a generated book has no door — the learner can never press play on it.'
 );
 check(
   /export async function loadLessonAudiobook\(lessonId: number\)/.test(audiobookModel),
