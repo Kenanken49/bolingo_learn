@@ -317,6 +317,14 @@ const paywallSource = read(PAYWALL);
 const migrationSource = read(MIGRATION);
 const flagCatalog = JSON.parse(read(FLAGS));
 
+check('Daraja endpoints match the Safaricom URL contract', () => {
+  const shared = read(SHARED);
+  assert(/`\$\{baseUrl\(\)\}\/oauth\/v1\/generate\?grant_type=client_credentials`/.test(shared), 'OAuth must be /oauth/v1/generate (no /mpesa prefix) on sandbox and production');
+  assert(!/\/mpesa\/oauth\//.test(shared), 'a /mpesa/oauth path 404s — every token fetch would fail');
+  assert(/\/mpesa\/stkpush\/v1\/processrequest/.test(pushSource), 'STK Push must be /mpesa/stkpush/v1/processrequest');
+  assert(/\/mpesa\/stkpushquery\/v1\/query/.test(pushSource), 'STK Query must be /mpesa/stkpushquery/v1/query, not /processrequest');
+});
+
 check('the learner cannot name an amount — the server prices the push', () => {
   assert(/Amount: plan\.amountKes/.test(pushSource), 'mpesa-push no longer sends the catalog amount');
   assert(!/body\.amount/i.test(pushSource), 'mpesa-push reads an amount from the request body');

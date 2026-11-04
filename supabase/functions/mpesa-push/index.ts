@@ -174,7 +174,7 @@ async function queryPush(userId: string, checkoutRequestId: string) {
   const timestamp = nairobiStamp();
   let res: Response;
   try {
-    res = await fetch(`${baseUrl()}/mpesa/stkpushquery/v1/processrequest`, {
+    res = await fetch(`${baseUrl()}/mpesa/stkpushquery/v1/query`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${auth.token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({

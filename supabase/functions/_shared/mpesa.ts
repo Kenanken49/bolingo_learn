@@ -112,8 +112,9 @@ export async function darajaToken(): Promise<{ token: string } | { error: string
   if ('error' in config) return { error: config.error, status: 500 };
   const basic = btoa(`${config.consumerKey}:${config.consumerSecret}`);
   let res: Response;
-  try {
-    res = await fetch(`${baseUrl()}/mpesa/oauth/v1/generate?grant_type=client_credentials`, {
+  try {      // NOTE: OAuth intentionally has NO /mpesa prefix (unlike STK Push and
+      // STK Query): /oauth/v1/generate on both sandbox and production.
+      res = await fetch(`${baseUrl()}/oauth/v1/generate?grant_type=client_credentials`, {
       headers: { Authorization: `Basic ${basic}` },
     });
   } catch (e) {
