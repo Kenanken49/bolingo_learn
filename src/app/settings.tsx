@@ -61,6 +61,8 @@ import {
 } from '../../lib/preferences';
 import { setTelemetryConsent } from '../../lib/telemetry';
 import { adsSupported } from '../../lib/ads';
+import { LIFE_STAGE_ORDER, LIFE_STAGES } from '../../lib/lifeStage';
+import { useLifeStage } from '../../lib/lifeStageStore';
 import { showAdPrivacyOptions } from '../../lib/adsRuntime';
 
 interface CastCapture {
@@ -514,6 +516,7 @@ export default function Settings() {
   };
 
   const isPremium = profile?.is_premium === true;
+  const { stage: lifeStage, setStage: setLifeStage } = useLifeStage();
   /** Re-open Google's UMP form so the ad-consent choice can be changed. */
   const openAdPrivacy = async () => {
     const shown = await showAdPrivacyOptions();
@@ -610,6 +613,65 @@ export default function Settings() {
           ) : null}
         </View>
       ) : null}
+
+      {/* Adaptive UI engine: the learner's life stage shapes the home hub. */}
+      <View className="mt-6 w-full max-w-sm rounded-2xl border-2 border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+        <View className="flex-row items-center gap-1.5">
+          <AppIcon name="user" size={20} color="#0F172A" />
+          <Text className="text-base font-extrabold text-slate-800 dark:text-slate-200">Your stage</Text>
+        </View>
+        <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Bolingo adapts the home screen, pace and suggestions to your stage of life. Saved on this device only.
+        </Text>
+        <View className="mt-3 gap-2">
+          {LIFE_STAGE_ORDER.map((id) => {
+            const s = LIFE_STAGES[id];
+            const on = lifeStage === id;
+            return (
+              <Pressable
+                key={id}
+                onPress={() => void setLifeStage(id)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`${s.name}, ages ${s.ages[0]} to ${s.ages[1]}`}
+                className={`flex-row items-center gap-2 rounded-xl border-2 p-2.5 ${
+                  on ? 'border-sky-500 bg-sky-50 dark:bg-sky-950' : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+                }`}
+              >
+                <View style={{ width: 6, alignSelf: 'stretch', borderRadius: 3, backgroundColor: s.ux.accent }} />
+                <View className="flex-1">
+                  <Text className="text-sm font-extrabold text-slate-800 dark:text-slate-200">
+                    {s.name} <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">· {s.ages[0]}–{s.ages[1]}</Text>
+                  </Text>
+                  <Text className="text-xs text-slate-500 dark:text-slate-400" numberOfLines={2}>
+                    {s.focus.join(' · ')}
+                  </Text>
+                </View>
+                {on ? <AppIcon name="checkCircle" size={18} color="#0284C7" /> : null}
+              </Pressable>
+            );
+          })}
+        </View>
+        {lifeStage ? (
+          <Pressable onPress={() => void setLifeStage(null)} accessibilityRole="button" className="mt-2 self-start">
+            <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">Clear and ask me again</Text>
+          </Pressable>
+        ) : null}
+      </View>
+
+      <Pressable
+        onPress={() => router.push('/offline-ai')}
+        accessibilityRole="button"
+        accessibilityLabel="Open Offline AI and sync"
+        className="mt-3 w-full max-w-sm flex-row items-center gap-2 rounded-2xl border-2 border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+      >
+        <AppIcon name="download" size={20} color="#0284C7" />
+        <View className="flex-1">
+          <Text className="text-base font-extrabold text-slate-800 dark:text-slate-200">Offline AI & sync</Text>
+          <Text className="text-xs text-slate-500 dark:text-slate-400">On-device models, offline mode, and Sync now</Text>
+        </View>
+        <AppIcon name="chevRight" size={16} color="#94A3B8" />
+      </Pressable>
 
       <View className="mt-6 w-full max-w-sm rounded-2xl border-2 border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950 p-4">
         <View className="flex-row items-center gap-1.5">

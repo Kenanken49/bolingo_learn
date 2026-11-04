@@ -22,6 +22,8 @@ import BrandMark from '../../components/BrandMark';
 import AppIcon, { type AppIconName } from '../../components/AppIcon';
 import TextInput from '../../components/ui/TextInput';
 import { useExperiment } from '../../lib/featureFlags';
+import { paywallRows } from '../../lib/entitlements';
+import { refreshEdgeEngine } from '../../lib/edgeAI/edgeBoot';
 import { track } from '../../lib/telemetry';
 import { PREMIUM_NARRATOR_SAMPLE } from '../../assets/narrator';
 import PremiumNarratorSample from '../../components/PremiumNarratorSample';
@@ -64,6 +66,10 @@ export default function Paywall() {
   const [busy, setBusy] = useState(false);
   const [storeError, setStoreError] = useState<string | null>(null);
   const [isPremium, setIsPremium] = useState(false);
+  // A confirmed subscription unlocks the downloaded on-device model right away.
+  useEffect(() => {
+    if (isPremium) void refreshEdgeEngine(true);
+  }, [isPremium]);
   const [debugOn, setDebugOn] = useState(false);
   // M-Pesa is an Android-only rail (App Store rule 3.1.1) behind a release
   // flag, so the card has to disappear entirely when either gate is off.
@@ -399,23 +405,30 @@ export default function Paywall() {
             <Text className="text-xs font-extrabold text-amber-600 dark:text-amber-400">PRO</Text>
           </View>
         </View>
-        {(
-          [
-            ['heart', 'Hearts', '5, regen 4h', 'Unlimited'],
-            ['doc', 'Uploads', 'Text ≤1k', 'All formats'],
-            ['camera', 'Scan notes', '—', 'Included'],
-            ['headset', 'Audiobook', 'Device voice', 'Generated'],
-            ['robot', 'AI words', '1k / file', '100k / 30d'],
-            ['chat', 'Roleplay', 'Locked', 'Included'],
-          ] as [AppIconName, string, string, string][]
-        ).map(([icon, label, free, pro]) => (
-          <View key={label} className="mt-1.5 flex-row items-center border-t border-slate-100 dark:border-slate-800 pt-1.5">
-            <AppIcon name={icon} size={16} color="#64748B" />
-            <Text className="ml-1.5 flex-1 text-sm font-bold text-slate-700 dark:text-slate-300">{label}</Text>
-            <Text className="w-16 text-center text-xs text-slate-400 dark:text-slate-500">{free}</Text>
-            <Text className="w-16 text-center text-xs font-extrabold text-slate-800 dark:text-slate-200">{pro}</Text>
+        {paywallRows().live.map((f) => (
+          <View key={f.id} className="mt-1.5 flex-row items-center border-t border-slate-100 dark:border-slate-800 pt-1.5">
+            <AppIcon name={f.icon as AppIconName} size={16} color="#64748B" />
+            <Text className="ml-1.5 flex-1 text-sm font-bold text-slate-700 dark:text-slate-300">{f.label}</Text>
+            <Text className="w-16 text-center text-xs text-slate-400 dark:text-slate-500">{f.free}</Text>
+            <Text className="w-16 text-center text-xs font-extrabold text-slate-800 dark:text-slate-200">{f.premium}</Text>
           </View>
         ))}
+        {paywallRows().soon.length > 0 ? (
+          <>
+            <Text className="mt-3 border-t border-slate-100 pt-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:border-slate-800 dark:text-slate-500">
+              Coming soon
+            </Text>
+            {paywallRows().soon.map((f) => (
+              <View key={f.id} className="mt-1.5 flex-row items-center opacity-60">
+                <AppIcon name={f.icon as AppIconName} size={16} color="#94A3B8" />
+                <Text className="ml-1.5 flex-1 text-sm font-bold text-slate-500 dark:text-slate-400">{f.label}</Text>
+                <Text className="w-32 text-center text-xs font-bold text-slate-400 dark:text-slate-500">
+                  {f.availableTo.includes('free') ? 'Free + Premium' : 'Premium'}
+                </Text>
+              </View>
+            ))}
+          </>
+        ) : null}
         <Text className="mt-3 border-t border-slate-100 pt-2 text-xs leading-4 text-slate-500 dark:border-slate-800 dark:text-slate-400">
           Free narration uses your device voice over the question prompts. Premium generates a continuous full mix and a clip for every question, in the studio narrator you pick. Livia, Bingo and Zora speak in their own studio voices when the connection allows, and fall back to your device voice when it does not.
         </Text>

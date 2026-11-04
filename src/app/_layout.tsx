@@ -21,6 +21,8 @@ import { themeForPath } from '../../lib/jungle';
 import ExpeditionBackdrop from '../../components/jungle/ExpeditionBackdrop';
 import { initTelemetry, trackScreen } from '../../lib/telemetry';
 import { startAds } from '../../lib/adsRuntime';
+import { startAutoSync } from '../../lib/sync/syncStore';
+import { startEdgeEngine } from '../../lib/edgeAI/edgeBoot';
 import { setStudioLinePlayer } from '../../lib/pronunciation';
 import { playStudioLine, stopStudioLine } from '../../lib/studioVoices';
 
@@ -110,6 +112,12 @@ export default function RootLayout() {
   useEffect(() => {
     void startAds();
   }, []);
+  // Smart Sync: upload lessons finished offline and pull course updates, on
+  // start, on foreground, when the browser comes back online, and each minute.
+  useEffect(() => startAutoSync(), []);
+  // On-device AI: register the learner's downloaded model (Premium) so the
+  // tutor can answer offline with it. The model loads on first use, not here.
+  useEffect(() => startEdgeEngine(), []);
   useEffect(() => {
     trackScreen(pathname);
   }, [pathname]);
@@ -159,6 +167,12 @@ export default function RootLayout() {
       <Stack.Screen name="certifications" />
       <Stack.Screen name="design" />
       <Stack.Screen name="roleplay" />
+      <Stack.Screen name="offline-ai" />
+      <Stack.Screen name="study-rooms" />
+      <Stack.Screen name="squad-cup" />
+      <Stack.Screen name="avatar" />
+      <Stack.Screen name="jobs" />
+      <Stack.Screen name="verify/[code]" />
       {__DEV__ ? <Stack.Screen name="dev/celebration-benchmark" /> : null}
     </Stack>
     </ThemeProvider>

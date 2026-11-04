@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, View } from 'react-native';
 import Text from './ui/Text';
 import TextInput from './ui/TextInput';
@@ -6,7 +6,11 @@ import { router } from 'expo-router';
 import Mascot from './AfricanMascots';
 import AppIcon from './AppIcon';
 import HelpfulVote from './HelpfulVote';
-import { askBingo, type BingoContext, type BingoMessage } from '../lib/askBingo';
+import { type BingoContext, type BingoMessage } from '../lib/askBingo';
+import { askTutor } from '../lib/edgeAI/tutor';
+import { getAiBudget } from '../lib/aiBudget';
+import { AI_TOKENS_PER_EXCHANGE_ESTIMATE, type AiBudgetView } from '../lib/entitlements';
+import { getProfile } from '../lib/progress';
 
 interface Props {
   /** Where the learner is stuck — shown to Bingo and in the sheet header. */
@@ -19,14 +23,64 @@ interface Props {
   strongFirst?: boolean;
   /** Signed-in learner id — votes are logged only when present. */
   userId?: string | null;
+  /** Premium learners skip the daily allowance. Looked up when omitted. */
+  isPremium?: boolean;
+}
+
+/** One meter for the sheet: free learners see what's left today. */
+function AllowanceMeter({ budget }: { budget: AiBudgetView | null }) {
+  if (!budget) return null;
+  if (budget.unlimited) {
+    return (
+      <View className="mt-3 flex-row items-center gap-1.5 rounded-2xl bg-amber-50 px-3 py-2 dark:bg-amber-950">
+        <AppIcon name="crown" size={14} color="#D97706" />
+        <Text className="text-xs font-bold text-amber-800 dark:text-amber-200">Premium · unlimited AI tutor</Text>
+      </View>
+    );
+  }
+  const fraction = budget.limit > 0 ? Math.min(1, budget.used / budget.limit) : 1;
+  const questionsLeft = Math.floor(budget.remaining / AI_TOKENS_PER_EXCHANGE_ESTIMATE);
+  return (
+    <View className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950">
+      <View className="flex-row items-center justify-between">
+        <Text className="text-xs font-bold text-slate-600 dark:text-slate-300">
+          {budget.exhausted
+            ? "Today's free AI tutor allowance is used up"
+            : `Free AI tutor today · about ${questionsLeft} question${questionsLeft === 1 ? '' : 's'} left`}
+        </Text>
+        <Text className="text-[10px] font-bold text-slate-400 dark:text-slate-500">resets at midnight</Text>
+      </View>
+      <View
+        className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800"
+        accessibilityRole="progressbar"
+        accessibilityLabel="Free AI tutor allowance used today"
+        accessibilityValue={{ min: 0, max: budget.limit, now: Math.min(budget.used, budget.limit) }}
+      >
+        <View
+          className={budget.exhausted ? 'h-2 bg-red-400' : fraction > 0.75 ? 'h-2 bg-amber-400' : 'h-2 bg-emerald-500'}
+          style={{ width: `${Math.round(fraction * 100)}%` }}
+        />
+      </View>
+      {budget.exhausted ? (
+        <Text className="mt-2 text-xs leading-4 text-slate-500 dark:text-slate-400">
+          Bingo still answers by searching your lessons on this device.{' '}
+          <Text className="text-xs font-extrabold text-amber-600 dark:text-amber-400" onPress={() => router.push('/paywall')}>
+            Go Premium for unlimited AI →
+          </Text>
+        </Text>
+      ) : null}
+    </View>
+  );
 }
 
 /**
  * Floating "Ask Bingo" button for every lesson path. Opens a help sheet
  * where the learner types what confuses them; Bingo answers in context.
- * Free for all learners — offline or AI failure falls back to the Kamusi.
+ * Questions go through the offline-first tutor (lib/edgeAI/tutor.ts): cloud
+ * AI when online and within the free daily allowance, otherwise the
+ * on-device model or lesson search. Each reply says where it came from.
  */
-export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, userId = null }: Props) {
+export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, userId = null, isPremium }: Props) {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState('');
   // Real conversation: the thread persists while the sheet is open so
@@ -34,8 +88,34 @@ export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, use
   const [messages, setMessages] = useState<BingoMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Where each Bingo reply came from (cloud / on-device / lesson search), by message index.
+  const [labels, setLabels] = useState<Record<number, string>>({});
+  // The caller's value wins; otherwise the profile is looked up when the sheet opens.
+  const [fetchedPremium, setFetchedPremium] = useState<boolean | null>(null);
+  const premium = isPremium ?? fetchedPremium;
+  const [budget, setBudget] = useState<AiBudgetView | null>(null);
 
   const context: BingoContext = { lessonTitle, prompt, theory, strongFirst };
+
+  // On open: resolve the plan (offline → treated as free) and read today's meter.
+  useEffect(() => {
+    if (!open) return;
+    let alive = true;
+    void (async () => {
+      let plan = premium;
+      if (plan === null) {
+        plan = await getProfile()
+          .then((p) => p?.is_premium === true)
+          .catch(() => false);
+        if (alive) setFetchedPremium(plan);
+      }
+      const view = await getAiBudget(plan === true);
+      if (alive) setBudget(view);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [open, premium]);
 
   const send = async () => {
     if (loading || !question.trim()) return;
@@ -46,8 +126,13 @@ export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, use
     setLoading(true);
     setError(null);
     try {
-      const reply = await askBingo(mine.text, context, thread);
-      setMessages([...thread, { role: 'bingo', text: reply }]);
+      const answer = await askTutor(mine.text, context, thread, premium === true);
+      setMessages([...thread, { role: 'bingo', text: answer.text }]);
+      setLabels((prev) => ({
+        ...prev,
+        [thread.length]: answer.sources.length ? `${answer.label} · ${answer.sources.slice(0, 2).join(', ')}` : answer.label,
+      }));
+      setBudget(answer.budget);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Bingo is unreachable right now.');
     } finally {
@@ -107,6 +192,9 @@ export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, use
                   <View key={i} className="mt-2 rounded-2xl rounded-bl-sm border-2 border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950 p-3" style={{ maxWidth: '90%' }}>
                     <Text className="text-xs font-bold uppercase tracking-widest text-amber-700 dark:text-amber-300">Bingo</Text>
                     <Text className="mt-0.5 text-base leading-6 text-slate-800 dark:text-slate-200">{m.text}</Text>
+                    {labels[i] ? (
+                      <Text className="mt-1.5 text-[10px] font-bold text-amber-700/70 dark:text-amber-300/70">{labels[i]}</Text>
+                    ) : null}
                   </View>
                 )
               )}
@@ -157,8 +245,9 @@ export default function AskBingo({ lessonTitle, prompt, theory, strongFirst, use
                   <Text className="font-black text-slate-900 dark:text-slate-100">{loading ? '…' : 'Ask'}</Text>
                 </Pressable>
               </View>
+              <AllowanceMeter budget={budget} />
               <Text className="mt-2 text-xs text-slate-400 dark:text-slate-500">
-                Bingo sees your lesson so hints land in context. Hints guide — the XP is still yours to win.
+                Bingo sees your lesson so hints land in context. No connection? Bingo answers from your lessons on this device.
               </Text>
             </ScrollView>
           </View>

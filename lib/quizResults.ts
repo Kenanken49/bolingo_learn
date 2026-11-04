@@ -27,6 +27,8 @@ export interface LessonResult {
   totalXp?: number;
   /** Best consecutive-correct streak this lesson (combo loop glory). */
   bestCombo?: number;
+  /** Saved on the device while offline; Smart Sync uploads it later. */
+  pendingSync?: boolean;
 }
 
 let current: LessonResult | null = null;

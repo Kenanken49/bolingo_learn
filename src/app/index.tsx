@@ -31,6 +31,7 @@ import { chestRewardLabel, rollChestReward, type ChestReward } from '../../lib/c
 import { getDueCount } from '../../lib/srs';
 import { useAmbient } from '../../lib/ambient';
 import { useNatural } from '../../lib/natural';
+import LifeStageHub from '../../components/LifeStageHub';
 import WebCameraCapture from '../../components/WebCameraCapture';
 import PathOrb from '../../components/natural/PathOrb';
 import QuestMeter from '../../components/natural/QuestMeter';
@@ -1104,6 +1105,12 @@ export default function PathMap() {
                   if (b) openBlock(b);
                 }}
               />
+            </FadeUp>
+          </View>
+          {/* Adaptive UI engine: stage picker on first run, then the stage hub. */}
+          <View style={{ width: '100%', maxWidth: 384, marginBottom: 12 }}>
+            <FadeUp delay={50}>
+              <LifeStageHub />
             </FadeUp>
           </View>
           {/* Hook trigger: Bingo guilt-trips when the streak needs feeding. */}

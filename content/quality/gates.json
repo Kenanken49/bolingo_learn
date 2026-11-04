@@ -249,6 +249,14 @@
       "command": "node scripts/check-web-publish.cjs",
       "timeoutSeconds": 120,
       "required": true
+    },
+    {
+      "id": "adaptive-ai",
+      "label": "Adaptive UI + offline AI",
+      "category": "platform",
+      "command": "node scripts/check-adaptive-ai.cjs",
+      "timeoutSeconds": 120,
+      "required": true
     }
   ]
 }
