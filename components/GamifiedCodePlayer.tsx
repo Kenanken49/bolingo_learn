@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { View, Pressable, Animated } from 'react-native';
+import LessonProgress from './lesson/LessonProgress';
+import { View, Pressable } from 'react-native';
 import Text from './ui/Text';
 import DuoButton from './DuoButton';
 import Reanimated, {
@@ -129,7 +130,6 @@ export default function GamifiedCodePlayer({
   const [selectedTokens, setSelectedTokens] = useState<string[]>([]);
   const [availableTokens, setAvailableTokens] = useState<string[]>(questionData.scrambledTokens);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
-  const [bar] = useState(() => new Animated.Value(0));
   const narration = useAudioPlayer(questionData.audioUrl ? { uri: questionData.audioUrl } : undefined);
   // Elite voices (ElevenLabs/OpenAI) are premium; free tier hears the same
   // prompt through the phone's built-in robot voice ($0).
@@ -227,9 +227,6 @@ export default function GamifiedCodePlayer({
     []
   );
 
-  useEffect(() => {
-    Animated.timing(bar, { toValue: progressPct, duration: 400, useNativeDriver: false }).start();
-  }, [progressPct, bar]);
 
   const playNarration = () => {
     void stopNaturalSwahili();
@@ -367,9 +364,7 @@ export default function GamifiedCodePlayer({
     <View className="flex-1">
       {/* Top HUD Row */}
       <View className="mb-4 flex-row items-center justify-between">
-        <View className="h-4 w-2/3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-          <Animated.View className="h-full rounded-full bg-green-500" style={{ width: bar.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) }} />
-        </View>
+        <LessonProgress pct={progressPct} />
         <View className="flex-row items-center gap-1">
           <AppIcon name="checkCircle" size={18} color="#0EA5E9" />
           <Text onPhoto className="text-sm font-extrabold text-sky-600 dark:text-sky-300">{standard.masteryPct}% mastery</Text>

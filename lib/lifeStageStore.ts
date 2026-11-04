@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { isLifeStageId, type LifeStageId } from './lifeStage';
 
 /**
@@ -59,4 +59,24 @@ export function useLifeStage(): {
 
   const setStage = useCallback((s: LifeStageId | null) => setLifeStage(s), []);
   return { stage, ready, setStage };
+}
+
+/**
+ * Cheap app-wide subscription for hot paths (every Text, every palette read).
+ * One shared listener set and no per-component storage read: the stored stage
+ * is loaded once at import, then pushed to all subscribers on change.
+ */
+const snapListeners = new Set<() => void>();
+listeners.add(() => snapListeners.forEach((fn) => fn()));
+void getLifeStage().then(() => snapListeners.forEach((fn) => fn()));
+const subscribeSnap = (fn: () => void) => {
+  snapListeners.add(fn);
+  return () => {
+    snapListeners.delete(fn);
+  };
+};
+const readSnap = () => cached ?? null;
+
+export function useLifeStageSnapshot(): LifeStageId | null {
+  return useSyncExternalStore(subscribeSnap, readSnap, readSnap);
 }

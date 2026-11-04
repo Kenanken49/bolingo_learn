@@ -69,7 +69,7 @@ export default function LifeStageHub() {
           gap: compact ? 6 : 8,
         }}
       >
-        {s.hub.map((item) => {
+        {s.hub.filter((item) => item.status === 'live' && !!item.href).map((item) => {
           const live = item.status === 'live' && !!item.href;
           return (
             <Pressable

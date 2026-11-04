@@ -12,6 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import AppIcon, { type AppIconName } from '../AppIcon';
 import { useNatural } from '../../lib/natural';
+import { useTierStyle } from '../../lib/tierStyle';
 
 export type OrbState = 'completed' | 'active' | 'locked' | 'processing' | 'failed';
 
@@ -39,6 +40,7 @@ export default function PathOrb({
   testID?: string;
 }) {
   const p = useNatural();
+  const tier = useTierStyle();
   const pulse = useSharedValue(1);
   const glow = useSharedValue(0);
   const bob = useSharedValue(0);
@@ -82,16 +84,16 @@ export default function PathOrb({
   }));
   const glowStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
 
-  const size = state === 'active' ? 72 : 60;
+  const size = state === 'active' ? tier.nodeSize + 12 : tier.nodeSize;
   const locked = state === 'locked';
   const interactive = !!onPress && !locked && state !== 'processing';
-  const iconSize = state === 'active' ? 28 : 24;
+  const iconSize = Math.round(size * 0.4);
 
   const face =
     state === 'completed'
-      ? { backgroundColor: p.moss, borderWidth: 1, borderColor: p.mossSoft, borderBottomWidth: 3, borderBottomColor: 'rgba(0,0,0,0.22)' }
+      ? { backgroundColor: p.moss, borderWidth: 1, borderColor: p.mossSoft, borderBottomWidth: Math.max(1, tier.depth - 1), borderBottomColor: 'rgba(0,0,0,0.22)' }
       : state === 'active'
-        ? { backgroundColor: p.honey, borderWidth: 1, borderColor: p.honeySoft, borderBottomWidth: 4, borderBottomColor: 'rgba(0,0,0,0.22)' }
+        ? { backgroundColor: p.honey, borderWidth: 1, borderColor: p.honeySoft, borderBottomWidth: Math.max(1, tier.depth), borderBottomColor: 'rgba(0,0,0,0.22)' }
         : state === 'processing'
           ? { backgroundColor: p.surfaceAlt, borderWidth: 1, borderColor: p.line }
           : state === 'failed'
@@ -106,7 +108,7 @@ export default function PathOrb({
       entering={FadeInDown.duration(400).delay(delay)}
       style={{ alignItems: 'center', transform: [{ translateX: offset }], maxWidth: 190 }}
     >
-      {state === 'active' ? (
+      {state === 'active' && tier.playful ? (
         <View
           style={{
             marginBottom: 3,
@@ -154,7 +156,7 @@ export default function PathOrb({
           style={({ pressed }) => ({
             width: size,
             height: size,
-            borderRadius: size / 2,
+            borderRadius: size * tier.nodeRound,
             alignItems: 'center',
             justifyContent: 'center',
             opacity: pressed ? 0.88 : 1,

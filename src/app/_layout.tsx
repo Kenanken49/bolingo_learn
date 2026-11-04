@@ -12,10 +12,21 @@ import {
   Roboto_700Bold,
   Roboto_800ExtraBold,
 } from '@expo-google-fonts/roboto';
+import { Baloo2_400Regular, Baloo2_600SemiBold, Baloo2_700Bold, Baloo2_800ExtraBold } from '@expo-google-fonts/baloo-2';
+import { BricolageGrotesque_800ExtraBold } from '@expo-google-fonts/bricolage-grotesque';
+import {
+  SchibstedGrotesk_400Regular,
+  SchibstedGrotesk_600SemiBold,
+  SchibstedGrotesk_700Bold,
+  SchibstedGrotesk_800ExtraBold,
+} from '@expo-google-fonts/schibsted-grotesk';
+import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces';
+import { InstrumentSans_400Regular, InstrumentSans_600SemiBold, InstrumentSans_700Bold } from '@expo-google-fonts/instrument-sans';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { cssInterop, useColorScheme } from 'nativewind';
 import Animated from 'react-native-reanimated';
 import { initTheme, useTheme } from '../../lib/theme';
+import { useNatural } from '../../lib/natural';
 import { configureReminderHandler, ensureReminderScheduled } from '../../lib/reminders';
 import { themeForPath } from '../../lib/jungle';
 import ExpeditionBackdrop from '../../components/jungle/ExpeditionBackdrop';
@@ -66,6 +77,20 @@ export default function RootLayout() {
     Roboto_600SemiBold,
     Roboto_700Bold,
     Roboto_800ExtraBold,
+    // Life-stage typefaces (lib/tierType.ts).
+    Baloo2_400Regular,
+    Baloo2_600SemiBold,
+    Baloo2_700Bold,
+    Baloo2_800ExtraBold,
+    BricolageGrotesque_800ExtraBold,
+    SchibstedGrotesk_400Regular,
+    SchibstedGrotesk_600SemiBold,
+    SchibstedGrotesk_700Bold,
+    SchibstedGrotesk_800ExtraBold,
+    Fraunces_600SemiBold,
+    InstrumentSans_400Regular,
+    InstrumentSans_600SemiBold,
+    InstrumentSans_700Bold,
     ...Ionicons.font,
     ...MaterialCommunityIcons.font,
   });
@@ -74,6 +99,7 @@ export default function RootLayout() {
   // Paint the QD-OLED canvas on the very first frame, before the class sync
   // effect runs, so there is no white flash on launch.
   const [theme] = useTheme();
+  const palette = useNatural();
   useEffect(() => {
     if (fontsLoaded || fontError) SplashScreen.hideAsync().catch(() => {});
   }, [fontsLoaded, fontError]);
@@ -121,7 +147,7 @@ export default function RootLayout() {
   useEffect(() => {
     trackScreen(pathname);
   }, [pathname]);
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded && !fontError) return null;
   const dark = theme === 'dark';
   // React Navigation paints its scene container with the navigation theme's
   // background — left on the stock light #F2F2F2 it covered the OLED canvas
@@ -142,7 +168,7 @@ export default function RootLayout() {
   return (
     <View
       className="flex-1 bg-[#F4F5FA] dark:bg-black"
-      style={{ backgroundColor: theme === 'dark' ? '#010603' : '#F3F7EE' }}
+      style={{ backgroundColor: palette.bg }}
     >
       <ThemeSync />
       {/* The expedition is one continuous place: every route swaps the bird,
