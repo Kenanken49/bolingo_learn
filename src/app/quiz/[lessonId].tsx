@@ -544,6 +544,7 @@ export default function QuizPlayer() {
         newLevel,
         totalXp,
         pendingSync,
+        durationMs: startedAtRef.current > 0 ? Date.now() - startedAtRef.current : undefined,
       });
       router.replace('/results');
     };

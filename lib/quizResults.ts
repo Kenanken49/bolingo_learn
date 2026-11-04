@@ -29,6 +29,8 @@ export interface LessonResult {
   bestCombo?: number;
   /** Saved on the device while offline; Smart Sync uploads it later. */
   pendingSync?: boolean;
+  /** Time from the first question to submit (the Climber "Done · 4 min 12 s"). */
+  durationMs?: number;
 }
 
 let current: LessonResult | null = null;

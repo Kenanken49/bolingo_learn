@@ -6,6 +6,7 @@ import { useNatural } from '../lib/natural';
 import { useTierStyle } from '../lib/tierStyle';
 import { CURRICULUM, KIND_META, type CurriculumBlock } from '../lib/curriculum';
 import { goalLabel, nextUpBlock, type GoalId } from '../lib/onboarding';
+import { consistencyLine, monthConsistency, weekBars } from '../lib/tierProgress';
 
 /**
  * The top of the Learn tab, rebuilt per life stage from the adaptive
@@ -19,10 +20,13 @@ export default function TierHomeHeader({
   completed,
   goal,
   onOpen,
+  activity = null,
 }: {
   completed: Set<string>;
   goal: GoalId | null;
   onOpen: (b: CurriculumBlock) => void;
+  /** Real activity timestamps; null for guests (no chart or ratio shown). */
+  activity?: Date[] | null;
 }) {
   const p = useNatural();
   const tier = useTierStyle();
@@ -61,6 +65,7 @@ export default function TierHomeHeader({
             </Pressable>
           ))}
         </View>
+        {activity ? <ClimberFooter activity={activity} /> : null}
       </View>
     );
   }
@@ -87,6 +92,7 @@ export default function TierHomeHeader({
             );
           })}
         </View>
+        {activity ? <WeekChart activity={activity} accent={tier.accent} /> : null}
       </View>
     );
   }
@@ -104,6 +110,60 @@ export default function TierHomeHeader({
         </Text>
       </View>
       <Mascot character="bingo" mood="happy" size={58} />
+    </View>
+  );
+}
+
+/** WF-T3-01 footer: consistency as a monthly weekday ratio, never a fragile streak. */
+function ClimberFooter({ activity }: { activity: Date[] }) {
+  const p = useNatural();
+  const now = new Date();
+  const c = monthConsistency(activity, now);
+  const month = now.toLocaleDateString(undefined, { month: 'long' });
+  const last = new Date(now.getFullYear(), now.getMonth() - 1, 1).toLocaleDateString(undefined, { month: 'long' });
+  return (
+    <Text style={{ marginTop: 10, fontSize: 12.5, lineHeight: 18, color: p.muted }}>
+      <Text style={{ fontWeight: '700', color: p.ink }}>{c.active} of {c.soFar}</Text> weekdays this month. {consistencyLine(c, month, last)}
+    </Text>
+  );
+}
+
+/** WF-T2-01 "This week": lessons and XP events per day, Monday first. */
+function WeekChart({ activity, accent }: { activity: Date[]; accent: string }) {
+  const p = useNatural();
+  const bars = weekBars(activity);
+  const max = Math.max(1, ...bars.map((b) => b.count));
+  const total = bars.reduce((n, b) => n + b.count, 0);
+  const days = bars.filter((b) => b.count > 0).length;
+  return (
+    <View style={{ marginTop: 12, borderTopWidth: 1, borderTopColor: p.line, paddingTop: 10 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 12, color: p.muted }}>This week</Text>
+        <Text style={{ fontSize: 13, fontWeight: '700', color: p.ink }}>
+          {total} {total === 1 ? 'session' : 'sessions'} <Text style={{ fontSize: 11, color: p.muted }}>· {days} of 7 days</Text>
+        </Text>
+      </View>
+      <View
+        accessibilityLabel={`Sessions this week: ${bars.map((b) => b.count).join(', ')}`}
+        style={{ marginTop: 8, height: 48, flexDirection: 'row', alignItems: 'flex-end', gap: 6 }}
+      >
+        {bars.map((b, i) => (
+          <View key={i} style={{ flex: 1, alignItems: 'center' }}>
+            <View
+              style={{
+                width: '100%',
+                height: Math.max(3, (b.count / max) * 36),
+                borderRadius: 4,
+                backgroundColor: b.count > 0 ? accent : p.line,
+                opacity: b.future ? 0.4 : 1,
+                borderWidth: b.today ? 1.5 : 0,
+                borderColor: p.ink,
+              }}
+            />
+            <Text style={{ marginTop: 2, fontSize: 9.5, color: b.today ? p.ink : p.muted }}>{b.label}</Text>
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
