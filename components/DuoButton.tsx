@@ -1,6 +1,14 @@
 import { useState, type ReactNode } from 'react';
 import { Pressable, type GestureResponderEvent } from 'react-native';
 import Text from './ui/Text';
+import { useTierStyle } from '../lib/tierStyle';
+
+/** Shape per life stage; full static literals so NativeWind extracts them. */
+const SHAPE = {
+  explorer: { box: 'rounded-2xl border-b-4', type: 'font-duo font-extrabold uppercase tracking-wide', drop: 3 },
+  launcher: { box: 'rounded-xl border-b-2', type: 'font-duo font-extrabold', drop: 2 },
+  climber: { box: 'rounded-full border-b-0', type: 'font-semibold', drop: 0 },
+} as const;
 
 /**
  * Duo-style tactile button: chunky rounded shape, bold rounded type, and a
@@ -40,6 +48,7 @@ export default function DuoButton({
   small = false,
 }: Props) {
   const [pressed, setPressed] = useState(false);
+  const shape = SHAPE[useTierStyle().stage];
   const skin = SKINS[color];
   const down = pressed && !disabled;
   // Quantum primaries are bright: dark ink reads better on green/amber.
@@ -52,13 +61,13 @@ export default function DuoButton({
       onPressOut={() => setPressed(false)}
       accessibilityRole="button"
       accessibilityLabel={label}
-      className={`items-center rounded-2xl border-b-4 shadow-sm ${small ? 'px-4 py-2.5' : 'px-6 py-4'} ${skin.face} ${
+      className={`items-center ${shape.box} shadow-sm ${small ? 'px-4 py-2.5' : 'px-6 py-4'} ${skin.face} ${
         down ? 'border-b-0' : skin.edge
       } ${disabled ? 'opacity-40' : ''}`}
-      style={down ? { transform: [{ translateY: 3 }] } : undefined}
+      style={down ? (shape.drop ? { transform: [{ translateY: shape.drop }] } : { opacity: 0.85 }) : undefined}
     >
       {children ?? (
-        <Text className={`font-duo font-extrabold uppercase tracking-wide ${ink} ${small ? 'text-sm' : 'text-lg'}`}>
+        <Text className={`${shape.type} ${ink} ${small ? 'text-sm' : 'text-lg'}`}>
           {title}
         </Text>
       )}

@@ -6,6 +6,7 @@ import TextInput from '../../components/ui/TextInput';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import BrandMark from '../../components/BrandMark';
 import AppIcon, { type AppIconName } from '../../components/AppIcon';
+import TabBar from '../../components/nav/TabBar';
 import { StatusBar } from 'expo-status-bar';
 import {
   getProfile,
@@ -561,6 +562,7 @@ export default function Settings() {
   );
 
   return (
+    <View style={{ flex: 1 }}>
     <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
       <Text className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">Settings</Text>
       <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">
@@ -1492,10 +1494,9 @@ export default function Settings() {
         <BrandMark />
         <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">v1.0.0 | Made for learners</Text>
       </View>
-      <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
-        <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
-      </Pressable>
       <StatusBar style="auto" />
     </ScrollView>
+    <TabBar />
+    </View>
   );
 }

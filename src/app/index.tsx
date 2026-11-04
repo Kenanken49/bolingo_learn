@@ -32,9 +32,11 @@ import { getDueCount } from '../../lib/srs';
 import { useAmbient } from '../../lib/ambient';
 import { useNatural } from '../../lib/natural';
 import LifeStageHub from '../../components/LifeStageHub';
+import TierHomeHeader from '../../components/TierHomeHeader';
+import TabBar, { TABS } from '../../components/nav/TabBar';
+import { useTierStyle } from '../../lib/tierStyle';
 import WebCameraCapture from '../../components/WebCameraCapture';
 import PathOrb from '../../components/natural/PathOrb';
-import QuestMeter from '../../components/natural/QuestMeter';
 import ProgressBar from '../../components/natural/ProgressBar';
 import SoundToggle from '../../components/natural/SoundToggle';
 import { FadeUp } from '../../components/natural/Motion';
@@ -77,6 +79,9 @@ function PathNode({
 /** Snake-UI guidance card: the single next block, so users never choose from a menu. */
 function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: GoalId | null; onStart: () => void }) {
   const p = useNatural();
+  const tier = useTierStyle();
+  const kicker =
+    tier.stage === 'climber' ? 'Your next few minutes' : tier.stage === 'launcher' ? `Next step${goal ? ` · ${goalLabel(goal)}` : ''}` : `Up next${goal ? ` · ${goalLabel(goal)}` : ''}`;
   return (
     <Pressable
       onPress={onStart}
@@ -86,8 +91,8 @@ function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: Go
         width: '100%',
         maxWidth: 384,
         marginBottom: 14,
-        borderRadius: 24,
-        padding: 16,
+        borderRadius: tier.stage === 'climber' ? 16 : 24,
+        padding: tier.stage === 'climber' ? 13 : 16,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: p.isDark ? '#2C3728' : '#DCE3D2',
@@ -95,6 +100,7 @@ function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: Go
         opacity: pressed ? 0.96 : 1,
       })}
     >
+      {tier.playful ? (
       <View
         pointerEvents="none"
         style={{
@@ -108,8 +114,9 @@ function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: Go
           opacity: p.isDark ? 0.16 : 0.12,
         }}
       />
+      ) : null}
       <Text style={{ fontSize: 10, fontWeight: '800', letterSpacing: 1.6, textTransform: 'uppercase', color: p.moss }}>
-        Up next{goal ? ` · ${goalLabel(goal)}` : ''}
+        {kicker}
       </Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 7 }}>
         <View
@@ -132,7 +139,7 @@ function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: Go
             {block.title}
           </Text>
           <Text style={{ fontSize: 11, fontWeight: '600', color: p.muted, marginTop: 1 }}>
-            {KIND_META[block.kind].label} · {block.minutes} min · +{block.xp} XP
+            {KIND_META[block.kind].label} · {block.minutes} min{tier.stage === 'climber' ? '' : ` · +${block.xp} XP`}
           </Text>
         </View>
         <AppIcon name="chevRight" size={20} color={p.moss} />
@@ -140,8 +147,10 @@ function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: Go
       <View
         style={{
           marginTop: 13,
-          borderRadius: 14,
-          backgroundColor: p.honey,
+          borderRadius: tier.stage === 'climber' ? 999 : 14,
+          backgroundColor: tier.playful ? p.honey : tier.accent,
+          borderBottomWidth: tier.depth,
+          borderBottomColor: 'rgba(0,0,0,0.22)',
           paddingVertical: 11,
           flexDirection: 'row',
           alignItems: 'center',
@@ -149,9 +158,9 @@ function UpNextCard({ block, goal, onStart }: { block: CurriculumBlock; goal: Go
           gap: 7,
         }}
       >
-        <AppIcon name="play" size={14} color="#241806" />
-        <Text style={{ fontSize: 13.5, fontWeight: '800', color: '#241806' }}>
-          Start · {block.minutes} min
+        <AppIcon name="play" size={14} color={tier.playful ? '#241806' : '#FFFFFF'} />
+        <Text style={{ fontSize: 13.5, fontWeight: '800', color: tier.playful ? '#241806' : '#FFFFFF' }}>
+          {tier.playful ? 'Start' : 'Continue'} · {block.minutes} min
         </Text>
       </View>
     </Pressable>
@@ -387,6 +396,7 @@ const KIND_ICON: Record<string, AppIconName> = {
 };
 
 export default function PathMap() {
+  const tier = useTierStyle();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [uploads, setUploads] = useState<UploadRow[]>([]);
@@ -822,13 +832,7 @@ export default function PathMap() {
 
   const sideNav = (
     <View style={{ width: 220, gap: 3, paddingRight: 14 }}>
-      {[
-        { label: 'Learn', icon: 'home', href: '/', active: true },
-        { label: 'Leaderboard', icon: 'trophy', href: '/leaderboard', active: false },
-        { label: 'Quests', icon: 'target', href: '/settings', active: false },
-        { label: 'Shop', icon: 'crown', href: '/paywall', active: false },
-        { label: 'Profile', icon: 'user', href: '/auth', active: false },
-      ].map((n) => (
+      {TABS.map((t) => ({ ...t, active: t.href === '/' })).map((n) => (
         <Link key={n.label} href={n.href as never} asChild>
           <Pressable
             accessibilityRole="button"
@@ -837,7 +841,7 @@ export default function PathMap() {
               flexDirection: 'row',
               alignItems: 'center',
               borderRadius: 14,
-              backgroundColor: n.active ? (p.isDark ? '#141C10' : '#ECF1E1') : 'transparent',
+              backgroundColor: n.active ? p.surfaceAlt : 'transparent',
               paddingHorizontal: 12,
               paddingVertical: 10,
             }}
@@ -976,7 +980,7 @@ export default function PathMap() {
       {/* Natural HUD: brand · streak · XP · hearts · ambience · avatar */}
       <View
         style={{
-          backgroundColor: p.isDark ? 'rgba(1,8,4,0.72)' : 'rgba(243,247,238,0.86)',
+          backgroundColor: p.surface,
           borderBottomWidth: 1,
           borderBottomColor: p.line,
           paddingHorizontal: 16,
@@ -1032,7 +1036,7 @@ export default function PathMap() {
               </Text>
             </View>
           ) : null}
-          <View accessibilityLabel={`${hearts} hearts remaining`} style={hudChip}>
+          <Pressable onPress={() => router.push('/refill')} accessibilityRole="button" accessibilityLabel={`${hearts} hearts remaining. Refill hearts`} style={hudChip}>
             <AppIcon name="heart" size={13} color={p.berry} />
             <Text
               style={{
@@ -1044,7 +1048,7 @@ export default function PathMap() {
               {hearts}
               {lowHearts ? '!' : ''}
             </Text>
-          </View>
+          </Pressable>
           <SoundToggle on={ambientOn && !ambientError} onToggle={() => void toggleAmbient()} />
           <Pressable
             onPress={() => router.push('/auth')}
@@ -1081,6 +1085,7 @@ export default function PathMap() {
           contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
         >
+          {tier.stage !== 'climber' ? (
           <View style={{ width: '100%', maxWidth: 384, marginBottom: 12 }}>
             <FadeUp delay={30}>
               <StreakTrail
@@ -1094,19 +1099,12 @@ export default function PathMap() {
               />
             </FadeUp>
           </View>
-          <View style={{ width: '100%', maxWidth: 384, marginBottom: 12 }}>
-            <FadeUp delay={40}>
-              <QuestMeter
-                done={todayCount >= 1}
-                streak={streak}
-                minutes={minutes}
-                onPress={() => {
-                  const b = nextUpBlock(completed);
-                  if (b) openBlock(b);
-                }}
-              />
+          ) : null}
+          {profile || onboarded ? (
+            <FadeUp delay={45} style={{ width: '100%', alignItems: 'center' }}>
+              <TierHomeHeader completed={completed} goal={goal} onOpen={openBlock} />
             </FadeUp>
-          </View>
+          ) : null}
           {/* Adaptive UI engine: stage picker on first run, then the stage hub. */}
           <View style={{ width: '100%', maxWidth: 384, marginBottom: 12 }}>
             <FadeUp delay={50}>
@@ -1129,15 +1127,15 @@ export default function PathMap() {
                   padding: 14,
                 }}
               >
-                <Mascot character="bingo" mood="sad" size={68} />
+                {tier.playful ? <Mascot character="bingo" mood="happy" size={68} /> : null}
                 <View style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16.5, fontWeight: '800', color: p.clay }}>
-                    {lastKey === yesterdayKey ? 'Bingo missed you!' : 'Bingo is worried…'}
+                  <Text style={{ fontSize: 16.5, fontWeight: '800', color: p.ink }}>
+                    {lastKey === yesterdayKey ? 'Ready for today?' : 'Welcome back'}
                   </Text>
                   <Text style={{ marginTop: 3, fontSize: 12, lineHeight: 17, fontWeight: '600', color: p.muted }}>
                     {lastKey === yesterdayKey
-                      ? `One quick lesson today keeps your ${profile?.streak_count ?? 0}-day streak alive. Don't let it hit zero!`
-                      : `Your fire was at ${profile?.streak_count ?? 0}. Bingo forgives you — one lesson restarts it.`}
+                      ? `One short lesson today continues your ${profile?.streak_count ?? 0}-day run.`
+                      : 'Pick up where you left off. One short lesson starts a new run.'}
                   </Text>
                   <Pressable
                     onPress={() => {
@@ -1145,7 +1143,7 @@ export default function PathMap() {
                       if (b) openBlock(b);
                     }}
                     accessibilityRole="button"
-                    accessibilityLabel={lastKey === yesterdayKey ? 'Keep my streak' : 'Restart my streak'}
+                    accessibilityLabel={lastKey === yesterdayKey ? 'Continue my run' : 'Start a lesson'}
                     style={({ pressed }) => ({
                       marginTop: 10,
                       alignSelf: 'flex-start',
@@ -1161,7 +1159,7 @@ export default function PathMap() {
                   >
                     <AppIcon name="flame" size={14} color="#241806" />
                     <Text style={{ fontSize: 12, fontWeight: '800', color: '#241806' }}>
-                      {lastKey === yesterdayKey ? 'Keep my streak' : 'Restart my streak'}
+                      {lastKey === yesterdayKey ? 'Continue my run' : 'Start a lesson'}
                     </Text>
                   </Pressable>
                 </View>
@@ -1415,50 +1413,6 @@ export default function PathMap() {
             </View>
           ) : (
             <View style={{ marginBottom: 30, width: '100%', maxWidth: 384 }}>
-              {/* Licensed LabEx corpus: hundreds of hands-on labs, kept out of
-                  the path itself so the map stays a curated course. */}
-              <Pressable
-                onPress={() => router.push('/labs')}
-                accessibilityRole="button"
-                accessibilityLabel={`Open Labs: ${LABEX_COUNT} licensed hands-on labs`}
-                style={({ pressed }) => ({
-                  marginBottom: 20,
-                  width: '100%',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  borderRadius: 22,
-                  borderWidth: 1,
-                  borderColor: p.line,
-                  backgroundColor: p.surface,
-                  padding: 14,
-                  opacity: pressed ? 0.96 : 1,
-                })}
-              >
-                <View
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 16,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: p.teal,
-                  }}
-                >
-                  <AppIcon name="flask" size={22} color={p.isDark ? '#0D120B' : '#FFFDF8'} />
-                </View>
-                <View style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Text style={{ fontSize: 14.5, fontWeight: '800', color: p.ink }}>Open Labs</Text>
-                    <View style={{ borderRadius: 99, backgroundColor: p.honey, paddingHorizontal: 6, paddingVertical: 1 }}>
-                      <Text style={{ fontSize: 8.5, fontWeight: '800', letterSpacing: 0.6, color: '#0D120B' }}>NEW</Text>
-                    </View>
-                  </View>
-                  <Text style={{ marginTop: 3, fontSize: 11.5, fontWeight: '600', color: p.muted }} numberOfLines={2}>
-                    {LABEX_COUNT.toLocaleString()} licensed hands-on labs · CSS, JS, Python, Rust, Go, data science
-                  </Text>
-                </View>
-                <AppIcon name="chevRight" size={20} color={p.stone} />
-              </Pressable>
               <Text style={{ fontSize: 20, fontWeight: '800', color: p.ink }}>
                 Your courses
               </Text>
@@ -1578,7 +1532,7 @@ export default function PathMap() {
                       icon={isBlockDone(b) ? 'trophy' : KIND_ICON[b.kind] ?? 'star'}
                       label={b.title}
                       sub={`${KIND_META[b.kind].label} · ${b.minutes} min`}
-                      offset={WIND[i % WIND.length]}
+                      offset={WIND[i % WIND.length] * tier.wind}
                       onPress={() => openBlock(b)}
                     />
                     </View>
@@ -1594,7 +1548,7 @@ export default function PathMap() {
                         icon={claimed ? 'trophy' : 'gift'}
                         label="Unit chest"
                         sub={!unitDone ? 'Finish the unit' : claimed ? 'Claimed!' : 'Tap to claim a reward'}
-                        offset={WIND[unit.blocks.length % WIND.length]}
+                        offset={WIND[unit.blocks.length % WIND.length] * tier.wind}
                         onPress={() => void claimChest(unit)}
                       />
                     );
@@ -1660,6 +1614,20 @@ export default function PathMap() {
                 <Text style={{ fontSize: 10, fontWeight: '700', color: p.stone }}>more ways to learn</Text>
               </View>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+                <ExploreTile
+                  icon="flask"
+                  title="Labs"
+                  sub={`${LABEX_COUNT.toLocaleString()} hands-on labs`}
+                  tone={p.teal}
+                  onPress={() => router.push('/labs')}
+                />
+                <ExploreTile
+                  icon="upload"
+                  title="My uploads"
+                  sub="Notes → lessons"
+                  tone={p.moss}
+                  onPress={() => router.push('/uploads')}
+                />
                 <ExploreTile
                   icon="chat"
                   title="AI tutors"
@@ -1906,45 +1874,6 @@ export default function PathMap() {
                 : `Free tier • text ≤${FREE_WORD_LIMIT} words • device voice`}
             </Text>
           </View>
-          {!isPremium && (
-            <Pressable
-              onPress={() => router.push('/paywall')}
-              accessibilityRole="button"
-              accessibilityLabel="Go Premium"
-              style={({ pressed }) => ({
-                marginTop: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 7,
-                borderRadius: 16,
-                backgroundColor: p.honey,
-                paddingHorizontal: 18,
-                paddingVertical: 12,
-                transform: [{ translateY: pressed ? 2 : 0 }],
-              })}
-            >
-              <AppIcon name="crown" size={17} color="#241806" />
-              <Text style={{ fontSize: 12.5, fontWeight: '800', color: '#241806' }}>
-                Go Premium ({PREMIUM_PRICE_LABEL}) — PDF, note scans, elite voices
-              </Text>
-            </Pressable>
-          )}
-
-          <View style={{ marginTop: 18, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 14 }}>
-            {[
-              { label: 'Hearts refill options →', href: '/refill' },
-              { label: 'My uploads →', href: '/uploads' },
-              { label: 'AI Roleplay', href: '/roleplay' },
-              { label: 'Settings', href: '/settings' },
-            ].map((l) => (
-              <Link key={l.href} href={l.href as never} asChild>
-                <Pressable>
-                  <Text style={{ fontSize: 11.5, fontWeight: '700', color: p.stone }}>{l.label}</Text>
-                </Pressable>
-              </Link>
-            ))}
-          </View>
           {/* spacer for mobile bottom nav */}
           <View className="h-16 md:hidden" />
         </ScrollView>
@@ -1953,54 +1882,8 @@ export default function PathMap() {
         {Platform.OS === 'web' ? <View className="hidden pt-6 lg:flex">{rightPanel}</View> : null}
       </View>
 
-      {/* Mobile bottom nav — natural tab bar (native + narrow web) */}
-      <View
-        className="md:hidden"
-        style={{
-          borderTopWidth: 1,
-          borderTopColor: p.line,
-          backgroundColor: p.isDark ? 'rgba(1,8,4,0.92)' : 'rgba(243,247,238,0.94)',
-          paddingHorizontal: 18,
-          paddingTop: 7,
-          paddingBottom: 5,
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-          {[
-            { label: 'LEARN', icon: 'home', href: '/', active: true },
-            { label: 'LEAGUES', icon: 'trophy', href: '/leaderboard', active: false },
-            { label: 'QUESTS', icon: 'target', href: '/settings', active: false },
-            { label: 'SHOP', icon: 'crown', href: '/paywall', active: false },
-          ].map((n) => (
-            <Link key={n.label} href={n.href as never} asChild>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={n.label}
-                style={{
-                  alignItems: 'center',
-                  borderRadius: 14,
-                  backgroundColor: n.active ? (p.isDark ? '#141C10' : '#ECF1E1') : 'transparent',
-                  paddingHorizontal: 12,
-                  paddingVertical: 5,
-                }}
-              >
-                <AppIcon name={n.icon as AppIconName} size={21} color={n.active ? p.moss : p.stone} />
-                <Text
-                  style={{
-                    fontSize: 8.5,
-                    fontWeight: '800',
-                    letterSpacing: 0.7,
-                    marginTop: 1,
-                    color: n.active ? p.moss : p.stone,
-                  }}
-                >
-                  {n.label}
-                </Text>
-              </Pressable>
-            </Link>
-          ))}
-        </View>
-      </View>
+      {/* Mobile bottom nav: shared, tier-styled tab bar */}
+      <TabBar />
 
       {!compactHud && !(!profile && !onboarded) ? (
         <View style={{ position: 'absolute', right: 16, bottom: 92, zIndex: 20 }}>

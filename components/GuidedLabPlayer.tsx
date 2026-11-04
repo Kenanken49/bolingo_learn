@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import LessonProgress from './lesson/LessonProgress';
 import { Platform, Pressable, View } from 'react-native';
 import Text from './ui/Text';
 import DuoButton from './DuoButton';
@@ -92,12 +93,7 @@ export default function GuidedLabPlayer({
   return (
     <View className="flex-1">
       <View className="mb-4 flex-row items-center justify-between">
-        <View className="h-4 w-2/3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-          <View
-            className="h-full rounded-full bg-amber-400"
-            style={{ width: `${Math.max(0, Math.min(100, progressPct))}%` }}
-          />
-        </View>
+        <LessonProgress pct={progressPct} color="#FBBF24" />
         <View className="flex-row items-center gap-1">
           <AppIcon name="book" size={18} color="#FBBF24" />
           <Text className="text-sm font-extrabold text-amber-600 dark:text-amber-300">Guided</Text>
