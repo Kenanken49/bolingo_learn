@@ -9,7 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { readAsStringAsync, EncodingType } from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 import { supabase } from '../../lib/supabase';
-import { getProfile, getCompletedLessonIds, getTodayCompletionCount, completeLesson, MAX_HEARTS, type Profile } from '../../lib/progress';
+import { getProfile, getCompletedLessonIds, getTodayCompletionCount, getActivityDates, completeLesson, MAX_HEARTS, type Profile } from '../../lib/progress';
 import { uploadRawFile, waitForUploadReady } from '../../lib/uploads';
 import {
   CONTENT_RIGHTS_ITEMS,
@@ -33,7 +33,7 @@ import { useAmbient } from '../../lib/ambient';
 import { useNatural } from '../../lib/natural';
 import LifeStageHub from '../../components/LifeStageHub';
 import TierHomeHeader from '../../components/TierHomeHeader';
-import TabBar, { TABS } from '../../components/nav/TabBar';
+import TabBar, { useTabs } from '../../components/nav/TabBar';
 import { useTierStyle } from '../../lib/tierStyle';
 import WebCameraCapture from '../../components/WebCameraCapture';
 import PathOrb from '../../components/natural/PathOrb';
@@ -397,6 +397,7 @@ const KIND_ICON: Record<string, AppIconName> = {
 
 export default function PathMap() {
   const tier = useTierStyle();
+  const menuTabs = useTabs();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [uploads, setUploads] = useState<UploadRow[]>([]);
@@ -434,6 +435,8 @@ export default function PathMap() {
   const [dueCount, setDueCount] = useState(0);
   // Daily Quest: lessons finished today (drives the quest progress bar).
   const [todayCount, setTodayCount] = useState(0);
+  // Real activity for the Launcher week chart and Climber monthly line.
+  const [activity, setActivity] = useState<Date[]>([]);
   // Course picker (Duolingo style): null = all-courses grid, else one course path.
   const [courseId, setCourseIdState] = useState<string | null>(null);
   // Natural OLED palette + soothing ambience (paused off-screen and during narration).
@@ -490,6 +493,11 @@ export default function PathMap() {
       setAmbientOnState(await getAmbientOn().catch(() => true));
       if (p) setDueCount(await getDueCount(p.id).catch(() => 0));
       if (p) setTodayCount(await getTodayCompletionCount(p.id).catch(() => 0));
+      if (p) {
+        const now = new Date();
+        // From the 1st of last month: covers this week, this month and last month.
+        setActivity(await getActivityDates(p.id, new Date(now.getFullYear(), now.getMonth() - 1, 1)));
+      }
       const saved = await getSelectedCourse().catch(() => null);
       setCourseIdState(saved && COURSES_META.some((c) => c.id === saved) ? saved : null);
     } catch (e) {
@@ -832,8 +840,8 @@ export default function PathMap() {
 
   const sideNav = (
     <View style={{ width: 220, gap: 3, paddingRight: 14 }}>
-      {TABS.map((t) => ({ ...t, active: t.href === '/' })).map((n) => (
-        <Link key={n.label} href={n.href as never} asChild>
+      {menuTabs.map((t) => ({ ...t, active: t.href === '/' })).map((n) => (
+        <Link key={n.href} href={n.href as never} asChild>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={n.label}
@@ -1102,7 +1110,7 @@ export default function PathMap() {
           ) : null}
           {profile || onboarded ? (
             <FadeUp delay={45} style={{ width: '100%', alignItems: 'center' }}>
-              <TierHomeHeader completed={completed} goal={goal} onOpen={openBlock} />
+              <TierHomeHeader completed={completed} goal={goal} onOpen={openBlock} activity={profile ? activity : null} />
             </FadeUp>
           ) : null}
           {/* Adaptive UI engine: stage picker on first run, then the stage hub. */}

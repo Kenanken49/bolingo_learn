@@ -202,6 +202,31 @@ export async function getCompletedLessonIds(userId: string): Promise<Set<string>
   return new Set(((data as { lesson_id: string }[] | null) ?? []).map((r) => r.lesson_id));
 }
 
+/**
+ * When the learner was active since `since`: XP events plus first-time lesson
+ * completions. Drives the week chart, monthly consistency and finish-date
+ * forecasts. Best-effort: an empty list on error.
+ */
+export async function getActivityDates(userId: string, since: Date): Promise<Date[]> {
+  const iso = since.toISOString();
+  try {
+    const [xp, done] = await Promise.all([
+      supabase.from('xp_events').select('created_at').eq('user_id', userId).gte('created_at', iso),
+      supabase.from('lesson_completions').select('completed_at').eq('user_id', userId).gte('completed_at', iso),
+    ]);
+    const stamps = new Set<string>();
+    for (const r of (xp.data as { created_at: string }[] | null) ?? []) stamps.add(r.created_at);
+    // A completion and its XP event land within the same second; keep one.
+    const xpSeconds = new Set(Array.from(stamps).map((s) => s.slice(0, 19)));
+    for (const r of (done.data as { completed_at: string }[] | null) ?? []) {
+      if (!xpSeconds.has(r.completed_at.slice(0, 19))) stamps.add(r.completed_at);
+    }
+    return Array.from(stamps).map((s) => new Date(s)).filter((d) => !Number.isNaN(d.getTime()));
+  } catch {
+    return [];
+  }
+}
+
 /** Log XP into xp_events for the weekly leaderboard (best-effort, never blocks). */
 async function logXpEvent(userId: string, xp: number): Promise<void> {
   if (xp <= 0) return;
