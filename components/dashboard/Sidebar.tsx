@@ -1,8 +1,10 @@
 import { View, Pressable, ScrollView } from 'react-native';
+import { router } from 'expo-router';
 import Text from '../ui/Text';
 import AppIcon, { type AppIconName } from '../AppIcon';
 import LearnerAvatar from '../LearnerAvatar';
 import { useTheme } from '../../lib/theme';
+import { SPACES, useLearningSpace } from '../../lib/learningSpace';
 import { levelProgress } from '../../lib/levels';
 import type { Profile } from '../../lib/progress';
 
@@ -32,7 +34,9 @@ export default function Sidebar({
   onNavigate: (href: DashRoute) => void;
 }) {
   const [theme, setTheme] = useTheme();
+  const [space] = useLearningSpace();
   const dark = theme === 'dark';
+  const spaceMeta = SPACES.find((s) => s.id === space) ?? SPACES[1];
   const freezes = Math.max(0, profile?.streak_freezes ?? 0);
   const xp = profile?.xp ?? 0;
   const { needed } = levelProgress(xp);
@@ -51,24 +55,24 @@ export default function Sidebar({
           </Text>
         </View>
 
-        {/* Learning space */}
+        {/* Learning space — the wireframe's mode pill, synced with the hero tabs. */}
         <View className="mt-5 px-2">
           <Text className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-dash-faint">
             Learning space
           </Text>
           <Pressable
-            onPress={() => onNavigate('/mylearning')}
+            onPress={() => onNavigate('/')}
             accessibilityRole="button"
-            accessibilityLabel="Open my learning space"
+            accessibilityLabel={`Learning space: ${spaceMeta.label}, ${spaceMeta.ages}. Open home to switch.`}
             className="mt-2 flex-row items-center rounded-2xl border border-dash-line bg-dash-bg px-3 py-2.5 dark:border-dash-dline dark:bg-dash-dbg"
           >
             <AppIcon name="gradCap" size={18} color={dark ? '#7DD3FC' : '#0284C7'} />
             <View className="ml-2 flex-1">
               <Text className="text-[13px] font-extrabold text-dash-ink dark:text-dash-dink" numberOfLines={1}>
-                {profile?.username ?? 'Guest learner'}
+                {spaceMeta.label}
               </Text>
               <Text className="text-[10.5px] font-semibold text-dash-muted dark:text-dash-dmuted">
-                {isPremium ? 'Pro plan' : 'Free plan'}
+                {spaceMeta.ages}
               </Text>
             </View>
             <AppIcon name="chevRight" size={15} color={dark ? '#64748B' : '#94A3B8'} />
@@ -160,27 +164,42 @@ export default function Sidebar({
           </View>
         </View>
 
-        {/* Level / upgrade */}
+        {/* Level progress */}
+        <View className="mt-3 rounded-2xl border border-dash-line bg-dash-card p-3 dark:border-dash-dline dark:bg-dash-dbg">
+          <View className="flex-row items-center gap-1">
+            <AppIcon name="star" size={14} color="#0284C7" />
+            <Text className="text-[11px] font-extrabold text-dash-ink dark:text-dash-dink">
+              Level up in {needed} XP to unlock rewards
+            </Text>
+          </View>
+        </View>
+        {/* Upgrade — free learners get the wireframe's trial banner. */}
         {!isPremium ? (
           <Pressable
-            onPress={() => onNavigate('/community')}
+            onPress={() => router.push('/paywall')}
             accessibilityRole="button"
-            accessibilityLabel="Level progress"
-            className="mt-3 rounded-2xl border border-dash-line bg-dash-card p-3 dark:border-dash-dline dark:bg-dash-dbg"
+            accessibilityLabel="Upgrade to Pro"
+            className="mt-3 rounded-2xl bg-dash-hero p-3"
           >
-            <View className="flex-row items-center gap-1">
-              <AppIcon name="star" size={14} color="#0284C7" />
-              <Text className="text-[11px] font-extrabold text-dash-ink dark:text-dash-dink">
-                Level up in {needed} XP to unlock rewards
-              </Text>
+            <View className="flex-row items-center gap-1.5">
+              <AppIcon name="crown" size={15} color="#FBBF24" />
+              <Text className="text-[12px] font-extrabold text-white">Go Pro</Text>
             </View>
+            <Text className="mt-1 text-[10.5px] font-semibold leading-[15px] text-slate-300">
+              Audiobooks, uploads, roleplay — KSh 770/mo.
+            </Text>
           </Pressable>
-        ) : null}
+        ) : (
+          <View className="mt-3 flex-row items-center gap-1.5 rounded-2xl bg-dash-goldbg p-3 dark:bg-dash-dbg">
+            <AppIcon name="crown" size={15} color="#B45309" />
+            <Text className="text-[12px] font-extrabold text-dash-gold">Pro plan active</Text>
+          </View>
+        )}
       </ScrollView>
 
       {/* Profile footer */}
       <Pressable
-        onPress={() => onNavigate('/community')}
+        onPress={() => router.push('/auth')}
         accessibilityRole="button"
         accessibilityLabel="Account"
         className="mt-3 flex-row items-center rounded-2xl px-2 py-2"

@@ -2,6 +2,7 @@ import { View, Pressable } from 'react-native';
 import Text from '../ui/Text';
 import AppIcon, { type AppIconName } from '../AppIcon';
 import { useTheme } from '../../lib/theme';
+import { SPACES, type LearningSpace } from '../../lib/learningSpace';
 import type { DashTrack, DayCount, ScheduleItem } from '../../lib/dashboard';
 
 /** Small section header: eyebrow + bold title + optional action. */
@@ -69,6 +70,8 @@ export function HeroCard({
   progress,
   progressLabel,
   onResume,
+  space,
+  onSpace,
 }: {
   eyebrow: string;
   title: string;
@@ -76,14 +79,37 @@ export function HeroCard({
   progress: number;
   progressLabel: string;
   onResume: () => void;
+  /** Wireframe learning-mode tabs — every mode resolves a real target. */
+  space: LearningSpace;
+  onSpace: (s: LearningSpace) => void;
 }) {
   return (
     <View className="overflow-hidden rounded-3xl bg-dash-hero p-5">
-      <View className="flex-row items-center gap-1.5">
-        <View className="h-2 w-2 rounded-full bg-emerald-400" />
-        <Text className="text-[10px] font-extrabold uppercase tracking-[1.8px] text-emerald-300">
-          Adaptive experience
-        </Text>
+      <View className="flex-row items-center justify-between gap-2">
+        <View className="flex-row items-center gap-1.5">
+          <View className="h-2 w-2 rounded-full bg-emerald-400" />
+          <Text className="text-[10px] font-extrabold uppercase tracking-[1.8px] text-emerald-300">
+            Adaptive experience
+          </Text>
+        </View>
+        <View className="flex-row gap-1">
+          {SPACES.map((s) => {
+            const on = s.id === space;
+            return (
+              <Pressable
+                key={s.id}
+                onPress={() => onSpace(s.id)}
+                accessibilityRole="button"
+                accessibilityLabel={`${s.label}, ${s.ages}`}
+                className={`rounded-full px-2 py-1 ${on ? 'bg-dash-cyan' : 'bg-white/10'}`}
+              >
+                <Text className={`text-[9px] font-extrabold ${on ? 'text-[#062A33]' : 'text-slate-300'}`}>
+                  {s.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
       <Text className="mt-3 text-[10.5px] font-extrabold uppercase tracking-[1.2px] text-slate-400">
         {eyebrow}

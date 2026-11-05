@@ -7,11 +7,13 @@ import Text from '../../components/ui/Text';
 import AppIcon from '../../components/AppIcon';
 import { getProfile, getCompletedLessonIds, type Profile } from '../../lib/progress';
 import { allTracks, type DashTrack } from '../../lib/dashboard';
+import { useLearningSpace } from '../../lib/learningSpace';
 
 type Tab = 'all' | 'progress' | 'done';
 
 export default function Explore() {
   const { q } = useLocalSearchParams<{ q?: string }>();
+  const [space] = useLearningSpace();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [tab, setTab] = useState<Tab>('all');
@@ -31,7 +33,7 @@ export default function Explore() {
   );
 
   const query = (typeof q === 'string' ? q : '').trim().toLowerCase();
-  const tracks = allTracks(completed).filter((t) => {
+  const tracks = allTracks(completed, space).filter((t) => {
     if (query && !`${t.title} ${t.blurb}`.toLowerCase().includes(query)) return false;
     const pct = t.total ? t.progress / t.total : 0;
     if (tab === 'progress') return pct > 0 && pct < 1;

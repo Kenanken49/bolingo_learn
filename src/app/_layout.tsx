@@ -16,6 +16,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { cssInterop, useColorScheme } from 'nativewind';
 import Animated from 'react-native-reanimated';
 import { initTheme, useTheme } from '../../lib/theme';
+import { initLearningSpace } from '../../lib/learningSpace';
 import { configureReminderHandler, ensureReminderScheduled } from '../../lib/reminders';
 import { initTelemetry, trackScreen } from '../../lib/telemetry';
 import { startAds } from '../../lib/adsRuntime';
@@ -43,6 +44,7 @@ function ThemeSync() {
   const { setColorScheme } = useColorScheme();
   useEffect(() => {
     initTheme().catch(() => {});
+    initLearningSpace().catch(() => {});
   }, []);
   useEffect(() => {
     try {

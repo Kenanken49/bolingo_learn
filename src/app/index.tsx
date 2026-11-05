@@ -15,7 +15,7 @@ import {
 import { getProfile, getCompletedLessonIds, getTodayCompletionCount, type Profile } from '../../lib/progress';
 import { getDueCount } from '../../lib/srs';
 import { levelForXp, levelProgress } from '../../lib/levels';
-import { CURRICULUM, type CurriculumBlock } from '../../lib/curriculum';
+import type { CurriculumBlock } from '../../lib/curriculum';
 import {
   allTracks,
   curatedTracks,
@@ -23,10 +23,11 @@ import {
   firstName,
   weeklyMomentum,
   scheduleItems,
-  resumeBlock,
+  resumeForSpace,
   type DayCount,
   type ScheduleItem,
 } from '../../lib/dashboard';
+import { useLearningSpace } from '../../lib/learningSpace';
 
 /** Open a path block in its real player (project runner vs quiz engine). */
 export function openBlock(b: CurriculumBlock) {
@@ -38,6 +39,7 @@ export function openBlock(b: CurriculumBlock) {
 }
 
 export default function DashboardHome() {
+  const [space, setSpace] = useLearningSpace();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [todayCount, setTodayCount] = useState(0);
@@ -76,10 +78,9 @@ export default function DashboardHome() {
     }, [refresh])
   );
 
-  const next = resumeBlock(completed);
-  const nextUnit = next ? CURRICULUM.find((u) => u.blocks.some((b) => b.id === next.id)) : undefined;
-  const unitDone = nextUnit ? nextUnit.blocks.filter((b) => completed.has(b.lessonId) || completed.has(b.id)).length : 0;
-  const unitTotal = nextUnit?.blocks.length ?? 0;
+  const resume = resumeForSpace(completed, space);
+  const resumeBlock = resume?.block ?? null;
+  const resumeProject = resume?.project ?? null;
 
   const xp = profile?.xp ?? 0;
   const level = levelForXp(xp);
@@ -94,19 +95,32 @@ export default function DashboardHome() {
     { id: 'streak', label: 'Feed your streak', done: !streakAtRisk, frac: streakAtRisk ? '0/1' : 'done', icon: 'flame' as const },
   ];
 
-  const tracks = allTracks(completed).slice(0, 3);
+  const tracks = allTracks(completed, space).slice(0, 3);
   const curated = curatedTracks(completed);
 
   const main = (
     <>
-      {next && nextUnit ? (
+      {resume && (resumeBlock || resumeProject) ? (
         <HeroCard
-          eyebrow={`${nextUnit.section} · ${nextUnit.title}`}
-          title={next.lessonTitle || next.title}
-          sub={`${next.title} · ${next.minutes} min · +${next.xp} XP`}
-          progress={unitTotal ? unitDone / unitTotal : 0}
-          progressLabel={`${Math.round(unitTotal ? (unitDone / unitTotal) * 100 : 0)}%`}
-          onResume={() => openBlock(next)}
+          eyebrow={resume.eyebrow}
+          title={resumeBlock ? resumeBlock.lessonTitle || resumeBlock.title : (resumeProject?.title ?? '')}
+          sub={
+            resumeBlock
+              ? `${resumeBlock.title} · ${resumeBlock.minutes} min · +${resumeBlock.xp} XP`
+              : `Capstone project · +${resumeProject?.xp ?? 0} XP`
+          }
+          progress={resume.progress}
+          progressLabel={`${Math.round(resume.progress * 100)}%`}
+          onResume={() => {
+            if (resumeBlock) openBlock(resumeBlock);
+            else if (resumeProject)
+              router.push({
+                pathname: '/project/[lessonId]',
+                params: { lessonId: resumeProject.id, title: resumeProject.title },
+              });
+          }}
+          space={space}
+          onSpace={(s) => void setSpace(s)}
         />
       ) : null}
       <StatsStrip
