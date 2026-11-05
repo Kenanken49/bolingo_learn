@@ -11,10 +11,12 @@ git push → Coolify builds Dockerfile → container serves dist/ + /api/*
                                           └── Postgres (DATABASE_URL)
 ```
 
-The concrete target is the InterServer VPS (`162.35.183.161`), where nginx
-stays on 80/443 and Coolify only builds and runs the container:
-[deploy/vps-coolify.md](../deploy/vps-coolify.md) +
-[deploy/nginx-bolingo-web.conf](../deploy/nginx-bolingo-web.conf).
+The concrete target is the fresh InterServer VPS (`162.35.183.135`), where
+Coolify's own proxy owns 80/443 and issues the certificate; the older box
+(`162.35.183.161`) keeps nginx and the `/llm-<token>/` tutor endpoint that Ask
+Bingo calls: [deploy/vps-coolify.md](../deploy/vps-coolify.md). The
+[deploy/nginx-bolingo-web.conf](../deploy/nginx-bolingo-web.conf) snippet is
+only for the fallback layout where nginx front-ends the container.
 
 ## What replaced what
 
