@@ -35,7 +35,8 @@ only for the fallback layout where nginx front-ends the container.
    Coolify publishes an internal `postgres://…` URL — copy it, that is
    `DATABASE_URL`.
 2. **Application:** *New resource → Application → Git repository*, branch
-   `main`, build pack **Dockerfile**, port **3000**.
+   `main` (the live stack tracks `coolify-hosting` until this migration merges),
+   build pack **Dockerfile**, port **3000**.
 3. **Environment variables** (Application → Environment):
 
    | Name | Kind | Notes |
@@ -54,15 +55,21 @@ only for the fallback layout where nginx front-ends the container.
 4. **Migrations:** run once from the container terminal
    (`node server/migrate.mjs`), or set `MIGRATE_ON_START=1` and redeploy.
    Coolify's post-deployment command field works too.
-5. **Domain:** Application → Domains → add `bolingo.co.ke`, enable HTTPS
-   (Let's Encrypt is automatic in Coolify), and keep port 3000 as the target.
+5. **Domain:** Application → Domains → add **both** `bolingo.co.ke` and
+   `www.bolingo.co.ke`, enable HTTPS (Let's Encrypt is automatic in Coolify, one
+   certificate per hostname), and keep port 3000 as the target. A domain edit only
+   rewrites stored labels — redeploy so the container is recreated and Traefik
+   actually sees it.
 6. **AdMob console → Settings → app-ads.txt:** add the same domain, then
    replace the placeholder publisher id in `public/app-ads.txt`
    (`pub-0000000000000000`) with the real Publisher ID (AdMob console →
    Settings → Account information) and push. Coolify redeploys and
    `/app-ads.txt` is served within a minute.
-7. **Retire Netlify:** point DNS at the Coolify server *after* the domain
-   resolves there, then delete the Netlify site. Keep AdMob's app-ads.txt
+7. **Retire Netlify:** the DNS *zone* is still hosted at Netlify
+   (`dns1–dns4.p04.nsone.net`), so the two A records are edited in Netlify's DNS
+   screen, not at the registrar — and deleting the Netlify site would delete the
+   zone with it. Move both A records to the Coolify server, wait for the
+   certificates to appear, then delete the site. Keep AdMob's app-ads.txt
    domain unchanged — it is the domain, not the host.
 
 ## Every release after that
