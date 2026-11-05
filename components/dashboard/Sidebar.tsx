@@ -48,7 +48,7 @@ export default function Sidebar({
         {/* Brand */}
         <View className="flex-row items-center gap-2 px-2">
           <View className="h-8 w-8 items-center justify-center rounded-full bg-dash-pillink">
-            <Text className="text-[16px] font-extrabold text-white">b</Text>
+            <Text className="text-[16px] font-extrabold text-white">B</Text>
           </View>
           <Text className="text-[19px] font-extrabold tracking-tight text-dash-ink dark:text-dash-dink">
             Bolingo
