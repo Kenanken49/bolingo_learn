@@ -6,6 +6,7 @@ import TextInput from '../../components/ui/TextInput';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import BrandMark from '../../components/BrandMark';
 import AppIcon, { type AppIconName } from '../../components/AppIcon';
+import TabBar from '../../components/nav/TabBar';
 import { StatusBar } from 'expo-status-bar';
 import {
   getProfile,
@@ -61,6 +62,7 @@ import {
 } from '../../lib/preferences';
 import { setTelemetryConsent } from '../../lib/telemetry';
 import { adsSupported } from '../../lib/ads';
+import { SPACES, useLearningSpace } from '../../lib/learningSpace';
 import { showAdPrivacyOptions } from '../../lib/adsRuntime';
 
 interface CastCapture {
@@ -514,6 +516,7 @@ export default function Settings() {
   };
 
   const isPremium = profile?.is_premium === true;
+  const [space, setSpace] = useLearningSpace();
   /** Re-open Google's UMP form so the ad-consent choice can be changed. */
   const openAdPrivacy = async () => {
     const shown = await showAdPrivacyOptions();
@@ -558,6 +561,7 @@ export default function Settings() {
   );
 
   return (
+    <View style={{ flex: 1 }}>
     <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
       <Text className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">Settings</Text>
       <Text onPhoto className="text-base text-slate-600 dark:text-slate-200">
@@ -610,6 +614,59 @@ export default function Settings() {
           ) : null}
         </View>
       ) : null}
+
+      {/* Learning space: the dashboard hero tabs live here too. The choice
+          reorders tracks and retargets the hero resume everywhere. */}
+      <View className="mt-6 w-full max-w-sm rounded-2xl border-2 border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+        <View className="flex-row items-center gap-1.5">
+          <AppIcon name="user" size={20} color="#0F172A" />
+          <Text className="text-base font-extrabold text-slate-800 dark:text-slate-200">Your space</Text>
+        </View>
+        <Text className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Bolingo adapts the home screen, track order and resume target to your space. Saved on this device only.
+        </Text>
+        <View className="mt-3 gap-2">
+          {SPACES.map((s) => {
+            const on = space === s.id;
+            return (
+              <Pressable
+                key={s.id}
+                onPress={() => void setSpace(s.id)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`${s.label}, ${s.ages}`}
+                className={`flex-row items-center gap-2 rounded-xl border-2 p-2.5 ${
+                  on ? 'border-sky-500 bg-sky-50 dark:bg-sky-950' : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+                }`}
+              >
+                <View className="flex-1">
+                  <Text className="text-sm font-extrabold text-slate-800 dark:text-slate-200">
+                    {s.label} <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">· {s.ages}</Text>
+                  </Text>
+                  <Text className="text-xs text-slate-500 dark:text-slate-400" numberOfLines={2}>
+                    {s.blurb}
+                  </Text>
+                </View>
+                {on ? <AppIcon name="checkCircle" size={18} color="#0284C7" /> : null}
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
+      <Pressable
+        onPress={() => router.push('/offline-ai')}
+        accessibilityRole="button"
+        accessibilityLabel="Open Offline AI and sync"
+        className="mt-3 w-full max-w-sm flex-row items-center gap-2 rounded-2xl border-2 border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+      >
+        <AppIcon name="download" size={20} color="#0284C7" />
+        <View className="flex-1">
+          <Text className="text-base font-extrabold text-slate-800 dark:text-slate-200">Offline AI & sync</Text>
+          <Text className="text-xs text-slate-500 dark:text-slate-400">On-device models, offline mode, and Sync now</Text>
+        </View>
+        <AppIcon name="chevRight" size={16} color="#94A3B8" />
+      </Pressable>
 
       <View className="mt-6 w-full max-w-sm rounded-2xl border-2 border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950 p-4">
         <View className="flex-row items-center gap-1.5">
@@ -1430,10 +1487,9 @@ export default function Settings() {
         <BrandMark />
         <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">v1.0.0 | Made for learners</Text>
       </View>
-      <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
-        <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
-      </Pressable>
       <StatusBar style="auto" />
     </ScrollView>
+    <TabBar />
+    </View>
   );
 }

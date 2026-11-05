@@ -111,6 +111,29 @@ export default function Explore() {
           </Text>
         ) : null}
       </View>
+      {/* Careers: certified tracks unlock real job listings matched to earned certificates. */}
+      <View className="mt-5">
+        <SectionHeader title="Careers" />
+        <Pressable
+          onPress={() => router.push('/jobs')}
+          accessibilityRole="button"
+          accessibilityLabel="Browse jobs matched to your certificates"
+          className="flex-row items-center rounded-2xl border border-dash-line bg-dash-card p-3 dark:border-dash-dline dark:bg-dash-dcard"
+        >
+          <View className="h-11 w-11 items-center justify-center rounded-xl bg-dash-pill dark:bg-dash-dbg">
+            <AppIcon name="briefcase" size={20} color="#0284C7" />
+          </View>
+          <View className="ml-3 flex-1">
+            <Text className="text-[14px] font-extrabold text-dash-ink dark:text-dash-dink" numberOfLines={1}>
+              Jobs for certified learners
+            </Text>
+            <Text className="mt-0.5 text-[11px] font-semibold text-dash-muted dark:text-dash-dmuted" numberOfLines={2}>
+              Listings matched to the certificates you have actually earned.
+            </Text>
+          </View>
+          <AppIcon name="chevRight" size={18} color="#94A3B8" />
+        </Pressable>
+      </View>
     </Shell>
   );
 }

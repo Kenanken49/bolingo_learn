@@ -15,7 +15,8 @@ import {
   parseProjectMessage,
   type ProjectSandboxResult,
 } from '../../../lib/projectSandbox';
-import { completeLesson, getProfile } from '../../../lib/progress';
+import { getProfile } from '../../../lib/progress';
+import { completeLessonOfflineFirst, offlineUserId } from '../../../lib/sync/syncStore';
 import AskBingo from '../../../components/AskBingo';
 import AppIcon from '../../../components/AppIcon';
 import Mascot from '../../../components/AfricanMascots';
@@ -236,7 +237,7 @@ export default function CertificationProject() {
       correctAnswer: c.hint,
       correct: c.pass,
     }));
-    const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0) => {
+    const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0, pendingSync = false) => {
       setLessonResult({
         lessonId,
         title: String(title ?? project.title),
@@ -248,13 +249,22 @@ export default function CertificationProject() {
         leveledUp,
         newLevel,
         totalXp,
+        pendingSync,
       });
       router.replace('/results');
     };
+    // Offline, getProfile() fails — the saved session still knows who the
+    // learner is, so the project XP is queued instead of lost.
     const p = await getProfile().catch(() => null);
-    if (p) {
-      completeLesson(p.id, project.xp, lessonId)
-        .then((prof) => {
+    const uid = p?.id ?? (await offlineUserId());
+    if (uid) {
+      completeLessonOfflineFirst({ userId: uid, xp: project.xp, lessonId })
+        .then((r) => {
+          if (r.queued) {
+            goResults(0, false, 0, 0, true);
+            return;
+          }
+          const prof = r.profile;
           const newLevel = levelForXp(prof.xp);
           goResults(prof.streak_count, newLevel > levelForXp(prof.xp - project.xp), newLevel, prof.xp);
         })

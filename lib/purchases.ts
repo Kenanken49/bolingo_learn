@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import { supabase } from './supabase';
-import { mpesaPremiumLive } from './mpesa';
+import { mpesaPaidThrough, mpesaPremiumLive } from './mpesa';
+import { latestPaidThrough, type PaidThrough } from './edgeAI/premiumLease';
 
 /** Entitlement id in RevenueCat dashboard — one entitlement gates everything. */
 export const PREMIUM_ENTITLEMENT = 'premium';
@@ -115,6 +116,31 @@ export async function refreshPremiumStatus(userId: string): Promise<boolean> {
     // profile sync is best-effort
   }
   return live;
+}
+
+/**
+ * When does the learner's current paid period end, across both rails?
+ * Used to bound how long an on-device model keeps working offline
+ * (`lib/edgeAI/premiumLease.ts`). Rails that can't answer are skipped; if
+ * none can, the caller falls back to the fixed offline cap.
+ */
+export async function premiumPaidThrough(): Promise<PaidThrough> {
+  const store = async (): Promise<PaidThrough | null> => {
+    const P = nativePurchasesOrNull();
+    configurePurchases();
+    if (!P || !configured) return null;
+    try {
+      const info = await P.getCustomerInfo();
+      const ent = info?.entitlements?.active?.[PREMIUM_ENTITLEMENT];
+      if (!ent) return null;
+      const ms = typeof ent.expirationDateMillis === 'number' ? ent.expirationDateMillis : ent.expirationDate ? Date.parse(ent.expirationDate) : null;
+      return { until: ms != null && Number.isFinite(ms) ? ms : null, willRenew: ent.willRenew === true };
+    } catch {
+      return null;
+    }
+  };
+  const [s, m] = await Promise.all([store(), mpesaPaidThrough()]);
+  return latestPaidThrough([s, m]);
 }
 
 export async function getOfferingsSafe(): Promise<{ offering: any | null; error: string | null }> {

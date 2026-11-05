@@ -1,4 +1,5 @@
 import { createElement, useCallback, useEffect, useRef, useState } from 'react';
+import LessonProgress from './lesson/LessonProgress';
 import { Platform, Pressable, View } from 'react-native';
 import Text from './ui/Text';
 import DuoButton from './DuoButton';
@@ -236,9 +237,7 @@ export default function CodeExercise({
     <View className="flex-1">
       {/* Top HUD Row */}
       <View className="mb-4 flex-row items-center justify-between">
-        <View className="h-4 w-2/3 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-          <View className="h-full rounded-full bg-green-500" style={{ width: `${Math.max(0, Math.min(100, progressPct))}%` }} />
-        </View>
+        <LessonProgress pct={progressPct} />
         <View className="flex-row items-center gap-1">
           <AppIcon name="checkCircle" size={18} color="#0EA5E9" />
           <Text className="text-sm font-extrabold text-sky-600 dark:text-sky-400">{standard.masteryPct}% mastery</Text>

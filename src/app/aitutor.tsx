@@ -39,6 +39,20 @@ export default function AITutor() {
         <View className="mt-3">
           <AskBingo lessonTitle="AI Tutor" userId={profile?.id ?? null} />
         </View>
+        <Link href="/offline-ai" asChild>
+          <View className="mt-3 flex-row items-center rounded-xl border border-dash-line bg-dash-bg p-3 dark:border-dash-dline dark:bg-dash-dbg">
+            <AppIcon name="download" size={20} color="#0284C7" />
+            <View className="ml-2 flex-1">
+              <Text className="text-[13px] font-extrabold text-dash-ink dark:text-dash-dink">
+                Offline AI & sync
+              </Text>
+              <Text className="text-[11px] font-semibold text-dash-muted dark:text-dash-dmuted">
+                On-device models, offline mode, pending uploads.
+              </Text>
+            </View>
+            <AppIcon name="chevRight" size={18} color="#0284C7" />
+          </View>
+        </Link>
         <Link href="/roleplay" asChild>
           <View className="mt-3 flex-row items-center rounded-xl bg-dash-lav p-3 dark:bg-dash-dbg">
             <AppIcon name="chat" size={20} color="#8B5CFF" />

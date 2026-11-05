@@ -3,6 +3,7 @@ import { View, Pressable, ScrollView, RefreshControl, ActivityIndicator, Alert }
 import Text from '../../components/ui/Text';
 import TextInput from '../../components/ui/TextInput';
 import { router, useFocusEffect } from 'expo-router';
+import TabBar from '../../components/nav/TabBar';
 import { StatusBar } from 'expo-status-bar';
 import { getProfile } from '../../lib/progress';
 import AppIcon from '../../components/AppIcon';
@@ -132,6 +133,7 @@ export default function Leaderboard() {
   const me = (rows ?? []).find((r) => r.user_id === userId) ?? null;
 
   return (
+    <View style={{ flex: 1 }}>
     <ScrollView
       className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -290,10 +292,9 @@ export default function Leaderboard() {
         </View>
       )}
 
-      <Pressable onPress={() => router.replace('/')} className="mt-6 items-center">
-        <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
-      </Pressable>
       <StatusBar style="auto" />
     </ScrollView>
+    <TabBar />
+    </View>
   );
 }

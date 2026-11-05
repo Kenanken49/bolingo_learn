@@ -9,10 +9,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type LearningSpace = 'explorer' | 'launcher' | 'climber';
 
-export const SPACES: { id: LearningSpace; label: string; ages: string }[] = [
-  { id: 'explorer', label: 'Explorer', ages: 'Ages 10–18' },
-  { id: 'launcher', label: 'Career Launcher', ages: 'Ages 19–25' },
-  { id: 'climber', label: 'Career Climber', ages: 'Ages 26–40' },
+export const SPACES: { id: LearningSpace; label: string; ages: string; blurb: string }[] = [
+  { id: 'explorer', label: 'Explorer', ages: 'Ages 10–18', blurb: 'Languages first · playful pace' },
+  { id: 'launcher', label: 'Career Launcher', ages: 'Ages 19–25', blurb: 'Full catalog · career pace' },
+  { id: 'climber', label: 'Career Climber', ages: 'Ages 26–40', blurb: 'Certifications first · bite-sized' },
 ];
 
 const KEY = 'bolingo.learning-space';

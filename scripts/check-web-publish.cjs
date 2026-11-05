@@ -84,6 +84,28 @@ check('No lazy icon font can red-screen the site', () => {
   assert(/fontsLoaded \|\| fontError/.test(layout), 'a font failure must hide the splash, never wedge the app');
 });
 
+check('The adaptive wireframe board is published at /wireframes/', () => {
+  const toml = read('netlify.toml');
+  assert(/expo export --platform web && node scripts\/publish-wireframes\.cjs/.test(toml), 'the build must copy the wireframe board after the export');
+  const os = require('node:os');
+  const { execFileSync } = require('node:child_process');
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), 'wf-'));
+  try {
+    execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'publish-wireframes.cjs'), out], { stdio: 'pipe' });
+    for (const f of ['wireframes/index.html', 'wireframes/styles.css', 'wireframes/app.js', 'wireframes-v2/assets/bingo-happy.png', 'wireframes-v2/assets/learner.svg']) {
+      assert(fs.existsSync(path.join(out, f)), `published board is missing ${f}`);
+    }
+    const html = fs.readFileSync(path.join(out, 'wireframes', 'index.html'), 'utf8');
+    assert(html.includes('<base href="/wireframes/">'), '/wireframes without a slash needs the base href');
+    for (const m of html.matchAll(/(?:src|href)="(?!https?:|#|data:)([^"]+)"/g)) {
+      if (m[1] === '/wireframes/') continue;
+      assert(fs.existsSync(path.join(out, 'wireframes', m[1])), `board links to a file that is not published: ${m[1]}`);
+    }
+  } finally {
+    fs.rmSync(out, { recursive: true, force: true });
+  }
+});
+
 if (failures > 0) {
   console.error(`Web publish gate FAILED — ${failures} check(s) failed.`);
   process.exit(1);

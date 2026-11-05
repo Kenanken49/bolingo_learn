@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { View, Pressable, ScrollView } from 'react-native';
+import { View, Pressable, ScrollView, Share, ActivityIndicator } from 'react-native';
 import Text from '../../components/ui/Text';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +8,8 @@ import AppIcon, { ContentMark } from '../../components/AppIcon';
 import { CERTIFICATIONS, fetchRemoteCatalog, isTrackCertified, trackProgress } from '../../lib/certifications';
 import type { CertTrack } from '../../lib/certifications';
 import { getCompletedLessonIds, getProfile } from '../../lib/progress';
+import { issueCredential, myCredentials, type Credential } from '../../lib/credentials';
+import { credentialUrl } from '../../lib/api';
 
 /**
  * Core Curriculum — 7 freeCodeCamp-style certification tracks × 5 mandatory
@@ -17,6 +19,25 @@ import { getCompletedLessonIds, getProfile } from '../../lib/progress';
 export default function Certifications() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [open, setOpen] = useState<Record<string, boolean>>({ rwd: true });
+  // Public credential links, keyed by track id once issued.
+  const [creds, setCreds] = useState<Record<string, Credential>>({});
+  const [issuing, setIssuing] = useState<string | null>(null);
+  const [credError, setCredError] = useState<Record<string, string>>({});
+
+  const shareLink = async (trackId: string) => {
+    setIssuing(trackId);
+    setCredError((e) => ({ ...e, [trackId]: '' }));
+    try {
+      const c = creds[trackId] ?? (await issueCredential(trackId));
+      setCreds((m) => ({ ...m, [trackId]: c }));
+      const url = credentialUrl(c.code);
+      await Share.share({ message: `I earned the ${c.trackTitle} certification on Bolingo Learn. Verify it here: ${url}`, url });
+    } catch (e) {
+      setCredError((m) => ({ ...m, [trackId]: e instanceof Error ? e.message : 'Could not create the link.' }));
+    } finally {
+      setIssuing(null);
+    }
+  };
   // Remote catalog wins when it validates; the bundle is the offline fallback.
   const [tracks, setTracks] = useState<CertTrack[]>(CERTIFICATIONS);
   useEffect(() => {
@@ -28,7 +49,12 @@ export default function Certifications() {
   const refresh = useCallback(async () => {
     try {
       const p = await getProfile();
-      if (p) setCompleted(await getCompletedLessonIds(p.id));
+      if (p) {
+        setCompleted(await getCompletedLessonIds(p.id));
+        myCredentials()
+          .then((list) => setCreds(Object.fromEntries(list.filter((c) => !c.revoked).map((c) => [c.trackId, c]))))
+          .catch(() => {});
+      }
     } catch {
       // guests see the catalog; progress unlocks after sign-in
     }
@@ -127,13 +153,38 @@ export default function Certifications() {
                   );
                 })}
                 {certified ? (
-                  <View className="mx-3 mb-3 items-center rounded-2xl bg-amber-100 dark:bg-amber-950 py-2.5">
+                  <View className="mx-3 mb-3 rounded-2xl bg-amber-100 dark:bg-amber-950 p-3">
                     <View className="flex-row items-center justify-center gap-1.5">
                       <AppIcon name="trophy" size={16} color="#92400E" />
                       <Text className="font-duo text-sm font-extrabold text-amber-800 dark:text-amber-200">
                         {t.name} — Certified!
                       </Text>
                     </View>
+                    {/* Public credential link: issued only after the server re-checks all 5 projects. */}
+                    <Pressable
+                      onPress={() => void shareLink(t.id)}
+                      disabled={issuing === t.id}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Share a verification link for ${t.name}`}
+                      className="mt-2 flex-row items-center justify-center gap-1.5 rounded-xl bg-amber-500 py-2.5"
+                    >
+                      {issuing === t.id ? <ActivityIndicator color="#fff" /> : <AppIcon name="link" size={15} color="#FFFFFF" />}
+                      <Text className="font-extrabold text-white">{creds[t.id] ? 'Share verification link' : 'Get a shareable link'}</Text>
+                    </Pressable>
+                    {creds[t.id] ? (
+                      <Pressable
+                        onPress={() => router.push({ pathname: '/verify/[code]', params: { code: creds[t.id].code } })}
+                        accessibilityRole="link"
+                        className="mt-1.5 items-center"
+                      >
+                        <Text className="text-xs font-bold text-amber-800 dark:text-amber-200">
+                          {credentialUrl(creds[t.id].code).replace(/^https?:\/\//, '')}
+                        </Text>
+                      </Pressable>
+                    ) : null}
+                    {credError[t.id] ? (
+                      <Text className="mt-1.5 text-center text-xs font-bold text-red-700 dark:text-red-300">{credError[t.id]}</Text>
+                    ) : null}
                   </View>
                 ) : null}
               </View>

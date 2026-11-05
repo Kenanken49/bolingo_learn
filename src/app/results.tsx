@@ -18,6 +18,8 @@ import { getKikiState } from '../../lib/kikiStore';
 import { getPendingGuestResult, type PendingGuestResult } from '../../lib/onboarding';
 import { CURRICULUM, blockByLessonId } from '../../lib/curriculum';
 import { isProjectLesson } from '../../lib/courses';
+import { useTierStyle } from '../../lib/tierStyle';
+import { LIFE_STAGES } from '../../lib/lifeStage';
 
 export default function Results() {
   const result = getLessonResult();
@@ -25,6 +27,9 @@ export default function Results() {
   const score = result ? resultsScore(result) : 0;
   const pct = Math.round(score);
   const celebrates = shouldCelebrate(result);
+  // Climbers (26–40) get one quiet line: no ribbons, no applause, no mascot.
+  const tier = useTierStyle();
+  const quiet = !LIFE_STAGES[tier.stage].ux.celebrations;
   // Profile-second upsell: guests see a save-progress card after winning XP.
   const [profile, setProfile] = useState<Profile | null>(null);
   const [pending, setPending] = useState<PendingGuestResult | null>(null);
@@ -52,8 +57,8 @@ export default function Results() {
     if (!result || !celebrates) return;
     if (celebratedFor.current === result.lessonId) return;
     celebratedFor.current = result.lessonId;
-    void playCelebration();
-  }, [result, celebrates]);
+    if (!quiet) void playCelebration();
+  }, [result, celebrates, quiet]);
   useEffect(() => {
     if (!showLevelUp) return;
     Animated.spring(pop, { toValue: 1, friction: 5, tension: 120, useNativeDriver: true }).start();
@@ -118,19 +123,25 @@ export default function Results() {
   return (
     <View className="flex-1">
       {burst && celebrates ? (
-        <Celebration duration={FULL_CELEBRATION_MS} onDone={() => setBurst(false)} />
+        <Celebration duration={FULL_CELEBRATION_MS} count={quiet ? 0 : undefined} onDone={() => setBurst(false)} />
       ) : null}
     <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-      {passed ? (
-        <Mascot character="bingo" mood="party" size={110} />
+      {quiet ? (
+        <Text onPhoto className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-300">
+          {passed ? 'Done · saved to your progress' : 'Saved · worth one more pass'}
+        </Text>
+      ) : passed ? (
+        <Mascot character="bingo" mood="party" size={tier.playful ? 110 : 76} />
       ) : pct >= 50 ? (
         <Mascot character="livia" mood="happy" size={110} />
       ) : (
         <Mascot character="bingo" mood="sad" size={110} />
       )}
+      {quiet ? null : (
       <Text onPhoto className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-300">
         {passed ? 'Bingo is dancing' : pct >= 50 ? 'Livia is proud' : 'Bingo believes in you'}
       </Text>
+      )}
       <Text onPhoto className="mt-2 font-duo text-2xl font-extrabold text-slate-900 dark:text-slate-100">
         {passed ? 'Mastery unlocked' : 'Not mastered yet'}
       </Text>
@@ -177,6 +188,22 @@ export default function Results() {
           </View>
         ) : null}
       </View>
+
+      {/* Offline-first: the result is safe on this device until Smart Sync uploads it. */}
+      {result.pendingSync ? (
+        <View
+          className="mt-4 w-full max-w-sm flex-row items-start gap-2 rounded-2xl border-2 border-sky-200 bg-sky-50 p-3 dark:border-sky-900 dark:bg-sky-950"
+          accessibilityRole="summary"
+        >
+          <AppIcon name="download" size={16} color="#0284C7" />
+          <View className="flex-1">
+            <Text className="text-sm font-extrabold text-sky-800 dark:text-sky-200">Saved on this device</Text>
+            <Text className="mt-0.5 text-xs leading-4 text-sky-700 dark:text-sky-300">
+              {`You're offline, so your +${result.xpEarned} XP and this lesson's progress will sync as soon as you're back online. Your streak updates then too.`}
+            </Text>
+          </View>
+        </View>
+      ) : null}
 
       {/* Kiki v3: the Goldilocks next challenge, picked for YOUR brain. */}
       {kikiPick ? (

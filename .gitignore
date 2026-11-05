@@ -54,3 +54,6 @@ supabase/.temp/
 # Session import artifacts (never ship)
 .cloud-attachments/
 .figma-ref/
+
+# Local Netlify folder
+.netlify

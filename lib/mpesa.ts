@@ -103,6 +103,29 @@ export async function mpesaPremiumLive(): Promise<boolean> {
   }
 }
 
+/** End of the latest confirmed, still-running M-Pesa period; null if none or unreadable. */
+export async function mpesaPaidThrough(): Promise<{ until: number; willRenew: false } | null> {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return null;
+    const { data, error } = await supabase
+      .from('mpesa_checkouts')
+      .select('period_ends')
+      .eq('user_id', user.id)
+      .eq('status', 'confirmed')
+      .gt('period_ends', new Date().toISOString())
+      .order('period_ends', { ascending: false })
+      .limit(1);
+    if (error || !Array.isArray(data) || data.length === 0) return null;
+    const until = Date.parse((data[0] as { period_ends: string }).period_ends);
+    return Number.isFinite(until) ? { until, willRenew: false } : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchMpesaState(): Promise<MpesaState> {
   try {
     const payload = await invoke({ action: 'status' });

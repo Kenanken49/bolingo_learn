@@ -12,6 +12,16 @@ import {
   Roboto_700Bold,
   Roboto_800ExtraBold,
 } from '@expo-google-fonts/roboto';
+import { Baloo2_400Regular, Baloo2_600SemiBold, Baloo2_700Bold, Baloo2_800ExtraBold } from '@expo-google-fonts/baloo-2';
+import { BricolageGrotesque_800ExtraBold } from '@expo-google-fonts/bricolage-grotesque';
+import {
+  SchibstedGrotesk_400Regular,
+  SchibstedGrotesk_600SemiBold,
+  SchibstedGrotesk_700Bold,
+  SchibstedGrotesk_800ExtraBold,
+} from '@expo-google-fonts/schibsted-grotesk';
+import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces';
+import { InstrumentSans_400Regular, InstrumentSans_600SemiBold, InstrumentSans_700Bold } from '@expo-google-fonts/instrument-sans';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { cssInterop, useColorScheme } from 'nativewind';
 import Animated from 'react-native-reanimated';
@@ -20,6 +30,8 @@ import { initLearningSpace } from '../../lib/learningSpace';
 import { configureReminderHandler, ensureReminderScheduled } from '../../lib/reminders';
 import { initTelemetry, trackScreen } from '../../lib/telemetry';
 import { startAds } from '../../lib/adsRuntime';
+import { startAutoSync } from '../../lib/sync/syncStore';
+import { startEdgeEngine } from '../../lib/edgeAI/edgeBoot';
 import { setStudioLinePlayer } from '../../lib/pronunciation';
 import { playStudioLine, stopStudioLine } from '../../lib/studioVoices';
 
@@ -64,6 +76,20 @@ export default function RootLayout() {
     Roboto_600SemiBold,
     Roboto_700Bold,
     Roboto_800ExtraBold,
+    // Life-stage typefaces (lib/tierType.ts).
+    Baloo2_400Regular,
+    Baloo2_600SemiBold,
+    Baloo2_700Bold,
+    Baloo2_800ExtraBold,
+    BricolageGrotesque_800ExtraBold,
+    SchibstedGrotesk_400Regular,
+    SchibstedGrotesk_600SemiBold,
+    SchibstedGrotesk_700Bold,
+    SchibstedGrotesk_800ExtraBold,
+    Fraunces_600SemiBold,
+    InstrumentSans_400Regular,
+    InstrumentSans_600SemiBold,
+    InstrumentSans_700Bold,
     ...Ionicons.font,
     ...MaterialCommunityIcons.font,
   });
@@ -109,10 +135,16 @@ export default function RootLayout() {
   useEffect(() => {
     void startAds();
   }, []);
+  // Smart Sync: upload lessons finished offline and pull course updates, on
+  // start, on foreground, when the browser comes back online, and each minute.
+  useEffect(() => startAutoSync(), []);
+  // On-device AI: register the learner's downloaded model (Premium) so the
+  // tutor can answer offline with it. The model loads on first use, not here.
+  useEffect(() => startEdgeEngine(), []);
   useEffect(() => {
     trackScreen(pathname);
   }, [pathname]);
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded && !fontError) return null;
   const dark = theme === 'dark';
   // Keep the scene container transparent so the dashboard canvas shows through.
   const navTheme = {
@@ -158,6 +190,12 @@ export default function RootLayout() {
       <Stack.Screen name="certifications" />
       <Stack.Screen name="design" />
       <Stack.Screen name="roleplay" />
+      <Stack.Screen name="offline-ai" />
+      <Stack.Screen name="study-rooms" />
+      <Stack.Screen name="squad-cup" />
+      <Stack.Screen name="avatar" />
+      <Stack.Screen name="jobs" />
+      <Stack.Screen name="verify/[code]" />
       {__DEV__ ? <Stack.Screen name="dev/celebration-benchmark" /> : null}
     </Stack>
     </ThemeProvider>

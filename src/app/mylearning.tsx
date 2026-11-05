@@ -80,6 +80,26 @@ export default function MyLearning() {
         onOpen={(s) => router.push({ pathname: s.route as never, params: s.params } as never)}
         onFull={() => {}}
       />
+      {/* Avatar studio: every item unlocks from real level, streak and certificates. */}
+      <Pressable
+        onPress={() => router.push('/avatar')}
+        accessibilityRole="button"
+        accessibilityLabel="Customize your avatar"
+        className="flex-row items-center rounded-2xl border border-dash-line bg-dash-card p-3 dark:border-dash-dline dark:bg-dash-dcard"
+      >
+        <View className="h-11 w-11 items-center justify-center rounded-xl bg-dash-pill dark:bg-dash-dbg">
+          <AppIcon name="palette" size={20} color="#0284C7" />
+        </View>
+        <View className="ml-3 flex-1">
+          <Text className="text-[14px] font-extrabold text-dash-ink dark:text-dash-dink" numberOfLines={1}>
+            Customize your avatar
+          </Text>
+          <Text className="mt-0.5 text-[11px] font-semibold text-dash-muted dark:text-dash-dmuted" numberOfLines={1}>
+            New looks unlock as you level up.
+          </Text>
+        </View>
+        <AppIcon name="chevRight" size={18} color="#94A3B8" />
+      </Pressable>
 
       <SectionHeader title={tab === 'progress' ? 'Continue learning' : tab === 'todo' ? 'Up next' : 'Finished units'} />
       <View className="gap-2">

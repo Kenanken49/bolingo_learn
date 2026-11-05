@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16120E">
+<title>Bolingo Learn — Adaptive life-stage wireframes (v3)</title>
+<meta name="description" content="Three learners, one app that becomes theirs: interactive wireframes for the Explorer (10–18), Launcher (19–25) and Climber (26–40) life stages.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=Instrument+Sans:wght@400;500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-tier="explorer">
+
+<!-- ============ ICON SPRITE (no emoji anywhere) ============ -->
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12.2 2c1.6 3.1 1.3 5.2.1 6.9 2.1-.6 3.4-2.1 3.7-4.2 2.9 2.2 4.5 5.2 4.5 8.3 0 4.4-3.5 8-8.3 8S4 17.4 4 13c0-3.4 2-6.4 4.8-8.6-.4 2.6.4 4.4 1.7 5.5-.5-2.7.1-5.5 1.7-7.9Z" fill="currentColor"/></symbol>
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M7 3h10l3.5 5.6L12 21 3.5 8.6 7 3Z" fill="currentColor"/><path d="M3.8 8.6h16.4M8.5 3.2 12 20.4 15.5 3.2" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21S3.5 15.9 3.5 10A4.7 4.7 0 0 1 12 6.6 4.7 4.7 0 0 1 20.5 10c0 5.9-8.5 11-8.5 11Z" fill="currentColor"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.4-5.8-3-5.8 3 1.1-6.4L2.6 9.4l6.5-.9L12 2.6Z" fill="currentColor"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.5 2 4 13.5h6.5L9.5 22 20 10h-6.6l.1-8Z" fill="currentColor"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.5 4 5.5v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10v-6l-8-3Z" fill="currentColor"/></symbol>
+  <symbol id="i-chest" viewBox="0 0 24 24"><path d="M3 10a6 6 0 0 1 6-6h6a6 6 0 0 1 6 6v1H3v-1Z" fill="currentColor"/><rect x="3" y="11" width="18" height="9" rx="2" fill="currentColor" opacity=".8"/><rect x="10" y="9.5" width="4" height="5" rx="1" fill="#fff" opacity=".85"/></symbol>
+  <symbol id="i-sword" viewBox="0 0 24 24"><path d="M14.5 3H21v6.5L10 20.5 3.5 14 14.5 3Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m3 21 3.5-3.5M7 13l4 4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6.5v13.5L9 17.5l6 2.5 6-2.5V4l-6 2.5L9 4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 4v13.5M15 6.5V20" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5" fill="currentColor"/><path d="M2.5 20c.6-3.6 3.2-6 6.5-6s5.9 2.4 6.5 6" fill="currentColor"/><circle cx="17" cy="9" r="2.8" fill="currentColor" opacity=".6"/><path d="M15.8 14.2c2.9.2 5 2.4 5.7 5.8h-4" fill="currentColor" opacity=".6"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 3h8v5a4 4 0 0 1-8 0V3Z" fill="currentColor"/><path d="M8 5H4v2a4 4 0 0 0 4 4M16 5h4v2a4 4 0 0 1-4 4M12 12v5M8 21h8M9 17h6" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4.5 12.5 5 5 10-11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5L7 4.5Z" fill="currentColor"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/><rect x="14" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-back15" viewBox="0 0 24 24"><path d="M11 5 6 9l5 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 9H14a6 6 0 1 1-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-cert" viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16.5" r="3" fill="currentColor"/><path d="m10.3 19-1 3 2.7-1.2 2.7 1.2-1-3" fill="currentColor"/><path d="M7 8h10M7 11h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="8.5" y="2.5" width="7" height="12" rx="3.5" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" fill="currentColor"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16a5 5 0 0 1 7 0M5 12.5a10 10 0 0 1 5-2.6M14 9.9a10 10 0 0 1 5 2.6M2 9a14.5 14.5 0 0 1 4.5-2.8M11 5.1A14.5 14.5 0 0 1 22 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.5 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.5 6.4-2.4 7-7Z" fill="currentColor"/><path d="M19 15c.3 2 1 2.8 3 3-2 .3-2.7 1-3 3-.3-2-1-2.7-3-3 2-.2 2.7-1 3-3Z" fill="currentColor"/></symbol>
+</svg>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ BOARD HEADER ============ -->
+<header class="board-head">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"><svg><use href="#i-spark"/></svg></span>
+    <span class="brand-name">Bolingo<em>Learn</em></span>
+    <span class="brand-tag">Adaptive wireframes · v3</span>
+  </div>
+  <nav class="board-nav" aria-label="Wireframe sections">
+    <a href="#dial">Age dial</a>
+    <a href="#screens">Screens</a>
+    <a href="#same-moment">Same moment</a>
+    <a href="#loops">Reward loops</a>
+    <a href="#guardrails">Guardrails</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ HERO: THE AGE DIAL ============ -->
+<section class="hero" id="dial" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="kicker">One app. Three learners. Zero compromises.</p>
+    <h1 id="hero-title">Drag the dial.<br>Watch the app <span class="hl">grow up</span> with you.</h1>
+    <p class="lede">A 12-year-old wants a quest. A 22-year-old wants a room full of peers and a job at the end. A 34-year-old wants five minutes on the bus that actually count. Bolingo reads one number, the learner's age, and rebuilds type, colour, pace, rewards and navigation around it.</p>
+
+    <div class="dial" role="group" aria-labelledby="dial-label">
+      <div class="dial-top">
+        <label id="dial-label" for="age">Learner age</label>
+        <output id="age-out" for="age" class="dial-age">14</output>
+      </div>
+      <input id="age" type="range" min="10" max="40" step="1" value="14" aria-describedby="dial-tier">
+      <div class="dial-scale" aria-hidden="true">
+        <span style="--at:0">10</span><span style="--at:.3">19</span><span style="--at:.5333">26</span><span style="--at:1">40</span>
+      </div>
+      <div class="tier-tabs" role="tablist" aria-label="Life stage">
+        <button role="tab" data-go="explorer" data-age="14" aria-selected="true"><b>Tier 1</b> Explorer <small>10–18</small></button>
+        <button role="tab" data-go="launcher" data-age="22" aria-selected="false"><b>Tier 2</b> Launcher <small>19–25</small></button>
+        <button role="tab" data-go="climber" data-age="33" aria-selected="false"><b>Tier 3</b> Climber <small>26–40</small></button>
+      </div>
+      <p id="dial-tier" class="sr-only" aria-live="polite">Gamified Explorer</p>
+    </div>
+  </div>
+
+  <!-- Live readout of the engine profile (mirrors lib/lifeStage.ts) -->
+  <aside class="engine" aria-label="Adaptive engine readout">
+    <div class="engine-head">
+      <span>lifeStage.profile</span>
+      <b id="eng-name">Gamified Explorer</b>
+    </div>
+    <dl class="engine-grid">
+      <div><dt>Gamification</dt><dd><span class="meter" id="eng-gam" style="--v:.95"></span><em id="eng-gam-t">High</em></dd></div>
+      <div><dt>Density</dt><dd><span class="meter" id="eng-den" style="--v:.3"></span><em id="eng-den-t">Roomy</em></dd></div>
+      <div><dt>Session</dt><dd><em class="big" id="eng-min">10</em> min</dd></div>
+      <div><dt>Audio-first</dt><dd><em id="eng-audio">Off</em></dd></div>
+      <div><dt>Celebrations</dt><dd><em id="eng-cel">Full storm</em></dd></div>
+      <div><dt>Typeface</dt><dd><em id="eng-type" class="type-sample">Baloo 2</em></dd></div>
+    </dl>
+    <div class="engine-swatches" aria-label="Palette">
+      <i style="--c:var(--sw1)"></i><i style="--c:var(--sw2)"></i><i style="--c:var(--sw3)"></i><i style="--c:var(--sw4)"></i>
+    </div>
+    <p class="engine-psych" id="eng-psych">Wants: mastery you can see, friends to beat, a story to finish. Hates: walls of text.</p>
+  </aside>
+</section>
+
+<!-- ============ THE FIVE SCREENS PER TIER ============ -->
+<section class="screens" id="screens" aria-labelledby="screens-title">
+  <div class="section-head">
+    <p class="kicker" id="strip-kicker">Tier 1 · Gamified Explorer · ages 10–18</p>
+    <h2 id="screens-title">Five screens that only make sense <span id="strip-who">at fourteen</span>.</h2>
+    <p class="section-note">Every phone below is clickable. Answer the boss question, open the chest, join the room, press play.</p>
+  </div>
+
+  <!-- ===================== TIER 1 · EXPLORER ===================== -->
+  <div class="strip" data-strip="explorer">
+
+    <!-- T1-01 Quest map -->
+    <figure class="wf">
+      <div class="phone t1">
+        <div class="status"><span>9:41</span><span class="notch"></span><span>87%</span></div>
+        <div class="t1-top">
+          <div class="t1-chip fire"><svg><use href="#i-flame"/></svg>23</div>
+          <div class="t1-chip gem"><svg><use href="#i-gem"/></svg>1,184</div>
+          <div class="t1-chip heart"><svg><use href="#i-heart"/></svg>5</div>
+        </div>
+        <div class="t1-chapter">
+          <span>Chapter 3 · The Tag Temple</span>
+          <b>Free the Script Spirits</b>
+          <div class="t1-chapter-bar"><i style="--p:.62"></i></div>
+        </div>
+        <ol class="quest-map" aria-label="Questline">
+          <li class="node done" style="--x:20%"><svg><use href="#i-check"/></svg></li>
+          <li class="node done" style="--x:58%"><svg><use href="#i-check"/></svg></li>
+          <li class="node now" style="--x:34%"><svg><use href="#i-star"/></svg><span class="node-pop">START<br><small>+20 XP</small></span></li>
+          <li class="node chest" style="--x:66%"><svg><use href="#i-chest"/></svg></li>
+          <li class="node boss" style="--x:42%"><svg><use href="#i-sword"/></svg><span class="node-tag">BOSS</span></li>
+        </ol>
+        <div class="t1-guide-row">
+          <img class="t1-guide" src="../wireframes-v2/assets/bingo-happy.png" alt="Bingo the owl, cheering">
+          <div class="t1-speech">Two more nodes and the Temple boss wakes up.</div>
+        </div>
+        <nav class="t1-tabbar" aria-label="Explorer navigation">
+          <span class="on"><svg><use href="#i-map"/></svg></span><span><svg><use href="#i-trophy"/></svg></span><span><svg><use href="#i-users"/></svg></span><span><svg><use href="#i-star"/></svg></span>
+        </nav>
+      </div>
+      <figcaption>
+        <b>WF-T1-01 · Quest map</b>
+        <span>The curriculum is a story map, not a list. Each chapter is a school unit; nodes are lessons; the chest is a guaranteed reward, the boss a mastery check.</span>
+        <em class="mech">Mechanic: goal-gradient · visible progress · story stakes</em>
+      </figcaption>
+    </figure>
+
+    <!-- T1-02 Boss battle lesson -->
+    <figure class="wf">
+      <div class="phone t1 t1-battle" id="battle">
+        <div class="status"><span>9:42</span><span class="notch"></span><span>86%</span></div>
+        <div class="boss-bar">
+          <span class="boss-name">Glitch Golem</span>
+          <div class="boss-hp" aria-label="Boss health"><i id="boss-hp" style="--p:1"></i></div>
+        </div>
+        <div class="combo" id="combo" aria-live="polite"><svg><use href="#i-bolt"/></svg><span>Combo <b id="combo-n">×0</b></span></div>
+        <p class="battle-q">Which tag makes the <u>biggest</u> heading on a page?</p>
+        <div class="battle-opts" role="group" aria-label="Answers">
+          <button data-ok="0">&lt;head&gt;</button>
+          <button data-ok="1">&lt;h1&gt;</button>
+          <button data-ok="0">&lt;h6&gt;</button>
+          <button data-ok="0">&lt;big&gt;</button>
+        </div>
+        <div class="xp-burst" id="xp-burst" aria-hidden="true">+15 XP</div>
+        <div class="confetti" id="confetti" aria-hidden="true"></div>
+        <div class="battle-foot" id="battle-foot">Hit it right three times in a row to land a critical.</div>
+      </div>
+      <figcaption>
+        <b>WF-T1-02 · Boss battle</b>
+        <span>Each right answer is a hit on the boss. Combos grow the hit size, so streaks of correct answers feel like a fighting game, without punishing slow readers: there is no timer.</span>
+        <em class="mech">Mechanic: juicy feedback · combo multiplier · no time pressure</em>
+      </figcaption>
+    </figure>
+
+    <!-- T1-03 Loot + level-up -->
+    <figure class="wf">
+      <div class="phone t1 t1-loot">
+        <div class="status"><span>9:47</span><span class="notch"></span><span>85%</span></div>
+        <p class="loot-kicker">Temple boss defeated</p>
+        <div class="level-ring" style="--p:.82"><b>Lv 12</b><small>820 / 1,000</small></div>
+        <button class="chest-btn" id="chest" aria-label="Open the reward chest">
+          <span class="chest-lid"></span><span class="chest-body"></span><span class="chest-glow"></span>
+        </button>
+        <p class="loot-reward" id="loot" aria-live="polite">Tap the chest. Every chest has a prize.</p>
+        <div class="loot-stats">
+          <div><b>5/5</b><small>correct</small></div>
+          <div><b>×4</b><small>best combo</small></div>
+          <div><b>24</b><small>day streak</small></div>
+        </div>
+      </div>
+      <figcaption>
+        <b>WF-T1-03 · Loot & level-up</b>
+        <span>A variable surprise, but never a gamble: every chest pays out, prizes are cosmetic only, and chests cannot be bought. The level ring shows exactly how close the next level is.</span>
+        <em class="mech">Mechanic: variable reward (cosmetic) · near-miss level ring</em>
+      </figcaption>
+    </figure>
+
+    <!-- T1-04 Squad tournament -->
+    <figure class="wf">
+      <div class="phone t1 t1-arena">
+        <div class="status"><span>16:02</span><span class="notch"></span><span>71%</span></div>
+        <p class="arena-kicker">Friday Squad Cup · Biology</p>
+        <div class="arena-timer"><span>Starts in</span><b id="arena-t">00:45</b></div>
+        <ul class="arena-teams">
+          <li class="mine"><span class="crest" style="--c:#FF8A3D">K</span><b>Kilimanjaro Kites</b><em>4/4 ready</em></li>
+          <li><span class="crest" style="--c:#38C6A0">N</span><b>Nairobi Nebulas</b><em>3/4 ready</em></li>
+          <li><span class="crest" style="--c:#7C8CFF">T</span><b>Tsavo Tigers</b><em>4/4 ready</em></li>
+        </ul>
+        <div class="arena-you">
+          <img src="../wireframes-v2/assets/learner.svg" alt="">
+          <div><b>Amani W.</b><small>Squad captain · 3 cups</small></div>
+        </div>
+        <button class="t1-cta" id="ready">I'm ready</button>
+        <p class="arena-note">Teams of 4, matched by level. Classmates only, or invite codes. No chat with strangers.</p>
+      </div>
+      <figcaption>
+        <b>WF-T1-04 · Squad tournament</b>
+        <span>Multiplayer that rewards the team, not just the fastest kid. Squads win together, so stronger learners coach weaker ones instead of lapping them.</span>
+        <em class="mech">Mechanic: social commitment · team identity · scheduled event</em>
+      </figcaption>
+    </figure>
+
+    <!-- T1-05 Avatar studio -->
+    <figure class="wf">
+      <div class="phone t1 t1-avatar">
+        <div class="status"><span>19:20</span><span class="notch"></span><span>64%</span></div>
+        <p class="arena-kicker">Avatar studio</p>
+        <div class="avatar-stage" id="avatar" style="--skin:#8D5A3B;--fit:#FF8A3D">
+          <div class="av-shadow"></div>
+          <div class="av-body"></div>
+          <div class="av-head"><i class="eye l"></i><i class="eye r"></i><i class="smile"></i></div>
+          <div class="av-hat" id="av-hat"></div>
+        </div>
+        <div class="swatches" role="group" aria-label="Outfit colour">
+          <button style="--c:#FF8A3D" aria-label="Sunset orange" aria-pressed="true"></button>
+          <button style="--c:#38C6A0" aria-label="Lagoon green" aria-pressed="false"></button>
+          <button style="--c:#7C8CFF" aria-label="Dusk blue" aria-pressed="false"></button>
+          <button style="--c:#F2C14E" aria-label="Savanna gold" aria-pressed="false"></button>
+        </div>
+        <div class="unlocks">
+          <button class="unlock on" data-hat="crown">Boss crown<small>Temple boss</small></button>
+          <button class="unlock" data-hat="cap">Explorer cap<small>Chapter 2</small></button>
+          <button class="unlock locked" disabled>Comet trail<small>7-day streak</small></button>
+        </div>
+      </div>
+      <figcaption>
+        <b>WF-T1-05 · Avatar studio</b>
+        <span>Identity is the long-term hook. Every cosmetic is earned by learning (a boss, a chapter, a streak), so the avatar becomes a trophy cabinet you wear.</span>
+        <em class="mech">Mechanic: earned identity · collection · self-expression</em>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- ===================== TIER 2 · LAUNCHER ===================== -->
+  <div class="strip" data-strip="launcher" hidden>
+
+    <!-- T2-01 Goal dashboard -->
+    <figure class="wf">
+      <div class="phone t2">
+        <div class="status"><span>8:15</span><span class="notch"></span><span>92%</span></div>
+        <p class="t2-hello">Morning, Wanjiru</p>
+        <h3 class="t2-goal">Junior Front-end Developer<small>Target: first role by June</small></h3>
+        <div class="t2-path">
+          <div class="t2-step done"><i></i><span>HTML &amp; CSS</span><em>Certified</em></div>
+          <div class="t2-step now"><i></i><span>JavaScript</span><em>62%</em></div>
+          <div class="t2-step"><i></i><span>React portfolio</span><em>3 projects</em></div>
+          <div class="t2-step"><i></i><span>Interview prep</span><em>—</em></div>
+        </div>
+        <div class="t2-week">
+          <span>This week</span>
+          <div class="t2-bars" aria-label="Minutes studied per day">
+            <i style="--h:.4"></i><i style="--h:.7"></i><i style="--h:.55"></i><i style="--h:.9"></i><i style="--h:.3"></i><i class="today" style="--h:.15"></i><i style="--h:0"></i>
+          </div>
+          <b>3h 41m <small>of 5h goal</small></b>
+        </div>
+        <div class="t2-live"><span class="pulse"></span><b>JS Arrays room</b> · 14 studying now<svg><use href="#i-arrow"/></svg></div>
+      </div>
+      <figcaption>
+        <b>WF-T2-01 · Goal dashboard</b>
+        <span>Home is a career goal broken into a path, not a game map. The week chart and the live room count do the motivating: progress toward something real, and people doing it with you.</span>
+        <em class="mech">Mechanic: goal framing · implementation intention · social proof</em>
+      </figcaption>
+    </figure>
+
+    <!-- T2-02 Live study room -->
+    <figure class="wf">
+      <div class="phone t2 t2-room">
+        <div class="status"><span>20:03</span><span class="notch"></span><span>58%</span></div>
+        <div class="room-head"><span class="pulse"></span><b>JS Arrays · deep work</b><em id="room-count">14 in room</em></div>
+        <div class="pomo"><b id="pomo">25:00</b><small id="pomo-label">Focus block 2 of 4</small></div>
+        <ul class="room-grid" id="room-grid" aria-label="People in the room">
+          <li style="--c:#3B6CF6">TK<small>map / filter</small></li>
+          <li style="--c:#0F9D7A">AO<small>reduce()</small></li>
+          <li style="--c:#E0663A">ZM<small>Todo app</small></li>
+          <li style="--c:#8B5CF6">FN<small>Big-O notes</small></li>
+          <li style="--c:#D9A400">BK<small>LeetCode 49</small></li>
+        </ul>
+        <div class="room-react" role="group" aria-label="Send a reaction">
+          <button data-r="Nice">Nice</button><button data-r="Stuck">Stuck</button><button data-r="Done">Done</button>
+        </div>
+        <button class="t2-cta" id="join">Join with camera off</button>
+      </div>
+      <figcaption>
+        <b>WF-T2-02 · Live study room</b>
+        <span>Body-doubling for exams and first jobs: a shared focus timer, what everyone is working on, and three one-tap signals. Cameras are optional; nobody has to talk.</span>
+        <em class="mech">Mechanic: body doubling · accountability · low-pressure presence</em>
+      </figcaption>
+    </figure>
+
+    <!-- T2-03 Portfolio project -->
+    <figure class="wf">
+      <div class="phone t2">
+        <div class="status"><span>21:30</span><span class="notch"></span><span>44%</span></div>
+        <p class="t2-hello">Portfolio project 2 of 3</p>
+        <h3 class="t2-goal">Matatu route finder<small>React · fetch · maps</small></h3>
+        <ul class="tasks" id="tasks">
+          <li><label><input type="checkbox" checked> Fetch routes from the open GTFS feed</label></li>
+          <li><label><input type="checkbox" checked> Search by stage name</label></li>
+          <li><label><input type="checkbox"> Show fare and time on a card</label></li>
+          <li><label><input type="checkbox"> Deploy and add the live link</label></li>
+        </ul>
+        <div class="proj-meter"><span>Hiring-manager ready</span><b id="proj-pct">50%</b><div><i id="proj-bar" style="--p:.5"></i></div></div>
+        <div class="review"><b>Peer review</b> · Otieno left 3 comments on your search hook</div>
+      </div>
+      <figcaption>
+        <b>WF-T2-03 · Portfolio project</b>
+        <span>Projects are local, real and shippable, and each checkbox moves a "hiring-manager ready" meter. Peer review closes the loop that video courses leave open.</span>
+        <em class="mech">Mechanic: endowed progress · public artefact · peer feedback</em>
+      </figcaption>
+    </figure>
+
+    <!-- T2-04 Job match -->
+    <figure class="wf">
+      <div class="phone t2">
+        <div class="status"><span>12:10</span><span class="notch"></span><span>81%</span></div>
+        <p class="t2-hello">Matched to your verified skills</p>
+        <div class="match">
+          <div class="match-ring" id="match-ring" style="--p:.71"><b id="match-pct">71%</b><small>match</small></div>
+          <div class="match-role"><b>Junior Web Developer</b><span>Twiga Logistics · Nairobi · hybrid</span><em>KSh 68,500 / mo</em></div>
+        </div>
+        <ul class="match-skills">
+          <li class="ok">HTML/CSS · certified</li>
+          <li class="ok">Git · lab-verified</li>
+          <li class="gap" id="gap">React · 1 project short</li>
+        </ul>
+        <button class="t2-ghost" id="close-gap">Finish Matatu route finder <svg><use href="#i-arrow"/></svg></button>
+        <p class="t2-fine">Skills count only when a lab, project or exam proves them.</p>
+      </div>
+      <figcaption>
+        <b>WF-T2-04 · Job match</b>
+        <span>The match score is built only from proven skills, and the gap is always one concrete action away. Finishing the project visibly raises the score.</span>
+        <em class="mech">Mechanic: gap-to-goal · proof over claims · concrete next step</em>
+      </figcaption>
+    </figure>
+
+    <!-- T2-05 Credential -->
+    <figure class="wf">
+      <div class="phone t2 t2-cred">
+        <div class="status"><span>17:45</span><span class="notch"></span><span>67%</span></div>
+        <div class="cred-card">
+          <span class="cred-seal"><svg><use href="#i-cert"/></svg></span>
+          <small>Bolingo verified credential</small>
+          <b>Responsive Web Design</b>
+          <span class="cred-name">Wanjiru Kamau</span>
+          <dl><div><dt>Labs passed</dt><dd>38</dd></div><div><dt>Projects</dt><dd>5</dd></div><div><dt>Exam</dt><dd>91%</dd></div></dl>
+          <code>verify.bolingo.co.ke/c/7QK-2M9</code>
+        </div>
+        <div class="share-row"><button>Add to LinkedIn</button><button>Copy link</button></div>
+      </div>
+      <figcaption>
+        <b>WF-T2-05 · Verified credential</b>
+        <span>Every credential lists what was actually proven and has a public check link an employer can open. The share moment is the reward.</span>
+        <em class="mech">Mechanic: status signal · verifiable proof · share loop</em>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- ===================== TIER 3 · CLIMBER ===================== -->
+  <div class="strip" data-strip="climber" hidden>
+
+    <!-- T3-01 Today's five -->
+    <figure class="wf">
+      <div class="phone t3">
+        <div class="status"><span>6:52</span><span class="notch"></span><span>100%</span></div>
+        <p class="t3-date">Tuesday 4 November</p>
+        <h3 class="t3-h">Your five minutes.</h3>
+        <ol class="t3-list">
+          <li><b>Giving feedback that lands</b><span>Management · 4 min · audio</span></li>
+          <li><b>SQL window functions</b><span>Data · 5 min · read</span></li>
+          <li class="muted"><b>Review: SBI model</b><span>2 cards due</span></li>
+        </ol>
+        <button class="t3-cta" id="t3-start"><svg><use href="#i-headphones"/></svg>Start on audio</button>
+        <p class="t3-foot"><b>17 of 20</b> weekdays this month. One more and November beats October.</p>
+      </div>
+      <figcaption>
+        <b>WF-T3-01 · Today's five</b>
+        <span>No map, no mascot, no badge wall. Three items picked for today's commute length, with audio as the default action. Consistency is shown as a monthly ratio, not a fragile daily streak.</span>
+        <em class="mech">Mechanic: decision removal · forgiving consistency · time-boxing</em>
+      </figcaption>
+    </figure>
+
+    <!-- T3-02 Commute mode -->
+    <figure class="wf">
+      <div class="phone t3 t3-commute">
+        <div class="status"><span>7:04</span><span class="notch"></span><span>98%</span></div>
+        <p class="t3-date"><svg class="ico"><use href="#i-wifi-off"/></svg> Offline · downloaded</p>
+        <h3 class="t3-h small">Giving feedback that lands</h3>
+        <p class="t3-sub">Episode 3 of 6 · Management essentials</p>
+        <div class="wave" id="wave" aria-hidden="true"></div>
+        <div class="scrub"><i id="scrub" style="--p:.18"></i></div>
+        <div class="scrub-t"><span id="t-now">0:43</span><span>4:02</span></div>
+        <div class="player">
+          <button aria-label="Back 15 seconds"><svg><use href="#i-back15"/></svg></button>
+          <button class="pp" id="pp" aria-label="Play"><svg><use href="#i-play"/></svg></button>
+          <button id="speed" aria-label="Playback speed">1.0×</button>
+        </div>
+        <div class="checkpoint"><svg><use href="#i-mic"/></svg><span>At 3:20 you'll say one sentence back. Hands-free.</span></div>
+      </div>
+      <figcaption>
+        <b>WF-T3-02 · Commute mode</b>
+        <span>Audio-only lessons that work offline, with big controls you can hit without looking, and a spoken checkpoint instead of a quiz screen.</span>
+        <em class="mech">Mechanic: habit stacking (commute) · eyes-free · active recall by voice</em>
+      </figcaption>
+    </figure>
+
+    <!-- T3-03 Micro-lesson card -->
+    <figure class="wf">
+      <div class="phone t3">
+        <div class="status"><span>12:31</span><span class="notch"></span><span>74%</span></div>
+        <p class="t3-date">SQL window functions · card <b id="card-n">1</b> of 4</p>
+        <button class="flip" id="flip" aria-label="Flip card">
+          <span class="flip-in">
+            <span class="face front"><small>Question</small><b>What does <code>ROW_NUMBER() OVER (PARTITION BY team)</code> reset on?</b><em>Tap to reveal</em></span>
+            <span class="face back"><small>Answer</small><b>It restarts the count at 1 for each <code>team</code>.</b><em>Ranking within a group, without collapsing rows.</em></span>
+          </span>
+        </button>
+        <div class="grade" role="group" aria-label="How well did you know it?">
+          <button data-g="again">Again</button><button data-g="good">Good</button><button data-g="easy">Easy</button>
+        </div>
+        <p class="t3-foot" id="card-foot">Spaced repetition schedules the next review for you.</p>
+      </div>
+      <figcaption>
+        <b>WF-T3-03 · Micro-lesson card</b>
+        <span>One idea per card, graded in one tap. Grades drive the review schedule, so 90 seconds at lunch still compounds.</span>
+        <em class="mech">Mechanic: spaced repetition · minimal friction · self-grading</em>
+      </figcaption>
+    </figure>
+
+    <!-- T3-04 Certificate track -->
+    <figure class="wf">
+      <div class="phone t3">
+        <div class="status"><span>21:12</span><span class="notch"></span><span>39%</span></div>
+        <p class="t3-date">Certificate track</p>
+        <h3 class="t3-h small">Data Analysis for Managers</h3>
+        <div class="t3-ring" style="--p:.58"><b>58%</b><small>7 of 12 modules</small></div>
+        <dl class="t3-facts">
+          <div><dt>At your pace</dt><dd>done by 19 Dec</dd></div>
+          <div><dt>Weekly time</dt><dd>1h 12m</dd></div>
+          <div><dt>Employer value</dt><dd>listed in 312 Nairobi roles</dd></div>
+        </dl>
+        <button class="t3-ghost">Next: Pivot tables in 5 min</button>
+      </div>
+      <figcaption>
+        <b>WF-T3-04 · Certificate track</b>
+        <span>A finish date computed from real pace, and why the credential matters in the local job market. Adults stay for outcomes, not points.</span>
+        <em class="mech">Mechanic: forecasted completion · outcome framing</em>
+      </figcaption>
+    </figure>
+
+    <!-- T3-05 Weekly insight -->
+    <figure class="wf">
+      <div class="phone t3">
+        <div class="status"><span>Sun 18:00</span><span class="notch"></span><span>81%</span></div>
+        <p class="t3-date">Your week, in one screen</p>
+        <h3 class="t3-h">2h 26m learned.<br><span>81% of it on the move.</span></h3>
+        <div class="t3-split" aria-label="Where you learned">
+          <i style="--w:.81" class="a"></i><i style="--w:.19" class="b"></i>
+        </div>
+        <div class="t3-legend"><span class="a">Commute audio</span><span class="b">Screen</span></div>
+        <p class="t3-insight">You retain more on Tuesday and Thursday mornings. Next week's plan puts the hard modules there.</p>
+        <button class="t3-ghost">Accept next week's plan</button>
+      </div>
+      <figcaption>
+        <b>WF-T3-05 · Weekly insight</b>
+        <span>A Sunday summary that respects time: one number, one insight, one action. The reward is feeling in control of a busy life.</span>
+        <em class="mech">Mechanic: reflection · autonomy · plan acceptance</em>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ SAME MOMENT, THREE TIERS ============ -->
+<section class="same" id="same-moment" aria-labelledby="same-title">
+  <div class="section-head">
+    <p class="kicker">The adaptive principle</p>
+    <h2 id="same-title">Same moment: <em>you just finished a lesson.</em></h2>
+    <p class="section-note">One completion event, three completely different payoffs. The data underneath is identical; the psychology on top is not.</p>
+  </div>
+  <div class="same-grid">
+    <figure class="wf mini">
+      <div class="phone t1 t1-loot small">
+        <p class="loot-kicker">Node cleared</p>
+        <div class="big-xp">+45 XP</div>
+        <div class="combo-pill"><svg><use href="#i-bolt"/></svg>Combo ×5</div>
+        <div class="level-ring" style="--p:.9"><b>Lv 12</b><small>90 XP to Lv 13</small></div>
+        <button class="t1-cta">Open chest</button>
+      </div>
+      <figcaption><b>Explorer</b><span>Full-screen storm, sound, XP counter racing up, the chest right there. Celebration length: about 2.5 seconds, skippable.</span></figcaption>
+    </figure>
+    <figure class="wf mini">
+      <div class="phone t2 small">
+        <p class="t2-hello">Lesson complete</p>
+        <h3 class="t2-goal">JavaScript · 66%<small>+4% toward your goal</small></h3>
+        <div class="match-ring" style="--p:.74"><b>74%</b><small>job match</small></div>
+        <p class="t2-fine">3 people in your room finished this today.</p>
+        <button class="t2-cta">Next lesson</button>
+      </div>
+      <figcaption><b>Launcher</b><span>Progress toward the career goal and the job-match ring tick up; peers are mentioned. A quick confetti line, no takeover.</span></figcaption>
+    </figure>
+    <figure class="wf mini">
+      <div class="phone t3 small">
+        <p class="t3-date">Done · 4 min 12 s</p>
+        <h3 class="t3-h small">Saved to your certificate.</h3>
+        <p class="t3-sub">58% → 63% · finish date moved to 16 Dec</p>
+        <button class="t3-ghost">Back to your day</button>
+      </div>
+      <figcaption><b>Climber</b><span>A single quiet line with the time it took and how it moved the finish date. No animation, and the primary action returns you to your day.</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ REWARD LOOPS ============ -->
+<section class="loops" id="loops" aria-labelledby="loops-title">
+  <div class="section-head">
+    <p class="kicker">Why people come back</p>
+    <h2 id="loops-title">Three reward loops, tuned to three brains.</h2>
+  </div>
+  <div class="loop-rows">
+    <article class="loop l1">
+      <h3>Explorer loop</h3>
+      <ol><li><b>Trigger</b>Squad Cup starts Friday; Bingo: "two nodes to the boss"</li><li><b>Action</b>A 3-minute node with a combo meter</li><li><b>Reward</b>Boss hits, XP, a guaranteed cosmetic chest</li><li><b>Investment</b>Avatar unlocks and squad standing</li></ol>
+    </article>
+    <article class="loop l2">
+      <h3>Launcher loop</h3>
+      <ol><li><b>Trigger</b>"14 studying now" in your goal's room</li><li><b>Action</b>A 25-minute focus block with peers</li><li><b>Reward</b>Path percentage and job match rise</li><li><b>Investment</b>Portfolio projects and verified skills</li></ol>
+    </article>
+    <article class="loop l3">
+      <h3>Climber loop</h3>
+      <ol><li><b>Trigger</b>The commute itself; downloaded audio is waiting</li><li><b>Action</b>Press play once</li><li><b>Reward</b>Finish date moves closer; time feels well spent</li><li><b>Investment</b>Certificate progress and a weekly plan</li></ol>
+    </article>
+  </div>
+  <div class="beyond">
+    <h3>What this does that no single category leader does</h3>
+    <dl>
+      <div><dt>Streak apps</dt><dd>keep you coming back, but the reward is the streak. Here every loop ends in a skill proven by a lab, project or exam.</dd></div>
+      <div><dt>Course catalogues</dt><dd>have depth but leave you alone with a video. Here there are live rooms, peer review and an AI tutor that works offline.</dd></div>
+      <div><dt>Live quiz games</dt><dd>are electric in a classroom and silent at home. Squad Cups bring the energy home, on a schedule.</dd></div>
+      <div><dt>Free coding curricula</dt><dd>are rigorous but one-size-fits-all. Here the same curriculum is re-skinned and re-paced for a 12-year-old and a 34-year-old.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ GUARDRAILS ============ -->
+<section class="guard" id="guardrails" aria-labelledby="guard-title">
+  <div class="section-head">
+    <p class="kicker">Engaging, not exploitative</p>
+    <h2 id="guard-title">The dopamine has rules.</h2>
+    <p class="section-note">Variable rewards and streaks are powerful, and a third of these learners are children. These limits are part of the design, not an afterthought.</p>
+  </div>
+  <div class="guard-grid">
+    <div class="guard-card g1">
+      <h3><svg><use href="#i-shield"/></svg>Explorer (10–18)</h3>
+      <ul>
+        <li>Chests always pay out, prizes are cosmetic, and no chest, gem or heart can be bought with money.</li>
+        <li>A daily play cap (default 60 min) that ends with a "great session" screen, not a cliffhanger.</li>
+        <li>Quiet hours 21:00–06:30: no notifications, no streak risk.</li>
+        <li>Streak shields are earned automatically each week; a missed day is never shown as failure.</li>
+        <li>Tournaments are class or invite-code only, with no open chat.</li>
+        <li>A weekly summary for a parent or teacher, if one is linked.</li>
+      </ul>
+    </div>
+    <div class="guard-card g2">
+      <h3><svg><use href="#i-users"/></svg>Launcher (19–25)</h3>
+      <ul>
+        <li>Job-match scores use only proven skills, never paid boosts that hide gaps.</li>
+        <li>Rooms are camera-optional, with one-tap report and block.</li>
+        <li>No leaderboards of salaries or hours. Progress compares you to your own goal.</li>
+      </ul>
+    </div>
+    <div class="guard-card g3">
+      <h3><svg><use href="#i-moon"/></svg>Climber (26–40)</h3>
+      <ul>
+        <li>Consistency is counted per month, so one busy day never resets anything.</li>
+        <li>At most one notification a day, sent at the commute time the learner picked.</li>
+        <li>Every celebration can be turned off in one switch.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="ship-note"><b>Today vs. design target.</b> Built in the app: the age dial and stage hubs, Squad Cup live team quizzes (private squad codes, no chat), the 3D-tilt avatar studio with earned unlocks, live study rooms (shared focus timer, fixed statuses and reactions, no free text), the job marketplace (admin-posted roles matched to earned certifications) and public credential links at <code>bolingo.co.ke/verify/&lt;code&gt;</code>, plus the offline tutor, Smart Sync, certificates, audiobooks and roleplay. Still design targets: the quest-map chapter art, boss battles inside lessons, chests in Squad Cup, true 3D avatar models, camera video in rooms, daily play caps and quiet hours, parent summaries, and the Career Fast-Pass.</p>
+</section>
+
+</main>
+
+<footer class="board-foot">
+  <span>Bolingo Learn · Adaptive wireframes v3 · stage rules mirror <code>lib/lifeStage.ts</code></span>
+  <span>Standalone design deliverable, not imported by the app.</span>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>

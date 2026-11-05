@@ -7,9 +7,13 @@ import {
   type TextStyle,
 } from 'react-native';
 import { useNatural } from '../../lib/natural';
+import { useLifeStageSnapshot } from '../../lib/lifeStageStore';
+import { faceFor } from '../../lib/tierType';
 
 /**
- * The platform speaks one typeface: Roboto.
+ * Each life stage speaks its own typeface (lib/tierType.ts): Baloo 2 for
+ * Explorers, Bricolage + Schibsted Grotesk for Launchers, Fraunces + Instrument
+ * Sans for Climbers. Roboto remains the boot fallback face.
  *
  * React Native has no global font-family (each Text paints its own), so every
  * screen renders through this primitive. It picks the Roboto face that matches
@@ -64,17 +68,29 @@ function weightFor(styleWeight: TextStyle['fontWeight'] | undefined, className?:
   return undefined;
 }
 
+/** Large NativeWind text sizes, so class-styled headings get the display face. */
+function sizeFromClass(classes: string): number | undefined {
+  if (/ text-(2xl|3xl|4xl|5xl) /.test(classes)) return 24;
+  if (classes.includes(' text-xl ')) return 20;
+  if (classes.includes(' text-lg ')) return 18;
+  return undefined;
+}
+
 const BaseText = forwardRef<ComponentRef<typeof RNText>, BaseProps>(function BaseText(
   { style, className, halo, onPhoto: _onPhoto, ...rest },
   ref,
 ) {
+  const stage = useLifeStageSnapshot();
   const flat = StyleSheet.flatten(style as StyleProp<TextStyle>) as TextStyle | undefined;
   const classes = ` ${className ?? ''} `;
   // Monospace is intentional: code, diffs and chips keep their own face.
   if (flat?.fontFamily || classes.includes(' font-mono ')) {
     return <RNText ref={ref} className={className} style={[style, halo]} {...rest} />;
   }
-  const face = faceForWeight(weightFor(flat?.fontWeight, className));
+  const roboto = faceForWeight(weightFor(flat?.fontWeight, className));
+  // No stage yet: the original Roboto look, matching the original palette.
+  const numeric = roboto === ROBOTO_EXTRABOLD ? 800 : roboto === ROBOTO_BOLD ? 700 : roboto === ROBOTO_SEMIBOLD ? 600 : 400;
+  const face = stage ? faceFor(stage, numeric, flat?.fontSize ?? sizeFromClass(classes)) : roboto;
   return (
     <RNText
       ref={ref}

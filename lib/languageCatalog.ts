@@ -70,6 +70,24 @@ let pending: Promise<LanguageCatalogSnapshot> | null = null;
 let retryAt = 0;
 let warnedTransport = false;
 const warnedRows = new Set<string>();
+/**
+ * Course updates downloaded by Smart Sync (lib/sync/courseUpdates.ts) on the
+ * last successful online read. They sit on top of the bundle when the device
+ * is offline, so an edit made in the dashboard survives an offline restart.
+ */
+let downloadedUpdates: Record<string, CourseLesson> = {};
+let lastRemote: Record<string, CourseLesson> | null = null;
+
+/** Smart Sync hydrates this from device storage at startup. */
+export function setDownloadedCourseUpdates(lessons: Record<string, CourseLesson>): void {
+  downloadedUpdates = lessons ?? {};
+  if (cache?.source === 'builtin') cache = null;
+}
+
+/** Remote rows from the most recent successful read, for Smart Sync to persist. */
+export function lastRemoteCourseLessons(): Record<string, CourseLesson> | null {
+  return lastRemote;
+}
 
 function offlineLessons(): Record<string, CourseLesson> {
   // Built-in banks first, then the released snapshot of transcript lessons.
@@ -79,7 +97,12 @@ function offlineLessons(): Record<string, CourseLesson> {
 }
 
 function builtinSnapshot(): LanguageCatalogSnapshot {
-  return { lessons: offlineLessons(), source: 'builtin', remoteLessons: 0, fetchedAt: 0 };
+  return {
+    lessons: mergeLessonCatalogs(offlineLessons(), downloadedUpdates),
+    source: 'builtin',
+    remoteLessons: 0,
+    fetchedAt: 0,
+  };
 }
 
 function warnBadRow(id: string, reason: string): void {
@@ -138,6 +161,7 @@ async function fetchAndMerge(): Promise<LanguageCatalogSnapshot> {
   }
 
   const count = Object.keys(remote).length;
+  lastRemote = remote;
   if (count === 0) {
     // Empty table (migration not run yet) is not an error: the offline bundle
     // plays, including its published transcript snapshot.

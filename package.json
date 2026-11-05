@@ -4,13 +4,20 @@
   "main": "expo-router/entry",
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.74.0",
+    "@expo-google-fonts/baloo-2": "^0.4.2",
+    "@expo-google-fonts/bricolage-grotesque": "^0.4.1",
+    "@expo-google-fonts/fraunces": "^0.4.1",
+    "@expo-google-fonts/instrument-sans": "^0.4.2",
     "@expo-google-fonts/roboto": "^0.4.3",
+    "@expo-google-fonts/schibsted-grotesk": "^0.4.2",
     "@expo/vector-icons": "^15.0.2",
+    "@netlify/database": "^2.0.1",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@revenuecat/purchases-js": "^1.73.1",
     "@supabase/supabase-js": "^2.47.0",
     "base64-arraybuffer": "^1.0.2",
-    "expo": "~58.0.22",
+    "drizzle-orm": "^1.0.0-beta.22",
+    "expo": "~58.0.23",
     "expo-asset": "~58.0.0",
     "expo-audio": "~58.0.11",
     "expo-auth-session": "~58.0.16",
@@ -33,6 +40,7 @@
     "expo-status-bar": "~58.0.4",
     "expo-updates": "~58.0.20",
     "expo-web-browser": "~58.0.7",
+    "llama.rn": "^0.13.0-rc.9",
     "nativewind": "4.2.7",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -48,11 +56,13 @@
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {
+    "@netlify/functions": "^6.0.3",
     "@prisma/orm-postgres": "^8.0.0-rc.22",
     "@supabase/server": "^1.9.2",
     "@types/node": "^26.6.5",
     "@types/react": "~19.3.0",
     "babel-preset-expo": "~58.0.20",
+    "drizzle-kit": "1.0.0-beta.22",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~58.0.4",
     "prettier-plugin-tailwindcss": "0.5.11",
@@ -100,7 +110,7 @@
     "gate": "node scripts/run-quality-gates.cjs",
     "gate:publish": "node scripts/run-quality-gates.cjs --publish",
     "check:quality-ops": "node scripts/check-quality-ops.cjs",
-    "test": "node scripts/check-classics-audiobooks.cjs && node scripts/check-celebration-duration.cjs && node scripts/check-celebration-benchmark.cjs && node scripts/check-results-celebration.cjs && node scripts/check-speak-back.cjs && node scripts/check-voice-casting.cjs && node scripts/check-cold-tts-session.cjs && node scripts/check-fliki-swahili.cjs && node scripts/check-audiobook-voice.cjs && node scripts/check-character-voices.cjs && node scripts/check-language-catalog.cjs && node scripts/check-curriculum-quality.cjs && node scripts/check-exercise-solutions.cjs && node scripts/check-transcript-import.cjs && node scripts/check-subtitle-import.cjs && node scripts/check-content-rights.cjs && node scripts/check-transcription-pipeline.cjs && node scripts/check-upload-pipeline.cjs && node scripts/check-leaderboard-xp.cjs && node scripts/check-roleplay-personas.cjs && node scripts/check-mpesa.cjs && node scripts/check-labex.cjs && node scripts/check-labex-sandbox.cjs && node scripts/check-vm.cjs && node scripts/check-guided.cjs && node scripts/check-ads.cjs && node scripts/check-materials.cjs && node scripts/check-quality-ops.cjs && node scripts/check-web-publish.cjs",
+    "test": "node scripts/check-classics-audiobooks.cjs && node scripts/check-celebration-duration.cjs && node scripts/check-celebration-benchmark.cjs && node scripts/check-results-celebration.cjs && node scripts/check-speak-back.cjs && node scripts/check-voice-casting.cjs && node scripts/check-cold-tts-session.cjs && node scripts/check-fliki-swahili.cjs && node scripts/check-audiobook-voice.cjs && node scripts/check-character-voices.cjs && node scripts/check-language-catalog.cjs && node scripts/check-curriculum-quality.cjs && node scripts/check-exercise-solutions.cjs && node scripts/check-transcript-import.cjs && node scripts/check-subtitle-import.cjs && node scripts/check-content-rights.cjs && node scripts/check-transcription-pipeline.cjs && node scripts/check-upload-pipeline.cjs && node scripts/check-leaderboard-xp.cjs && node scripts/check-roleplay-personas.cjs && node scripts/check-mpesa.cjs && node scripts/check-labex.cjs && node scripts/check-labex-sandbox.cjs && node scripts/check-vm.cjs && node scripts/check-guided.cjs && node scripts/check-ads.cjs && node scripts/check-materials.cjs && node scripts/check-quality-ops.cjs && node scripts/check-web-publish.cjs && node scripts/check-adaptive-ai.cjs",
     "import:labex": "node scripts/import-labex.cjs",
     "check:labex": "node scripts/check-labex.cjs",
     "check:vm": "node scripts/check-vm.cjs",
@@ -111,7 +121,8 @@
     "check:ads": "node scripts/check-ads.cjs",
     "check:materials": "node scripts/check-materials.cjs",
     "check:audiobooks": "node scripts/check-classics-audiobooks.cjs",
-    "check:web": "node scripts/check-web-publish.cjs"
+    "check:web": "node scripts/check-web-publish.cjs",
+    "check:adaptive-ai": "node scripts/check-adaptive-ai.cjs"
   },
   "private": true
 }

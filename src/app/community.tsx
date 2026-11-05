@@ -129,6 +129,38 @@ export default function Community() {
         </View>
       )}
 
+      {/* Live together: real-time study rooms and seed-fair Squad Cup tournaments. */}
+      <SectionHeader title="Study together" />
+      <View className="gap-1.5">
+        {(
+          [
+            { route: '/study-rooms', icon: 'users', title: 'Study rooms', sub: 'Shared pomodoro timers with live presence.' },
+            { route: '/squad-cup', icon: 'trophy', title: 'Squad Cup', sub: 'Same seed, same round — fair team tournaments.' },
+          ] as const
+        ).map((c) => (
+          <Pressable
+            key={c.route}
+            onPress={() => router.push(c.route)}
+            accessibilityRole="button"
+            accessibilityLabel={c.title}
+            className="flex-row items-center rounded-2xl border border-dash-line bg-dash-card p-3 dark:border-dash-dline dark:bg-dash-dcard"
+          >
+            <View className="h-11 w-11 items-center justify-center rounded-xl bg-dash-pill dark:bg-dash-dbg">
+              <AppIcon name={c.icon} size={20} color="#0284C7" />
+            </View>
+            <View className="ml-3 flex-1">
+              <Text className="text-[14px] font-extrabold text-dash-ink dark:text-dash-dink" numberOfLines={1}>
+                {c.title}
+              </Text>
+              <Text className="mt-0.5 text-[11px] font-semibold text-dash-muted dark:text-dash-dmuted" numberOfLines={2}>
+                {c.sub}
+              </Text>
+            </View>
+            <AppIcon name="chevRight" size={18} color="#94A3B8" />
+          </Pressable>
+        ))}
+      </View>
+
       <SectionHeader title="Friends" />
       <View className="flex-row items-center gap-2 rounded-2xl border border-dash-line bg-dash-card p-2 pl-3 dark:border-dash-dline dark:bg-dash-dcard">
         <AppIcon name="search" size={17} color="#94A3B8" />

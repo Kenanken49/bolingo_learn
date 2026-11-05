@@ -132,7 +132,11 @@ export type AppIconName =
   | 'download'
   | 'search'
   | 'menu'
-  | 'compass';
+  | 'compass'
+  | 'link'
+  | 'sword'
+  | 'radio'
+  | 'cube';
 
 type Glyph = { lib: 'ion' | 'mci'; glyph: string };
 
@@ -222,6 +226,10 @@ const MAP: Record<AppIconName, Glyph> = {
   search: { lib: 'ion', glyph: 'search' },
   menu: { lib: 'ion', glyph: 'menu' },
   compass: { lib: 'ion', glyph: 'compass' },
+  link: { lib: 'ion', glyph: 'link' },
+  sword: { lib: 'mci', glyph: 'sword-cross' },
+  radio: { lib: 'ion', glyph: 'radio' },
+  cube: { lib: 'ion', glyph: 'cube' },
 };
 
 /**
