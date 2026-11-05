@@ -460,6 +460,35 @@ check('The lesson index is never written to device storage', () => {
   assert(!/AsyncStorage|FileSystem|SecureStore/.test(knowledge), 'knowledge pack must stay in memory');
 });
 
+check('Course allocation: each space orders the real catalog its own way', () => {
+  const alloc = require(rel('lib', 'spaceAllocation.ts'));
+  const meta = ['html', 'rwd', 'design', 'lang', 'certs', 'linux'];
+  for (const space of ['explorer', 'launcher', 'climber']) {
+    const ordered = alloc.orderCourseIds(meta, space);
+    assert(ordered.length === meta.length && new Set(ordered).size === meta.length, `${space}: allocation must cover every course exactly once`);
+  }
+  assert(alloc.orderCourseIds(meta, 'explorer')[0] === 'lang', 'explorers meet languages first');
+  assert(alloc.orderCourseIds(meta, 'climber')[0] === 'certs', 'climbers meet certs first');
+  assert(alloc.certsFirst('climber') && !alloc.certsFirst('explorer') && !alloc.certsFirst('launcher'), 'only climbers meet certs first');
+  assert(alloc.spaceUx('climber').audioFirst === true && alloc.spaceUx('explorer').audioFirst === false, 'climbers are audio-first');
+  assert(alloc.spaceUx('climber').sessionMinutes < alloc.spaceUx('launcher').sessionMinutes, 'climbers get bite-sized sessions');
+  const dashSrc = read(rel('lib', 'dashboard.ts'));
+  assert(dashSrc.includes('orderCourseIds(') && dashSrc.includes('certsFirst('), 'dashboard shelf must order through the allocation map');
+});
+
+check('Screen transitions: every tier steers through real routes only', () => {
+  const alloc = require(rel('lib', 'spaceAllocation.ts'));
+  const appDir = rel('src', 'app');
+  for (const space of ['explorer', 'launcher', 'climber']) {
+    const routes = alloc.transitionsFor(space);
+    assert(routes.length >= 3, `${space} needs at least three primary destinations`);
+    for (const r of routes) {
+      const route = r.href === '/' ? 'index' : r.href.slice(1);
+      assert(fs.existsSync(path.join(appDir, `${route}.tsx`)), `${space} links to missing route ${r.href}`);
+    }
+  }
+});
+
 console.log(`\n${passed} passed, ${failures} failed.`);
 if (failures > 0) {
   console.error('Adaptive UI + offline AI gate FAILED.');

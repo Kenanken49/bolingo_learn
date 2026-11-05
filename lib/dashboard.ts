@@ -2,6 +2,7 @@ import { supabase } from './supabase';
 import { CURRICULUM, COURSES_META, type CurriculumBlock } from './curriculum';
 import { CERTIFICATIONS, trackProgress, type CertProject, type CertTrack } from './certifications';
 import type { LearningSpace } from './learningSpace';
+import { certsFirst, orderCourseIds } from './spaceAllocation';
 import { nextUpBlock } from './onboarding';
 import { getDueCount } from './srs';
 import { loadLatestAudiobook } from './audiobook';
@@ -70,16 +71,18 @@ export function certTracks(completed: Set<string>): DashTrack[] {
 }
 
 /**
- * Every track, ordered by learning space: explorers meet language courses
- * first, climbers meet certification tracks first, launchers get the full
- * shelf in catalog order. Progress values never change — only the order.
+ * Every track, allocated by learning space (lib/spaceAllocation.ts):
+ * courses sort by the space's course priority, and climbers meet
+ * certification tracks first. Progress values never change — only the order.
  */
 export function allTracks(completed: Set<string>, space: LearningSpace = 'launcher'): DashTrack[] {
-  const courses = languageTracks(completed);
+  const order = orderCourseIds(COURSES_META.map((c) => c.id), space);
+  const rank = new Map(order.map((id, i) => [id, i]));
+  const courses = languageTracks(completed).sort(
+    (a, b) => (rank.get(a.id.replace(/^course:/, '')) ?? order.length) - (rank.get(b.id.replace(/^course:/, '')) ?? order.length)
+  );
   const certs = certTracks(completed);
-  if (space === 'explorer') return [...courses, ...certs];
-  if (space === 'climber') return [...certs, ...courses];
-  return [...courses, ...certs];
+  return certsFirst(space) ? [...certs, ...courses] : [...courses, ...certs];
 }
 
 /** "Curated for you" — the three least-finished cert tracks with real progress. */
