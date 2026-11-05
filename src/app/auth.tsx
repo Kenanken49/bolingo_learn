@@ -26,10 +26,12 @@ export default function Auth() {
   const [mode, setMode] = useState<'in' | 'up'>('in');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [msgKind, setMsgKind] = useState<'error' | 'info'>('info');
   const [newPw, setNewPw] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
   const [pwBusy, setPwBusy] = useState(false);
   const [pwMsg, setPwMsg] = useState<string | null>(null);
+  const [pwKind, setPwKind] = useState<'error' | 'info'>('info');
 
   const refresh = useCallback(async () => {
     try {
@@ -51,7 +53,10 @@ export default function Auth() {
       // one-shot (cleared after success) so repeats are harmless.
       if (p) {
         const claimed = await claimPendingGuestResult(p.id);
-        if (claimed) setMsg(`Welcome! Your +${claimed.xpEarned} guest XP was saved to this account.`);
+        if (claimed) {
+          setMsgKind('info');
+          setMsg(`Welcome! Your +${claimed.xpEarned} guest XP was saved to this account.`);
+        }
       }
     } catch {
       setProfile(null);
@@ -119,6 +124,7 @@ export default function Auth() {
 
   const submit = async () => {
     if (!email.includes('@') || password.length < 6) {
+      setMsgKind('error');
       setMsg('Enter a valid email and a 6+ character password.');
       return;
     }
@@ -136,9 +142,11 @@ export default function Auth() {
       if (p) {
         router.replace('/');
       } else {
+        setMsgKind('info');
         setMsg('Check your inbox to confirm your email, then sign in.');
       }
     } catch (e) {
+      setMsgKind('error');
       setMsg(String(e instanceof Error ? e.message : e));
     } finally {
       setBusy(false);
@@ -147,6 +155,7 @@ export default function Auth() {
 
   const sendReset = async () => {
     if (!email.includes('@')) {
+      setMsgKind('error');
       setMsg('Enter your email above first, then tap Forgot password.');
       return;
     }
@@ -156,8 +165,10 @@ export default function Auth() {
       const redirect = Platform.OS === 'web' ? makeRedirectUri({ path: 'auth' }) : redirectTo;
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: redirect });
       if (error) throw error;
+      setMsgKind('info');
       setMsg('Reset link sent — check your inbox (and spam), open it, then set a new password.');
     } catch (e) {
+      setMsgKind('error');
       setMsg(String(e instanceof Error ? e.message : e));
     } finally {
       setBusy(false);
@@ -166,10 +177,12 @@ export default function Auth() {
 
   const changePw = async () => {
     if (newPw.length < 6) {
+      setPwKind('error');
       setPwMsg('New password must be 6+ characters.');
       return;
     }
     if (newPw !== confirmPw) {
+      setPwKind('error');
       setPwMsg('Passwords do not match.');
       return;
     }
@@ -180,8 +193,10 @@ export default function Auth() {
       if (error) throw error;
       setNewPw('');
       setConfirmPw('');
+      setPwKind('info');
       setPwMsg('Password updated.');
     } catch (e) {
+      setPwKind('error');
       setPwMsg(String(e instanceof Error ? e.message : e));
     } finally {
       setPwBusy(false);
@@ -210,7 +225,10 @@ export default function Auth() {
       if (error || !data?.url) throw error ?? new Error('Could not start Google sign-in.');
       const res = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
       if (res.type !== 'success' || !res.url) {
-        if (res.type !== 'cancel' && res.type !== 'dismiss') setMsg('Google sign-in did not complete.');
+        if (res.type !== 'cancel' && res.type !== 'dismiss') {
+          setMsgKind('error');
+          setMsg('Google sign-in did not complete.');
+        }
         return;
       }
       // Newer Supabase returns a PKCE ?code=… grant; older setups return
@@ -232,6 +250,7 @@ export default function Auth() {
       setProfile(p);
       if (p) router.replace('/');
     } catch (e) {
+      setMsgKind('error');
       setMsg(String(e instanceof Error ? e.message : e));
     } finally {
       setBusy(false);
@@ -248,65 +267,92 @@ export default function Auth() {
 
   if (profile) {
     return (
-      <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className="flex-1 bg-dash-bg dark:bg-dash-dbg"
+        contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8"
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
         <BrandMark />
-        <View className="mt-2" />
+        <View className="mt-4" />
         <LearnerAvatar uri={profile.avatar_url} size={80} />
-        <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">{profile.username ?? 'Your account'}</Text>
-        {accountEmail ? <Text className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{accountEmail}</Text> : null}
-        <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5">
+        <Text className="mt-2 text-2xl font-extrabold text-dash-ink dark:text-dash-dink">{profile.username ?? 'Your account'}</Text>
+        {accountEmail ? <Text className="mt-0.5 text-sm text-dash-muted dark:text-dash-dmuted">{accountEmail}</Text> : null}
+        <View className="mt-6 w-full max-w-sm rounded-3xl border border-dash-line bg-dash-card p-5 dark:border-dash-dline dark:bg-dash-dcard">
           <View className="mt-2 flex-row items-center justify-center gap-3">
             <View className="flex-row items-center gap-1">
               <AppIcon name="zap" size={15} color="#F59E0B" />
-              <Text className="text-base font-bold text-slate-600 dark:text-slate-400">{profile.xp} XP</Text>
+              <Text className="text-base font-bold text-dash-muted dark:text-dash-dmuted">{profile.xp} XP</Text>
             </View>
             <View className="flex-row items-center gap-1">
               <AppIcon name="flame" size={15} color="#F97316" />
-              <Text className="text-base font-bold text-slate-600 dark:text-slate-400">{profile.streak_count}</Text>
+              <Text className="text-base font-bold text-dash-muted dark:text-dash-dmuted">{profile.streak_count}</Text>
             </View>
             <View className="flex-row items-center gap-1">
               <AppIcon name="heart" size={15} color="#EF4444" />
-              <Text className="text-base font-bold text-slate-600 dark:text-slate-400">{profile.hearts}</Text>
+              <Text className="text-base font-bold text-dash-muted dark:text-dash-dmuted">{profile.hearts}</Text>
             </View>
           </View>
           <View className="mt-1 flex-row items-center justify-center gap-1">
             {profile.is_premium ? <AppIcon name="crown" size={16} color="#D97706" /> : null}
-            <Text className="text-base text-slate-600 dark:text-slate-400">{profile.is_premium ? 'Premium active' : 'Free tier'}</Text>
+            <Text className="text-base text-dash-muted dark:text-dash-dmuted">{profile.is_premium ? 'Premium active' : 'Free tier'}</Text>
           </View>
         </View>
-        <View className="mt-4 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+        <View className="mt-4 w-full max-w-sm rounded-3xl border border-dash-line bg-dash-card p-5 dark:border-dash-dline dark:bg-dash-dcard">
           <View className="flex-row items-center gap-1.5">
             <AppIcon name="key" size={18} color="#0F172A" />
-            <Text className="text-base font-extrabold text-slate-900 dark:text-slate-100">Reset password</Text>
+            <Text className="text-base font-extrabold text-dash-ink dark:text-dash-dink">Reset password</Text>
           </View>
           <TextInput
             value={newPw}
             onChangeText={setNewPw}
             placeholder="New password (6+ characters)"
             secureTextEntry
-            className="mt-3 w-full rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 text-base text-slate-900 dark:text-slate-100"
+            className="mt-3 w-full rounded-2xl border border-dash-line bg-white px-4 py-3 text-base text-dash-ink dark:border-dash-dline dark:bg-dash-dbg dark:text-dash-dink"
           />
           <TextInput
             value={confirmPw}
             onChangeText={setConfirmPw}
             placeholder="Confirm new password"
             secureTextEntry
-            className="mt-2 w-full rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 text-base text-slate-900 dark:text-slate-100"
+            className="mt-2 w-full rounded-2xl border border-dash-line bg-white px-4 py-3 text-base text-dash-ink dark:border-dash-dline dark:bg-dash-dbg dark:text-dash-dink"
           />
           <Pressable
             onPress={changePw}
             disabled={pwBusy}
-            className={`mt-3 items-center rounded-2xl py-3 ${pwBusy ? 'bg-slate-300' : 'bg-slate-900'}`}
+            accessibilityRole="button"
+            accessibilityLabel="Update password"
+            className={`mt-3 items-center rounded-2xl py-3 ${pwBusy ? 'bg-dash-line dark:bg-dash-dline' : 'bg-dash-hero'}`}
           >
             {pwBusy ? <ActivityIndicator color="#fff" /> : <Text className="font-bold text-white">Update password</Text>}
           </Pressable>
-          {pwMsg ? <Text className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">{pwMsg}</Text> : null}
+          {pwMsg ? (
+            <View
+              className={`mt-3 flex-row items-start gap-2 rounded-2xl border px-3.5 py-3 ${
+                pwKind === 'error'
+                  ? 'border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950'
+                  : 'border-dash-line bg-dash-pill dark:border-dash-dline dark:bg-dash-dbg'
+              }`}
+            >
+              <AppIcon name={pwKind === 'error' ? 'alert' : 'check'} size={16} color={pwKind === 'error' ? '#DC2626' : '#0284C7'} />
+              <Text
+                className={`flex-1 text-sm ${pwKind === 'error' ? 'text-red-700 dark:text-red-300' : 'text-dash-ink dark:text-dash-dink'}`}
+              >
+                {pwMsg}
+              </Text>
+            </View>
+          ) : null}
         </View>
-        <Pressable onPress={signOut} className="mt-4 w-full max-w-sm items-center rounded-2xl bg-slate-800 py-3">
-          <Text className="font-bold text-white">Sign out</Text>
+        <Pressable
+          onPress={signOut}
+          accessibilityRole="button"
+          accessibilityLabel="Sign out"
+          className="mt-4 w-full max-w-sm items-center rounded-2xl border border-dash-line bg-dash-card py-3 dark:border-dash-dline dark:bg-dash-dcard"
+        >
+          <Text className="font-bold text-dash-ink dark:text-dash-dink">Sign out</Text>
         </Pressable>
-        <Pressable onPress={() => router.replace('/')} className="mt-2 items-center">
-          <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Back to Path</Text>
+        <Pressable onPress={() => router.replace('/')} className="mt-2 items-center py-2">
+          <Text onPhoto className="font-bold text-dash-muted dark:text-dash-dmuted">Back to learning →</Text>
         </Pressable>
         <StatusBar style="auto" />
       </ScrollView>
@@ -314,80 +360,131 @@ export default function Auth() {
   }
 
   return (
-    <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-md flex-grow items-center self-center px-4 py-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-      <BrandMark />
-      <View className="mt-2 h-16 w-16 items-center justify-center rounded-full bg-slate-900">
-        <AppIcon name="lock" size={30} color="#FFFFFF" />
-      </View>
-      <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">{mode === 'in' ? 'Welcome back' : 'Create account'}</Text>
-      <Text onPhoto className="mt-1 text-center text-base text-slate-600 dark:text-slate-200">
-        Sign in to sync XP, upload study material, and keep your streak on every device.
-      </Text>
+    <ScrollView
+      className="flex-1 bg-dash-bg dark:bg-dash-dbg"
+      contentContainerClassName="mx-auto w-full max-w-md flex-grow justify-center self-center px-4 py-8"
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
+      <View className="w-full rounded-3xl border border-dash-line bg-dash-card p-6 dark:border-dash-dline dark:bg-dash-dcard">
+        <View className="items-center">
+          <BrandMark />
+          <Text className="mt-4 text-2xl font-extrabold text-dash-ink dark:text-dash-dink">
+            {mode === 'in' ? 'Welcome back' : 'Create your account'}
+          </Text>
+          <Text className="mt-1 text-center text-[15px] text-dash-muted dark:text-dash-dmuted">
+            Sign in to sync XP, uploads and streaks across every device.
+          </Text>
+        </View>
 
-      <View className="mt-6 w-full max-w-sm flex-row rounded-2xl bg-slate-100 dark:bg-slate-800 p-1">
-        {(['in', 'up'] as const).map((m) => (
-          <Pressable
-            key={m}
-            onPress={() => {
-              setMode(m);
-              setMsg(null);
-            }}
-            className={`flex-1 items-center rounded-xl py-2 ${mode === m ? 'bg-white dark:bg-slate-900 shadow' : ''}`}
-          >
-            <Text className={`font-bold ${mode === m ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}`}>
-              {m === 'in' ? 'Sign in' : 'Sign up'}
-            </Text>
+        <Pressable
+          onPress={signInWithGoogle}
+          disabled={busy}
+          accessibilityRole="button"
+          accessibilityLabel="Continue with Google"
+          className="mt-6 flex-row items-center justify-center rounded-2xl border border-dash-line bg-white py-3.5 dark:border-dash-dline dark:bg-dash-dbg"
+        >
+          <AppIcon name="google" size={20} color="#4285F4" />
+          <Text className="ml-2 text-base font-bold text-dash-ink dark:text-dash-dink">Continue with Google</Text>
+        </Pressable>
+
+        <View className="mt-5 flex-row items-center gap-3">
+          <View className="h-px flex-1 bg-dash-line dark:bg-dash-dline" />
+          <Text className="text-xs font-bold uppercase tracking-widest text-dash-faint">or with email</Text>
+          <View className="h-px flex-1 bg-dash-line dark:bg-dash-dline" />
+        </View>
+
+        <View
+          accessibilityRole="tablist"
+          className="mt-5 flex-row rounded-2xl bg-dash-bg p-1 dark:bg-dash-dbg"
+        >
+          {(['in', 'up'] as const).map((m) => (
+            <Pressable
+              key={m}
+              onPress={() => {
+                setMode(m);
+                setMsg(null);
+              }}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: mode === m }}
+              accessibilityLabel={m === 'in' ? 'Sign in' : 'Sign up'}
+              className={`flex-1 items-center rounded-xl py-2 ${mode === m ? 'bg-dash-card shadow-sm dark:bg-dash-dcard' : ''}`}
+            >
+              <Text
+                className={`font-bold ${mode === m ? 'text-dash-ink dark:text-dash-dink' : 'text-dash-faint'}`}
+              >
+                {m === 'in' ? 'Sign in' : 'Sign up'}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
+        <Text className="mb-1.5 mt-4 text-sm font-bold text-dash-ink dark:text-dash-dink">Email</Text>
+        <TextInput
+          value={email}
+          onChangeText={setEmail}
+          placeholder="you@example.com"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          accessibilityLabel="Email address"
+          className="w-full rounded-2xl border border-dash-line bg-white px-4 py-3 text-base text-dash-ink dark:border-dash-dline dark:bg-dash-dbg dark:text-dash-dink"
+        />
+        <View className="mb-1.5 mt-4 flex-row items-center justify-between">
+          <Text className="text-sm font-bold text-dash-ink dark:text-dash-dink">Password</Text>
+          <Pressable onPress={sendReset} disabled={busy} accessibilityRole="button" accessibilityLabel="Forgot password">
+            <Text className="text-sm font-bold text-dash-pillink">Forgot password?</Text>
           </Pressable>
-        ))}
+        </View>
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          placeholder="6+ characters"
+          secureTextEntry
+          accessibilityLabel="Password"
+          onSubmitEditing={submit}
+          className="w-full rounded-2xl border border-dash-line bg-white px-4 py-3 text-base text-dash-ink dark:border-dash-dline dark:bg-dash-dbg dark:text-dash-dink"
+        />
+
+        <Pressable
+          onPress={submit}
+          disabled={busy}
+          accessibilityRole="button"
+          accessibilityLabel={mode === 'in' ? 'Sign in' : 'Create account'}
+          className={`mt-5 items-center rounded-2xl py-4 ${busy ? 'bg-dash-line dark:bg-dash-dline' : 'bg-dash-hero'}`}
+        >
+          {busy ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text className="text-base font-extrabold text-white">{mode === 'in' ? 'Sign in' : 'Create account'}</Text>
+          )}
+        </Pressable>
+
+        {msg ? (
+          <View
+            className={`mt-3 flex-row items-start gap-2 rounded-2xl border px-3.5 py-3 ${
+              msgKind === 'error'
+                ? 'border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950'
+                : 'border-dash-line bg-dash-pill dark:border-dash-dline dark:bg-dash-dbg'
+            }`}
+          >
+            <AppIcon name={msgKind === 'error' ? 'alert' : 'check'} size={16} color={msgKind === 'error' ? '#DC2626' : '#0284C7'} />
+            <Text
+              className={`flex-1 text-sm ${msgKind === 'error' ? 'text-red-700 dark:text-red-300' : 'text-dash-ink dark:text-dash-dink'}`}
+            >
+              {msg}
+            </Text>
+          </View>
+        ) : null}
       </View>
 
-      <TextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="you@example.com"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        className="mt-4 w-full max-w-sm rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 text-base text-slate-900 dark:text-slate-100"
-      />
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password (6+ characters)"
-        secureTextEntry
-        className="mt-3 w-full max-w-sm rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 text-base text-slate-900 dark:text-slate-100"
-      />
-
-      <Pressable
-        onPress={submit}
-        disabled={busy}
-        className={`mt-4 w-full max-w-sm items-center rounded-2xl py-4 ${busy ? 'bg-slate-300' : 'bg-green-500'}`}
-      >
-        {busy ? <ActivityIndicator color="#fff" /> : <Text className="text-lg font-extrabold text-white">{mode === 'in' ? 'Sign in' : 'Create account'}</Text>}
+      <Pressable onPress={() => router.replace('/')} className="mt-4 items-center py-1">
+        <Text onPhoto className="font-bold text-dash-muted dark:text-dash-dmuted">
+          Continue as guest →
+        </Text>
       </Pressable>
-      {msg ? <Text className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">{msg}</Text> : null}
-
-      <Pressable onPress={sendReset} disabled={busy} className="mt-2 items-center">
-        <Text className="font-bold text-sky-600 dark:text-sky-400">Forgot password?</Text>
-      </Pressable>
-
-      <View className="mt-4 w-full max-w-sm flex-row items-center gap-2">
-        <View className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-        <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">OR</Text>
-        <View className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-      </View>
-
-      <Pressable
-        onPress={signInWithGoogle}
-        disabled={busy}
-        className="mt-4 w-full max-w-sm flex-row items-center justify-center rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-3.5"
-      >
-        <View className="mr-2"><AppIcon name="google" size={20} color="#4285F4" /></View>
-        <Text className="text-base font-bold text-slate-800 dark:text-slate-200">Continue with Google</Text>
-      </Pressable>
-
-      <Pressable onPress={() => router.replace('/')} className="mt-4 items-center">
-        <Text onPhoto className="font-bold text-slate-600 dark:text-slate-200">Continue as guest →</Text>
-      </Pressable>
+      <Text className="mt-1 px-6 text-center text-xs text-dash-faint">
+        Your progress syncs across devices when you sign in.
+      </Text>
       <StatusBar style="auto" />
     </ScrollView>
   );

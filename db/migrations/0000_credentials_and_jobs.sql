@@ -1,4 +1,7 @@
-CREATE TABLE "credentials" (
+-- Public, server-owned records for the website: verified credentials and the
+-- job marketplace. Learner accounts, progress and certifications stay in
+-- Supabase. Applied by `node server/migrate.mjs` (tracked in schema_migrations).
+CREATE TABLE IF NOT EXISTS "credentials" (
 	"id" serial PRIMARY KEY,
 	"code" text NOT NULL,
 	"user_id" text NOT NULL,
@@ -9,8 +12,8 @@ CREATE TABLE "credentials" (
 	"issued_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"revoked_at" timestamp with time zone
 );
---> statement-breakpoint
-CREATE TABLE "job_listings" (
+
+CREATE TABLE IF NOT EXISTS "job_listings" (
 	"id" serial PRIMARY KEY,
 	"title" text NOT NULL,
 	"employer" text NOT NULL,
@@ -24,7 +27,7 @@ CREATE TABLE "job_listings" (
 	"posted_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"closes_at" timestamp with time zone
 );
---> statement-breakpoint
-CREATE UNIQUE INDEX "credentials_code_idx" ON "credentials" ("code");--> statement-breakpoint
-CREATE UNIQUE INDEX "credentials_user_track_idx" ON "credentials" ("user_id","track_id");--> statement-breakpoint
-CREATE INDEX "job_listings_posted_idx" ON "job_listings" ("posted_at");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "credentials_code_idx" ON "credentials" ("code");
+CREATE UNIQUE INDEX IF NOT EXISTS "credentials_user_track_idx" ON "credentials" ("user_id","track_id");
+CREATE INDEX IF NOT EXISTS "job_listings_posted_idx" ON "job_listings" ("posted_at");

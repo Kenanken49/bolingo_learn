@@ -1,8 +1,5 @@
-import type { Config, Context } from '@netlify/functions';
-import { and, eq, isNull } from 'drizzle-orm';
-import { db } from '../../db/index';
-import { credentials } from '../../db/schema';
-import { CORS, json, requireUser, rest, safe } from '../lib/supabaseAuth';
+import { CORS, json, requireUser, rest, safe } from '../lib/supabaseAuth.mjs';
+import { query } from '../lib/db.mjs';
 
 /**
  * Public credential links.
@@ -15,31 +12,41 @@ import { CORS, json, requireUser, rest, safe } from '../lib/supabaseAuth';
  * say "I'm certified".
  */
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-function newCode(): string {
+
+/** Columns every read returns, matching the client's Credential shape. */
+const COLUMNS =
+  'code, user_id, track_id, track_title, holder_name, projects_passed, issued_at, revoked_at';
+
+function newCode() {
   const bytes = crypto.getRandomValues(new Uint8Array(9));
   const chars = Array.from(bytes, (b) => ALPHABET[b % ALPHABET.length]).join('');
   return `${chars.slice(0, 3)}-${chars.slice(3, 6)}-${chars.slice(6, 9)}`;
 }
 
-function publicView(row: typeof credentials.$inferSelect) {
+function publicView(row) {
   return {
     code: row.code,
-    trackId: row.trackId,
-    trackTitle: row.trackTitle,
-    holderName: row.holderName,
-    projectsPassed: row.projectsPassed,
-    issuedAt: row.issuedAt,
-    revoked: row.revokedAt != null,
+    trackId: row.track_id,
+    trackTitle: row.track_title,
+    holderName: row.holder_name,
+    projectsPassed: row.projects_passed,
+    issuedAt: row.issued_at,
+    revoked: row.revoked_at != null,
   };
 }
 
-export default safe(async (req: Request, context: Context): Promise<Response> => {
+async function findOne(sql, params) {
+  const rows = await query(sql, params);
+  return rows[0];
+}
+
+export default safe(async (req, params = {}) => {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
-  const code = context.params?.code?.toUpperCase();
+  const code = params.code ? String(params.code).toUpperCase() : '';
 
   if (req.method === 'GET' && code) {
     if (!/^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$/.test(code)) return json({ error: 'Not a valid credential code.' }, 400);
-    const [row] = await db.select().from(credentials).where(eq(credentials.code, code)).limit(1);
+    const row = await findOne(`SELECT ${COLUMNS} FROM credentials WHERE code = $1 LIMIT 1`, [code]);
     if (!row) return json({ error: 'No credential with this code.' }, 404);
     return json(publicView(row));
   }
@@ -48,29 +55,28 @@ export default safe(async (req: Request, context: Context): Promise<Response> =>
   if (user instanceof Response) return user;
 
   if (req.method === 'GET') {
-    const rows = await db.select().from(credentials).where(eq(credentials.userId, user.id));
+    const rows = await query(`SELECT ${COLUMNS} FROM credentials WHERE user_id = $1`, [user.id]);
     return json(rows.map(publicView));
   }
 
   if (req.method === 'POST') {
-    const body = (await req.json().catch(() => ({}))) as { trackId?: unknown };
+    const body = await req.json().catch(() => ({}));
     const trackId = typeof body.trackId === 'string' ? body.trackId.trim() : '';
     if (!/^[a-z0-9-]{1,40}$/.test(trackId)) return json({ error: 'Unknown certification.' }, 400);
 
-    const [existing] = await db
-      .select()
-      .from(credentials)
-      .where(and(eq(credentials.userId, user.id), eq(credentials.trackId, trackId), isNull(credentials.revokedAt)))
-      .limit(1);
+    const existing = await findOne(
+      `SELECT ${COLUMNS} FROM credentials WHERE user_id = $1 AND track_id = $2 AND revoked_at IS NULL LIMIT 1`,
+      [user.id, trackId]
+    );
     if (existing) return json(publicView(existing));
 
     const [tracks, projects] = await Promise.all([
-      rest<{ id: string; title: string }[]>(null, `certification_tracks?id=eq.${trackId}&select=id,title`),
-      rest<{ id: string }[]>(null, `certification_projects?track_id=eq.${trackId}&select=id`),
+      rest(null, `certification_tracks?id=eq.${trackId}&select=id,title`),
+      rest(null, `certification_projects?track_id=eq.${trackId}&select=id`),
     ]);
     if (!tracks[0] || projects.length === 0) return json({ error: 'This certification is not in the catalog yet.' }, 404);
     const ids = projects.map((p) => p.id);
-    const done = await rest<{ lesson_id: string }[]>(
+    const done = await rest(
       user,
       `lesson_completions?user_id=eq.${user.id}&lesson_id=in.(${ids.map(encodeURIComponent).join(',')})&select=lesson_id`
     );
@@ -78,32 +84,27 @@ export default safe(async (req: Request, context: Context): Promise<Response> =>
     if (!ids.every((id) => passed.has(id))) {
       return json({ error: `Pass all ${ids.length} projects first (${passed.size} of ${ids.length} done).` }, 403);
     }
-    const profile = await rest<{ username?: string | null }[]>(user, `profiles?id=eq.${user.id}&select=username`).catch(() => []);
+    const profile = await rest(user, `profiles?id=eq.${user.id}&select=username`).catch(() => []);
     const holderName = profile[0]?.username?.trim() || 'Bolingo learner';
 
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        const [row] = await db
-          .insert(credentials)
-          .values({ code: newCode(), userId: user.id, trackId, trackTitle: tracks[0].title, holderName, projectsPassed: ids.length })
-          .returning();
+        const row = await findOne(
+          `INSERT INTO credentials (code, user_id, track_id, track_title, holder_name, projects_passed) VALUES ($1, $2, $3, $4, $5, $6) RETURNING ${COLUMNS}`,
+          [newCode(), user.id, trackId, tracks[0].title, holderName, ids.length]
+        );
         return json(publicView(row), 201);
-      } catch (e) {
+      } catch (error) {
         // A code collision retries; a duplicate (user, track) means a parallel request won.
-        const [raced] = await db
-          .select()
-          .from(credentials)
-          .where(and(eq(credentials.userId, user.id), eq(credentials.trackId, trackId)))
-          .limit(1);
+        const raced = await findOne(`SELECT ${COLUMNS} FROM credentials WHERE user_id = $1 AND track_id = $2 LIMIT 1`, [
+          user.id,
+          trackId,
+        ]);
         if (raced) return json(publicView(raced));
-        if (attempt === 2) throw e;
+        if (attempt === 2) throw error;
       }
     }
   }
 
   return json({ error: 'Method not allowed.' }, 405);
 });
-
-export const config: Config = {
-  path: ['/api/credentials', '/api/credentials/:code'],
-};

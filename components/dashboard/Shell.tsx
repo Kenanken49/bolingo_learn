@@ -37,7 +37,7 @@ export default function Shell({
   onSearch?: (q: string) => void;
   children: React.ReactNode;
 }) {
-  const [theme] = useTheme();
+  const [theme, setTheme] = useTheme();
   const { width } = useWindowDimensions();
   const wide = Platform.OS === 'web' && width >= 1024;
   const [drawer, setDrawer] = useState(false);
@@ -83,6 +83,22 @@ export default function Shell({
                 {greeting}
               </Text>
             </View>
+            {/* Narrow screens have no sidebar, so the appearance switch lives in
+                the header — the same control the wide layout puts in the rail. */}
+            {!wide ? (
+              <Pressable
+                onPress={() => void setTheme(theme === 'dark' ? 'light' : 'dark')}
+                accessibilityRole="button"
+                accessibilityLabel={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                className="h-10 w-10 items-center justify-center rounded-full border border-dash-line bg-dash-card dark:border-dash-dline dark:bg-dash-dcard"
+              >
+                <AppIcon
+                  name={theme === 'dark' ? 'moon' : 'sunny'}
+                  size={19}
+                  color={theme === 'dark' ? '#7DD3FC' : '#F59E0B'}
+                />
+              </Pressable>
+            ) : null}
             <Pressable
               onPress={() => router.push('/settings')}
               accessibilityRole="button"

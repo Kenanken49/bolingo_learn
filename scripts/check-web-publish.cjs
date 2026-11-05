@@ -1,21 +1,24 @@
 #!/usr/bin/env node
 /**
- * Guard the website publish (Netlify → Expo web export).
+ * Guard the website publish (Coolify → Docker → Expo web export).
  *
- * The site is a single-page app, so a missing SPA fallback turns every
- * deep link and every store-review click into a 404. And AdMob account
- * standing depends on a reachable app-ads.txt once the domain is linked.
- * So the checks are:
+ * The site is a single-page app served by `server/index.mjs`, so a missing SPA
+ * fallback turns every deep link and every store-review click into a 404. The
+ * same container runs the public API, and AdMob account standing depends on a
+ * reachable app-ads.txt once the domain is linked. So the checks are:
  *
- *   1. netlify.toml exists with the Expo export build, the `dist` publish
- *      directory, and a 200 SPA rewrite for every path.
- *   2. public/app-ads.txt exists (Expo copies public/ to the dist root) with
- *      a google.com DIRECT entry — placeholder publisher id is allowed, a
+ *   1. The Dockerfile runs the Expo export, publishes `dist`, and starts the
+ *      Node server (the Coolify contract).
+ *   2. `server/index.mjs` keeps the 200 SPA fallback, the directory index, the
+ *      cache headers and both API routes the client calls.
+ *   3. public/app-ads.txt exists (Expo copies public/ to the dist root) with a
+ *      google.com DIRECT entry — placeholder publisher id is allowed, a
  *      missing file is not.
- *   3. The docs tell the owner the two manual steps no gate can do: linking
- *      the domain in the AdMob console and swapping the placeholder pub id.
+ *   4. The docs tell the owner the manual steps no gate can do: linking the
+ *      domain in the AdMob console and swapping the placeholder pub id.
+ *   5. The adaptive wireframe board still publishes.
  *
- * No network call, no Netlify account needed.
+ * No network call, no hosting account needed.
  */
 
 'use strict';
@@ -44,17 +47,102 @@ function read(rel) {
   return fs.readFileSync(path.join(ROOT, rel), 'utf8');
 }
 
-check('netlify.toml builds the Expo web export into dist', () => {
-  assert(fs.existsSync(path.join(ROOT, 'netlify.toml')), 'netlify.toml is missing');
-  const toml = read('netlify.toml');
-  assert(/expo export --platform web/.test(toml), 'the Netlify build must run the Expo web export');
-  assert(/publish\s*=\s*"dist"/.test(toml), 'the Netlify publish directory must be dist');
+check('The Dockerfile builds the Expo web export into dist', () => {
+  assert(fs.existsSync(path.join(ROOT, 'Dockerfile')), 'Dockerfile is missing');
+  const docker = read('Dockerfile');
+  assert(/expo export --platform web/.test(docker), 'the image build must run the Expo web export');
+  assert(/COPY --from=build \/app\/dist \.\/dist/.test(docker), 'the runtime image must serve dist/');
+  assert(/CMD \["node", "server\/index\.mjs"\]/.test(docker), 'the container must start server/index.mjs');
+  assert(/EXPOSE 3000/.test(docker) && /HEALTHCHECK/.test(docker), 'port 3000 and a healthcheck make Coolify able to route traffic');
+});
+
+/**
+ * Does a .dockerignore pattern remove `target` from the build context?
+ * Handles the three shapes this repo uses: an exact path, a directory prefix,
+ * and a single `*` (`.env.*`, `*.log`). Later lines win, as in Docker.
+ */
+function dockerIgnored(patterns, target) {
+  let ignored = false;
+  for (const raw of patterns) {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) continue;
+    const negate = line.startsWith('!');
+    const pattern = (negate ? line.slice(1) : line).replace(/\/+$/, '');
+    const star = pattern.indexOf('*');
+    const hit =
+      star === -1
+        ? target === pattern || target.startsWith(`${pattern}/`)
+        : target.startsWith(pattern.slice(0, star)) && (star === pattern.length - 1 || target.endsWith(pattern.slice(star + 1)));
+    if (hit) ignored = !negate;
+  }
+  return ignored;
+}
+
+check('The Docker build context contains everything both stages read', () => {
+  const patterns = read('.dockerignore').split(/\r?\n/);
+  // Stage 2 runs the Expo export (app source + assets + config) and
+  // publish-wireframes.cjs (design/); stage 3 copies server/ and db/migrations.
+  const required = [
+    'Dockerfile',
+    'package.json',
+    'package-lock.json',
+    'app.config.js',
+    'babel.config.js',
+    'metro.config.js',
+    'tailwind.config.js',
+    'global.css',
+    'tsconfig.json',
+    'src',
+    'components',
+    'lib',
+    'assets',
+    'content',
+    'public',
+    'design',
+    'server',
+    'db',
+    'scripts',
+  ];
+  for (const path of required) {
+    assert(!dockerIgnored(patterns, path), `.dockerignore excludes ${path}, which the image build needs`);
+  }
+  assert(dockerIgnored(patterns, '.env'), 'the local .env must never enter the build context');
+  assert(dockerIgnored(patterns, 'node_modules'), 'node_modules must come from npm ci, not the context');
 });
 
 check('Every deep link serves the router instead of 404ing', () => {
-  const toml = read('netlify.toml');
-  assert(/from\s*=\s*"\/\*"/.test(toml) && /to\s*=\s*"\/index\.html"/.test(toml), 'a /* → /index.html rewrite is missing');
-  assert(/status\s*=\s*200/.test(toml), 'the SPA rewrite must be a 200, not a redirect');
+  const server = read('server/index.mjs');
+  assert(/index\.html/.test(server) && /path\.extname\(url\.pathname\)/.test(server), 'a missing-asset 404 needs the index.html fallback for extensionless paths');
+  assert(/fileAt\(path\.join\(target, 'index\.html'\)\)/.test(server), '/wireframes and other directories must serve their own index');
+  const send = server.slice(server.indexOf('async function sendFile'));
+  assert(/res\.writeHead\(200\)/.test(send), 'the SPA fallback must be a 200, not a redirect');
+});
+
+check('Cache headers keep bundles hot and HTML fresh', () => {
+  const server = read('server/index.mjs');
+  assert(/immutable/.test(server) && /_expo\/static\//.test(server), 'fingerprinted bundles must cache immutably');
+  assert(/max-age=0, must-revalidate/.test(server), 'HTML must never cache');
+  assert(/app-ads\.txt/.test(server), 'app-ads.txt gets its own cache lifetime');
+});
+
+check('The container answers both public API routes the app calls', () => {
+  const server = read('server/index.mjs');
+  assert(/credentials: \{ handler: credentials/.test(server), '/api/credentials must be routed');
+  assert(/jobs: \{ handler: jobs/.test(server), '/api/jobs must be routed');
+  assert(/api\/health/.test(server), '/api/health is what the Docker healthcheck reads');
+  for (const handler of ['server/api/credentials.mjs', 'server/api/jobs.mjs']) {
+    assert(fs.existsSync(path.join(ROOT, handler)), `${handler} is missing`);
+  }
+  assert(fs.existsSync(path.join(ROOT, 'server', 'migrate.mjs')), 'server/migrate.mjs applies db/migrations');
+});
+
+check('No hosting config is left pointing at Netlify', () => {
+  assert(!fs.existsSync(path.join(ROOT, 'netlify.toml')), 'netlify.toml must be gone after the Coolify move');
+  assert(!fs.existsSync(path.join(ROOT, 'netlify')), 'the netlify/ directory must be gone after the Coolify move');
+  const pkg = JSON.parse(read('package.json'));
+  const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+  assert(!Object.keys(deps).some((d) => d.startsWith('@netlify/')), 'no @netlify/* dependency may remain');
+  assert(deps.pg, 'pg is required to reach DATABASE_URL');
 });
 
 check('app-ads.txt ships at the site root for AdMob verification', () => {
@@ -70,7 +158,7 @@ check('app-ads.txt ships at the site root for AdMob verification', () => {
 check('The publish docs name the manual steps', () => {
   assert(fs.existsSync(path.join(ROOT, 'docs', 'web-publish.md')), 'docs/web-publish.md is missing');
   const docs = read('docs/web-publish.md');
-  for (const needle of ['netlify.toml', 'app-ads.txt', 'AdMob console', 'dist']) {
+  for (const needle of ['Coolify', 'Dockerfile', 'DATABASE_URL', 'app-ads.txt', 'AdMob console', 'dist']) {
     assert(docs.includes(needle), `docs/web-publish.md must explain ${needle}`);
   }
 });
@@ -85,8 +173,8 @@ check('No lazy icon font can red-screen the site', () => {
 });
 
 check('The adaptive wireframe board is published at /wireframes/', () => {
-  const toml = read('netlify.toml');
-  assert(/expo export --platform web && node scripts\/publish-wireframes\.cjs/.test(toml), 'the build must copy the wireframe board after the export');
+  const docker = read('Dockerfile');
+  assert(/expo export --platform web && node scripts\/publish-wireframes\.cjs/.test(docker), 'the image build must copy the wireframe board after the export');
   const os = require('node:os');
   const { execFileSync } = require('node:child_process');
   const out = fs.mkdtempSync(path.join(os.tmpdir(), 'wf-'));
@@ -110,4 +198,4 @@ if (failures > 0) {
   console.error(`Web publish gate FAILED — ${failures} check(s) failed.`);
   process.exit(1);
 }
-console.log('Web publish gate OK — Netlify config, SPA fallback and app-ads.txt are wired.');
+console.log('Web publish gate OK — Coolify Dockerfile, SPA fallback, API routes and app-ads.txt are wired.');

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Copy the adaptive wireframe board into the web export so the site serves
- * it at /wireframes/. Runs after `expo export --platform web` (netlify.toml).
+ * it at /wireframes/. Runs after `expo export --platform web` (Dockerfile).
  * `design/` stays the only source; nothing here is imported by the app.
  *
  * The board loads Bingo art from `../wireframes-v2/assets`, so those files are

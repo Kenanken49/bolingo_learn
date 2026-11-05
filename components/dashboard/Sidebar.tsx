@@ -145,10 +145,9 @@ export default function Sidebar({
                 color={i < Math.min(freezes, 5) ? '#0284C7' : dark ? '#334155' : '#BAE6FD'}
               />
             ))}
-          </View>
-          <Text className="mt-2 text-[10.5px] font-semibold leading-[15px] text-dash-pillink">
-            A wrong answer uses one diamond — freezes save your streak.
-          </Text>
+          </View>            <Text className="mt-2 text-[10.5px] font-semibold leading-[15px] text-dash-pillink">
+              Each freeze covers one missed day — wrong answers cost hearts, not freezes.
+            </Text>
         </View>
 
         {/* Streak card */}

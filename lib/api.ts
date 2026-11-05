@@ -2,10 +2,10 @@ import { Platform } from 'react-native';
 import { supabase } from './supabase';
 
 /**
- * Client for the website's Netlify Functions (/api/*): public credential
- * links and the job marketplace. On the web the API is same-origin; the
- * native apps call the production site. Requests carry the learner's
- * Supabase access token, which the functions verify with Supabase.
+ * Client for the website's API (/api/*, server/index.mjs on Coolify): public
+ * credential links and the job marketplace. On the web the API is same-origin;
+ * the native apps call the production site. Requests carry the learner's
+ * Supabase access token, which the server verifies with Supabase.
  */
 export const PUBLIC_SITE = (process.env.EXPO_PUBLIC_SITE_URL || 'https://bolingo.co.ke').replace(/\/$/, '');
 const API_BASE = Platform.OS === 'web' ? '' : PUBLIC_SITE;
