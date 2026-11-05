@@ -51,7 +51,7 @@ export default function Sidebar({
             <Text className="text-[16px] font-extrabold text-white">b</Text>
           </View>
           <Text className="text-[19px] font-extrabold tracking-tight text-dash-ink dark:text-dash-dink">
-            bolingo
+            Bolingo
           </Text>
         </View>
 
