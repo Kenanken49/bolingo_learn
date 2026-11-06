@@ -649,8 +649,8 @@ CREATE TABLE public.users (
     xp integer DEFAULT 0 NOT NULL,
     streak integer DEFAULT 0 NOT NULL,
     last_active_day date,
-    hearts integer DEFAULT 5 NOT NULL,
-    hearts_updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    diamonds integer DEFAULT 5 NOT NULL,
+    diamonds_updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     display_name character varying(255)
 );

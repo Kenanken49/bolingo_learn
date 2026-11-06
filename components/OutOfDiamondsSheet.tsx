@@ -3,24 +3,24 @@ import { Modal, Pressable, View } from 'react-native';
 import Text from './ui/Text';
 import AppIcon from './AppIcon';
 import DuoButton from './DuoButton';
-import { useRewardedHeart } from '../lib/rewarded';
+import { useRewardedDiamond } from '../lib/rewarded';
 import { track } from '../lib/telemetry';
 
 /**
- * The moment the heart loop earns its keep: a learner just spent their fifth
- * heart, the lesson is paused, and the only way forward inside this session is
- * a rewarded video, a wait, or Premium.
+ * The moment the diamond loop earns its keep: a learner with zero diamonds
+ * tries to start (or retry) a lesson, and the only way forward inside this
+ * session is a rewarded video, a wait, or Premium.
  *
- * The sheet is deliberately a dead end for everything except those three: the
- * lesson cannot continue at zero hearts, so there is no dismiss-and-keep-going
- * path that would make the ad pointless.
+ * Diamonds are spent one per failed lesson — wrong answers are always free —
+ * so the lesson cannot continue at zero diamonds, and there is no
+ * dismiss-and-keep-going path that would make the ad pointless.
  *
- * The reward itself is granted by the caller (`onEarned`) so hearts keep being
+ * The reward itself is granted by the caller (`onEarned`) so diamonds keep being
  * persisted in exactly one place — `lib/progress.ts`.
  */
-export default function OutOfHeartsSheet({
+export default function OutOfDiamondsSheet({
   visible,
-  hearts,
+  diamonds,
   isPremium,
   onEarned,
   onClose,
@@ -28,11 +28,11 @@ export default function OutOfHeartsSheet({
   onOpenPremium,
 }: {
   visible: boolean;
-  hearts: number;
+  diamonds: number;
   isPremium: boolean;
-  /** Add the rewarded heart (persist + update state). */
+  /** Add the rewarded diamond (persist + update state). */
   onEarned: () => void;
-  /** Leave the sheet — the learner stays out of hearts and can end the session. */
+  /** Leave the sheet — the learner stays out of diamonds and can end the session. */
   onClose: () => void;
   /** The full refill screen (wait timer, Premium, emergency refill). */
   onOpenAllOptions: () => void;
@@ -45,13 +45,13 @@ export default function OutOfHeartsSheet({
 
   // Stable earn handler: the hook owns the ad instance, so its callback must
   // not be recreated (and must not read `reward` before it exists).
-  const rewardRef = useRef<ReturnType<typeof useRewardedHeart> | null>(null);
+  const rewardRef = useRef<ReturnType<typeof useRewardedDiamond> | null>(null);
   const handleEarned = useCallback(() => {
-    track('ad_rewarded_completed', { placement: 'hearts_depleted', testAd: rewardRef.current?.testAd ?? false });
+    track('ad_rewarded_completed', { placement: 'diamonds_depleted', testAd: rewardRef.current?.testAd ?? false });
     earnedRef.current();
   }, []);
 
-  const reward = useRewardedHeart(handleEarned);
+  const reward = useRewardedDiamond(handleEarned);
   useEffect(() => {
     rewardRef.current = reward;
   }, [reward]);
@@ -60,16 +60,16 @@ export default function OutOfHeartsSheet({
   const lastStatus = useRef(reward.status);
   useEffect(() => {
     if (lastStatus.current !== reward.status) {
-      if (reward.status === 'showing') track('ad_impression', { placement: 'hearts_depleted', testAd: reward.testAd });
+      if (reward.status === 'showing') track('ad_impression', { placement: 'diamonds_depleted', testAd: reward.testAd });
       if (reward.status === 'error' || reward.status === 'no-fill') {
-        track('ad_failed', { placement: 'hearts_depleted', reason: reward.status });
+        track('ad_failed', { placement: 'diamonds_depleted', reason: reward.status });
       }
       lastStatus.current = reward.status;
     }
   }, [reward.status, reward.testAd]);
 
   const watch = async () => {
-    track('ad_tapped', { placement: 'hearts_depleted', loaded: reward.loaded, testAd: reward.testAd });
+    track('ad_tapped', { placement: 'diamonds_depleted', loaded: reward.loaded, testAd: reward.testAd });
     await reward.show();
   };
 
@@ -81,11 +81,11 @@ export default function OutOfHeartsSheet({
         <View className="rounded-t-3xl bg-white px-6 pb-8 pt-5 dark:bg-slate-900">
           <View className="mb-3 flex-row items-center justify-between">
             <View className="flex-row items-center gap-2">
-              <View className="h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-950">
-                <AppIcon name="heart" size={20} color="#EF4444" />
+              <View className="h-10 w-10 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-950">
+                <AppIcon name="diamond" size={20} color="#0284C7" />
               </View>
               <Text className="font-duo text-xl font-extrabold text-slate-900 dark:text-slate-100">
-                {isPremium ? 'Unlimited hearts' : 'Out of hearts'}
+                {isPremium ? 'Unlimited diamonds' : 'Out of diamonds'}
               </Text>
             </View>
             <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Dismiss" className="p-2">
@@ -96,7 +96,7 @@ export default function OutOfHeartsSheet({
           <Text className="text-base text-slate-600 dark:text-slate-400">
             {isPremium
               ? 'Premium means this never happens again — keep going as long as you like.'
-              : `You have ${hearts} of 5 hearts. Every wrong answer costs one, and the lesson waits until you have another.`}
+              : `You have ${diamonds} of 5 diamonds. A failed lesson costs one — wrong answers are free — and the next lesson waits until you have another.`}
           </Text>
 
           {/* Primary: rewarded video. Hidden in every state that cannot play one. */}
@@ -109,10 +109,10 @@ export default function OutOfHeartsSheet({
               <>
                 <DuoButton
                   color="green"
-                  label="Watch a short video · +1 heart"
+                  label="Watch a short video · +1 diamond"
                   onPress={watch}
                   disabled={!reward.loaded || reward.showing}
-                  title="Watch ad for a heart"
+                  title="Watch ad for a diamond"
                 />
                 <Text className="mt-2 text-center text-xs font-semibold text-slate-400 dark:text-slate-500">
                   {reward.showing
@@ -136,13 +136,13 @@ export default function OutOfHeartsSheet({
             className="mt-5 rounded-2xl border-2 border-slate-200 py-3 dark:border-slate-700"
           >
             <Text className="text-center font-extrabold text-slate-700 dark:text-slate-200">
-              Wait for a free heart · 4 hours
+              Wait for a free diamond · 4 hours
             </Text>
           </Pressable>
 
           <Pressable onPress={onOpenPremium} accessibilityRole="button" className="mt-3 flex-row items-center justify-center gap-1.5 py-2">
             <AppIcon name="crown" size={18} color="#D97706" />
-            <Text className="font-extrabold text-amber-600 dark:text-amber-400">Go Premium · unlimited hearts</Text>
+            <Text className="font-extrabold text-amber-600 dark:text-amber-400">Go Premium · unlimited diamonds</Text>
           </Pressable>
 
           <Pressable onPress={onClose} accessibilityRole="button" className="mt-1 items-center py-2">

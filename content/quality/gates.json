@@ -220,7 +220,7 @@
     },
     {
       "id": "ads",
-      "label": "AdMob rewarded hearts",
+      "label": "AdMob rewarded diamonds",
       "category": "monetization",
       "command": "node scripts/check-ads.cjs",
       "timeoutSeconds": 120,

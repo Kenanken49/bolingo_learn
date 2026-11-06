@@ -1,7 +1,7 @@
 import { RefillView, useRefillState } from '../../components/RefillContent';
-import { useRewardedHeart } from '../../lib/rewarded';
+import { useRewardedDiamond } from '../../lib/rewarded';
 
 export default function Refill() {
-  const { profile, reward } = useRefillState(useRewardedHeart);
+  const { profile, reward } = useRefillState(useRewardedDiamond);
   return <RefillView profile={profile} reward={reward} />;
 }

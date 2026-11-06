@@ -146,7 +146,7 @@ export default function Sidebar({
               />
             ))}
           </View>            <Text className="mt-2 text-[10.5px] font-semibold leading-[15px] text-dash-pillink">
-              Each freeze covers one missed day — wrong answers cost hearts, not freezes.
+              Each freeze covers one missed day — failed lessons cost diamonds, not freezes.
             </Text>
         </View>
 

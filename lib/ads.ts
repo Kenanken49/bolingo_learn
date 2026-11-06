@@ -1,5 +1,5 @@
 /**
- * Rewarded video unit for "+1 heart".
+ * Rewarded video unit for "+1 diamond".
  *
  * The unit id is per platform: an Android id sent to iOS (or the other way
  * round) fails to fill forever, so the build supplies one env var each:

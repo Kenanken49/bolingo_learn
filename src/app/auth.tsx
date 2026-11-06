@@ -289,8 +289,8 @@ export default function Auth() {
               <Text className="text-base font-bold text-dash-muted dark:text-dash-dmuted">{profile.streak_count}</Text>
             </View>
             <View className="flex-row items-center gap-1">
-              <AppIcon name="heart" size={15} color="#EF4444" />
-              <Text className="text-base font-bold text-dash-muted dark:text-dash-dmuted">{profile.hearts}</Text>
+              <AppIcon name="diamond" size={15} color="#0284C7" />
+              <Text className="text-base font-bold text-dash-muted dark:text-dash-dmuted">{profile.diamonds}</Text>
             </View>
           </View>
           <View className="mt-1 flex-row items-center justify-center gap-1">

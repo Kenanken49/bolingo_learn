@@ -24,7 +24,7 @@ interface Props {
   questionData: CodeQuizData;
   questionLabel: string;
   progressPct: number;
-  hearts: number;
+  diamonds: number;
   sessionKind?: BlockKind;
   onCorrect: () => void;
   onContinue: () => void;
@@ -33,7 +33,7 @@ interface Props {
 
 /**
  * freeCodeCamp-style runnable exercise: the learner writes real JavaScript,
- * presses Run as often as they like (free — no hearts), and Check is graded by
+ * presses Run as often as they like (free — wrong answers never cost diamonds), and Check is graded by
  * the question's own assertions in a sandboxed frame, not by string matching.
  */
 export default function CodeExercise({

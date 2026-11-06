@@ -16,7 +16,7 @@ interface Props {
   prompt: string;
   questionLabel: string;
   progressPct: number;
-  hearts: number;
+  diamonds: number;
   sessionKind?: BlockKind;
   terminal: TerminalExercise;
   scenario: LabScenario;

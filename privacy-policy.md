@@ -10,7 +10,7 @@ Android (and web preview where available).
 
 **Account data (Supabase auth + `profiles` table).** Email address and
 authentication identifiers needed to sign you in and sync progress: XP,
-streak count, hearts and refill timestamps, lesson completions, and premium
+streak count, diamonds and refill timestamps, lesson completions, and premium
 status. Legal basis where applicable: contract (providing the service).
 
 **Your uploads (`user-images`/`user-materials` storage, `user_uploads`).**
@@ -29,8 +29,8 @@ store your card details — those stay with the app store.
 **Ads (Google AdMob).** Rewarded video ads use Google's advertising
 identifier and standard ad-serving data (device info, approximate location
 from IP, ad interactions) under Google's policies. No rewarded-ad viewing
-history is attached to your account beyond the heart refill it earns.
-Ads are optional: they appear only when you run out of hearts and choose to
+history is attached to your account beyond the diamond refill it earns.
+Ads are optional: they appear only when you run out of diamonds and choose to
 watch one. Before any ad is requested we ask Google's consent management
 platform whether you have consented — in the EEA, UK and other regions where
 it applies you will see a consent form, and declining it means no ad is ever

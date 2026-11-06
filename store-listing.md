@@ -17,7 +17,7 @@
 ## Long description (Play, ≤4000 chars) / Description (App Store)
 
 Learn to code the playful way. Bolingo Learn turns your study material into
-bite-size games — earn XP, protect your hearts, and keep your streak alive.
+bite-size games — earn XP, protect your diamonds, and keep your streak alive.
 
 **HOW IT WORKS**
 🧭 Pick a node on your learning path — from HTML Basics to your own uploads.
@@ -26,7 +26,7 @@ assembled from tokens, never typed on a tiny keyboard.
 🎧 Listen in Audiobook Mode: lessons narrate while each block highlights,
 Audible-style.
 🔥 Finish lessons to earn XP, grow your streak, and unlock the next node.
-Running low on hearts? Watch a short ad, wait for a refill, or go Premium.
+Running low on diamonds? Watch a short ad, wait for a refill, or go Premium.
 
 **🧠 AI SANDBOX (Premium)**
 Upload your own text, PDFs, or note scans. The AI curates them into a custom
@@ -35,7 +35,7 @@ quiz path — "My Custom Revision" — with natural human-like narration.
 **👑 PREMIUM (KSh 770/mo)**
 - PDF & note-scan uploads with ultra-smart AI lesson compilation
 - Soothing ElevenLabs/OpenAI audiobook voices
-- Unlimited hearts, 100k AI words/month, no ads
+- Unlimited diamonds, 100k AI words/month, no ads
 - Payment via Google Play / App Store. Cancel anytime in store settings.
 
 Free tier includes starter lessons, text uploads up to 1,000 words, and
@@ -51,7 +51,7 @@ code,games,quiz,html,python,audiobook,learn,streak,flashcards,programming
 
 Phone (both stores require at minimum):
 
-1. Path Map — winding nodes, 🔥/⭐/❤ top bar (portrait 1080×2400 / 1290×2796)
+1. Path Map — winding nodes, 🔥/⭐/💎 top bar (portrait 1080×2400 / 1290×2796)
 2. Quiz Player — IDE token slot + CHECK ANSWER
 3. Bottom slider — green Correct banner mid-animation
 4. AI Sandbox panel — file picked, "Generate my node"
@@ -68,7 +68,7 @@ reads best on OLED — lead with shot #2 for Education featuring.
 ## Reviewer notes (paste into both consoles)
 
 - Demo account: [EMAIL] / [PASSWORD] — preloaded with a ready upload + lesson.
-- Hearts: wrong answers cost 1; refill via test ad (Google sample id in dev), wait timer, or debug premium toggle (dev builds only).
+- Diamonds: failed lessons cost 1 (wrong answers are free); refill via test ad (Google sample id in dev), wait timer, or debug premium toggle (dev builds only).
 - AI pipeline needs Supabase secrets configured; reviewer demo uses staged content so no key entry is needed.
 - Subscriptions: RevenueCat sandbox product "premium monthly" — test with store sandbox accounts, cancel anytime.
 - Ads: Google sample ad units in review builds; real ids only in production.

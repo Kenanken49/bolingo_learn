@@ -11,13 +11,13 @@ import { StatusBar } from 'expo-status-bar';
 import {
   getProfile,
   getTodayCompletionCount,
-  grantHearts,
+  grantDiamonds,
   setNarratorVoice,
   setDisplayName,
   setUploadOutput,
   uploadOutputOf,
   UPLOAD_OUTPUT_OPTIONS,
-  MAX_HEARTS,
+  MAX_DIAMONDS,
   type Profile,
   type UploadOutput,
 } from '../../lib/progress';
@@ -502,14 +502,14 @@ export default function Settings() {
     await setTelemetryConsent(v);
   };
 
-  const refillHearts = async () => {
+  const refillDiamonds = async () => {
     if (!profile) {
-      Alert.alert('Guests', 'Sign in first — guest hearts reset every session.');
+      Alert.alert('Guests', 'Sign in first — guest diamonds reset every session.');
       return;
     }
     try {
-      setProfile(await grantHearts(profile.id, MAX_HEARTS));
-      Alert.alert('Refilled', 'Hearts restored (debug helper — remove before release).');
+      setProfile(await grantDiamonds(profile.id, MAX_DIAMONDS));
+      Alert.alert('Refilled', 'Diamonds restored (debug helper — remove before release).');
     } catch (e) {
       Alert.alert('Failed', String(e instanceof Error ? e.message : e));
     }
@@ -804,7 +804,7 @@ export default function Settings() {
         )}
         {row('trophy', 'Leaderboard', 'Weekly leagues of 30', () => router.push('/leaderboard'))}
         {row('doc', 'My uploads', 'History, statuses & retries', () => router.push('/uploads'))}
-        {row('heart', 'Refill hearts', 'Ad, 4-hour regen, or premium', () => router.push('/refill'))}
+        {row('diamond', 'Refill diamonds', 'Ad, 4-hour regen, or premium', () => router.push('/refill'))}
         {row(
           'bell',
           'Lesson reminders',
@@ -1466,7 +1466,7 @@ export default function Settings() {
         )}
         {adsSupported &&
           row('shield', 'Ad privacy options', 'Review or change your ad consent', () => void openAdPrivacy())}
-        {__DEV__ && row('heart', 'Debug: refill', 'Dev builds only — remove before release', refillHearts)}
+        {__DEV__ && row('diamond', 'Debug: refill', 'Dev builds only — remove before release', refillDiamonds)}
         {__DEV__ &&
           row(
             'time',

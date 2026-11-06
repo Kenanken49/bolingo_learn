@@ -3,13 +3,13 @@ import { View, Pressable, ScrollView, Alert } from 'react-native';
 import Text from './ui/Text';
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { getProfile, grantHearts, nextHeartIn, refillWaitRemaining, MAX_HEARTS, type Profile } from '../lib/progress';
+import { getProfile, grantDiamonds, nextDiamondIn, refillWaitRemaining, MAX_DIAMONDS, type Profile } from '../lib/progress';
 import AppIcon from './AppIcon';
 import type { RewardHook } from '../lib/rewarded/types';
 
 export type { RewardHook };
 
-export function useRefillState(useRewardedHeart: (onEarn: () => void) => RewardHook) {
+export function useRefillState(useRewardedDiamond: (onEarn: () => void) => RewardHook) {
   const [profile, setProfile] = useState<Profile | null>(null);
 
   const refresh = useCallback(async () => {
@@ -34,15 +34,15 @@ export function useRefillState(useRewardedHeart: (onEarn: () => void) => RewardH
   const grantOne = useCallback(() => {
     const id = profile?.id;
     if (id) {
-      grantHearts(id, 1)
+      grantDiamonds(id, 1)
         .then(setProfile)
-        .catch(() => Alert.alert('Hearts', 'Could not save the heart — try again.'));
+        .catch(() => Alert.alert('Diamonds', 'Could not save the diamond — try again.'));
     } else {
-      setProfile((p) => (p ? { ...p, hearts: Math.min(MAX_HEARTS, p.hearts + 1) } : p));
+      setProfile((p) => (p ? { ...p, diamonds: Math.min(MAX_DIAMONDS, p.diamonds + 1) } : p));
     }
   }, [profile?.id]);
 
-  return { profile, reward: useRewardedHeart(grantOne) };
+  return { profile, reward: useRewardedDiamond(grantOne) };
 }
 
 export function RefillView({
@@ -66,11 +66,11 @@ export function RefillView({
     }
   };
 
-  const hearts = profile?.hearts ?? 0;
+  const diamonds = profile?.diamonds ?? 0;
   const isPremium = profile?.is_premium ?? false;
   // getProfile() auto-applies timed regen on each refresh tick, so these
-  // countdowns hit zero right as the +1 heart lands.
-  const nextMs = profile ? nextHeartIn(profile) : 0;
+  // countdowns hit zero right as the +1 diamond lands.
+  const nextMs = profile ? nextDiamondIn(profile) : 0;
   const waitMs = profile ? refillWaitRemaining(profile) : 0;
   const fmt = (ms: number) => {
     const h = Math.floor(ms / 3600000);
@@ -85,34 +85,34 @@ export function RefillView({
         <View className="mt-2 w-full max-w-sm items-center rounded-3xl border-2 border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-4">
           <View className="flex-row items-center justify-center gap-1.5">
             <AppIcon name="crown" size={22} color="#B45309" />
-            <Text className="text-lg font-extrabold text-amber-700 dark:text-amber-300">Premium active — unlimited hearts</Text>
+            <Text className="text-lg font-extrabold text-amber-700 dark:text-amber-300">Premium active — unlimited diamonds</Text>
           </View>
           <Text className="mt-1 text-center text-sm text-amber-800/80">Wrong answers never stop you. Keep the streak alive.</Text>
         </View>
       ) : (
         <>
-          <View className="h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-950">
-            <AppIcon name="heart" size={30} color="#EF4444" />
+          <View className="h-16 w-16 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-950">
+            <AppIcon name="diamond" size={30} color="#0284C7" />
           </View>
-          <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">Out of hearts!</Text>
+          <Text className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-slate-100">Out of diamonds!</Text>
           <Text className="mt-1 text-center text-base text-slate-500 dark:text-slate-400">
-            Mistakes cost hearts. Refill to keep your streak alive.
+            Failed lessons cost a diamond — wrong answers are free. Refill to keep your streak alive.
           </Text>
         </>
       )}
 
       <View className="mt-4 flex-row items-center gap-1.5">
-        <AppIcon name="heart" size={22} color="#EF4444" />
+        <AppIcon name="diamond" size={22} color="#0284C7" />
         <Text className="text-xl font-extrabold text-slate-800 dark:text-slate-200">
-          {hearts}/{MAX_HEARTS}
+          {diamonds}/{MAX_DIAMONDS}
         </Text>
       </View>
 
-      {/* Option 1: rewarded ad → +1 heart on EARNED_REWARD */}
+      {/* Option 1: rewarded ad → +1 diamond on EARNED_REWARD */}
       <View className="mt-6 w-full max-w-sm rounded-3xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5">
         <View className="flex-row items-center gap-1.5">
           <AppIcon name="play" size={20} color="#0F172A" />
-          <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">Watch an ad · +1 heart</Text>
+          <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">Watch an ad · +1 diamond</Text>
         </View>
         <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">
           {!available
@@ -142,12 +142,12 @@ export function RefillView({
         </View>
         <Text className="mt-2 text-base text-slate-600 dark:text-slate-400">
           {isPremium
-            ? 'Premium: your hearts never run out.'
+            ? 'Premium: your diamonds never run out.'
             : nextMs > 0
-              ? `Next heart in ${fmt(nextMs)} (1 heart every 4h${waitMs > nextMs ? ` — full in ${fmt(waitMs)}` : ''}).`
-              : hearts >= MAX_HEARTS
-                ? 'Hearts are full — back to the Path!'
-                : 'Your wait is over — a heart landed on the last refresh.'}
+              ? `Next diamond in ${fmt(nextMs)} (1 diamond every 4h${waitMs > nextMs ? ` — full in ${fmt(waitMs)}` : ''}).`
+              : diamonds >= MAX_DIAMONDS
+                ? 'Diamonds are full — back to the Path!'
+                : 'Your wait is over — a diamond landed on the last refresh.'}
         </Text>
       </View>
 
@@ -157,14 +157,13 @@ export function RefillView({
           <AppIcon name="crown" size={20} color="#0F172A" />
           <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">Go Premium</Text>
         </View>
-        <Text className="mt-1 text-base text-slate-600 dark:text-slate-400">Unlimited hearts, offline audiobooks, no ads.</Text>
+        <Text className="mt-1 text-base text-slate-600 dark:text-slate-400">Unlimited diamonds, offline audiobooks, no ads.</Text>
         <Pressable onPress={() => router.push('/paywall')} className="mt-3 items-center rounded-2xl bg-amber-500 py-3">
           <Text className="font-extrabold text-white">Upgrade</Text>
         </Pressable>
       </View>
 
-      <Pressable onPress={() => router.replace('/')} className="mt-6 items-center rounded-2xl bg-green-500 px-8 py-4">
-        <Text className="text-lg font-extrabold text-white">{hearts > 0 ? 'Back to lesson' : 'Back'}</Text>
+      <Pressable onPress={() => router.replace('/')} className="mt-6 items-center rounded-2xl bg-green-500 px-8 py-4">          <Text className="text-lg font-extrabold text-white">{diamonds > 0 ? 'Back to lesson' : 'Back'}</Text>
       </Pressable>
       <StatusBar style="auto" />
     </ScrollView>
