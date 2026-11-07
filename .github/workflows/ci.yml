@@ -14,5 +14,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      # Same flags as the Coolify image (Dockerfile): llama.rn's postinstall
+      # fetches native binaries CI never uses, and the tree needs the legacy
+      # peer resolution. Plain `npm ci` fails on the optional esbuild platform
+      # packages before a single gate can run.
+      - run: npm ci --ignore-scripts --legacy-peer-deps
       - run: npm run gate
