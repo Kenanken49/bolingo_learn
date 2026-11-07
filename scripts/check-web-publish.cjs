@@ -230,6 +230,10 @@ check('The web install path is single-source, signed and honest', () => {
   assert(fs.existsSync(path.join(ROOT, 'src', 'app', 'install.tsx')), 'bolingo.co.ke/install page is missing');
   const page = read('src/app/install.tsx');
   assert(/download\/android/.test(page), 'the install page must link to /download/android');
+  // A download that only works through window.open is a download a popup blocker
+  // can eat, so the web page must render the real thing the browser can save.
+  assert(/createElement\(\s*'a'/.test(page), 'the web download must be a real anchor, not only window.open');
+  assert(/href: apkHref/.test(page), 'the download anchor must carry the /download/android href');
   assert(/sha256/.test(page), 'the install page must show the build checksum');
   assert(/latest\.json/.test(page), 'the install page must read the published build metadata');
   assert(/Add to Home Screen/i.test(page), 'iPhone users need the Add to Home Screen path (Apple forbids web installs)');

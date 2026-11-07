@@ -126,9 +126,13 @@ then redirects to the object instead of streaming.
 
 The web host reads binaries from `/var/data/app-downloads` (override with
 `BOLINGO_APK_DIR`). Coolify must mount a persistent volume there — once, in
-Coolify → `bolingo-web` → Storage → Add persistent volume → name
-`app-downloads`, directory `/var/data/app-downloads` — because a container
-rebuild otherwise wipes everything inside it.
+Coolify → `bolingo-web` → Persistent Storage → Add persistent volume → source
+`app-downloads`, destination `/var/data/app-downloads` → **Add Volume** →
+**Update** — because a container rebuild otherwise wipes everything inside it.
+Use a *volume*, not a bind mount: Docker seeds a named volume from the image, so
+the directory arrives owned by `node` and the container terminal can write it
+without host credentials. A rebuild does not clear it: the 1.0.0 release and its
+metadata survived the redeploy that added the mount.
 
 ```bash
 # 1. hash it and write the metadata the page reads
@@ -147,6 +151,38 @@ and keeps a build working on a host whose volume is not mounted.
 Step 2 is the one no gate can do. Any SFTP client works instead of `scp`. If the
 binary is not there, `/download/android` answers 503 with a log line saying so —
 it never offers a half-published or stale build.
+
+### Publishing without host SSH
+
+The web server runs as `node` and owns `/var/data/app-downloads`, so Coolify →
+`bolingo-web` → **Terminal** opens a shell that can write the release directory
+directly — no host credentials needed. That container has no `curl` and no
+`git-lfs`, and the 50 MiB Supabase object cap rules out a single PUT of a 166 MB
+APK, so the binary crosses in parts, each under the cap:
+
+```bash
+# 1. split locally, under the 50 MiB object limit
+split -b 44040192 -d path/to/app-release.apk .quality/apk-parts/part
+# 2. stage the parts in the project's own public bucket (temporary, public!)
+for f in .quality/apk-parts/part*; do
+  curl -s -o /dev/null -w "%{http_code} $f\n" -X POST \
+    -H "Authorization: Bearer $SUPABASE_SECRET_KEY" -F "file=@$f" \
+    "$SUPABASE_URL/storage/v1/object/app-downloads/tmp/bolingo-apk-staging/$(basename "$f")"
+done
+```
+
+Then, in the container terminal, a short `node` script fetches each part over
+HTTPS, appends it to `/var/data/app-downloads/bolingo-learn-<version>.apk`, and
+prints `size … total …` plus `sha256 <sum> MATCH|MISMATCH` against the hash
+`publish-android-apk.cjs` reported. `MATCH` on the reassembled file is the only
+proof the copy is complete; run it twice if a part transfer was interrupted.
+Write `latest.json` next to it, `chmod a+r /var/data/app-downloads/*`, and
+**delete the staging objects** (`DELETE …/storage/v1/object/app-downloads/tmp/…`,
+then re-list the prefix to confirm `[]`) and the local parts — the bucket is
+public, so a leftover part is a leaked half of the release.
+
+The 1.0.0 build on `bolingo.co.ke` went out this way: 4 parts, `sha256 f49264f4…
+MATCH`, staging objects removed the same session.
 
 `--url https://…` writes metadata for an APK hosted elsewhere; `--upload` pushes
 one object to the Supabase `app-downloads` bucket (must exist and be public).

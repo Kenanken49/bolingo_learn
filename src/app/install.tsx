@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { Linking, Platform, Pressable, ScrollView, View } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -46,6 +46,26 @@ function publishedOn(iso: string): string {
   return day.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+/**
+ * On the web the download is a real `<a href="/download/android">`, not a
+ * `window.open` call: the browser owns the transfer, so it survives popup
+ * blockers, can be resumed, and a long press copies the actual file address.
+ * NativeWind binds `className` to RN components only, so the anchor carries the
+ * same button look (mt-4, gap-2, rounded-2xl, py-3.5, bg-emerald-600) inline.
+ */
+const APK_BUTTON_STYLE: React.CSSProperties = {
+  marginTop: 16,
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 8,
+  borderRadius: 16,
+  paddingBlock: 14,
+  backgroundColor: '#059669',
+  textDecoration: 'none',
+};
+
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View className="mt-4 rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
@@ -91,8 +111,17 @@ export default function Install() {
     };
   }, []);
 
+  const apkHref = buildUrl('/download/android');
+  const apkLabel = `Download Bolingo Learn ${build?.version} for Android`;
+  const apkBody = (
+    <>
+      <AppIcon name="download" size={18} color="#FFFFFF" />
+      <Text className="text-base font-extrabold text-white">Download the APK</Text>
+    </>
+  );
+
   const download = () => {
-    Linking.openURL(buildUrl('/download/android')).catch(() => {});
+    Linking.openURL(apkHref).catch(() => {});
   };
 
   return (
@@ -120,15 +149,22 @@ export default function Install() {
               Version {build.version} · {megabytes(build.sizeBytes)}
               {publishedOn(build.publishedAt) ? ` · ${publishedOn(build.publishedAt)}` : ''}
             </Text>
-            <Pressable
-              onPress={download}
-              accessibilityRole="link"
-              accessibilityLabel={`Download Bolingo Learn ${build.version} for Android`}
-              className="mt-4 flex-row items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5"
-            >
-              <AppIcon name="download" size={18} color="#FFFFFF" />
-              <Text className="text-base font-extrabold text-white">Download the APK</Text>
-            </Pressable>
+            {Platform.OS === 'web' ? (
+              (createElement(
+                'a',
+                { href: apkHref, 'aria-label': apkLabel, style: APK_BUTTON_STYLE },
+                apkBody,
+              ) as unknown as React.ReactElement)
+            ) : (
+              <Pressable
+                onPress={download}
+                accessibilityRole="link"
+                accessibilityLabel={apkLabel}
+                className="mt-4 flex-row items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5"
+              >
+                {apkBody}
+              </Pressable>
+            )}
             <View className="mt-4 rounded-2xl bg-slate-50 p-3 dark:bg-slate-950">
               <Text className="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 SHA-256 of this build

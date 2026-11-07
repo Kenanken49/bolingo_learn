@@ -144,7 +144,9 @@ async function main() {
     scp ${apkPath} ${LATEST} <host>:${HOST_VOLUME}/
     sha256sum ${HOST_VOLUME}/${fileName}   # must match the checksum above
     # Both files land in one directory and /install reads the volume copy of
-    # latest.json, so a new build needs no container rebuild.`);
+    # latest.json, so a new build needs no container rebuild.
+    # No host SSH? Coolify's container terminal writes the same volume; the
+    # split-and-stage procedure is in docs/install-from-web.md.`);
   }
 }
 
