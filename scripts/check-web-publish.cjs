@@ -309,6 +309,19 @@ ok(r.res.status === 416, 'range past the end: expected 416, got ' + r.res.status
 const head = await fetch(base + '/download/android', { method: 'HEAD' });
 ok(head.status === 200 && head.headers.get('content-length') === String(bytes.length), 'HEAD: must report the size without a body');
 
+// The release volume is where a publish lands: its record must beat the image's.
+const volume = process.env.BOLINGO_APK_DIR;
+writeFileSync(path.join(volume, 'latest.json'), JSON.stringify({ version: '9.9.10', fileName: 'other.apk', sizeBytes: 3, sha256: 'a'.repeat(64) }));
+writeFileSync(path.join(volume, 'other.apk'), Buffer.from('abc'));
+const metaRes = await fetch(base + '/downloads/latest.json');
+const metaBody = await metaRes.text();
+ok(metaRes.status === 200 && JSON.parse(metaBody).version === '9.9.10', 'the volume record must be the one /install reads');
+ok(metaRes.headers.get('cache-control') === 'no-store', 'a build record behind a cache hides the new release');
+r = await get({});
+ok(r.res.status === 200 && r.body.toString() === 'abc', 'the download must follow the volume record');
+rmSync(path.join(volume, 'latest.json'));
+rmSync(path.join(volume, 'other.apk'));
+
 rmSync(apk);
 r = await get({});
 ok(r.res.status === 503, 'missing binary: expected an honest 503, got ' + r.res.status);

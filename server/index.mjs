@@ -257,12 +257,46 @@ function parseRange(header, total) {
 }
 
 /**
+ * The published build record. The release volume wins over the copy baked into
+ * `dist`: dropping `latest.json` next to the APK republishes a build without
+ * rebuilding the container, while the committed copy still answers on a host
+ * whose volume is not mounted yet.
+ */
+async function readBuildRecord() {
+  for (const dir of [APK_DIR, path.join(DIST, 'downloads')]) {
+    try {
+      return JSON.parse(await readFile(path.join(dir, 'latest.json'), 'utf8'));
+    } catch {
+      // Absent here — look in the next place.
+    }
+  }
+  return null;
+}
+
+/** Which build is published, exactly as the install page will be told. */
+async function serveBuildMetadata(req, res, url) {
+  try {
+    const body = await readFile(path.join(APK_DIR, 'latest.json'));
+    res.writeHead(200, {
+      'Content-Type': MIME['.json'],
+      'Content-Length': body.length,
+      'Cache-Control': 'no-store',
+      'X-Content-Type-Options': 'nosniff',
+    });
+    if ((req.method || 'GET').toUpperCase() === 'HEAD') return res.end();
+    return res.end(body);
+  } catch {
+    return handleStatic(req, res, url);
+  }
+}
+
+/**
  * The one link people share: /download/android.
  *
- * `scripts/publish-android-apk.cjs` writes `dist/downloads/latest.json`; the
- * binary itself lives on the host volume in APK_DIR, so it survives redeploys
- * without entering git or the image. Downloads are streamed and answer Range
- * requests — a 166 MB file over mobile data needs to resume, not restart.
+ * `scripts/publish-android-apk.cjs` writes the record; the binary itself lives
+ * on the host volume in APK_DIR, so it survives redeploys without entering git
+ * or the image. Downloads are streamed and answer Range requests — a 166 MB
+ * file over mobile data needs to resume, not restart.
  *
  * A record that names an outside https object still redirects, so either
  * hosting works. No metadata, or metadata whose file never landed, answers
@@ -270,12 +304,8 @@ function parseRange(header, total) {
  * back to this route: that would loop.
  */
 async function serveApk(req, res) {
-  let record;
-  try {
-    record = JSON.parse(await readFile(path.join(DIST, 'downloads', 'latest.json'), 'utf8'));
-  } catch {
-    return sendJson(res, 404, { error: 'No signed Android build is published yet.' });
-  }
+  const record = await readBuildRecord();
+  if (!record) return sendJson(res, 404, { error: 'No signed Android build is published yet.' });
 
   const fileName = path.basename(String(record?.fileName || ''));
   if (fileName.endsWith('.apk')) {
@@ -360,7 +390,9 @@ export function createBolingoServer() {
     const task =
       url.pathname === '/download/android'
         ? serveApk(req, res)
-        : url.pathname === '/api' || url.pathname.startsWith('/api/')
+        : url.pathname === '/downloads/latest.json'
+          ? serveBuildMetadata(req, res, url)
+          : url.pathname === '/api' || url.pathname.startsWith('/api/')
           ? handleApi(req, res, url)
           : handleStatic(req, res, url);
     task.catch((error) => {

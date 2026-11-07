@@ -39,9 +39,10 @@ icon, full-screen display, no Apple account, no install risk at all.
    `/download/android` route on `bolingo.co.ke`, which the server streams over
    the site's own certificate. Nothing is served from an unencrypted host.
 5. **No binary in git or the image.** The APK is a build artifact: it sits in a
-   persistent volume on the web host (`/var/data/app-downloads`), and only the
-   ~300-byte metadata file is committed. That keeps the repo cloneable and the
-   Coolify image small, and the file survives every rebuild.
+   persistent volume on the web host (`/var/data/app-downloads`) together with
+   the metadata the page reads, and only the ~300-byte copy of that metadata is
+   committed. That keeps the repo cloneable, the Coolify image small, and a
+   release unaffected by every rebuild.
 
 ## Build the APK
 
@@ -130,19 +131,22 @@ Coolify → `bolingo-web` → Storage → Add persistent volume → name
 rebuild otherwise wipes everything inside it.
 
 ```bash
-# 1. write the metadata the page reads (no upload)
+# 1. hash it and write the metadata the page reads
 node scripts/publish-android-apk.cjs path/to/app-release.apk --local
-# 2. ship the metadata
+# 2. put both files in the release directory — that is the release moment
+scp path/to/app-release.apk public/downloads/latest.json <vps-host>:/var/data/app-downloads/
+ssh <vps-host> "chmod a+r /var/data/app-downloads/*"
+# 3. keep the record in git (fallback, and it says which build is live)
 git add public/downloads/latest.json && git commit -m "Publish Android build <version>" && git push
-# 3. put the binary on the host, under the name the metadata expects
-scp path/to/app-release.apk <vps-host>:/var/data/app-downloads/bolingo-learn-<version>.apk
-ssh <vps-host> "chmod a+r /var/data/app-downloads/bolingo-learn-<version>.apk"
 ```
 
-Step 3 is the one the gate cannot do. Any SFTP client works instead of `scp`
-(Coolify's own file browser reaches the volume too). If the file is not there,
-`/download/android` answers 503 with a log line saying so — it never offers a
-half-published or stale build.
+The volume copy of `latest.json` wins over the one baked into `dist`, so step 2
+publishes immediately — no container rebuild per release. Step 3 only records it
+and keeps a build working on a host whose volume is not mounted.
+
+Step 2 is the one no gate can do. Any SFTP client works instead of `scp`. If the
+binary is not there, `/download/android` answers 503 with a log line saying so —
+it never offers a half-published or stale build.
 
 `--url https://…` writes metadata for an APK hosted elsewhere; `--upload` pushes
 one object to the Supabase `app-downloads` bucket (must exist and be public).
@@ -170,7 +174,8 @@ build.
 the manifest, the post-export injection, the APK publishing script, or the
 download MIME type regress — and it boots the real server against a temporary
 volume to prove `/download/android` streams the published bytes, answers
-`Range` with `206`, refuses an out-of-bounds range with `416`, and returns 404
-with no metadata, 503 with a missing file. It cannot verify
+`Range` with `206`, refuses an out-of-bounds range with `416`, prefers the
+volume's `latest.json` over the image's, and returns 404 with no metadata, 503
+with a missing file. It cannot verify
 that a human compared a checksum or that Play Protect will stay quiet — those
 are device checks, run by hand against the published build.

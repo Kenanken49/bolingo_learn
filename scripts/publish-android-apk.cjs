@@ -140,9 +140,11 @@ async function main() {
   console.log('  Now commit public/downloads/latest.json and push — /install picks it up on the next deploy.');
   if (flag('--local')) {
     console.log('');
-    console.log(`  And put the binary where the site can read it, on the web host:
-    scp ${apkPath} <host>:${HOST_VOLUME}/${fileName}
-    sha256sum ${HOST_VOLUME}/${fileName}   # must match the checksum above`);
+    console.log(`  And put the release where the site can read it, on the web host:
+    scp ${apkPath} ${LATEST} <host>:${HOST_VOLUME}/
+    sha256sum ${HOST_VOLUME}/${fileName}   # must match the checksum above
+    # Both files land in one directory and /install reads the volume copy of
+    # latest.json, so a new build needs no container rebuild.`);
   }
 }
 
