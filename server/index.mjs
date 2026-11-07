@@ -16,6 +16,7 @@ import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import credentials from './api/credentials.mjs';
+import feedback from './api/feedback.mjs';
 import jobs from './api/jobs.mjs';
 import { closePool, query } from './lib/db.mjs';
 
@@ -63,6 +64,9 @@ const MIME = {
 const ROUTES = {
   credentials: { handler: credentials, param: 'code' },
   jobs: { handler: jobs, param: 'id' },
+  // Contact form: public for the same reason /privacy is — a learner who cannot
+  // sign in must still be able to reach support.
+  feedback: { handler: feedback, param: null },
 };
 
 /** Fingerprinted bundles cache for a year; HTML never caches, so a deploy is instant. */

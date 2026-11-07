@@ -788,6 +788,7 @@ export default function Settings() {
 
       <View className="mt-6 w-full max-w-sm gap-3">
         {row('user', 'Account', profile ? 'Manage sign-in & session' : 'Sign in to sync progress', () => router.push('/auth'))}
+        {row('mail', 'Contact & feedback', 'Support email, phones, and a message box', () => router.push('/contact'))}
         {profile && (profile.is_admin || isPremium || __DEV__)
           ? row(
               'shield',

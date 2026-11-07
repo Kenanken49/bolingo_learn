@@ -234,6 +234,42 @@ check('The web install path is single-source, signed and honest', () => {
   assert(/public\/downloads\/\*\.apk/.test(read('.gitignore')), '.gitignore must keep published APKs out of git');
 });
 
+check('Contact and feedback are wired on web and in the app', () => {
+  assert(fs.existsSync(path.join(ROOT, 'src', 'app', 'contact.tsx')), 'the Contact screen is missing');
+  const page = read('src/app/contact.tsx');
+  assert(/SUPPORT_EMAIL/.test(page) && /SUPPORT_PHONES/.test(page), 'the Contact screen must show the support address and phones');
+  assert(/sendFeedback/.test(page), 'the Contact screen must use the feedback API');
+
+  const support = read('lib/support.ts');
+  assert(support.includes('support@bolingo.co.ke'), 'lib/support.ts must publish the support address');
+  assert(/\+254711617407/.test(support) && /\+254735336030/.test(support), 'both support numbers must be dialable');
+  assert(support.includes('bolingolearn@pm.me'), 'feedback must be delivered to the owner inbox');
+
+  const layout = read('src/app/_layout.tsx');
+  assert(/name="contact"/.test(layout), 'the contact route must be registered');
+  assert(read('src/app/settings.tsx').includes("router.push('/contact')"), 'Settings must link to Contact');
+
+  const server = read('server/index.mjs');
+  assert(/feedback: \{ handler: feedback/.test(server), '/api/feedback must be routed');
+  assert(fs.existsSync(path.join(ROOT, 'server', 'api', 'feedback.mjs')), 'server/api/feedback.mjs is missing');
+  assert(fs.existsSync(path.join(ROOT, 'server', 'lib', 'mailer.mjs')), 'server/lib/mailer.mjs is missing');
+  assert(fs.existsSync(path.join(ROOT, 'db', 'migrations', '0001_feedback.sql')), 'the feedback migration is missing');
+});
+
+check('One push updates the website and the installed apps', () => {
+  const workflowPath = path.join(ROOT, '.github', 'workflows', 'release.yml');
+  assert(fs.existsSync(workflowPath), '.github/workflows/release.yml is missing');
+  const workflow = read('.github/workflows/release.yml');
+  assert(/COOLIFY_DEPLOY_WEBHOOK/.test(workflow), 'the release workflow must deploy the website');
+  assert(/eas-cli@latest update/.test(workflow), 'the release workflow must publish an OTA app update');
+  assert(/--environment production/.test(workflow) && /--platform all/.test(workflow), 'the OTA update needs the production environment and every platform');
+  assert(/coolify-hosting/.test(workflow), 'the workflow must run on the branch Coolify builds');
+  const docs = read('docs/contact-and-updates.md');
+  for (const needle of ['COOLIFY_DEPLOY_WEBHOOK', 'EXPO_TOKEN', 'support@bolingo.co.ke', 'bolingolearn@pm.me']) {
+    assert(docs.includes(needle), `docs/contact-and-updates.md must explain ${needle}`);
+  }
+});
+
 if (failures > 0) {
   console.error(`Web publish gate FAILED — ${failures} check(s) failed.`);
   process.exit(1);

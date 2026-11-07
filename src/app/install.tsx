@@ -201,6 +201,9 @@ export default function Install() {
         <Pressable onPress={() => router.push('/privacy')} accessibilityRole="link">
           <Text className="text-sm font-bold text-sky-700 dark:text-sky-400">Privacy policy</Text>
         </Pressable>
+        <Pressable onPress={() => router.push('/contact')} accessibilityRole="link">
+          <Text className="text-sm font-bold text-sky-700 dark:text-sky-400">Contact support</Text>
+        </Pressable>
         <Pressable onPress={() => Linking.openURL(buildUrl('/')).catch(() => {})} accessibilityRole="link">
           <Text className="text-sm font-bold text-sky-700 dark:text-sky-400">Open Bolingo on the web</Text>
         </Pressable>

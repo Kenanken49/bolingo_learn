@@ -50,6 +50,24 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
   return data as T;
 }
 
+export type FeedbackInput = {
+  name?: string;
+  email: string;
+  phone?: string;
+  topic?: string;
+  message: string;
+  page?: string;
+};
+
+/**
+ * Contact form. Public — no session needed, because someone locked out of their
+ * account is exactly who needs to reach support. `delivery` is `sent` when the
+ * owner notification left the server and `stored` when it was only saved.
+ */
+export async function sendFeedback(input: FeedbackInput): Promise<{ ok: true; id: number; delivery: string }> {
+  return api('/api/feedback', { method: 'POST', body: input });
+}
+
 /** Public, shareable URL for a credential code. */
 export function credentialUrl(code: string): string {
   return `${PUBLIC_SITE}/verify/${code}`;
