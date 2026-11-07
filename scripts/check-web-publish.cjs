@@ -54,6 +54,11 @@ check('The Dockerfile builds the Expo web export into dist', () => {
   assert(/COPY --from=build \/app\/dist \.\/dist/.test(docker), 'the runtime image must serve dist/');
   assert(/CMD \["node", "server\/index\.mjs"\]/.test(docker), 'the container must start server/index.mjs');
   assert(/EXPOSE 3000/.test(docker) && /HEALTHCHECK/.test(docker), 'port 3000 and a healthcheck make Coolify able to route traffic');
+  // The deployment box is ~2 GB. An unbounded Metro export gets OOM-killed and
+  // Coolify reports "exit code 137"; minification is the peak-memory step.
+  assert(/max-old-space-size/.test(docker), 'the image build must cap the Node heap, or the box OOM-kills the export (137)');
+  assert(/--no-minify/.test(docker), 'the web export must skip minification to stay inside the box memory');
+  assert(/--max-workers 1/.test(docker), 'the web export must not fan out workers on a 1 vCPU box');
 });
 
 /**
@@ -174,7 +179,8 @@ check('No lazy icon font can red-screen the site', () => {
 
 check('The adaptive wireframe board is published at /wireframes/', () => {
   const docker = read('Dockerfile');
-  assert(/expo export --platform web && node scripts\/publish-wireframes\.cjs/.test(docker), 'the image build must copy the wireframe board after the export');
+  // The RUN is multi-line on purpose (memory flags); match across lines.
+  assert(/expo export --platform web[\s\S]{0,400}?publish-wireframes\.cjs/.test(docker), 'the image build must copy the wireframe board after the export');
   const os = require('node:os');
   const { execFileSync } = require('node:child_process');
   const out = fs.mkdtempSync(path.join(os.tmpdir(), 'wf-'));

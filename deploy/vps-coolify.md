@@ -165,6 +165,24 @@ Netlify site for a week after the cutover.
 
 ## Housekeeping
 
+### A build that dies with `exit code 137`
+
+137 is SIGKILL from the kernel's OOM killer, not a compile error. On this box
+the Metro export plus minification peaks above the available RAM, and Coolify
+reports it as `Command execution failed (exit code 137)` even when the export
+already printed `Exported: dist`. The `Dockerfile` now caps the heap
+(`NODE_OPTIONS=--max-old-space-size=1536`), skips minification and pins
+`--max-workers 1`; `check:web` fails if those disappear.
+
+If it still gets killed, give the box swap — 2 GB of swap is enough headroom for
+the export, and it costs nothing when unused:
+
+```bash
+fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+free -h                       # Swap: 2.0Gi
+```
+
 | Action | Effect |
 | --- | --- |
 | `docker builder prune -f` on `.135` | reclaimed 9.49 GB (65% → 42% used, 21 GB free), but the next build then runs from scratch |

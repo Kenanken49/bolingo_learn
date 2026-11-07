@@ -18,6 +18,15 @@ RUN npm ci --ignore-scripts --legacy-peer-deps
 # ---- web export ------------------------------------------------------------
 FROM deps AS build
 WORKDIR /app
+# This box is a ~2 GB VPS with no swap. Metro's bundler plus terser peak above
+# that and the host's OOM killer ends the build — Coolify then logs
+# "Command execution failed (exit code 137)" even though the export itself had
+# already printed `Exported: dist`. So: cap the V8 heap so it collects instead
+# of growing, and skip minification, which is the peak-memory step and runs
+# after the bundle already exists.
+ENV CI=1 \
+    EXPO_NO_TELEMETRY=1 \
+    NODE_OPTIONS=--max-old-space-size=1536
 # Expo bakes EXPO_PUBLIC_* into the bundle, so they arrive as build args (a
 # Coolify "build variable", or `--build-arg` from the deploy script). They are
 # public values by design; the secrets never enter the image.
@@ -28,8 +37,11 @@ ENV EXPO_PUBLIC_SUPABASE_URL=$EXPO_PUBLIC_SUPABASE_URL \
     EXPO_PUBLIC_SUPABASE_ANON_KEY=$EXPO_PUBLIC_SUPABASE_ANON_KEY \
     EXPO_PUBLIC_SITE_URL=$EXPO_PUBLIC_SITE_URL
 COPY . .
-# Same two steps as `npm run build:web`: Expo export, then the wireframe board.
-RUN npx expo export --platform web && node scripts/publish-wireframes.cjs && node scripts/publish-web-extras.cjs
+# Same steps as `npm run build:web`, plus the install metadata. --max-workers 1
+# and --no-minify keep the peak below the box's RAM (see the ENV block above).
+RUN npx expo export --platform web --no-minify --max-workers 1 \
+ && node scripts/publish-wireframes.cjs \
+ && node scripts/publish-web-extras.cjs
 
 # ---- runtime ---------------------------------------------------------------
 FROM node:22-bookworm-slim AS runtime

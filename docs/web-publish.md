@@ -111,6 +111,34 @@ adds `<base href="/wireframes/">` so `/wireframes` without the trailing slash
 still loads its styles. Edit the board in `design/` only; the copy is rebuilt
 on every deploy. It is a design document, not part of the app.
 
+## Why the image build is memory-capped
+
+The deployment box has roughly 2 GB of RAM and no swap. `expo export` plus
+minification peaks above that, and the host's OOM killer ends the build:
+Coolify logs
+
+```
+Deployment failed: Command execution failed (exit code 137): docker exec … bash -c 'bash /artifacts/build.sh'
+```
+
+**137 is a kill, not a compile error.** In the failing log the export had
+already finished (`Exported: dist`, `publish-wireframes: board copied`), which is
+the signature of the minify pass being killed rather than a broken build.
+
+The `Dockerfile` therefore sets, in the build stage:
+
+| Setting | Why |
+| --- | --- |
+| `NODE_OPTIONS=--max-old-space-size=1536` | V8 collects instead of growing until the kernel intervenes |
+| `--no-minify` | Minification is the peak-memory step; the bundle is larger, the build survives |
+| `--max-workers 1` | Metro does not fan out workers on a 1 vCPU box |
+| `CI=1`, `EXPO_NO_TELEMETRY=1` | No extra processes or network work during the build |
+
+`scripts/check-web-publish.cjs` fails the gate if any of those disappear, so a
+later Dockerfile edit cannot silently reintroduce the OOM. Adding swap on the
+VPS (see [deploy/vps-coolify.md](../deploy/vps-coolify.md#housekeeping)) is the
+capacity fix; these flags are what make the build fit without it.
+
 ## Local check before pushing
 
 ```bash
