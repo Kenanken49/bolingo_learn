@@ -1,6 +1,14 @@
 {
   "name": "bolingo_learn",
   "version": "1.0.0",
+  "description": "Bolingo Learn — languages, tech skills and work readiness for every life stage, on iOS, Android and the web.",
+  "author": "Freebuff",
+  "contributors": [
+    {
+      "name": "Freebuff",
+      "url": "https://bolingo.co.ke"
+    }
+  ],
   "main": "expo-router/entry",
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.74.0",

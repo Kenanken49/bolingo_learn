@@ -1,0 +1,87 @@
+name: Release (web + app)
+
+# One push updates everything a learner can be on:
+#   - the website container (Coolify deploy webhook)
+#   - installed Android/iOS apps (EAS Update on the production channel, which
+#     every build including the `apk` profile carries — they check on launch)
+# Native changes still need a rebuild; the APK download on /install is refreshed
+# with `scripts/publish-android-apk.cjs`, documented in docs/contact-and-updates.md.
+#
+# Both jobs are opt-in by secret: with no secret the job reports a notice and
+# succeeds, so a fork or a fresh repo is never blocked by missing infrastructure.
+
+on:
+  push:
+    branches: [main, coolify-hosting]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # A release is a deployment, not a check: never cancel one half-way.
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  web:
+    name: Deploy website
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Trigger the Coolify deployment
+        env:
+          COOLIFY_DEPLOY_WEBHOOK: ${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}
+        run: |
+          if [ -z "${COOLIFY_DEPLOY_WEBHOOK}" ]; then
+            echo "::notice::Set COOLIFY_DEPLOY_WEBHOOK (Coolify → Application → Webhooks → Deploy) to deploy the site automatically."
+            exit 0
+          fi
+          # Coolify answers 200/201 when the deployment is queued.
+          code=$(curl --silent --show-error --output /tmp/deploy.txt --write-out '%{http_code}' \
+            --max-time 60 "${COOLIFY_DEPLOY_WEBHOOK}")
+          echo "Coolify responded ${code}"
+          cat /tmp/deploy.txt || true
+          case "${code}" in
+            2*) exit 0 ;;
+            *) echo "::error::Coolify did not queue the deployment (HTTP ${code})."; exit 1 ;;
+          esac
+
+  app:
+    name: Publish app update (OTA)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        # Same flags as the image: llama.rn's postinstall and peer resolution
+        # make a plain `npm ci` fail before anything runs.
+        run: npm ci --ignore-scripts --legacy-peer-deps
+
+      - name: Publish the update
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+          EXPO_PUBLIC_SITE_URL: https://bolingo.co.ke
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          if [ -z "${EXPO_TOKEN}" ]; then
+            echo "::notice::Set EXPO_TOKEN (expo.dev → Access tokens) to publish app updates automatically."
+            exit 0
+          fi
+          message=$(printf '%s' "${COMMIT_MESSAGE:-Platform update}" | head -n 1 | cut -c1-90)
+          npx --yes eas-cli@latest update \
+            --branch production \
+            --environment production \
+            --platform all \
+            --message "${message:-Platform update}" \
+            --non-interactive

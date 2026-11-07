@@ -697,3 +697,25 @@ The function accepts both shapes, so uploads trigger it immediately either way:
 
 - **Storage webhook (immediate, no client change needed):** Supabase Dashboard → Database → Webhooks → Create webhook on table `storage.objects`, events `INSERT`, filter `bucket_id = 'user-materials'`, pointing at your `process-upload` URL. `uploadRawFile()` already writes the `user_uploads` row first, so the function resolves the upload from `record` metadata.
 - **Client invocation (fallback, zero dashboard config):** `uploadRawFile()` calls `supabase.functions.invoke('process-upload', { body: { upload_id } })` right after the bucket upload — this path works out of the box.
+
+## Credits, contact and releases
+
+**Bolingo Learn is built and maintained by Freebuff.** No third-party coding
+agent, bot account or vendor is credited as a contributor to this codebase. The
+AI services the product calls at runtime (OpenAI, ElevenLabs, Deepgram, Groq,
+Supabase) are APIs behind the upload, voice and chat features — they are not
+contributors, and no bot identity of theirs appears in the app or on the site.
+
+- **Support:** support@bolingo.co.ke · +254 711 617 407 (support, calls &
+  WhatsApp) · 0735 336 030 (admin, calls)
+- **Feedback inbox for the admin/support team:** bolingolearn@pm.me
+- **Contact screen:** `bolingo.co.ke/contact`, and in the app under
+  Settings → **Contact & feedback**. A message is stored in Postgres before an
+  email is attempted, so nothing is lost when no provider is configured.
+- **Automatic releases:** `.github/workflows/release.yml` deploys the website
+  and publishes an OTA app update on every push to `coolify-hosting` / `main`
+  (needs `COOLIFY_DEPLOY_WEBHOOK` and `EXPO_TOKEN`).
+- **Install without a store:** `bolingo.co.ke/install`.
+
+Details: [docs/contact-and-updates.md](docs/contact-and-updates.md),
+[docs/install-from-web.md](docs/install-from-web.md).
