@@ -196,6 +196,8 @@ export default function RootLayout() {
       <Stack.Screen name="avatar" />
       <Stack.Screen name="jobs" />
       <Stack.Screen name="verify/[code]" />
+      <Stack.Screen name="privacy" />
+      <Stack.Screen name="install" />
       {__DEV__ ? <Stack.Screen name="dev/celebration-benchmark" /> : null}
     </Stack>
     </ThemeProvider>

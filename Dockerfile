@@ -29,7 +29,7 @@ ENV EXPO_PUBLIC_SUPABASE_URL=$EXPO_PUBLIC_SUPABASE_URL \
     EXPO_PUBLIC_SITE_URL=$EXPO_PUBLIC_SITE_URL
 COPY . .
 # Same two steps as `npm run build:web`: Expo export, then the wireframe board.
-RUN npx expo export --platform web && node scripts/publish-wireframes.cjs
+RUN npx expo export --platform web && node scripts/publish-wireframes.cjs && node scripts/publish-web-extras.cjs
 
 # ---- runtime ---------------------------------------------------------------
 FROM node:22-bookworm-slim AS runtime

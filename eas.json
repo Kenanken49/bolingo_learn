@@ -16,6 +16,16 @@
       "distribution": "internal",
       "channel": "preview"
     },
+    "apk": {
+      "distribution": "internal",
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_DEBUG_PREMIUM": "0"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "production": {
       "channel": "production",
       "env": {

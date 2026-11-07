@@ -54,3 +54,8 @@ supabase/.temp/
 # Session import artifacts (never ship)
 .cloud-attachments/
 .figma-ref/
+
+# Android release APKs are published to object storage, never committed.
+# Only the metadata the install page reads (public/downloads/latest.json) is source.
+public/downloads/*.apk
+public/downloads/*.sha256

@@ -11,7 +11,7 @@
  */
 import { createServer } from 'node:http';
 import { createReadStream } from 'node:fs';
-import { stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -55,6 +55,8 @@ const MIME = {
   '.mp4': 'video/mp4',
   '.webm': 'video/webm',
   '.pdf': 'application/pdf',
+  '.apk': 'application/vnd.android.package-archive',
+  '.sha256': 'text/plain; charset=utf-8',
 };
 
 /** API routes: path segment → handler plus the name of its single parameter. */
@@ -69,6 +71,9 @@ function cacheFor(filePath) {
   if (rel.startsWith('/_expo/static/')) return 'public, max-age=31536000, immutable';
   if (rel.endsWith('.html')) return 'public, max-age=0, must-revalidate';
   if (rel === '/app-ads.txt') return 'public, max-age=86400';
+  // The install page re-reads this on every visit: a newly published build must
+  // never be hidden behind a cached "no build yet".
+  if (rel === '/downloads/latest.json') return 'no-store';
   return 'public, max-age=3600';
 }
 
@@ -102,6 +107,8 @@ async function sendFile(res, filePath, method) {
   res.setHeader('Content-Length', info.size);
   res.setHeader('Cache-Control', cacheFor(filePath));
   res.setHeader('X-Content-Type-Options', 'nosniff');
+  // An APK is a download, never something the browser renders inline.
+  if (ext === '.apk') res.setHeader('Content-Disposition', 'attachment');
   if (method === 'HEAD') {
     res.writeHead(200);
     res.end();
@@ -205,6 +212,35 @@ async function handleApi(req, res, url) {
   }
 }
 
+/**
+ * The one link people share: /download/android.
+ *
+ * The APK itself lives in object storage (it is a build artifact, not source),
+ * so this reads the published metadata and redirects. No metadata means no
+ * signed build — answer 404 rather than sending anyone to a dead or stale file.
+ * Only https targets are allowed, so the last hop stays encrypted too.
+ */
+async function redirectToApk(res) {
+  let record;
+  try {
+    record = JSON.parse(await readFile(path.join(DIST, 'downloads', 'latest.json'), 'utf8'));
+  } catch {
+    return sendJson(res, 404, { error: 'No signed Android build is published yet.' });
+  }
+  let target = null;
+  try {
+    target = new URL(String(record?.url || ''));
+  } catch {
+    target = null;
+  }
+  if (!target || target.protocol !== 'https:') {
+    console.error('[download] published metadata has no usable https url');
+    return sendJson(res, 503, { error: 'The published Android download is temporarily unavailable.' });
+  }
+  res.writeHead(302, { Location: target.toString(), 'Cache-Control': 'no-store' });
+  res.end();
+}
+
 async function handleStatic(req, res, url) {
   const method = (req.method || 'GET').toUpperCase();
   if (method !== 'GET' && method !== 'HEAD') {
@@ -239,9 +275,12 @@ async function handleStatic(req, res, url) {
 export function createBolingoServer() {
   return createServer((req, res) => {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-    const task = url.pathname === '/api' || url.pathname.startsWith('/api/')
-      ? handleApi(req, res, url)
-      : handleStatic(req, res, url);
+    const task =
+      url.pathname === '/download/android'
+        ? redirectToApk(res)
+        : url.pathname === '/api' || url.pathname.startsWith('/api/')
+          ? handleApi(req, res, url)
+          : handleStatic(req, res, url);
     task.catch((error) => {
       console.error(`[web] ${req.method} ${url.pathname}:`, error);
       if (!res.headersSent) sendJson(res, 500, { error: 'Something went wrong on our side.' });

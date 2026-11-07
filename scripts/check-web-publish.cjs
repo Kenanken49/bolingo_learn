@@ -194,6 +194,46 @@ check('The adaptive wireframe board is published at /wireframes/', () => {
   }
 });
 
+check('The web install path is single-source, signed and honest', () => {
+  assert(fs.existsSync(path.join(ROOT, 'src', 'app', 'install.tsx')), 'bolingo.co.ke/install page is missing');
+  const page = read('src/app/install.tsx');
+  assert(/download\/android/.test(page), 'the install page must link to /download/android');
+  assert(/sha256/.test(page), 'the install page must show the build checksum');
+  assert(/latest\.json/.test(page), 'the install page must read the published build metadata');
+  assert(/Add to Home Screen/i.test(page), 'iPhone users need the Add to Home Screen path (Apple forbids web installs)');
+  const layout = read('src/app/_layout.tsx');
+  assert(/name="install"/.test(layout), 'the install route must be registered in the app layout');
+
+  const server = read('server/index.mjs');
+  assert(/download\/android/.test(server), 'the server must route /download/android');
+  assert(/application\/vnd\.android\.package-archive/.test(server), 'APKs need the Android MIME type');
+  assert(/latest\.json/.test(server) && /protocol !== 'https:'/.test(server), 'the redirect must read latest.json and refuse non-https targets');
+
+  const manifest = JSON.parse(read('public/manifest.webmanifest'));
+  assert(manifest.name && manifest.start_url === '/' && Array.isArray(manifest.icons) && manifest.icons.length > 0, 'the web manifest needs name, start_url and an icon');
+  for (const icon of manifest.icons) {
+    assert(fs.existsSync(path.join(ROOT, 'public', String(icon.src).replace(/^\//, ''))), `manifest icon ${icon.src} is missing from public/`);
+  }
+
+  assert(fs.existsSync(path.join(ROOT, 'scripts', 'publish-web-extras.cjs')), 'the post-export metadata script is missing');
+  assert(/publish-web-extras\.cjs/.test(read('Dockerfile')), 'the image build must run publish-web-extras.cjs');
+  const pkg = JSON.parse(read('package.json'));
+  assert(/publish-web-extras/.test(pkg.scripts['build:web']), 'npm run build:web must run publish-web-extras.cjs');
+
+  assert(fs.existsSync(path.join(ROOT, 'scripts', 'publish-android-apk.cjs')), 'the APK publishing script is missing');
+  const eas = JSON.parse(read('eas.json'));
+  assert(eas.build && eas.build.apk && eas.build.apk.android && eas.build.apk.android.buildType === 'apk', 'eas.json needs an apk profile that builds an APK (not an AAB)');
+
+  assert(fs.existsSync(path.join(ROOT, 'docs', 'install-from-web.md')), 'docs/install-from-web.md is missing');
+  const docs = read('docs/install-from-web.md');
+  for (const needle of ['SHA-256', 'Supabase', 'Add to Home Screen', 'keystore']) {
+    assert(docs.includes(needle), `docs/install-from-web.md must explain ${needle}`);
+  }
+
+  // The APK is a build artifact: only the metadata is committed.
+  assert(/public\/downloads\/\*\.apk/.test(read('.gitignore')), '.gitignore must keep published APKs out of git');
+});
+
 if (failures > 0) {
   console.error(`Web publish gate FAILED — ${failures} check(s) failed.`);
   process.exit(1);
