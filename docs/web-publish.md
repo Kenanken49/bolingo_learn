@@ -139,6 +139,26 @@ later Dockerfile edit cannot silently reintroduce the OOM. Adding swap on the
 VPS (see [deploy/vps-coolify.md](../deploy/vps-coolify.md#housekeeping)) is the
 capacity fix; these flags are what make the build fit without it.
 
+## Why the runtime image only installs `pg`
+
+Everything in `server/` imports Node built-ins except `server/lib/db.mjs`, which
+imports `pg`. The runtime stage therefore installs `server/package.json` — a
+manifest with that one dependency — instead of copying the app's dependency
+tree, which is ~1.5 GB of Expo, React Native and native-build packages the
+container never loads. That copy was the slow part of the runtime stage and it
+filled the box's disk a little more on every deploy.
+
+The image is then about 0.5 MB of dependencies rather than the whole toolchain.
+Two rules follow:
+
+- **Adding a third-party import to `server/` means adding it to
+  `server/package.json`** (and regenerating `server/package-lock.json` with
+  `cd server && npm install --package-lock-only`). Nothing else pulls it into
+the image.
+- **`pg` is pinned exactly** and must equal the version in the root
+  `package-lock.json`; `check:web` fails if the two drift or if the runtime stage
+  goes back to copying `node_modules` from the build stage.
+
 ## Local check before pushing
 
 ```bash

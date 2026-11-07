@@ -59,6 +59,22 @@ check('The Dockerfile builds the Expo web export into dist', () => {
   assert(/max-old-space-size/.test(docker), 'the image build must cap the Node heap, or the box OOM-kills the export (137)');
   assert(/--no-minify/.test(docker), 'the web export must skip minification to stay inside the box memory');
   assert(/--max-workers 1/.test(docker), 'the web export must not fan out workers on a 1 vCPU box');
+
+  // The runtime image carries the server, not the app toolchain. Copying the
+  // full dependency tree (~1.5 GB of Expo/React Native build packages) cost
+  // minutes per deploy; server/package.json is the whole list the server needs.
+  assert(/AS runtime-deps/.test(docker), 'the runtime dependencies need their own stage built from server/package.json');
+  assert(/COPY --from=runtime-deps \/app\/node_modules/.test(docker), 'the runtime stage must copy node_modules from runtime-deps');
+  assert(!/COPY --from=deps \/app\/node_modules/.test(docker), 'the runtime stage must not copy the full app toolchain into the image');
+
+  const serverPkg = JSON.parse(read('server/package.json'));
+  const rootLock = JSON.parse(read('package-lock.json'));
+  const serverLock = JSON.parse(read('server/package-lock.json'));
+  assert(/^\d+\.\d+\.\d+$/.test(serverPkg.dependencies.pg), 'server/package.json must pin pg exactly, not with a range, or the image drifts from the app lock');
+  assert(
+    serverLock.packages['node_modules/pg'].version === rootLock.packages['node_modules/pg'].version,
+    `the runtime pg (${serverLock.packages['node_modules/pg'].version}) must match the version the app lock resolves (${rootLock.packages['node_modules/pg'].version})`,
+  );
 });
 
 /**

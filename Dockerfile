@@ -43,6 +43,18 @@ RUN npx expo export --platform web --no-minify --max-workers 1 \
  && node scripts/publish-wireframes.cjs \
  && node scripts/publish-web-extras.cjs
 
+# ---- runtime dependencies --------------------------------------------------
+# The server imports exactly one third-party package — `pg`, in server/lib/db.mjs.
+# Installing the app toolchain here meant copying ~1.5 GB of Expo, React Native
+# and native-build packages into an image that never loads them, which cost
+# minutes per deploy and left no room for anything else on the box's disk.
+# server/package.json is the whole runtime dependency list; `check:web` keeps it
+# in step with the version the app's lockfile resolves.
+FROM node:22-bookworm-slim AS runtime-deps
+WORKDIR /app
+COPY server/package.json server/package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+
 # ---- runtime ---------------------------------------------------------------
 FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
@@ -50,7 +62,7 @@ ENV NODE_ENV=production \
     PORT=3000 \
     HOST=0.0.0.0
 
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=runtime-deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY server ./server
 COPY db/migrations ./db/migrations
