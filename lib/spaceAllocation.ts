@@ -18,13 +18,13 @@ export type SpaceId = LifeStageId;
 export const SPACE_COURSE_ORDER: Record<SpaceId, string[]> = {
   // Tier 1 Gamified Explorer: languages first (playful pace), then creative
   // web building, then the heavier pro tracks last.
-  explorer: ['lang', 'html', 'design', 'rwd', 'linux', 'certs'],
+  explorer: ['aiml-explorer', 'lang', 'html', 'design', 'rwd', 'linux', 'certs', 'aiml-launcher', 'aiml-leader'],
   // Tier 2 Career Launcher: the full shelf in catalog order — university
   // supplements + first-job skills side by side.
-  launcher: ['html', 'rwd', 'design', 'lang', 'certs', 'linux'],
+  launcher: ['aiml-launcher', 'html', 'rwd', 'design', 'lang', 'certs', 'linux', 'aiml-explorer', 'aiml-leader'],
   // Tier 3 Career Ladder Climber: credentials first, bite-sized; languages
   // (long ongoing courses) last.
-  climber: ['certs', 'linux', 'rwd', 'design', 'html', 'lang'],
+  climber: ['aiml-leader', 'certs', 'linux', 'rwd', 'design', 'html', 'lang', 'aiml-explorer', 'aiml-launcher'],
 };
 
 /** Certification tracks before language courses for climbers only. */
