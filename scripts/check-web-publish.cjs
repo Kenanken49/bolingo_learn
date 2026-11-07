@@ -81,7 +81,10 @@ check('The website offers the app download from the shell', () => {
   // The app is not in a store, so the download has to be reachable from inside
   // the product, not only from a link somebody shares.
   const shell = read('components/dashboard/Shell.tsx');
-  assert(/router\.push\('\/install'\)/.test(shell), 'the dashboard top bar must link to /install');
+  // A router.push() pill cannot be middle-clicked, opened in a new tab, bookmarked
+  // or crawled, so the entry has to be a real link on the web.
+  assert(/<Link[\s\S]{0,160}href="\/install"/.test(shell), 'the dashboard top bar must render /install as a real link');
+  assert(!/router\.push\('\/install'\)/.test(shell), 'the download entry must not navigate with router.push on web');
   assert(/Download app/.test(shell), 'the download entry needs a visible label');
   const install = read('src/app/install.tsx');
   assert(/\/download\/android/.test(install), 'the install page must use the stable /download/android route');
