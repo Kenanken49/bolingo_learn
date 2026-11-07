@@ -239,7 +239,8 @@ check('The web install path is single-source, signed and honest', () => {
   const server = read('server/index.mjs');
   assert(/download\/android/.test(server), 'the server must route /download/android');
   assert(/application\/vnd\.android\.package-archive/.test(server), 'APKs need the Android MIME type');
-  assert(/latest\.json/.test(server) && /protocol !== 'https:'/.test(server), 'the redirect must read latest.json and refuse non-https targets');
+  assert(/latest\.json/.test(server), 'the download route reads the published build metadata');
+  assert(/BOLINGO_APK_DIR/.test(server), 'the binary streams from the host release volume');
 
   const manifest = JSON.parse(read('public/manifest.webmanifest'));
   assert(manifest.name && manifest.start_url === '/' && Array.isArray(manifest.icons) && manifest.icons.length > 0, 'the web manifest needs name, start_url and an icon');
@@ -258,12 +259,115 @@ check('The web install path is single-source, signed and honest', () => {
 
   assert(fs.existsSync(path.join(ROOT, 'docs', 'install-from-web.md')), 'docs/install-from-web.md is missing');
   const docs = read('docs/install-from-web.md');
-  for (const needle of ['SHA-256', 'Supabase', 'Add to Home Screen', 'keystore']) {
+  for (const needle of ['SHA-256', 'Supabase', 'Add to Home Screen', 'keystore', '/var/data/app-downloads', 'arm64-v8a']) {
     assert(docs.includes(needle), `docs/install-from-web.md must explain ${needle}`);
   }
 
   // The APK is a build artifact: only the metadata is committed.
   assert(/public\/downloads\/\*\.apk/.test(read('.gitignore')), '.gitignore must keep published APKs out of git');
+});
+
+/** What the child process below does: exercise the download route for real. */
+const APK_STREAM_TEST = String.raw`
+import { readFileSync, writeFileSync, rmSync } from 'node:fs';
+import path from 'node:path';
+
+const { createBolingoServer } = await import(process.env.SERVER_MODULE);
+const server = createBolingoServer();
+await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+const base = 'http://127.0.0.1:' + server.address().port;
+const meta = path.join(process.env.BOLINGO_DIST, 'downloads', 'latest.json');
+const apk = path.join(process.env.BOLINGO_APK_DIR, JSON.parse(readFileSync(meta, 'utf8')).fileName);
+const bytes = readFileSync(apk);
+const problems = [];
+const ok = (condition, message) => { if (!condition) problems.push(message); };
+const get = async (headers) => {
+  const res = await fetch(base + '/download/android', { headers });
+  return { res, body: Buffer.from(await res.arrayBuffer()) };
+};
+
+let r = await get({});
+ok(r.res.status === 200, 'full download: expected 200, got ' + r.res.status);
+ok(r.body.equals(bytes), 'full download: the body is not the published file');
+ok(r.res.headers.get('content-type') === 'application/vnd.android.package-archive', 'full download: wrong MIME type');
+ok(/attachment; filename="[^"]+\.apk"/.test(r.res.headers.get('content-disposition') || ''), 'full download: not offered as an attachment');
+ok(r.res.headers.get('accept-ranges') === 'bytes', 'no Accept-Ranges, so a broken download cannot resume');
+ok(r.res.headers.get('cache-control') !== 'no-store', 'the binary may be cached; only the metadata must not');
+
+r = await get({ Range: 'bytes=1000-1999' });
+ok(r.res.status === 206, 'range: expected 206, got ' + r.res.status);
+ok(r.body.length === 1000, 'range: expected 1000 bytes, got ' + r.body.length);
+ok(r.body.equals(bytes.subarray(1000, 2000)), 'range: wrong slice');
+ok(r.res.headers.get('content-range') === 'bytes 1000-1999/' + bytes.length, 'range: wrong Content-Range');
+
+r = await get({ Range: 'bytes=' + (bytes.length - 256) + '-' });
+ok(r.res.status === 206 && r.body.length === 256, 'open-ended range: expected the tail of the file');
+
+r = await get({ Range: 'bytes=99999999-' });
+ok(r.res.status === 416, 'range past the end: expected 416, got ' + r.res.status);
+
+const head = await fetch(base + '/download/android', { method: 'HEAD' });
+ok(head.status === 200 && head.headers.get('content-length') === String(bytes.length), 'HEAD: must report the size without a body');
+
+rmSync(apk);
+r = await get({});
+ok(r.res.status === 503, 'missing binary: expected an honest 503, got ' + r.res.status);
+ok(![301, 302, 307, 308].includes(r.res.status), 'missing binary: must not redirect the caller back to this route');
+
+writeFileSync(meta, '{}');
+r = await get({});
+ok(r.res.status === 503, 'record with no file named: expected 503, got ' + r.res.status);
+
+rmSync(meta);
+r = await get({});
+ok(r.res.status === 404, 'no metadata: expected 404, because no build is published');
+
+server.close();
+console.log(problems.length ? 'STREAM_FAIL ' + problems.join(' | ') : 'STREAM_OK');
+process.exit(problems.length ? 1 : 0);
+`;
+
+check('The published Android binary streams from the release volume and resumes', () => {
+  const os = require('node:os');
+  const crypto = require('node:crypto');
+  const { execFileSync } = require('node:child_process');
+  // Windows: the ESM loader refuses a bare "C:\…" path, so hand it a file URL.
+  const { pathToFileURL } = require('node:url');
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'apk-stream-'));
+  const dist = path.join(root, 'dist');
+  const volume = path.join(root, 'volume');
+  fs.mkdirSync(path.join(dist, 'downloads'), { recursive: true });
+  fs.mkdirSync(volume, { recursive: true });
+  const fileName = 'bolingo-learn-9.9.9.apk';
+  const bytes = crypto.randomBytes(4096);
+  fs.writeFileSync(path.join(volume, fileName), bytes);
+  fs.writeFileSync(
+    path.join(dist, 'downloads', 'latest.json'),
+    JSON.stringify({
+      version: '9.9.9',
+      packageName: 'com.bolingo.learn',
+      fileName,
+      sizeBytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      url: 'https://bolingo.co.ke/download/android',
+    }),
+  );
+  try {
+    const out = execFileSync(process.execPath, ['--input-type=module', '-e', APK_STREAM_TEST], {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: {
+        ...process.env,
+        BOLINGO_DIST: dist,
+        BOLINGO_APK_DIR: volume,
+        SERVER_MODULE: pathToFileURL(path.join(ROOT, 'server', 'index.mjs')).href,
+      },
+    }).toString();
+    assert(/STREAM_OK/.test(out), `the download route misbehaved: ${out.slice(0, 500)}`);
+  } catch (error) {
+    assert(false, `the download route misbehaved: ${String(error.stderr || error.message).slice(0, 700)}`);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
 check('Contact and feedback are wired on web and in the app', () => {

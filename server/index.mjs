@@ -21,11 +21,17 @@ import jobs from './api/jobs.mjs';
 import { closePool, query } from './lib/db.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const DIST = path.resolve(HERE, '..', 'dist');
+const DIST = path.resolve(process.env.BOLINGO_DIST || path.join(HERE, '..', 'dist'));
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 /** API bodies are small JSON documents; anything bigger is not for us. */
 const MAX_API_BODY = 256 * 1024;
+/**
+ * Where Android binaries live on the host. Coolify mounts a persistent volume
+ * here: a release APK is ~166 MB, too big for git, too big for the image, and
+ * bigger than the 50 MiB object cap on the storage plan we used before.
+ */
+const APK_DIR = path.resolve(process.env.BOLINGO_APK_DIR || '/var/data/app-downloads');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -216,33 +222,105 @@ async function handleApi(req, res, url) {
   }
 }
 
+/** Download headers: attachment, honest type, and a promise that ranges work. */
+function apkHeaders(fileName) {
+  return {
+    'Content-Type': MIME['.apk'],
+    'Content-Disposition': `attachment; filename="${String(fileName).replace(/[^A-Za-z0-9._-]/g, '')}"`,
+    'Accept-Ranges': 'bytes',
+    'Cache-Control': 'public, max-age=86400',
+    'X-Content-Type-Options': 'nosniff',
+  };
+}
+
+/**
+ * `Range: bytes=a-b` / `bytes=a-` / `bytes=-n`. Returns null when the header is
+ * absent or in a form we do not speak (then serve the whole file), and
+ * `{ unsatisfiable }` when it is a real range the file cannot cover.
+ */
+function parseRange(header, total) {
+  const match = /^bytes=(\d*)-(\d*)$/.exec(String(header || '').trim());
+  if (!match || (match[1] === '' && match[2] === '')) return null;
+  let start;
+  let end;
+  if (match[1] === '') {
+    const suffix = Number(match[2]);
+    if (!Number.isFinite(suffix) || suffix <= 0) return null;
+    start = Math.max(0, total - suffix);
+    end = total - 1;
+  } else {
+    start = Number(match[1]);
+    end = match[2] === '' ? total - 1 : Number(match[2]);
+  }
+  if (!Number.isFinite(start) || start >= total || start > end) return { unsatisfiable: true };
+  return { start, end: Math.min(end, total - 1) };
+}
+
 /**
  * The one link people share: /download/android.
  *
- * The APK itself lives in object storage (it is a build artifact, not source),
- * so this reads the published metadata and redirects. No metadata means no
- * signed build — answer 404 rather than sending anyone to a dead or stale file.
- * Only https targets are allowed, so the last hop stays encrypted too.
+ * `scripts/publish-android-apk.cjs` writes `dist/downloads/latest.json`; the
+ * binary itself lives on the host volume in APK_DIR, so it survives redeploys
+ * without entering git or the image. Downloads are streamed and answer Range
+ * requests — a 166 MB file over mobile data needs to resume, not restart.
+ *
+ * A record that names an outside https object still redirects, so either
+ * hosting works. No metadata, or metadata whose file never landed, answers
+ * honestly instead of sending a learner to a dead or stale APK. Never redirect
+ * back to this route: that would loop.
  */
-async function redirectToApk(res) {
+async function serveApk(req, res) {
   let record;
   try {
     record = JSON.parse(await readFile(path.join(DIST, 'downloads', 'latest.json'), 'utf8'));
   } catch {
     return sendJson(res, 404, { error: 'No signed Android build is published yet.' });
   }
+
+  const fileName = path.basename(String(record?.fileName || ''));
+  if (fileName.endsWith('.apk')) {
+    const filePath = path.join(APK_DIR, fileName);
+    let info = null;
+    try {
+      info = await stat(filePath);
+    } catch {
+      info = null;
+    }
+    if (info && info.isFile()) {
+      const range = parseRange(req.headers.range, info.size);
+      if (range && range.unsatisfiable) {
+        res.writeHead(416, { ...apkHeaders(fileName), 'Content-Range': `bytes */${info.size}` });
+        return res.end();
+      }
+      const start = range ? range.start : 0;
+      const end = range ? range.end : info.size - 1;
+      const partial = start > 0 || end < info.size - 1;
+      res.writeHead(partial ? 206 : 200, {
+        ...apkHeaders(fileName),
+        'Content-Length': end - start + 1,
+        ...(partial ? { 'Content-Range': `bytes ${start}-${end}/${info.size}` } : {}),
+      });
+      if ((req.method || 'GET').toUpperCase() === 'HEAD') return res.end();
+      return pipeline(createReadStream(filePath, { start, end }), res);
+    }
+  }
+
   let target = null;
   try {
     target = new URL(String(record?.url || ''));
   } catch {
     target = null;
   }
-  if (!target || target.protocol !== 'https:') {
-    console.error('[download] published metadata has no usable https url');
-    return sendJson(res, 503, { error: 'The published Android download is temporarily unavailable.' });
+  if (target && target.protocol === 'https:' && target.pathname !== '/download/android') {
+    res.writeHead(302, { Location: target.toString(), 'Cache-Control': 'no-store' });
+    return res.end();
   }
-  res.writeHead(302, { Location: target.toString(), 'Cache-Control': 'no-store' });
-  res.end();
+
+  console.error(
+    `[download] nothing to serve: no file at ${path.join(APK_DIR, fileName)} and the published record has no external url.` +
+      ' Mount the release volume and copy the APK there (docs/install-from-web.md).',
+  );
+  return sendJson(res, 503, { error: 'The published Android download is temporarily unavailable.' });
 }
 
 async function handleStatic(req, res, url) {
@@ -281,7 +359,7 @@ export function createBolingoServer() {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
     const task =
       url.pathname === '/download/android'
-        ? redirectToApk(res)
+        ? serveApk(req, res)
         : url.pathname === '/api' || url.pathname.startsWith('/api/')
           ? handleApi(req, res, url)
           : handleStatic(req, res, url);

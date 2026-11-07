@@ -32,15 +32,16 @@ icon, full-screen display, no Apple account, no install risk at all.
    signature mismatch. The key belongs in EAS (remote credentials) or a backed-up
    keystore, **never** in git and never in the container.
 3. **A published SHA-256.** `scripts/publish-android-apk.cjs` hashes the exact
-   bytes it uploads and writes them to `public/downloads/latest.json`; the page
-   renders that hash and tells the learner to compare it before tapping
+   bytes it publishes and writes them to `public/downloads/latest.json`; the
+   page renders that hash and tells the learner to compare it before tapping
    "Install anyway" past a Play Protect warning.
-4. **TLS on every hop.** The download URL must be `https://` (the script refuses
-   anything else), and the same-origin `/download/android` route redirects to it
-   so the shared link is always `bolingo.co.ke`.
-5. **No binary in git or the image.** The APK is a build artifact: it goes to the
-   project's Supabase Storage bucket, and only the ~300-byte metadata file is
-   committed. That keeps the repo cloneable and the Coolify image small.
+4. **TLS on every hop.** The download link is the same-origin
+   `/download/android` route on `bolingo.co.ke`, which the server streams over
+   the site's own certificate. Nothing is served from an unencrypted host.
+5. **No binary in git or the image.** The APK is a build artifact: it sits in a
+   persistent volume on the web host (`/var/data/app-downloads`), and only the
+   ~300-byte metadata file is committed. That keeps the repo cloneable and the
+   Coolify image small, and the file survives every rebuild.
 
 ## Build the APK
 
@@ -108,38 +109,53 @@ ANDROID_HOME="$LOCALAPPDATA/Android/Sdk" ./gradlew assembleRelease --no-daemon \
   -PreactNativeArchitectures=arm64-v8a
 ```
 
-Measured: a release APK for one arm64 ABI is about **110 MB**, because
-`llama.cpp` ships two ~13 MB copies of itself and the app bundles audiobook
-audio and dictionaries inside it (~60 MB of that is content, not code).
+Measured, this build: **166 MB**, and `unzip -l` shows only `lib/arm64-v8a/`.
+The arm64 llama.cpp package is bigger than the x86_64 one because it ships a
+variant per CPU feature set (`librnllama_v8.so`, `…_v8_2_dotprod_i8mm_hexagon_opencl.so`,
+… ~82 MB of them), and the app bundles audiobook audio and dictionaries inside
+it (~60 MB of that is content, not code).
 
-Supabase Storage on the Free plan rejects objects over **50 MiB** — verified by
-probe: 50 MiB → HTTP 200, 60 MiB and 75 MiB → `413 EntityTooLarge`. The API
-itself allows up to 5 GB, so the wall is the plan, not the endpoint. Either
-upgrade the project, host the APK elsewhere, or move the bundled media to
-on-demand download so the APK fits. A single APK cannot be split into pieces
-for the user to reassemble.
+That is why the binary lives on our own box. Supabase Storage on the Free plan
+rejects objects over **50 MiB** — verified by probe: 50 MiB → HTTP 200, 60 MiB
+and 75 MiB → `413 EntityTooLarge`. The API allows 5 GB, so the wall is the plan,
+not the endpoint. `--upload` still works for a build that fits, and the route
+then redirects to the object instead of streaming.
 
 ## Publish it
 
+The web host reads binaries from `/var/data/app-downloads` (override with
+`BOLINGO_APK_DIR`). Coolify must mount a persistent volume there — once, in
+Coolify → `bolingo-web` → Storage → Add persistent volume → name
+`app-downloads`, directory `/var/data/app-downloads` — because a container
+rebuild otherwise wipes everything inside it.
+
 ```bash
-# 1. bucket: Supabase → Storage → New bucket → name "app-downloads" → Public
-# 2. upload + write the metadata the page reads
-SUPABASE_URL=… SUPABASE_SECRET_KEY=… \
-  node scripts/publish-android-apk.cjs path/to/app-release.apk --upload
-# 3. ship it
+# 1. write the metadata the page reads (no upload)
+node scripts/publish-android-apk.cjs path/to/app-release.apk --local
+# 2. ship the metadata
 git add public/downloads/latest.json && git commit -m "Publish Android build <version>" && git push
+# 3. put the binary on the host, under the name the metadata expects
+scp path/to/app-release.apk <vps-host>:/var/data/app-downloads/bolingo-learn-<version>.apk
+ssh <vps-host> "chmod a+r /var/data/app-downloads/bolingo-learn-<version>.apk"
 ```
 
-`--url https://…` writes the metadata for an APK hosted elsewhere (for example
-an S3/R2 bucket) without uploading it. `--withdraw` deletes `latest.json`, after
-which `/install` reports that no signed build is published instead of offering a
-dead link.
+Step 3 is the one the gate cannot do. Any SFTP client works instead of `scp`
+(Coolify's own file browser reaches the volume too). If the file is not there,
+`/download/android` answers 503 with a log line saying so — it never offers a
+half-published or stale build.
+
+`--url https://…` writes metadata for an APK hosted elsewhere; `--upload` pushes
+one object to the Supabase `app-downloads` bucket (must exist and be public).
+`--withdraw` deletes `latest.json`, after which `/install` reports that no
+signed build is published instead of offering a dead link.
 
 ## Verifying a published build
 
 ```bash
 curl -s https://bolingo.co.ke/downloads/latest.json | jq .
-curl -sI https://bolingo.co.ke/download/android | grep -i location
+curl -sI https://bolingo.co.ke/download/android | grep -iE 'http/|content-length|accept-ranges'
+# resume behaviour: the second line must be 206 and 1000 bytes
+curl -s -o /dev/null -w '%{http_code} %{size_download}\n' -r 0-999 https://bolingo.co.ke/download/android
 sha256sum bolingo-learn-<version>.apk     # compare with the page
 ```
 
@@ -151,7 +167,10 @@ build.
 ## What the gate covers
 
 `scripts/check-web-publish.cjs` fails the build if the install page, its route,
-the manifest, the post-export injection, the APK publishing script, the
-`/download/android` redirect or the download MIME type regress. It cannot verify
+the manifest, the post-export injection, the APK publishing script, or the
+download MIME type regress — and it boots the real server against a temporary
+volume to prove `/download/android` streams the published bytes, answers
+`Range` with `206`, refuses an out-of-bounds range with `416`, and returns 404
+with no metadata, 503 with a missing file. It cannot verify
 that a human compared a checksum or that Play Protect will stay quiet — those
 are device checks, run by hand against the published build.

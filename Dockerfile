@@ -68,6 +68,11 @@ COPY server ./server
 COPY db/migrations ./db/migrations
 COPY package.json ./
 
+# Released Android binaries are streamed from a host volume mounted here
+# (Coolify → Storage → add persistent volume for /var/data/app-downloads). The
+# directory exists either way, so a missing mount is a 503, not a crash.
+RUN mkdir -p /var/data/app-downloads && chown -R node:node /var/data
+
 # Drop root: nothing in this container writes to disk.
 USER node
 

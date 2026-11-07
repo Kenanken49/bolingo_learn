@@ -3,19 +3,25 @@
  * Publish a signed Android release APK for bolingo.co.ke/install.
  *
  * The APK is a build artifact, not source, so it never enters git and never
- * enters the container: it is uploaded once to the project's Supabase Storage
- * bucket and the site serves only the small metadata file written here. The
- * install page reads `public/downloads/latest.json`, and `/download/android`
- * redirects to `url`, so the link people share is always bolingo.co.ke.
+ * enters the container image. Normally it lives on the web host itself, in the
+ * persistent volume `/download/android` streams from, and this script writes
+ * only the small metadata file: the install page reads
+ * `public/downloads/latest.json` and always links the stable route, so the
+ * address people share never changes when a new build lands.
  *
  * Usage
+ *   node scripts/publish-android-apk.cjs path/to/app-release.apk --local
  *   node scripts/publish-android-apk.cjs path/to/app-release.apk --upload
  *   node scripts/publish-android-apk.cjs path/to/app-release.apk --url https://…/app.apk
  *   node scripts/publish-android-apk.cjs --withdraw
  *
- * --upload needs SUPABASE_URL and SUPABASE_SECRET_KEY in the environment. The
- * bucket must exist and be public (Supabase → Storage → New bucket
- * "app-downloads" → Public). The secret never enters the image or the bundle.
+ * --local is the default hosting: after committing the metadata, copy the APK
+ * to the host volume under the printed file name (docs/install-from-web.md has
+ * the mount and the scp command). --upload instead pushes one object to the
+ * project's Supabase Storage bucket, which needs SUPABASE_URL and
+ * SUPABASE_SECRET_KEY in the environment and a public "app-downloads" bucket —
+ * that plan caps a single object at 50 MiB, so it only works for a build small
+ * enough to fit. The secret never enters the image or the bundle.
  *
  * Refuses to publish anything that is not a plausible signed APK: a file with
  * no ZIP header, or one too small to be a release build, is rejected rather
@@ -31,6 +37,11 @@ const ROOT = path.resolve(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'public', 'downloads');
 const LATEST = path.join(OUT_DIR, 'latest.json');
 const BUCKET = 'app-downloads';
+/** The route the site serves the binary from; --local points the record at it. */
+const SITE = 'https://bolingo.co.ke';
+const DOWNLOAD_ROUTE = '/download/android';
+/** Where the web host keeps released binaries (Coolify persistent volume). */
+const HOST_VOLUME = '/var/data/app-downloads';
 
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
@@ -77,7 +88,9 @@ async function main() {
   }
 
   const apkPath = args.find((arg) => !arg.startsWith('--') && arg !== valueOf('--url'));
-  if (!apkPath) fail('usage: node scripts/publish-android-apk.cjs <app-release.apk> (--upload | --url <https://…>)');
+  if (!apkPath) {
+    fail('usage: node scripts/publish-android-apk.cjs <app-release.apk> (--local | --upload | --url <https://…>)');
+  }
   if (!fs.existsSync(apkPath)) fail(`${apkPath} does not exist`);
 
   const bytes = fs.readFileSync(apkPath);
@@ -99,8 +112,12 @@ async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(path.join(OUT_DIR, `${fileName}.sha256`), `${sha256}  ${fileName}\n`);
 
-  const url = flag('--upload') ? await uploadToStorage(bytes, fileName) : valueOf('--url');
-  if (!url || !/^https:\/\//.test(url)) fail('pass --upload or --url https://… so the page links over TLS only.');
+  let url = valueOf('--url');
+  if (flag('--local')) url = `${SITE}${DOWNLOAD_ROUTE}`;
+  if (flag('--upload')) url = await uploadToStorage(bytes, fileName);
+  if (!url || !/^https:\/\//.test(url)) {
+    fail('pass --local (serve from the web host), --upload (object storage) or --url https://…');
+  }
 
   const record = {
     version,
@@ -121,6 +138,12 @@ async function main() {
   console.log(`    sha256sum ${fileName}                       # Linux/macOS`);
   console.log(`    Get-FileHash ${fileName} -Algorithm SHA256   # Windows PowerShell`);
   console.log('  Now commit public/downloads/latest.json and push — /install picks it up on the next deploy.');
+  if (flag('--local')) {
+    console.log('');
+    console.log(`  And put the binary where the site can read it, on the web host:
+    scp ${apkPath} <host>:${HOST_VOLUME}/${fileName}
+    sha256sum ${HOST_VOLUME}/${fileName}   # must match the checksum above`);
+  }
 }
 
 main().catch((error) => fail(error instanceof Error ? error.message : String(error)));
