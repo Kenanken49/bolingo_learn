@@ -1,6 +1,6 @@
 # Privacy Policy — Bolingo Learn
 
-**Effective date:** [DATE] · **Contact:** [support@bolingo.example]
+**Effective date:** 6 November 2026 · **Contact:** support@bolingo.co.ke
 
 Bolingo Learn ("we") is an educational quiz app. This policy describes what
 we collect, why, and your choices. It covers the mobile app on iOS and
@@ -71,7 +71,7 @@ generated lessons are deleted with the account (cascade delete).
 ## 5. Your rights
 
 Access, correct, export, or delete your data: use in-app account controls
-or email [support@bolingo.example]. Deleting your account removes your
+or email support@bolingo.co.ke. Deleting your account removes your
 profile, uploads, lessons, and questions. EU/UK users may lodge a complaint
 with their supervisory authority; California users may exercise CCPA/CPRA
 rights at the same address.
@@ -86,7 +86,7 @@ for removal.
 
 Transport encryption (TLS), Supabase row-level security + private storage
 buckets scoped per user, service-role keys kept server-side only. No
-method is 100% secure — report issues to [support@bolingo.example].
+method is 100% secure — report issues to support@bolingo.co.ke.
 
 ## 8. Changes
 
@@ -97,9 +97,9 @@ after the effective date constitutes acceptance.
 
 ### Filling checklist (before publishing)
 
-- [ ] Replace `[DATE]`, `[support@bolingo.example]`, support URL.
+- [x] Replace `[DATE]`, `[support@bolingo.example]`, support URL (done 6 Nov 2026).
 - [ ] Confirm Supabase project region (data residency note if needed).
-- [ ] Host this file publicly (e.g. bolingo.example/privacy) — both stores
-      require a live URL, not a repo file.
+- [x] Host this file publicly — served in-app/web at `bolingo.co.ke/privacy`
+      (`src/app/privacy.tsx`); confirm it resolves on the live site after deploy.
 - [ ] Mirror the §1 categories in Play Data Safety + App Store nutrition
       labels (see store-listing.md reviewer notes).

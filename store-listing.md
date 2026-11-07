@@ -11,8 +11,8 @@
 - **Package / Bundle ID suggestion:** `com.bolingo.learn`
 - **Category:** Education
 - **Content rating:** Everyone / 4+ (no user-generated public content; uploads are private to the account)
-- **Support URL / email:** [YOUR SUPPORT URL] / [support@bolingo.example]
-- **Privacy policy URL (required both stores):** [YOUR PRIVACY URL] — must disclose Supabase auth/data, AdMob ads, RevenueCat purchases
+- **Support URL / email:** https://www.bolingo.co.ke / support@bolingo.co.ke
+- **Privacy policy URL (required both stores):** https://www.bolingo.co.ke/privacy — served by the app's public `/privacy` route; discloses Supabase auth/data, AdMob ads, RevenueCat purchases
 
 ## Long description (Play, ≤4000 chars) / Description (App Store)
 
@@ -67,7 +67,7 @@ reads best on OLED — lead with shot #2 for Education featuring.
 
 ## Reviewer notes (paste into both consoles)
 
-- Demo account: [EMAIL] / [PASSWORD] — preloaded with a ready upload + lesson.
+- Demo account: [CREATE ONE + FILL EMAIL/PASSWORD] — preloaded with a ready upload + lesson.
 - Diamonds: failed lessons cost 1 (wrong answers are free); refill via test ad (Google sample id in dev), wait timer, or debug premium toggle (dev builds only).
 - AI pipeline needs Supabase secrets configured; reviewer demo uses staged content so no key entry is needed.
 - Subscriptions: RevenueCat sandbox product "premium monthly" — test with store sandbox accounts, cancel anytime.
