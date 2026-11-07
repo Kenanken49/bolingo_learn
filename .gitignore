@@ -59,3 +59,6 @@ supabase/.temp/
 # Only the metadata the install page reads (public/downloads/latest.json) is source.
 public/downloads/*.apk
 public/downloads/*.sha256
+
+# Android release signing key — backup it, never commit it.
+.keystores/

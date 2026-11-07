@@ -77,6 +77,16 @@ check('The Dockerfile builds the Expo web export into dist', () => {
   );
 });
 
+check('The website offers the app download from the shell', () => {
+  // The app is not in a store, so the download has to be reachable from inside
+  // the product, not only from a link somebody shares.
+  const shell = read('components/dashboard/Shell.tsx');
+  assert(/router\.push\('\/install'\)/.test(shell), 'the dashboard top bar must link to /install');
+  assert(/Download app/.test(shell), 'the download entry needs a visible label');
+  const install = read('src/app/install.tsx');
+  assert(/\/download\/android/.test(install), 'the install page must use the stable /download/android route');
+});
+
 /**
  * Does a .dockerignore pattern remove `target` from the build context?
  * Handles the three shapes this repo uses: an exact path, a directory prefix,

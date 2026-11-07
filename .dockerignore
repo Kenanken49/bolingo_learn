@@ -4,6 +4,8 @@
 .github
 .gitignore
 node_modules
+# The release signing key must never enter a build context or an image.
+.keystores
 dist
 web-build
 .expo

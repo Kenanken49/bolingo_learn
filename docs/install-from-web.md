@@ -64,6 +64,61 @@ Never commit `*.jks`, `*.keystore` or the passwords file. `android/` is
 generated (CNG) and untracked, so a local keystore there is lost on the next
 `expo prebuild` — keep it outside the project.
 
+## The release key on this machine
+
+A release keystore lives in `.keystores/` (gitignored, and excluded from the
+Docker build context):
+
+```
+.keystores/bolingo-release.jks   # alias: bolingo, RSA 2048, valid ~30 years
+.keystores/password.txt         # store and key password
+```
+
+**Back both files up somewhere durable and private.** Android identifies an app
+by its signing key: if the key is lost, a new one cannot update installs made
+with the old. They are not in git and never will be.
+
+A Gradle release build is signed with the debug key (Expo's default template),
+so sign the output again with the real key before publishing — no edit to
+`android/` needed:
+
+```bash
+SDK="$LOCALAPPDATA/Android/Sdk/build-tools/37.0.0"
+zipalign.exe -p -f 4 android/app/build/outputs/apk/release/app-release.apk aligned.apk
+export KS_PASS=$(cat .keystores/password.txt)
+apksigner.bat sign --ks .keystores/bolingo-release.jks --ks-key-alias bolingo \
+  --ks-pass env:KS_PASS --key-pass env:KS_PASS \
+  --out bolingo-learn-signed.apk aligned.apk
+apksigner.bat verify --print-certs bolingo-learn-signed.apk   # must say CN=Bolingo Learn
+```
+
+Use `env:KS_PASS`, not `file:.keystores/password.txt`: MSYS rewrites the colon
+in `file:` paths and apksigner then fails in `getSignerConfig`. On Windows the
+executables are `zipalign.exe` and `apksigner.bat`.
+
+## Which CPU architectures, and why the size matters
+
+`android/gradle.properties` sets `reactNativeArchitectures=x86_64`. That builds
+libs for the **emulator only**; a phone is arm64 and the APK dies at startup
+with `UnsatisfiedLinkError`. Build for devices by overriding it on the command
+line, without editing the file:
+
+```bash
+ANDROID_HOME="$LOCALAPPDATA/Android/Sdk" ./gradlew assembleRelease --no-daemon \
+  -PreactNativeArchitectures=arm64-v8a
+```
+
+Measured: a release APK for one arm64 ABI is about **110 MB**, because
+`llama.cpp` ships two ~13 MB copies of itself and the app bundles audiobook
+audio and dictionaries inside it (~60 MB of that is content, not code).
+
+Supabase Storage on the Free plan rejects objects over **50 MiB** — verified by
+probe: 50 MiB → HTTP 200, 60 MiB and 75 MiB → `413 EntityTooLarge`. The API
+itself allows up to 5 GB, so the wall is the plan, not the endpoint. Either
+upgrade the project, host the APK elsewhere, or move the bundled media to
+on-demand download so the APK fits. A single APK cannot be split into pieces
+for the user to reassemble.
+
 ## Publish it
 
 ```bash

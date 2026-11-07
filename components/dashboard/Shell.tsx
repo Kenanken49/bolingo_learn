@@ -99,6 +99,22 @@ export default function Shell({
                 />
               </Pressable>
             ) : null}
+            {/* The web is the only place a learner can install from: the app is
+                not in a store yet, so the download lives at /install. Keep it in
+                the top bar where it is visible on every screen. */}
+            {Platform.OS === 'web' ? (
+              <Pressable
+                onPress={() => router.push('/install')}
+                accessibilityRole="link"
+                accessibilityLabel="Download the Bolingo Learn app"
+                className="flex-row items-center gap-2 rounded-full bg-dash-pillink px-3 py-2 sm:px-4"
+              >
+                <AppIcon name="download" size={17} color="#FFFFFF" />
+                {width >= 640 ? (
+                  <Text className="text-[13px] font-extrabold text-white">Download app</Text>
+                ) : null}
+              </Pressable>
+            ) : null}
             <Pressable
               onPress={() => router.push('/settings')}
               accessibilityRole="button"
