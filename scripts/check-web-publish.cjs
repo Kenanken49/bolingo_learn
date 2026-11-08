@@ -490,7 +490,18 @@ check('A sideloaded install is offered a newer build from the release record', (
   );
   assert(parseVersion(release.version), `the published version "${release.version}" is not a release number`);
   assert(/^[0-9a-f]{64}$/.test(release.sha256 || ''), 'the record the app reads must carry the checksum it was built with');
-  assert(releaseSizeLabel(release) === '166 MB', `the update card size line should read 166 MB, got ${releaseSizeLabel(release)}`);
+  // The size line has to follow the record, so it cannot be a string written for
+  // one release: derive it from sizeBytes the way a reader would, and keep it
+  // inside the range a real Bolingo APK occupies.
+  const sizeMB = Math.round(Number(release.sizeBytes) / (1024 * 1024));
+  assert(
+    releaseSizeLabel(release) === `${sizeMB} MB`,
+    `the update card must size the release from its own ${release.sizeBytes} bytes, got ${releaseSizeLabel(release)}`
+  );
+  assert(
+    sizeMB > 60 && sizeMB < 400,
+    `a ${sizeMB} MB APK is not the build this page is for — check sizeBytes against the signed file`
+  );
 
   // The app compares its own baked-in version, so the committed record must not
   // look newer than the committed config — a learner on the shipped build has to
