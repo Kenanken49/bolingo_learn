@@ -6,6 +6,7 @@ import Text from '../../components/ui/Text';
 import AppIcon from '../../components/AppIcon';
 import BrandMark from '../../components/BrandMark';
 import { PUBLIC_SITE } from '../../lib/api';
+import { qrMatrix } from '../../lib/install-qr';
 
 /**
  * Direct install from the web: bolingo.co.ke/install.
@@ -29,6 +30,9 @@ type AndroidBuild = {
 };
 
 const MONO = Platform.select({ web: 'ui-monospace, SFMono-Regular, Menlo, monospace', default: 'monospace' });
+
+/** White border around the modules, in modules — the spec's quiet zone. */
+const QR_QUIET = 4;
 
 /** Relative on web (same origin), absolute for a native build that opens this page. */
 function buildUrl(path: string): string {
@@ -65,6 +69,45 @@ const APK_BUTTON_STYLE: React.CSSProperties = {
   backgroundColor: '#059669',
   textDecoration: 'none',
 };
+
+/**
+ * Hand the download to a phone. On a laptop the APK is 165 MB the phone has to
+ * fetch itself, so the page prints a QR carrying the absolute file URL — the
+ * camera app opens it and the transfer starts, with no typing. The code is
+ * drawn as one SVG path (see lib/install-qr) with a four-module quiet zone
+ * inside the viewBox, because a code that runs up to the edge of its white box
+ * is the classic reason a screen-to-camera scan fails.
+ *
+ * Web only: a phone already has the button.
+ */
+const QR_EDGE = 168;
+
+function PhoneQr({ payload }: { payload: string }) {
+  const { count, pathData } = qrMatrix(payload);
+  return (
+    <View className="mt-4 items-center">
+      {createElement(
+        'svg',
+        {
+          width: QR_EDGE,
+          height: QR_EDGE,
+          viewBox: `${-QR_QUIET} ${-QR_QUIET} ${count + QR_QUIET * 2} ${count + QR_QUIET * 2}`,
+          role: 'img',
+          'aria-label': `QR code that opens the Bolingo Learn Android download`,
+          shapeRendering: 'crispEdges',
+          style: { display: 'block', backgroundColor: '#FFFFFF', borderRadius: 12 },
+        },
+        createElement('path', { d: pathData, fill: '#000000' }),
+      )}
+      <Text className="mt-2 text-center text-sm font-bold text-slate-700 dark:text-slate-200">
+        Scan with your phone to start this download on it.
+      </Text>
+      <Text className="mt-1 text-center text-[11px] text-slate-500 dark:text-slate-400" style={{ fontFamily: MONO }} selectable>
+        {payload.replace(/^https:\/\//, '')}
+      </Text>
+    </View>
+  );
+}
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -165,6 +208,7 @@ export default function Install() {
                 {apkBody}
               </Pressable>
             )}
+            {Platform.OS === 'web' ? <PhoneQr payload={`${PUBLIC_SITE}/download/android`} /> : null}
             <View className="mt-4 rounded-2xl bg-slate-50 p-3 dark:bg-slate-950">
               <Text className="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 SHA-256 of this build

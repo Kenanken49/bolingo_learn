@@ -6,7 +6,7 @@ a malware risk.
 
 | Audience | What they get | Where |
 | --- | --- | --- |
-| Android 7+ | Signed release APK, checksum published on the page | `https://bolingo.co.ke/install` → `/download/android` |
+| Android 7+ | Signed release APK, checksum published on the page, QR for the laptop→phone handoff | `https://bolingo.co.ke/install` → `/download/android` |
 | iPhone / iPad | The web app added to the Home Screen (Apple forbids web installs) | Safari → Share → Add to Home Screen |
 | Desktop / anyone who just wants it now | The website itself | `https://bolingo.co.ke` |
 
@@ -43,6 +43,21 @@ icon, full-screen display, no Apple account, no install risk at all.
    the metadata the page reads, and only the ~300-byte copy of that metadata is
    committed. That keeps the repo cloneable, the Coolify image small, and a
    release unaffected by every rebuild.
+
+## Handing the download to a phone
+
+Someone reading the page on a laptop cannot tap "Download the APK" with the
+phone they actually want to install it on, so the Android card prints a QR code
+carrying the absolute file URL — `https://bolingo.co.ke/download/android`. A
+phone camera opens it and the transfer starts with no typing. The code points at
+the stable route rather than a versioned filename, so it keeps working through
+every future publish.
+
+It is web-only (a phone already has the button) and is drawn as one SVG path
+from `lib/install-qr.ts`, with the spec's four-module quiet zone inside the
+viewBox because a code running to the edge of its white box is the classic
+reason a screen-to-camera scan fails. Error correction is level M, so up to 15%
+of the modules can be damaged or glare-covered and it still reads.
 
 ## Build the APK
 
@@ -212,6 +227,8 @@ download MIME type regress — and it boots the real server against a temporary
 volume to prove `/download/android` streams the published bytes, answers
 `Range` with `206`, refuses an out-of-bounds range with `416`, prefers the
 volume's `latest.json` over the image's, and returns 404 with no metadata, 503
-with a missing file. It cannot verify
+with a missing file. It also rasterizes the QR path string the install page
+paints and decodes it with a real reader (`jsqr`) back to the download URL, so a
+code that would not scan cannot ship. It cannot verify
 that a human compared a checksum or that Play Protect will stay quiet — those
 are device checks, run by hand against the published build.

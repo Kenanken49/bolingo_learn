@@ -17,18 +17,30 @@
  *   4. The docs tell the owner the manual steps no gate can do: linking the
  *      domain in the AdMob console and swapping the placeholder pub id.
  *   5. The adaptive wireframe board still publishes.
+ *   6. The QR code the install page paints for a phone actually decodes.
  *
  * No network call, no hosting account needed.
  */
 
 'use strict';
 
-/* global __dirname, console, process -- Node provides these to CommonJS scripts. */
+/* global __dirname, console, process, require, module, Uint8ClampedArray -- Node provides these to CommonJS scripts. */
 
 const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
+
+// The QR is app TypeScript. Load the shipped module the way check-labex.cjs
+// does, so this gate tests the code the bundle runs rather than a copy of it.
+const ts = require('typescript');
+require.extensions['.ts'] = (nodeModule, filename) => {
+  const { outputText } = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, esModuleInterop: true },
+    fileName: filename,
+  });
+  nodeModule._compile(outputText, filename);
+};
 
 let failures = 0;
 function check(name, fn) {
@@ -239,6 +251,13 @@ check('The web install path is single-source, signed and honest', () => {
   assert(/href: apkHref/.test(page), 'the download anchor must carry the /download/android href');
   assert(/sha256/.test(page), 'the install page must show the build checksum');
   assert(/latest\.json/.test(page), 'the install page must read the published build metadata');
+  // A laptop reader cannot tap a phone screen, so the page hands the same URL
+  // over as a QR. It has to carry the absolute address (a relative href means
+  // nothing to a camera) and it belongs on web only.
+  assert(/<PhoneQr/.test(page), 'the install page must offer a QR code for the phone handoff');
+  assert(/from '\.\.\/\.\.\/lib\/install-qr'/.test(page), 'the QR must come from lib/install-qr');
+  assert(/payload=\{`\$\{PUBLIC_SITE\}\/download\/android`\}/.test(page), 'the QR must encode the absolute download URL');
+  assert(/Platform\.OS === 'web'[\s\S]{0,60}<PhoneQr/.test(page), 'the QR is a desktop-to-phone affordance and must not appear in the native app');
   assert(/Add to Home Screen/i.test(page), 'iPhone users need the Add to Home Screen path (Apple forbids web installs)');
   const layout = read('src/app/_layout.tsx');
   assert(/name="install"/.test(layout), 'the install route must be registered in the app layout');
@@ -266,7 +285,7 @@ check('The web install path is single-source, signed and honest', () => {
 
   assert(fs.existsSync(path.join(ROOT, 'docs', 'install-from-web.md')), 'docs/install-from-web.md is missing');
   const docs = read('docs/install-from-web.md');
-  for (const needle of ['SHA-256', 'Supabase', 'Add to Home Screen', 'keystore', '/var/data/app-downloads', 'arm64-v8a']) {
+  for (const needle of ['SHA-256', 'Supabase', 'Add to Home Screen', 'keystore', '/var/data/app-downloads', 'arm64-v8a', 'QR']) {
     assert(docs.includes(needle), `docs/install-from-web.md must explain ${needle}`);
   }
 
@@ -388,6 +407,55 @@ check('The published Android binary streams from the release volume and resumes'
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+});
+
+check('The install page QR code decodes back to the download URL', () => {
+  const { qrMatrix } = require(path.join(ROOT, 'lib', 'install-qr.ts'));
+  const jsQr = require('jsqr');
+  const jsQR = jsQr.default || jsQr;
+  const payload = 'https://bolingo.co.ke/download/android';
+
+  const { count, rows, pathData } = qrMatrix(payload);
+  assert(count >= 21 && count <= 41, `QR is ${count}×${count}, outside the version 1–40 grid`);
+
+  // Paint exactly what the browser paints: the SVG path, nothing else. If the
+  // run-length packing ever drifts from the matrix, this is what catches it.
+  const scale = 6;
+  const quiet = 4;
+  const size = (count + quiet * 2) * scale;
+  const data = new Uint8ClampedArray(size * size * 4).fill(255);
+  const run = /M(\d+) (\d+)h(\d+)v1h-\3z/g;
+  let cursor = 0;
+  let painted = 0;
+  let match;
+  while ((match = run.exec(pathData))) {
+    assert(match.index === cursor, `QR path data has a gap or unexpected command at ${cursor}`);
+    cursor = match.index + match[0].length;
+    const x = Number(match[1]);
+    const y = Number(match[2]);
+    const length = Number(match[3]);
+    assert(y < count && x + length <= count, `QR run ${match[0]} falls outside the ${count}×${count} grid`);
+    for (let col = x; col < x + length; col += 1) {
+      painted += 1;
+      for (let dy = 0; dy < scale; dy += 1) {
+        for (let dx = 0; dx < scale; dx += 1) {
+          const offset = (((y + quiet) * scale + dy) * size + (col + quiet) * scale + dx) * 4;
+          data[offset] = 0;
+          data[offset + 1] = 0;
+          data[offset + 2] = 0;
+        }
+      }
+    }
+  }
+  assert(cursor === pathData.length, 'QR path data ends mid-command');
+
+  const darkModules = rows.reduce((total, line) => total + line.filter(Boolean).length, 0);
+  assert(painted === darkModules, `the path paints ${painted} modules but the matrix has ${darkModules}`);
+  assert(painted > count, `only ${painted} dark modules — a real code needs hundreds`);
+
+  const found = jsQR(data, size, size);
+  assert(found, 'a QR reader cannot decode the code the install page paints');
+  assert(found.data === payload, `the QR decodes to ${found.data}, not ${payload}`);
 });
 
 check('Contact and feedback are wired on web and in the app', () => {
