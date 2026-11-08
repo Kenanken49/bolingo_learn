@@ -475,6 +475,8 @@ check('A sideloaded install is offered a newer build from the release record', (
     parseVersion,
     compareVersions,
     decideUpdate,
+    releaseKey,
+    releaseLabel,
     releaseSizeLabel,
   } = require(path.join(ROOT, 'lib', 'releaseManifest.ts'));
 
@@ -497,14 +499,16 @@ check('A sideloaded install is offered a newer build from the release record', (
   const installed = (appConfig.match(/version:\s*'([^']+)'/) || [])[1];
   const installedPackage = (appConfig.match(/package:\s*'([^']+)'/) || [])[1];
   assert(installed, 'app.config.js must declare the version the update check compares against');
+  const installedBuild = Number((appConfig.match(/versionCode:\s*(\d+)/) || [])[1]) || null;
+  assert(installedBuild, 'app.config.js must declare android.versionCode: it is the only field that separates two rebuilds of one version');
   assert(installedPackage === shipped.packageName, `the record is published for ${shipped.packageName} but the app builds ${installedPackage}`);
-  const asBuilt = decideUpdate({ platform: 'android', installed, installedPackage, release });
+  const asBuilt = decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release });
   assert(!asBuilt.offer, `the app would offer its own release (installed ${installed}, published ${release.version})`);
   assert(asBuilt.reason === 'not-newer', `an up to date install should read as current, got ${asBuilt.reason}`);
 
   // What an update actually looks like, on both sides of the comparison.
   const newer = { ...release, version: '9.9.9' };
-  const offer = decideUpdate({ platform: 'android', installed, installedPackage, release: newer });
+  const offer = decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release: newer });
   assert(offer.offer && offer.release.url === newer.url, 'a newer published build must be offered with its download url');
   assert(compareVersions('1.10.0', '1.9.0') === 1, 'versions must compare numerically — 1.10.0 is newer than 1.9.0');
   assert(compareVersions('1.0.1', '1.0.1') === 0 && compareVersions('2', '1.9.9') === 1, 'short and equal release numbers must compare correctly');
@@ -532,11 +536,11 @@ check('A sideloaded install is offered a newer build from the release record', (
 
   // "Not now" lasts the session, and only for that release.
   assert(
-    decideUpdate({ platform: 'android', installed, installedPackage, release: newer, dismissedVersion: '9.9.9' }).reason === 'dismissed',
+    decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release: newer, dismissedRelease: releaseKey(newer) }).reason === 'dismissed',
     'a release the learner turned down must not be raised again in the same session'
   );
   assert(
-    decideUpdate({ platform: 'android', installed, installedPackage, release: { ...newer, version: '9.9.10' }, dismissedVersion: '9.9.9' }).offer,
+    decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release: { ...newer, version: '9.9.10' }, dismissedRelease: releaseKey(newer) }).offer,
     'a newer release after a dismissal must be offered again'
   );
 
@@ -550,6 +554,60 @@ check('A sideloaded install is offered a newer build from the release record', (
     'an http download must be rejected — the app only ever opens https'
   );
 
+  // Two rebuilds published under one version. The build number is the only thing
+  // that can tell them apart, so it has to be carried, compared and displayed.
+  const recordBase = { version: '1.0.1', url: 'https://bolingo.co.ke/download/android' };
+  assert(
+    parseRelease({ ...recordBase, buildNumber: 3 }).buildNumber === 3,
+    'the parsed record must carry the build number it was published with'
+  );
+  assert(
+    parseRelease({ ...recordBase, buildNumber: 'soon' }).buildNumber === undefined,
+    'an unreadable build number must be dropped, not thrown away with the whole record'
+  );
+  assert(
+    releaseLabel({ ...recordBase, buildNumber: 3 }) === '1.0.1 (build 3)',
+    'a rebuild must be named by its build, not only its version'
+  );
+  assert(releaseLabel(recordBase) === '1.0.1', 'a record without a build number keeps the plain version label');
+  const rebuild = { ...release, version: installed, buildNumber: installedBuild + 1 };
+  assert(
+    decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release: rebuild }).offer,
+    'a higher build of the SAME version must be offered — this is what makes a silent rebuild findable'
+  );
+  assert(
+    decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release: { ...rebuild, buildNumber: installedBuild } }).reason ===
+      'not-newer',
+    'the build already installed must never be offered back as an update'
+  );
+  assert(
+    decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release: { ...rebuild, buildNumber: installedBuild - 1 } }).reason ===
+      'not-newer',
+    'an older build of the same version must not be offered, or the app downgrades the learner'
+  );
+  assert(
+    decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release: rebuild, dismissedRelease: releaseKey({ ...rebuild, buildNumber: installedBuild }) })
+      .offer,
+    'turning one build down must not hide a newer build published under the same version'
+  );
+  assert(
+    decideUpdate({ platform: 'android', installed, installedBuild, installedPackage, release: { ...rebuild, buildNumber: undefined } }).reason ===
+      'not-newer',
+    'a record that states no build number cannot prove it beats an equal version, so it stays quiet'
+  );
+  assert(
+    decideUpdate({ platform: 'android', installed, installedPackage, release: rebuild }).reason === 'not-newer',
+    'an install that cannot read its own build number must fall back to comparing versions only'
+  );
+  // The record committed beside this config describes a build this repo can make:
+  // its build number must be the one prebuild stamps into the APK.
+  if (shipped.version === installed) {
+    assert(
+      shipped.buildNumber === installedBuild,
+      `the committed record must publish build ${installedBuild}, the one app.config.js declares, got ${shipped.buildNumber}`
+    );
+  }
+
   // The screens: the dashboard asks once a session, Settings can ask on demand.
   const updater = read('lib/appUpdate.ts');
   assert(/\/downloads\/latest\.json/.test(updater), 'the app must read the release record the server serves no-store');
@@ -557,21 +615,30 @@ check('A sideloaded install is offered a newer build from the release record', (
   assert(/api<unknown>\(MANIFEST_PATH\)/.test(updater), 'the check must reuse lib/api so the web build stays same-origin');
   assert(/setTimeout\(/.test(updater), 'a background update check must time out instead of hanging on a dead host');
   assert(/openURL\(release\.url\)/.test(updater), 'accepting the update must open the published download');
+  assert(/installedBuild: installedBuild\(\)/.test(updater), 'the update check must read the installed build number, or a rebuild cannot be recognised');
+  assert(/releaseKey\(release\)/.test(updater), 'a dismissal must be keyed on version and build, not version alone');
+
+  const publisher = read('scripts/publish-android-apk.cjs');
+  assert(/buildNumber/.test(publisher), 'the published record must carry a build number');
+  assert(/versionCode/.test(publisher), 'the build number must come from app.config.js, not a hand-typed flag');
 
   const home = read('src/app/index.tsx');
   assert(/<UpdateCard/.test(home) && /checkAppUpdate\(\)/.test(home), 'the dashboard must check and offer the update');
-  assert(/dismissAppUpdate\(update\.release\.version\)/.test(home), 'the dashboard must record a turned-down release');
+  assert(/dismissAppUpdate\(update\.release\)/.test(home), 'the dashboard must record the turned-down artefact by version and build');
 
   const card = read('components/dashboard/UpdateCard.tsx');
   assert(/onDownload/.test(card) && /onDismiss/.test(card), 'the update card needs both actions, not just the nag');
   assert((card.match(/accessibilityRole="button"/g) || []).length >= 2, 'each update action needs a button role');
+  assert(/releaseLabel\(release\)/.test(card), 'the card must name the build it is offering, not only the version');
 
   const settings = read('src/app/settings.tsx');
   assert(/checkAppUpdate\(true\)/.test(settings), 'Settings must be able to re-check, so "Not now" is never forever');
+  assert(/installedLabel\(\)/.test(settings), 'Settings must show the installed build number, so a rebuilt install can be verified after updating');
   assert(!/v1\.0\.0 \| Made for learners/.test(settings), 'the footer must report the installed version, not a literal');
 
   const docs = read('docs/contact-and-updates.md');
   assert(/latest\.json/.test(docs) && /in-app/.test(docs), 'the update docs must explain the in-app APK check');
+  assert(/versionCode/.test(docs) && /build number/.test(docs), 'the update docs must explain the build number and when to bump it');
 });
 
 check('Contact and feedback are wired on web and in the app', () => {

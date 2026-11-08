@@ -2,11 +2,11 @@
  * The release record the website publishes next to the APK, and the rule for
  * when an installed app should offer it.
  *
- * `public/downloads/latest.json` is copied into the container by
- * `scripts/publish-apk.sh` and served at `/downloads/latest.json`; it is the
- * only signal a sideloaded install has that a newer build exists, because no
- * store notices for it. This module holds the whole decision as pure data —
- * platform, installed version, manifest, dismissal — so `scripts/check-web-publish.cjs`
+ * `public/downloads/latest.json` is written by `scripts/publish-android-apk.cjs`
+ * and served at `/downloads/latest.json`; it is the only signal a sideloaded
+ * install has that a newer build exists, because no store notices for it. This
+ * module holds the whole decision as pure data — platform, installed version,
+ * installed build, manifest, dismissal — so `scripts/check-web-publish.cjs`
  * can exercise it against the shipped file without a device, and so nothing
  * about version arithmetic can drift between the two screens that ask.
  *
@@ -19,6 +19,15 @@ export interface LatestRelease {
   version: string;
   /** Absolute download URL for the APK, e.g. "https://bolingo.co.ke/download/android". */
   url: string;
+  /**
+   * Android `versionCode` of the published APK, from `app.config.js`.
+   *
+   * A version number only says what release the build carries, so two rebuilds
+   * published under one version are indistinguishable in this record without
+   * it: the same `1.0.1` twice looks like nothing new happened. Optional,
+   * because records published before it existed stay readable.
+   */
+  buildNumber?: number;
   /** File the host is serving, for the "what am I about to install" line. */
   fileName?: string;
   sizeBytes?: number;
@@ -37,7 +46,7 @@ export type UpdateReject =
   | 'wrong-package'
   /** Either side's version could not be read as a number sequence. */
   | 'unknown-version'
-  /** The published build is the same version or older than this install. */
+  /** The published build is this install's version and build, or older. */
   | 'not-newer'
   /** The learner already turned this exact release down. */
   | 'dismissed'
@@ -51,11 +60,13 @@ export interface UpdateInput {
   platform: string;
   /** Version this install was built with. */
   installed: string;
+  /** `versionCode` this install was built with, when the binary reports one. */
+  installedBuild?: number | null;
   /** Application id of this install, when the build reports one. */
   installedPackage?: string | null;
   release: LatestRelease;
-  /** Release the learner dismissed on this device, if any. */
-  dismissedVersion?: string | null;
+  /** `releaseKey` of the release the learner dismissed on this device, if any. */
+  dismissedRelease?: string | null;
 }
 
 /** A release number as segments: "1.10.2" → [1, 10, 2]. `null` when unreadable. */
@@ -105,7 +116,28 @@ export function parseRelease(raw: unknown): LatestRelease {
   if (typeof body.sizeBytes === 'number' && Number.isFinite(body.sizeBytes) && body.sizeBytes > 0) {
     release.sizeBytes = body.sizeBytes;
   }
+  // Optional numbers are dropped when unusable rather than rejecting the whole
+  // record, the same way `sizeBytes` behaves: a broken extra field must not
+  // silence the version comparison that carries a real fix.
+  if (typeof body.buildNumber === 'number' && Number.isSafeInteger(body.buildNumber) && body.buildNumber > 0) {
+    release.buildNumber = body.buildNumber;
+  }
   return release;
+}
+
+/**
+ * What one published artefact *is*, for remembering that the learner turned it
+ * down. Version alone is not enough: two rebuilds share a version, so a
+ * dismissal keyed on the version would also hide the newer file that was
+ * published to replace it.
+ */
+export function releaseKey(release: LatestRelease): string {
+  return `${release.version}+${release.buildNumber ?? 0}`;
+}
+
+/** Version, plus the build number when the record carries one: "1.0.1 (build 2)". */
+export function releaseLabel(release: LatestRelease): string {
+  return release.buildNumber ? `${release.version} (build ${release.buildNumber})` : release.version;
 }
 
 /** Size in MB for the "about 166 MB" line; `null` when the record omits it. */
@@ -121,9 +153,10 @@ export function releaseSizeLabel(release: LatestRelease): string | null {
 export function decideUpdate({
   platform,
   installed,
+  installedBuild,
   installedPackage,
   release,
-  dismissedVersion,
+  dismissedRelease,
 }: UpdateInput): UpdateDecision {
   // The published artefact is an Android APK. An iPhone install and the browser
   // build both get their newest code another way, so neither may offer it.
@@ -134,7 +167,17 @@ export function decideUpdate({
     return { offer: false, reason: 'wrong-package' };
   }
   if (!parseVersion(installed) || !parseVersion(release.version)) return { offer: false, reason: 'unknown-version' };
-  if (compareVersions(release.version, installed) <= 0) return { offer: false, reason: 'not-newer' };
-  if (dismissedVersion && dismissedVersion === release.version) return { offer: false, reason: 'dismissed' };
+  const versionDelta = compareVersions(release.version, installed);
+  // When the versions match, the build number is the only thing that separates
+  // a rebuild from the file already installed — republishing the same version
+  // with a higher `versionCode` is how a fixed build reaches a phone without
+  // moving the release number. Either side missing one means no comparison can
+  // be made, so an equal version stays quiet.
+  const newerBuild =
+    typeof release.buildNumber === 'number' &&
+    typeof installedBuild === 'number' &&
+    release.buildNumber > installedBuild;
+  if (versionDelta < 0 || (versionDelta === 0 && !newerBuild)) return { offer: false, reason: 'not-newer' };
+  if (dismissedRelease && dismissedRelease === releaseKey(release)) return { offer: false, reason: 'dismissed' };
   return { offer: true, release };
 }

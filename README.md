@@ -604,8 +604,13 @@ dashboard fetches `/downloads/latest.json` once a session, compares its
 numeric, so `1.10.0` beats `1.9.0`), and offers the download through
 `components/dashboard/UpdateCard.tsx`. Accepting opens the APK in the browser,
 because Android will not let an app install over itself; "Not now" lasts the
-session, and *Settings → App update* re-checks on demand. Publish a build by
-bumping `app.config.js` `version`, building, then
+session, and *Settings → App update* re-checks on demand. The record also
+carries a `buildNumber` — the Android `versionCode` declared in
+`app.config.js` — because two builds published under one version look identical
+to a phone otherwise: a rebuild that does not move the version must move
+`versionCode`, and the app offers it on that alone. Publish a build by bumping
+`app.config.js` `version` and `android.versionCode` (keeping `package.json` in
+step), building, then
 `node scripts/publish-android-apk.cjs <apk> --local` and copying the APK plus
 `latest.json` to `/var/data/app-downloads` on the host. The release record is
 served `no-store`, so the next check after a publish sees it. Full runbook:

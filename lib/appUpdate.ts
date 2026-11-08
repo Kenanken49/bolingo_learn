@@ -6,6 +6,7 @@ import { track } from './telemetry';
 import {
   decideUpdate,
   parseRelease,
+  releaseKey,
   type LatestRelease,
   type UpdateDecision,
 } from './releaseManifest';
@@ -15,8 +16,9 @@ import {
  * install, and opens the download when the learner accepts.
  *
  * The app is sideloaded — no store watches it — so the release record published
- * beside the APK (`/downloads/latest.json`, copied by `scripts/publish-apk.sh`)
- * is the only way an installed phone learns a newer build exists. JS-only work
+ * beside the APK (`/downloads/latest.json`, written by
+ * `scripts/publish-android-apk.cjs`) is the only way an installed phone learns a
+ * newer build exists. JS-only work
  * still goes out silently through EAS Update; this covers the rebuilds that OTA
  * cannot touch, and hands the learner the download rather than a dead end:
  * Android will not let an app install an APK over itself.
@@ -34,6 +36,23 @@ export function installedVersion(): string {
   return Constants.expoConfig?.version ?? '';
 }
 
+/**
+ * Android `versionCode` this install was built with — the field that tells two
+ * rebuilds of one version apart, so it comes from the same app config baked into
+ * the binary rather than a runtime query. A build made before `android.versionCode`
+ * was declared reports nothing, and the check falls back to comparing versions.
+ */
+export function installedBuild(): number | null {
+  const raw = Constants.expoConfig?.android?.versionCode;
+  return typeof raw === 'number' && Number.isSafeInteger(raw) && raw > 0 ? raw : null;
+}
+
+/** How to name this install — "1.0.1", plus its build when the binary has one. */
+export function installedLabel(): string {
+  const build = installedBuild();
+  return build ? `${installedVersion()} (build ${build})` : installedVersion();
+}
+
 function installedPackage(): string | null {
   return Constants.expoConfig?.android?.package ?? null;
 }
@@ -42,8 +61,12 @@ function installedPackage(): string | null {
  * Turning a release down lasts the running session only. A sideloaded install
  * has no other way to hear about a rebuild, so "Not now" must not become
  * "never" — the next launch asks again, and a newer build asks regardless.
+ *
+ * It is remembered as a `releaseKey`, not a version, so a rebuild published
+ * under the same version the learner just declined is still offered: the
+ * dismissal was about that file, not about the release number.
  */
-let dismissedVersion: string | null = null;
+let dismissedRelease: string | null = null;
 
 // One fetch per session, shared by the dashboard offer and the Settings check.
 let releasePromise: Promise<LatestRelease | null> | null = null;
@@ -82,17 +105,27 @@ export async function checkAppUpdate(force = false): Promise<UpdateDecision> {
   const decision = decideUpdate({
     platform: Platform.OS,
     installed: installedVersion(),
+    installedBuild: installedBuild(),
     installedPackage: installedPackage(),
     release,
-    dismissedVersion,
+    dismissedRelease,
   });
-  if (decision.offer) track('app_update_available', { from: installedVersion(), to: decision.release.version });
+  if (decision.offer) {
+    // `to` alone cannot tell a rebuild from a release bump, which is exactly the
+    // difference support is asked about when someone reports "it updated to the
+    // same version".
+    track('app_update_available', {
+      from: installedVersion(),
+      to: decision.release.version,
+      build: decision.release.buildNumber,
+    });
+  }
   return decision;
 }
 
-/** Hide this release for the rest of the session. */
-export function dismissAppUpdate(version: string): void {
-  dismissedVersion = version;
+/** Hide this artefact for the rest of the session, by version and build. */
+export function dismissAppUpdate(release: LatestRelease): void {
+  dismissedRelease = releaseKey(release);
 }
 
 /** Open the published download in the browser, where Android can install it. */

@@ -1,7 +1,7 @@
 import { View, Pressable } from 'react-native';
 import Text from '../ui/Text';
 import AppIcon from '../AppIcon';
-import { releaseSizeLabel, type LatestRelease } from '../../lib/releaseManifest';
+import { compareVersions, releaseLabel, releaseSizeLabel, type LatestRelease } from '../../lib/releaseManifest';
 
 /**
  * The in-app offer for a newer Android build published on bolingo.co.ke.
@@ -24,9 +24,12 @@ export default function UpdateCard({
   onDownload: () => void;
 }) {
   const size = releaseSizeLabel(release);
-  const body = `Version ${release.version} is on bolingo.co.ke. You are on v${installed}. ${
-    size ? `The download is about ${size}. ` : ''
-  }Open it to install this update over your app — your lessons and progress stay.`;
+  // The build number is what makes sense of a same-version offer: without it a
+  // learner reads "1.0.1 is on the website, you are on 1.0.1" as a bug.
+  const rebuild = release.buildNumber != null && compareVersions(release.version, installed) === 0;
+  const body = `Version ${releaseLabel(release)} is on bolingo.co.ke. You are on v${installed}. ${
+    rebuild ? 'It replaces your build with a newer one. ' : ''
+  }${size ? `The download is about ${size}. ` : ''}Open it to install this update over your app — your lessons and progress stay.`;
 
   return (
     <View
@@ -43,14 +46,14 @@ export default function UpdateCard({
         </Text>
       </View>
       <Text className="mt-2 text-[15px] font-extrabold text-dash-ink dark:text-dash-dink">
-        Bolingo {release.version} is ready
+        Bolingo {releaseLabel(release)} is ready
       </Text>
       <Text className="mt-1 text-[12.5px] leading-[18px] text-dash-muted dark:text-dash-dmuted">{body}</Text>
       <View className="mt-3 flex-row items-center gap-2">
         <Pressable
           onPress={onDownload}
           accessibilityRole="button"
-          accessibilityLabel={`Download Bolingo ${release.version}`}
+          accessibilityLabel={`Download Bolingo ${releaseLabel(release)}`}
           className="flex-1 items-center rounded-xl bg-cyan-600 py-3 dark:bg-cyan-500"
         >
           <Text className="text-[13.5px] font-extrabold text-white dark:text-slate-950">Update now</Text>

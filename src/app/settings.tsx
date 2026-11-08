@@ -31,8 +31,8 @@ import {
   setRemindersOn,
 } from '../../lib/reminders';
 import { useTheme } from '../../lib/theme';
-import { checkAppUpdate, downloadRelease, installedVersion } from '../../lib/appUpdate';
-import type { UpdateReject } from '../../lib/releaseManifest';
+import { checkAppUpdate, downloadRelease, installedLabel } from '../../lib/appUpdate';
+import { releaseLabel, type UpdateReject } from '../../lib/releaseManifest';
 import { playCelebration, playQuizCorrect, playWrong, stopRewardCues } from '../../lib/sfx';
 import Mascot from '../../components/AfricanMascots';
 import { stopSpeaking, type Mentor, type PronounceResult } from '../../lib/pronunciation';
@@ -88,7 +88,9 @@ const CAST_STEPS = (['en', 'sw'] as const).flatMap((language) =>
 function updateAnswer(reason: UpdateReject): string {
   switch (reason) {
     case 'not-newer':
-      return `You are on the newest build (v${installedVersion()}).`;
+      // Naming the build too, because at one version two installs differ only
+      // by it — "you are on the newest build" means nothing without it.
+      return `You are on the newest build (v${installedLabel()}).`;
     case 'dismissed':
       return 'You turned this release down. It will be offered again next time you open the app.';
     case 'unreachable':
@@ -557,9 +559,10 @@ export default function Settings() {
     try {
       const decision = await checkAppUpdate(true);
       if (decision.offer) {
-        setUpdateLine(`v${decision.release.version} is ready — opening the download on bolingo.co.ke.`);
+        const ready = `v${releaseLabel(decision.release)} is ready`;
+        setUpdateLine(`${ready} — opening the download on bolingo.co.ke.`);
         const opened = await downloadRelease(decision.release);
-        if (!opened) setUpdateLine(`v${decision.release.version} is ready. Open ${decision.release.url} to install it.`);
+        if (!opened) setUpdateLine(`${ready}. Open ${decision.release.url} to install it.`);
         return;
       }
       setUpdateLine(updateAnswer(decision.reason));
@@ -1515,7 +1518,7 @@ export default function Settings() {
           'App update',
           checkingUpdate
             ? 'Checking bolingo.co.ke…'
-            : updateLine ?? `You are on v${installedVersion()}. Compare it with the newest published build.`,
+            : updateLine ?? `You are on v${installedLabel()}. Compare it with the newest published build.`,
           () => void checkForUpdate()
         )}
         {__DEV__ && row('diamond', 'Debug: refill', 'Dev builds only — remove before release', refillDiamonds)}
@@ -1538,7 +1541,7 @@ export default function Settings() {
       <View className="mt-6 items-center">
         <BrandMark />
         <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-          v{installedVersion()} | Made for learners
+          v{installedLabel()} | Made for learners
         </Text>
       </View>
       <StatusBar style="auto" />

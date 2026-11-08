@@ -89,8 +89,9 @@ on `/install` update with the deploy — no page edit, no stale link.
 
 No store is watching this app, so the app asks the website itself. The dashboard
 runs `checkAppUpdate()` once per session (`lib/appUpdate.ts`): it fetches
-`/downloads/latest.json`, compares the record's `version` against the version
-baked into the binary, and raises the update card
+`/downloads/latest.json`, compares the record's `version` (and, at an equal
+version, its `buildNumber`) against what is baked into the binary, and raises
+the update card
 (`components/dashboard/UpdateCard.tsx`) only when the host is serving something
 newer. **Update now** opens `https://bolingo.co.ke/download/android` — Android
 will not let an app install an APK over itself, so the browser finishes the job.
@@ -106,6 +107,34 @@ and the published binary cannot drift apart. Android alone is offered the build
 (there is no iOS sideload, and the web app is the server's own copy), and a failed
 request shows nothing at all — the record is served `no-store`, so the next check
 after a publish sees it.
+
+### Why the record needs a build number
+
+A version says what release a build carries, not which build it is. Republishing
+`1.0.1` with a fix — a signing change, a native dependency bump, a rebuild
+because the first file was bad — leaves every install on `1.0.1` reading the
+same number and staying silent, and a learner who did install it cannot tell
+support whether they got the old file or the new one.
+
+So the record carries a `buildNumber`: the Android `versionCode` from
+`app.config.js`, which is what `prebuild` stamps into the APK and
+`scripts/publish-android-apk.cjs` reads from the config rather than a flag (a
+hand-typed number can claim a build the binary does not carry). Rules:
+
+- Newer version → offered, whatever the build number says.
+- Same version, higher build number → offered. This is the only way a silent
+  rebuild reaches a phone.
+- Same version, no build number on either side → quiet. Nothing proves the
+  published file is newer, and offering the build already installed is worse
+  than saying nothing. Records published before the field existed (1.0.0) are
+  read as if it were absent, not rejected.
+- A "Not now" is remembered per version **and** build, so declining `1.0.1`
+  build 2 does not hide `1.0.1` build 3 in the same session.
+
+Bump `android.versionCode` with every build you publish, even one that leaves
+the version alone. The Settings row and footer print it (`v1.0.1 (build 2)`) so
+an install can be identified exactly, and the card names the build it is
+offering.
 
 ### Verifying a release landed
 

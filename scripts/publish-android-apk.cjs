@@ -26,6 +26,12 @@
  * Refuses to publish anything that is not a plausible signed APK: a file with
  * no ZIP header, or one too small to be a release build, is rejected rather
  * than advertised on the install page.
+ *
+ * The record also carries `buildNumber` — the Android `versionCode` from
+ * `app.config.js`, the same value `prebuild` writes into the APK — so two
+ * rebuilds published under one version stay tellable apart, in the record, on
+ * the install page and to the app's own update check. Bump `versionCode` with
+ * every build you publish, even one that does not move the version.
  */
 'use strict';
 /* global __dirname, require, process, console, fetch */
@@ -55,6 +61,27 @@ const valueOf = (name) => {
 function fail(message) {
   console.error(`publish-android-apk: ${message}`);
   process.exit(1);
+}
+
+/**
+ * The `versionCode` the app config declares, which is what the APK this file
+ * hashes was built with. Read from the config rather than taken as a flag, so
+ * the published record cannot claim a build number the binary does not carry.
+ * Returns null when the config has no android block, which an old release record
+ * without a build number still describes honestly.
+ */
+function declaredBuildNumber() {
+  let config = null;
+  try {
+    // app.config.js exports the Expo dynamic-config function; the fields this
+    // script needs (android.versionCode) are literals in it, so an empty base
+    // config is enough and keeps this the one place the number is defined.
+    config = require(path.join(ROOT, 'app.config.js'))({ config: {} });
+  } catch (error) {
+    fail(`cannot read app.config.js for android.versionCode: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  const raw = config && config.android ? config.android.versionCode : undefined;
+  return typeof raw === 'number' && Number.isSafeInteger(raw) && raw > 0 ? raw : null;
 }
 
 async function uploadToStorage(fileBytes, fileName) {
@@ -106,7 +133,16 @@ async function main() {
 
   const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
   const version = pkg.version || '1.0.0';
+  const buildNumber = declaredBuildNumber();
+  if (buildNumber === null) {
+    console.warn(
+      'publish-android-apk: warning — app.config.js declares no android.versionCode, so this record cannot distinguish a rebuild from the build already installed. Set it and publish again if this build replaces one.'
+    );
+  }
   const sha256 = crypto.createHash('sha256').update(bytes).digest('hex');
+  // A rebuild of the same version overwrites the same name in the release
+  // directory, so the APK and latest.json must always go up together — a stale
+  // file beside a new record means the published checksum matches nothing.
   const fileName = `bolingo-learn-${version}.apk`;
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -121,6 +157,7 @@ async function main() {
 
   const record = {
     version,
+    ...(buildNumber === null ? {} : { buildNumber }),
     packageName: 'com.bolingo.learn',
     fileName,
     sizeBytes: bytes.length,
@@ -131,7 +168,7 @@ async function main() {
   };
   fs.writeFileSync(LATEST, `${JSON.stringify(record, null, 2)}\n`);
 
-  console.log(`publish-android-apk: published version ${version}`);
+  console.log(`publish-android-apk: published version ${version}${buildNumber === null ? '' : ` (build ${buildNumber})`}`);
   console.log(`  sha256 ${sha256}`);
   console.log(`  url    ${url}`);
   console.log('  Verify a downloaded copy:');

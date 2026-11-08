@@ -63,6 +63,13 @@ of the modules can be damaged or glare-covered and it still reads.
 
 ## Build the APK
 
+Before building, move the release identity: `version` in `package.json` **and**
+`app.config.js` (the publish script takes the version from `package.json`, the
+binary and the update check take it from `app.config.js`), plus
+`android.versionCode` — the build number every published record carries so two
+builds of one version stay distinguishable. A rebuild that leaves the version
+alone must still raise `versionCode`, or no installed phone can hear about it.
+
 ```bash
 # one-off: a signed, installable APK (internal distribution = APK, not AAB)
 npx eas-cli build -p android --profile apk
@@ -161,13 +168,19 @@ ssh <vps-host> "chmod a+r /var/data/app-downloads/*"
 git add public/downloads/latest.json && git commit -m "Publish Android build <version>" && git push
 ```
 
-Step 3 is what tells the installed apps. `app.config.js` version and the record's
-`version` are compared numerically by `lib/releaseManifest.ts`, so publishing a
-build means **bumping the app version first** — republishing `1.0.0` under a new
-file name leaves every install silent, which is the correct answer but rarely what
-you meant. A learner on the newest build sees nothing; a learner behind it gets the
+Step 3 is what tells the installed apps. `lib/releaseManifest.ts` compares the
+record's `version` numerically against the version baked into the binary and
+breaks a tie on the record's `buildNumber`, the `android.versionCode` the publish
+script read out of `app.config.js`. So publishing means **bumping the version, the
+versionCode, or both** — republishing `1.0.0` at the build number it already had
+leaves every install silent, which is the correct answer but rarely what you
+meant. Note that the file name comes from the version, so a rebuild of `1.0.1`
+replaces `bolingo-learn-1.0.1.apk` in the volume: put the APK and `latest.json`
+up together, never one without the other, or the published checksum matches
+nothing. A learner on the newest build sees nothing; a learner behind it gets the
 card on the dashboard and *Settings → App update → Check for an update*, and
-"Not now" only lasts that session.
+"Not now" only lasts that session — for that build only, so a newer rebuild is
+offered again even in the same session.
 
 The volume copy of `latest.json` wins over the one baked into `dist`, so step 2
 publishes immediately — no container rebuild per release. Step 3 only records it

@@ -83,9 +83,9 @@ export default function DashboardHome() {
   );
 
   // Sideloaded installs get no store notification, so the dashboard asks the
-  // website once per session whether a newer Android build is published. A
-  // failure to answer is silence: nothing is rendered until a real release
-  // number beats this one.
+  // website once per session whether a newer Android build is published: a
+  // newer version, or the same version at a higher build number. A failure to
+  // answer is silence — nothing renders until a real release beats this build.
   useEffect(() => {
     void checkAppUpdate().then(setUpdate);
   }, []);
@@ -117,7 +117,7 @@ export default function DashboardHome() {
           release={update.release}
           installed={installedVersion()}
           onDismiss={() => {
-            dismissAppUpdate(update.release.version);
+            dismissAppUpdate(update.release);
             setUpdate({ offer: false, reason: 'dismissed' });
           }}
           onDownload={() => void downloadRelease(update.release)}
