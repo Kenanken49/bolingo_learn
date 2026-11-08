@@ -595,6 +595,24 @@ npx eas-cli@latest update --branch production --environment production -p all --
 
 The flag is `-p/--platform` (there is no `--platforms`), and a non-interactive publish must name `--environment`. A published rollout only reaches builds that were made with a channel: `preview` and `production` both carry one, a local release build carries whichever channel `EXPO_UPDATES_CHANNEL` named at prebuild, and the `development` profile carries none — so a dev client always runs whatever the Metro bundler serves. Native changes (new SDKs, AdMob/RevenueCat config, splash/icon, adding `expo-updates` itself) still need a rebuild — OTA covers JS only.
 
+### When a rebuild is out (the app checks the website)
+
+The APK is distributed from `https://bolingo.co.ke/install` — no store — so
+nothing would tell an installed phone about a rebuild. It tells itself: the
+dashboard fetches `/downloads/latest.json` once a session, compares its
+`version` with the version baked into the binary (`lib/releaseManifest.ts`,
+numeric, so `1.10.0` beats `1.9.0`), and offers the download through
+`components/dashboard/UpdateCard.tsx`. Accepting opens the APK in the browser,
+because Android will not let an app install over itself; "Not now" lasts the
+session, and *Settings → App update* re-checks on demand. Publish a build by
+bumping `app.config.js` `version`, building, then
+`node scripts/publish-android-apk.cjs <apk> --local` and copying the APK plus
+`latest.json` to `/var/data/app-downloads` on the host. The release record is
+served `no-store`, so the next check after a publish sees it. Full runbook:
+[docs/install-from-web.md](docs/install-from-web.md); the wire-up and the
+`npm run check:web-publish` coverage of this path are in
+[docs/contact-and-updates.md](docs/contact-and-updates.md).
+
 ## Premium paywall (RevenueCat)
 
 `/paywall` (modal, linked from the Path tier badge and refill): loads the current offering's monthly package via `Purchases.getOfferings()`, `purchasePackage` on subscribe, `restorePurchases`, and syncs the `premium` entitlement into `profiles.is_premium` ([lib/purchases.ts](lib/purchases.ts)). Setup: create the `premium` entitlement + KSh 770/mo product in RevenueCat, add `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` / `EXPO_PUBLIC_REVENUECAT_IOS_KEY`. `__DEV__` includes a debug premium toggle (needs `EXPO_PUBLIC_DEBUG_PREMIUM=1` for the auto-unlock path).

@@ -15,7 +15,9 @@ a malware risk.
 An APK is the app's own signed package: Android installs it, Play Protect may
 warn because the source is not the Play Store, and the app updates through the
 next APK posted on the page (or through EAS Update for JS-only changes, which is
-already wired via `expo-updates`). Nothing about it needs a store account.
+already wired via `expo-updates`). Nothing about it needs a store account — and
+because no store is watching, the app reads `/downloads/latest.json` itself and
+offers the newer build in-app; see [contact-and-updates.md](contact-and-updates.md).
 
 iOS has no equivalent. Sideloading an `.ipa` needs an Apple Developer account
 plus each device's UDID (Ad Hoc, 100 devices) or an Enterprise certificate,
@@ -159,6 +161,14 @@ ssh <vps-host> "chmod a+r /var/data/app-downloads/*"
 git add public/downloads/latest.json && git commit -m "Publish Android build <version>" && git push
 ```
 
+Step 3 is what tells the installed apps. `app.config.js` version and the record's
+`version` are compared numerically by `lib/releaseManifest.ts`, so publishing a
+build means **bumping the app version first** — republishing `1.0.0` under a new
+file name leaves every install silent, which is the correct answer but rarely what
+you meant. A learner on the newest build sees nothing; a learner behind it gets the
+card on the dashboard and *Settings → App update → Check for an update*, and
+"Not now" only lasts that session.
+
 The volume copy of `latest.json` wins over the one baked into `dist`, so step 2
 publishes immediately — no container rebuild per release. Step 3 only records it
 and keeps a build working on a host whose volume is not mounted.
@@ -229,6 +239,9 @@ volume to prove `/download/android` streams the published bytes, answers
 volume's `latest.json` over the image's, and returns 404 with no metadata, 503
 with a missing file. It also rasterizes the QR path string the install page
 paints and decodes it with a real reader (`jsqr`) back to the download URL, so a
-code that would not scan cannot ship. It cannot verify
+code that would not scan cannot ship. It runs the shipped `public/downloads/latest.json`
+through the app's own update rule (`lib/releaseManifest.ts`), so an install of the
+committed version must raise no prompt and any newer record must raise one — the
+in-app offer and the published build cannot drift apart. It cannot verify
 that a human compared a checksum or that Play Protect will stay quiet — those
 are device checks, run by hand against the published build.

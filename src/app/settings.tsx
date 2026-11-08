@@ -31,6 +31,8 @@ import {
   setRemindersOn,
 } from '../../lib/reminders';
 import { useTheme } from '../../lib/theme';
+import { checkAppUpdate, downloadRelease, installedVersion } from '../../lib/appUpdate';
+import type { UpdateReject } from '../../lib/releaseManifest';
 import { playCelebration, playQuizCorrect, playWrong, stopRewardCues } from '../../lib/sfx';
 import Mascot from '../../components/AfricanMascots';
 import { stopSpeaking, type Mentor, type PronounceResult } from '../../lib/pronunciation';
@@ -78,6 +80,28 @@ const CAST_STEPS = (['en', 'sw'] as const).flatMap((language) =>
   VOICE_CAST.map((member) => ({ character: member.id, language }))
 );
 
+/**
+ * What each "no update to offer" answer means to the learner in one line. The
+ * manual check in Settings is the only place a reason is ever read out loud;
+ * the dashboard card simply stays hidden.
+ */
+function updateAnswer(reason: UpdateReject): string {
+  switch (reason) {
+    case 'not-newer':
+      return `You are on the newest build (v${installedVersion()}).`;
+    case 'dismissed':
+      return 'You turned this release down. It will be offered again next time you open the app.';
+    case 'unreachable':
+      return "Couldn't reach bolingo.co.ke. Connect, then check again.";
+    case 'wrong-package':
+      return 'The published build is for a different app, so it is not offered here.';
+    case 'unknown-version':
+      return 'This install cannot read its own version, so nothing can be compared.';
+    case 'not-installable':
+      return 'Android builds are published on bolingo.co.ke; this device takes its updates another way.';
+  }
+}
+
 export default function Settings() {
   // Dev-only device test hook; see lib/narratorSample.ts.
   const { narratorAudit } = useLocalSearchParams<{ narratorAudit?: string }>();
@@ -87,6 +111,9 @@ export default function Settings() {
   const [ambientOn, setAmbientOn] = useState(true);
   const [hapticsOn, setHapticsOn] = useState(true);
   const [telemetryOn, setTelemetryOnState] = useState(true);
+  // What the release manifest last answered, shown in the App update row.
+  const [updateLine, setUpdateLine] = useState<string | null>(null);
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
   // Platform appearance: light / dark, persisted, flips instantly everywhere.
   const [theme, setTheme] = useTheme();
   const [remindersOn, setReminders] = useState(false);
@@ -522,6 +549,22 @@ export default function Settings() {
     const shown = await showAdPrivacyOptions();
     if (!shown) {
       Alert.alert('Ad privacy', 'There is no ad consent choice to make on this device right now.');
+    }
+  };
+
+  const checkForUpdate = async () => {
+    setCheckingUpdate(true);
+    try {
+      const decision = await checkAppUpdate(true);
+      if (decision.offer) {
+        setUpdateLine(`v${decision.release.version} is ready — opening the download on bolingo.co.ke.`);
+        const opened = await downloadRelease(decision.release);
+        if (!opened) setUpdateLine(`v${decision.release.version} is ready. Open ${decision.release.url} to install it.`);
+        return;
+      }
+      setUpdateLine(updateAnswer(decision.reason));
+    } finally {
+      setCheckingUpdate(false);
     }
   };
   // What the pipeline would actually use: the learner's stored choice when it is
@@ -1467,6 +1510,14 @@ export default function Settings() {
         )}
         {adsSupported &&
           row('shield', 'Ad privacy options', 'Review or change your ad consent', () => void openAdPrivacy())}
+        {row(
+          'download',
+          'App update',
+          checkingUpdate
+            ? 'Checking bolingo.co.ke…'
+            : updateLine ?? `You are on v${installedVersion()}. Compare it with the newest published build.`,
+          () => void checkForUpdate()
+        )}
         {__DEV__ && row('diamond', 'Debug: refill', 'Dev builds only — remove before release', refillDiamonds)}
         {__DEV__ &&
           row(
@@ -1486,7 +1537,9 @@ export default function Settings() {
 
       <View className="mt-6 items-center">
         <BrandMark />
-        <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">v1.0.0 | Made for learners</Text>
+        <Text className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+          v{installedVersion()} | Made for learners
+        </Text>
       </View>
       <StatusBar style="auto" />
     </ScrollView>

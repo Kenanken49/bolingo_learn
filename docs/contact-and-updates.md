@@ -85,10 +85,33 @@ git add public/downloads/latest.json && git commit -m "Publish Android build" &&
 `/download/android` reads that metadata, so the download link and the checksum
 on `/install` update with the deploy — no page edit, no stale link.
 
+### How a sideloaded app hears about the rebuild
+
+No store is watching this app, so the app asks the website itself. The dashboard
+runs `checkAppUpdate()` once per session (`lib/appUpdate.ts`): it fetches
+`/downloads/latest.json`, compares the record's `version` against the version
+baked into the binary, and raises the update card
+(`components/dashboard/UpdateCard.tsx`) only when the host is serving something
+newer. **Update now** opens `https://bolingo.co.ke/download/android` — Android
+will not let an app install an APK over itself, so the browser finishes the job.
+Settings carries the same check on demand under *App update*, so turning a
+release down lasts the session and never silences a learner for good.
+
+The decision itself is pure data in `lib/releaseManifest.ts`: numeric version
+comparison (so `1.10.0` beats `1.9.0`), plus the reasons to stay quiet —
+`not-newer`, `unknown-version`, `wrong-package`, `dismissed`, `unreachable`,
+`not-installable`. `npm run check:web-publish` exercises that rule against the
+committed `public/downloads/latest.json`, so the in-app prompt, the install page
+and the published binary cannot drift apart. Android alone is offered the build
+(there is no iOS sideload, and the web app is the server's own copy), and a failed
+request shows nothing at all — the record is served `no-store`, so the next check
+after a publish sees it.
+
 ### Verifying a release landed
 
 ```bash
 curl -s https://bolingo.co.ke/contact | grep -c 'support@bolingo.co.ke'   # page is live
+curl -s https://bolingo.co.ke/downloads/latest.json | head -c 120          # what installed apps compare against
 curl -s -w ' [%{http_code}]\n' -X POST https://bolingo.co.ke/api/feedback \
   -H 'content-type: application/json' \
   -d '{"email":"you@example.com","message":"release smoke test"}'        # 201

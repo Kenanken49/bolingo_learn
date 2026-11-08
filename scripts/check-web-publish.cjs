@@ -18,6 +18,7 @@
  *      domain in the AdMob console and swapping the placeholder pub id.
  *   5. The adaptive wireframe board still publishes.
  *   6. The QR code the install page paints for a phone actually decodes.
+ *   7. An installed app reads that release record and offers a newer build.
  *
  * No network call, no hosting account needed.
  */
@@ -31,8 +32,8 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 
-// The QR is app TypeScript. Load the shipped module the way check-labex.cjs
-// does, so this gate tests the code the bundle runs rather than a copy of it.
+// The QR and the update rule are app TypeScript. Load the shipped modules the way
+// check-labex.cjs does, so this gate tests the code the bundle runs rather than a copy of it.
 const ts = require('typescript');
 require.extensions['.ts'] = (nodeModule, filename) => {
   const { outputText } = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
@@ -456,6 +457,121 @@ check('The install page QR code decodes back to the download URL', () => {
   const found = jsQR(data, size, size);
   assert(found, 'a QR reader cannot decode the code the install page paints');
   assert(found.data === payload, `the QR decodes to ${found.data}, not ${payload}`);
+});
+
+/** Fails the check when `fn` returns instead of throwing. */
+function throws(fn, message) {
+  try {
+    fn();
+  } catch {
+    return;
+  }
+  throw new Error(message);
+}
+
+check('A sideloaded install is offered a newer build from the release record', () => {
+  const {
+    parseRelease,
+    parseVersion,
+    compareVersions,
+    decideUpdate,
+    releaseSizeLabel,
+  } = require(path.join(ROOT, 'lib', 'releaseManifest.ts'));
+
+  // The record baked into the image is the one every installed app reads, so it
+  // has to be the shape the app parses and point at the stable download route.
+  const shipped = JSON.parse(read('public/downloads/latest.json'));
+  const release = parseRelease(shipped);
+  assert(
+    release.url === 'https://bolingo.co.ke/download/android',
+    `the update must open the stable download route, not ${release.url}`
+  );
+  assert(parseVersion(release.version), `the published version "${release.version}" is not a release number`);
+  assert(/^[0-9a-f]{64}$/.test(release.sha256 || ''), 'the record the app reads must carry the checksum it was built with');
+  assert(releaseSizeLabel(release) === '166 MB', `the update card size line should read 166 MB, got ${releaseSizeLabel(release)}`);
+
+  // The app compares its own baked-in version, so the committed record must not
+  // look newer than the committed config — a learner on the shipped build has to
+  // see nothing, not a prompt to reinstall the version they already have.
+  const appConfig = read('app.config.js');
+  const installed = (appConfig.match(/version:\s*'([^']+)'/) || [])[1];
+  const installedPackage = (appConfig.match(/package:\s*'([^']+)'/) || [])[1];
+  assert(installed, 'app.config.js must declare the version the update check compares against');
+  assert(installedPackage === shipped.packageName, `the record is published for ${shipped.packageName} but the app builds ${installedPackage}`);
+  const asBuilt = decideUpdate({ platform: 'android', installed, installedPackage, release });
+  assert(!asBuilt.offer, `the app would offer its own release (installed ${installed}, published ${release.version})`);
+  assert(asBuilt.reason === 'not-newer', `an up to date install should read as current, got ${asBuilt.reason}`);
+
+  // What an update actually looks like, on both sides of the comparison.
+  const newer = { ...release, version: '9.9.9' };
+  const offer = decideUpdate({ platform: 'android', installed, installedPackage, release: newer });
+  assert(offer.offer && offer.release.url === newer.url, 'a newer published build must be offered with its download url');
+  assert(compareVersions('1.10.0', '1.9.0') === 1, 'versions must compare numerically — 1.10.0 is newer than 1.9.0');
+  assert(compareVersions('1.0.1', '1.0.1') === 0 && compareVersions('2', '1.9.9') === 1, 'short and equal release numbers must compare correctly');
+  assert(compareVersions('garbage', '1.0.0') === 0, 'an unreadable version must fail closed, not offer');
+  assert(
+    decideUpdate({ platform: 'android', installed: '2.0.0', installedPackage, release }).reason === 'not-newer',
+    'a build older than this install must never be offered, or the app downgrades the learner'
+  );
+
+  // Silence is the correct answer for everything the app cannot act on.
+  for (const platform of ['ios', 'web', 'windows']) {
+    assert(
+      decideUpdate({ platform, installed, installedPackage, release: newer }).reason === 'not-installable',
+      `${platform} installs cannot install an Android APK and must say nothing`
+    );
+  }
+  assert(
+    decideUpdate({ platform: 'android', installed, installedPackage: 'com.example.other', release: newer }).reason === 'wrong-package',
+    'a record for a different application id must not offer a download'
+  );
+  assert(
+    decideUpdate({ platform: 'android', installed: '', installedPackage, release: newer }).reason === 'unknown-version',
+    'an install that cannot read its own version must not offer anything'
+  );
+
+  // "Not now" lasts the session, and only for that release.
+  assert(
+    decideUpdate({ platform: 'android', installed, installedPackage, release: newer, dismissedVersion: '9.9.9' }).reason === 'dismissed',
+    'a release the learner turned down must not be raised again in the same session'
+  );
+  assert(
+    decideUpdate({ platform: 'android', installed, installedPackage, release: { ...newer, version: '9.9.10' }, dismissedVersion: '9.9.9' }).offer,
+    'a newer release after a dismissal must be offered again'
+  );
+
+  // A record that cannot be trusted must be rejected rather than half-read.
+  throws(() => parseRelease(null), 'a missing release record must fail closed');
+  throws(() => parseRelease({ url: 'https://bolingo.co.ke/download/android' }), 'a record with no version must be rejected');
+  throws(() => parseRelease({ version: 'nightly' }), 'a record with an unreadable version must be rejected');
+  throws(() => parseRelease({ version: '1.0.1' }), 'a record with no download url must be rejected');
+  throws(
+    () => parseRelease({ version: '1.0.1', url: 'http://bolingo.co.ke/download/android' }),
+    'an http download must be rejected — the app only ever opens https'
+  );
+
+  // The screens: the dashboard asks once a session, Settings can ask on demand.
+  const updater = read('lib/appUpdate.ts');
+  assert(/\/downloads\/latest\.json/.test(updater), 'the app must read the release record the server serves no-store');
+  assert(/Platform\.OS !== 'android'/.test(updater), 'only Android installs may ask for the release record');
+  assert(/api<unknown>\(MANIFEST_PATH\)/.test(updater), 'the check must reuse lib/api so the web build stays same-origin');
+  assert(/setTimeout\(/.test(updater), 'a background update check must time out instead of hanging on a dead host');
+  assert(/openURL\(release\.url\)/.test(updater), 'accepting the update must open the published download');
+
+  const home = read('src/app/index.tsx');
+  assert(/<UpdateCard/.test(home) && /checkAppUpdate\(\)/.test(home), 'the dashboard must check and offer the update');
+  assert(/dismissAppUpdate\(update\.release\.version\)/.test(home), 'the dashboard must record a turned-down release');
+
+  const card = read('components/dashboard/UpdateCard.tsx');
+  assert(/onDownload/.test(card) && /onDismiss/.test(card), 'the update card needs both actions, not just the nag');
+  assert((card.match(/accessibilityRole="button"/g) || []).length >= 2, 'each update action needs a button role');
+
+  const settings = read('src/app/settings.tsx');
+  assert(/checkAppUpdate\(true\)/.test(settings), 'Settings must be able to re-check, so "Not now" is never forever');
+  assert(!/v1\.0\.0 \| Made for learners/.test(settings), 'the footer must report the installed version, not a literal');
+
+  const docs = read('docs/contact-and-updates.md');
+  assert(/latest\.json/.test(docs) && /in-app/.test(docs), 'the update docs must explain the in-app APK check');
 });
 
 check('Contact and feedback are wired on web and in the app', () => {
