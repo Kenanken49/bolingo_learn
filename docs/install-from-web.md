@@ -237,6 +237,33 @@ curl -s -o /dev/null -w '%{http_code} %{size_download}\n' -r 0-999 https://bolin
 sha256sum bolingo-learn-<version>.apk     # compare with the page
 ```
 
+The gate that owns this proof is `npm run check:release-artifact`: it reads the
+live `downloads/latest.json`, requires it to describe the same build as the
+record committed in git, then hashes every byte the container reads from
+`/var/data/app-downloads` and compares the size and SHA-256 against that record.
+With the container's hash token it is a two-second check on any connection:
+
+```bash
+# once, in the web service's environment (Coolify → Environment → Variables)
+openssl rand -hex 24        # paste the result as BOLINGO_INTEGRITY_TOKEN in both places
+# once, in GitHub → Settings → Secrets and variables → Actions
+gh secret set BOLINGO_INTEGRITY_TOKEN   # the same value, then re-run the workflow
+
+curl -s -H "x-bolingo-integrity-token: $BOLINGO_INTEGRITY_TOKEN" \
+  https://bolingo.co.ke/api/release-integrity | jq '{served: .volume.sizeBytes, sha256: .volume.sha256, match}'
+```
+
+Without the token the gate proves the same thing the slow way: CI downloads the
+whole APK and hashes it there. That is fine on a GitHub runner and hopeless on a
+phone tether, so it fails out loud after `BOLINGO_RELEASE_STREAM_BUDGET_MS`
+(fifteen minutes by default) and names the knob to turn. Set the token on the
+container and in GitHub together or not at all — the gate reads a mismatch
+between the two as its own failure, never as a pass. A redeploy that half-copied
+the release, a `Content-Length` that no longer matches the record, a swapped
+build and a bit-rotted one all fail it; a file edited somewhere in the middle,
+same name and same length, fails on the hash alone, which is why the gate reads
+every byte instead of sampling ranges.
+
 On a device, `adb shell pm list packages | grep bolingo` and
 `adb shell dumpsys package com.bolingo.learn | grep -A3 signatures` show what is
 actually installed; the signature digest must match the release key used for the
@@ -258,3 +285,13 @@ committed version must raise no prompt and any newer record must raise one — t
 in-app offer and the published build cannot drift apart. It cannot verify
 that a human compared a checksum or that Play Protect will stay quiet — those
 are device checks, run by hand against the published build.
+`scripts/check-release-artifact.cjs` (`npm run check:release-artifact`, required
+gate `release-artifact`) checks the release that is serving learners rather than
+the config that will serve them. It is the only gate in the bar that touches
+production: the live record must equal the committed `public/downloads/latest.json`
+(version, versionCode, file name, package, size, SHA-256 and url), the download
+route must still announce that size, offer that file name, accept ranges and
+start with `PK`, and every byte the volume serves must hash to the published
+SHA-256. A live release older than git is only a warning, so a release PR does not
+go red before its deploy; a live release *newer* than git, or bytes that disagree
+with any record, fails.

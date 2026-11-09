@@ -10,6 +10,7 @@
  * ordinary fetch handlers that would run unchanged on any modern runtime.
  */
 import { createServer } from 'node:http';
+import { createHash, timingSafeEqual } from 'node:crypto';
 import { createReadStream } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
@@ -353,6 +354,145 @@ async function serveApk(req, res) {
   return sendJson(res, 503, { error: 'The published Android download is temporarily unavailable.' });
 }
 
+// ---------------------------------------------------------------------------
+// Release integrity — read the whole volume file before a learner does
+// ---------------------------------------------------------------------------
+
+/**
+ * The published record is an assertion about a file on a volume. Volumes are
+ * re-created by deploys, restore commands and human hands, so the only check
+ * that means anything is to hash what the volume actually holds right now.
+ *
+ * Doing it here rather than in CI is not a shortcut: the file is on this
+ * container's disk, so this is the byte-for-byte work, without shipping a
+ * ~172 MB download across the internet to compute it. Streaming the whole file
+ * is the point — a sampled hash cannot see corruption or truncation anywhere
+ * else, which is exactly the drift that turns a green CI into a broken install.
+ */
+
+/** Cache keyed by the file's identity. Repeated hits cost one read, not N. */
+const INTEGRITY_TTL_MS = 60_000;
+const INTEGRITY_HEADER = 'x-bolingo-integrity-token';
+let integrityCache = { key: '', expiresAt: 0, pending: null, result: null };
+
+function constantTimeEqual(a, b) {
+  const left = Buffer.from(String(a));
+  const right = Buffer.from(String(b));
+  if (left.length !== right.length) return false;
+  return timingSafeEqual(left, right);
+}
+
+/** sha256 and byte count of everything the server can read at `filePath`. */
+function hashFile(filePath) {
+  return new Promise((resolve, reject) => {
+    const hash = createHash('sha256');
+    let sizeBytes = 0;
+    const stream = createReadStream(filePath);
+    stream.on('error', reject);
+    stream.on('data', (chunk) => {
+      hash.update(chunk);
+      sizeBytes += chunk.length;
+    });
+    stream.on('end', () => resolve({ sha256: hash.digest('hex'), sizeBytes }));
+  });
+}
+
+async function serveIntegrity(req, res) {
+  if (req.method !== 'GET') return sendJson(res, 405, { error: 'Method not allowed.' });
+  const configured = String(process.env.BOLINGO_INTEGRITY_TOKEN || '');
+  if (!configured) {
+    // No token means no endpoint: never hand out a free 172 MB read to anyone.
+    return sendJson(res, 503, { error: 'Set BOLINGO_INTEGRITY_TOKEN to enable release integrity checks.' });
+  }
+  if (!constantTimeEqual(req.headers[INTEGRITY_HEADER] || '', configured)) {
+    return sendJson(res, 401, { error: 'Unauthorized' });
+  }
+
+  const record = await readBuildRecord();
+  if (!record) {
+    return sendJson(res, 404, { error: 'No signed Android build is published yet.' });
+  }
+
+  const fileName = path.basename(String(record.fileName || ''));
+  const filePath = path.join(APK_DIR, fileName);
+  let info = null;
+  try {
+    info = await stat(filePath);
+  } catch {
+    info = null;
+  }
+
+  const recordView = {
+    version: record.version ?? null,
+    buildNumber: record.buildNumber ?? null,
+    packageName: record.packageName ?? null,
+    fileName: record.fileName ?? null,
+    sizeBytes: record.sizeBytes ?? null,
+    sha256: record.sha256 ?? null,
+    url: record.url ?? null,
+    publishedAt: record.publishedAt ?? null,
+    minAndroid: record.minAndroid ?? null,
+  };
+
+  if (!fileName.endsWith('.apk') || !info || !info.isFile()) {
+    return sendJson(res, 200, {
+      checkedAt: new Date().toISOString(),
+      volume: { present: false, path: filePath },
+      record: recordView,
+      match: false,
+      mismatch: ['the file the record names is not on the volume'],
+    });
+  }
+
+  const key = `${filePath}:${info.mtimeMs}:${info.size}`;
+  const now = Date.now();
+  if (integrityCache.key === key && integrityCache.expiresAt > now && integrityCache.result) {
+    return sendJson(res, 200, { ...integrityCache.result, cached: true });
+  }
+  if (integrityCache.key === key && integrityCache.pending) {
+    return sendJson(res, 200, await integrityCache.pending);
+  }
+
+  const pending = (async () => {
+    const startedAt = Date.now();
+    const digest = await hashFile(filePath);
+    const result = {
+      checkedAt: new Date().toISOString(),
+      volume: {
+        present: true,
+        path: filePath,
+        sizeBytes: digest.sizeBytes,
+        statSizeBytes: info.size,
+        sha256: digest.sha256,
+        hashedInMs: Date.now() - startedAt,
+        mtime: new Date(info.mtimeMs).toISOString(),
+      },
+      record: recordView,
+      match:
+        digest.sizeBytes === Number(record.sizeBytes) &&
+        digest.sha256 === String(record.sha256).toLowerCase(),
+    };
+    const mismatches = [];
+    if (digest.sizeBytes !== Number(record.sizeBytes)) mismatches.push(`size: volume ${digest.sizeBytes} vs record ${record.sizeBytes}`);
+    if (digest.sha256 !== String(record.sha256).toLowerCase()) {
+      mismatches.push(`sha256: volume ${digest.sha256.slice(0, 12)}… vs record ${String(record.sha256).slice(0, 12)}…`);
+    }
+    if (digest.sizeBytes !== info.size) mismatches.push(`stream: read ${digest.sizeBytes} of ${info.size} bytes on disk`);
+    result.mismatch = mismatches;
+    integrityCache = { key, expiresAt: Date.now() + INTEGRITY_TTL_MS, pending: null, result };
+    return result;
+  })();
+  integrityCache = { key, expiresAt: 0, pending, result: integrityCache.result };
+
+  try {
+    return sendJson(res, 200, await pending);
+  } catch (error) {
+    integrityCache = { key: '', expiresAt: 0, pending: null, result: null };
+    console.error('[integrity]', error);
+    return sendJson(res, 500, { error: `Integrity check failed: ${error.message}` });
+  }
+}
+
 async function handleStatic(req, res, url) {
   const method = (req.method || 'GET').toUpperCase();
   if (method !== 'GET' && method !== 'HEAD') {
@@ -392,9 +532,11 @@ export function createBolingoServer() {
         ? serveApk(req, res)
         : url.pathname === '/downloads/latest.json'
           ? serveBuildMetadata(req, res, url)
-          : url.pathname === '/api' || url.pathname.startsWith('/api/')
-          ? handleApi(req, res, url)
-          : handleStatic(req, res, url);
+          : url.pathname === '/api/release-integrity'
+            ? serveIntegrity(req, res)
+            : url.pathname === '/api' || url.pathname.startsWith('/api/')
+              ? handleApi(req, res, url)
+              : handleStatic(req, res, url);
     task.catch((error) => {
       console.error(`[web] ${req.method} ${url.pathname}:`, error);
       if (!res.headersSent) sendJson(res, 500, { error: 'Something went wrong on our side.' });

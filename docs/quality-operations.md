@@ -202,6 +202,16 @@ regression in an exercise is caught before a learner meets it:
 | `sandbox-labs` | `npm run check:sandbox` | Each generated JS exercise executes in `node:vm` with harness-identical semantics: the reference passes every test, the starter fails at least one, assertions are non-trivial and offline. CSS/HTML fixtures stay script- and network-free and every DOM/CSSOM test has a pattern that matches the reference and not the starter. |
 | `vm-labs` | `npm run check:vm` | The offline Git shell resolves every task and reference solution for each terminal lab. |
 | `guided-labs` | `npm run check:guided` | Labs with no on-device runtime still ship a complete step-by-step walkthrough. |
+**The live gate.** `release-artifact` (`npm run check:release-artifact`) is the one
+required gate that reaches outside the repository: it verifies that the APK the
+production container serves still matches the release record committed in git.
+Every other gate is hermetic and must run offline. This one needs
+`BOLINGO_INTEGRITY_TOKEN` — a shared secret between the workflow and the web
+service, so the container hashes its own volume in about a second — or enough
+bandwidth in CI to hash the download itself. With neither it fails after its
+fifteen-minute budget instead of reporting a release it never measured, which is
+also why `npm run gate` on a laptop with a slow route to production can fail this
+gate while the release is fine.
 
 ## Telemetry & privacy
 

@@ -251,6 +251,14 @@
       "required": true
     },
     {
+      "id": "release-artifact",
+      "label": "Served APK matches its published record",
+      "category": "platform",
+      "command": "node scripts/check-release-artifact.cjs",
+      "timeoutSeconds": 900,
+      "required": true
+    },
+    {
       "id": "adaptive-ai",
       "label": "Adaptive UI + offline AI",
       "category": "platform",

@@ -135,7 +135,8 @@
     "check:materials": "node scripts/check-materials.cjs",
     "check:audiobooks": "node scripts/check-classics-audiobooks.cjs",
     "check:web": "node scripts/check-web-publish.cjs",
-    "check:adaptive-ai": "node scripts/check-adaptive-ai.cjs"
+    "check:adaptive-ai": "node scripts/check-adaptive-ai.cjs",
+    "check:release-artifact": "node scripts/check-release-artifact.cjs"
   },
   "private": true
 }
