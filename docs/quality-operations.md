@@ -213,6 +213,54 @@ fifteen-minute budget instead of reporting a release it never measured, which is
 also why `npm run gate` on a laptop with a slow route to production can fail this
 gate while the release is fine.
 
+### The gate catalog
+
+Every required gate in `content/quality/gates.json`, in the order the file lists them:
+the id CI and the dashboard report, the category the console groups it under, the
+command to run by hand, and what that command actually proves — taken from each check
+script's own header, not inferred from its name. Reproduce a single failure with
+`npm run gate -- --only=<id>`.
+
+| Gate | Category | Runs | What it proves |
+| --- | --- | --- | --- |
+| `typecheck` | static | `npm run typecheck` | `tsc --noEmit` over the real sources, with no errors. |
+| `lint` | static | `npm run lint` | `expo lint` reports no problems. |
+| `quality-ops` | platform | `npm run check:quality-ops` | The quality system checks itself: unique gate ids with real blocking commands, flag weights and rollout bounds in step with the SQL seed, and sticky A/B assignment inside a 50/50 sanity band. |
+| `curriculum` | curriculum | `npm run check:curriculum` | Every curriculum block resolves to real content, every lesson teaches before it tests and every question has a reason, options are unique and every chain is solvable. |
+| `solutions` | curriculum | `npm run check:solutions` | Each JavaScript exercise's reference solution passes its own tests in a timeout-guarded V8 context, and its starter fails at least one. |
+| `catalog` | language | `npm run check:catalog` | The generated language-catalog migration still matches the lesson banks, and no seeded question is unsolvable. |
+| `transcripts` | language | `npm run check:transcripts` | The committed draft JSON and SQL still match their transcripts, every generated row survives `toCourseLesson()`, and no draft is accidentally published. |
+| `subtitles` | language | `npm run check:subtitles` | The real SRT/VTT parser, sidecar manifest validation and draft generator turn a licensed video transcript into unpublished lesson drafts, offline. |
+| `rights` | safety | `npm run check:rights` | The client checklist and `process-upload` still agree on the attestation version and items, so incomplete or stale rights claims are rejected. |
+| `mpesa` | safety | `npm run check:mpesa` | The price comes only from the server, an underpayment cannot buy premium, one checkout settles once, and premium lapses by itself — against an in-memory ledger, never against Daraja. |
+| `transcription` | safety | `npm run check:transcription` | Provider resolution, request shapes, response parsing and size limits for consented audio/video transcription, driven by local HTTP stubs and fixture payloads. |
+| `uploads` | platform | `npm run check:uploads` | A picker URI that copied across as 0 bytes is refused before upload, and a book that overruns the isolate records a reason instead of failing with `error = null`. |
+| `leaderboard` | platform | `npm run check:leaderboard` | `xp_events` has table privileges for `authenticated`, so XP writes from `lib/progress.ts` reach the weekly board instead of the silent 403 that emptied it. |
+| `roleplay` | curriculum | `npm run check:roleplay` | The picker and the Edge Function keep the same persona and language ids, every pair has an opener and starters, and the bilingual reply parser holds. |
+| `labex` | curriculum | `npm run check:labex` | Every imported lab lesson is well-formed, licensed and solvable as written. |
+| `sandbox-labs` | curriculum | `npm run check:sandbox` | Each generated JS exercise executes in `node:vm` with harness-identical semantics: the reference passes every test, the starter fails at least one, assertions are non-trivial and offline. |
+| `vm-labs` | curriculum | `npm run check:vm` | The offline Git shell resolves every task and reference solution for each terminal lab. |
+| `guided-labs` | curriculum | `npm run check:guided` | Labs with no on-device runtime still ship a complete step-by-step walkthrough. |
+| `celebration` | experience | `npm run check:audio` | The celebration asset is still exactly five seconds, measured from the WAV header, so no re-export or trim quietly shortens the win. |
+| `celebration-benchmark` | experience | `npm run check:benchmark` | The real percentile and summary module, a route that measures the actual five-second Celebration, gated by `__DEV__` and reachable from a `__DEV__`-only Settings row. |
+| `results` | experience | `npm run check:results` | The real `shouldCelebrate()` against a pass/fail matrix: the celebration mounts for a pass and stays off for an ordinary failed run. |
+| `speakback` | experience | `npm run check:speakback` | Speak-back scoring from the shipped `lib/speakBack.ts`, compiled in memory, so the check cannot drift from the matcher a learner holds on a phone. |
+| `voice-casting` | voice | `npm run check:casting` | The whole-cast planner assigns Livia → Bingo → Zora the same voices whatever order the installed voice list arrives in, on the stable tie-break. |
+| `cold-tts` | voice | `npm run check:cold-tts` | A cold Android TTS engine is waited out while it enumerates voices, so the first phrase of a session gets the installed Swahili voice, not the engine default. |
+| `fliki` | voice | `npm run check:fliki` | The Fliki Swahili narration path: the generator's voice and request helpers and its licensed-clip phrase contracts, validated without network. |
+| `audiobook-voice` | voice | `npm run check:audiobook-voice` | The shared validator against valid, partial and deliberately broken configs, plus the exact provider request shape and its 4,000-character cap. |
+| `character-voices` | audio | `npm run check:characters` | The real registry behind Livia, Bingo and Zora: tuning ranges, the language list, unknown ids, the 320-character cap and the cache key. |
+| `ads` | monetization | `npm run check:ads` | The rewarded-diamond rail: per-platform unit ids, Google's sample id as the fallback when a real one is missing, and consent before any ad — the rail that can cost invalid traffic or a store rejection. |
+| `materials` | content | `npm run check:materials` | Classification decides the spend — a book is narrated end to end, notes become revision material — and a pack that invents facts fails, because a wrong pack is worse than none. |
+| `classics-audiobooks` | content | `npm run check:audiobooks` | The premium Philosophy classics shelf: 100+ public-domain LibriVox recordings with their Gutenberg text, unique slugs, and the LoyalBooks genre taxonomy intact. |
+| `web-publish` | platform | `npm run check:web` | The Dockerfile runs the Expo export and the server keeps the SPA fallback, so deep links, store-review clicks and `app-ads.txt` answer instead of 404. |
+| `release-artifact` | platform | `npm run check:release-artifact` | The APK the production container serves still matches the release record committed in git — the one gate that reaches outside the repository. |
+| `adaptive-ai` | platform | `npm run check:adaptive-ai` | The adaptive UI engine, the free/premium feature list and the offline-first stack as pure modules under Node: age → stage mapping, hub honesty, the daily AI allowance, the tutor router and the sync queue. |
+| `doc-commands` | static | `npm run check:docs` | The commands and gate ids this project teaches resolve to real scripts and real gates, in both directions. |
+
+`labex`, `sandbox-labs`, `vm-labs`, `guided-labs` and `release-artifact` also get their
+own paragraphs above, because those are the ones a learner or a release can feel.
+
 ## Telemetry & privacy
 
 Events are anonymous by default: a per-install audience id (or the Supabase

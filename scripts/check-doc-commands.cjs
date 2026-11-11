@@ -24,10 +24,20 @@
  *      entry points (`npm run gate`, `npm run typecheck`, `npm run lint`,
  *      `npm test`), each resolving to a script — so a rename or a deleted section
  *      fails until the document tells the truth again.
+ *   D. No undocumented gate. Every gate id in `content/quality/gates.json` — the file
+ *      that is the single source for the release bar, the console catalog and CI —
+ *      must be named in code form in a document: as a whole word inside backticks,
+ *      the way this project already writes `` `labex` `` and `` `release-artifact` ``
+ *      in docs/quality-operations.md. Code form is what keeps the rule honest, because
+ *      gate ids are ordinary English words — `results`, `uploads`, `catalog`, `ads`,
+ *      `rights`, `celebration` — and a paragraph about lesson results would "document"
+ *      the results gate without telling anyone that a required check exists by that
+ *      name. A gate nobody can find is a gate nobody can reproduce with
+ *      `npm run gate -- --only=<id>` when it fails at 2 a.m.
  *
- * Contract: reads README.md, docs/*.md and package.json; takes no arguments; writes
- * nothing; exits 0 when all three hold, 1 with one line per drift naming the file,
- * the line number and the closest matching script name.
+ * Contract: reads README.md, docs/*.md, package.json and content/quality/gates.json;
+ * takes no arguments; writes nothing; exits 0 when all four hold, 1 with one line per
+ * drift naming the file, the line number and the closest matching script name.
  *
  * Used by: npm run check:docs, and the `doc-commands` gate in
  *   content/quality/gates.json that `npm run gate` and CI run.
@@ -47,6 +57,27 @@ function read(rel) {
 const pkg = JSON.parse(read('package.json'));
 const scripts = pkg.scripts || {};
 const scriptNames = Object.keys(scripts);
+
+/** The gate catalog `npm run gate`, CI and the owner console all read. */
+const GATES_FILE = 'content/quality/gates.json';
+
+function readGates() {
+  let raw;
+  try {
+    raw = read(GATES_FILE);
+  } catch (e) {
+    return { gates: [], error: `${GATES_FILE} could not be read: ${e.code || e.message}` };
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    return { gates: [], error: `${GATES_FILE} is not valid JSON: ${e.message}` };
+  }
+  const gates = Array.isArray(parsed.gates) ? parsed.gates.filter((g) => g && g.id) : [];
+  if (!gates.length) return { gates: [], error: `${GATES_FILE} has no "gates" entries with an id` };
+  return { gates, error: null };
+}
 
 /* ---- the documents that teach commands ---- */
 
@@ -100,6 +131,16 @@ function escapeForRegExp(text) {
 /** True when `text` carries `name` as a whole token, not inside a longer one. */
 function mentions(text, name) {
   return new RegExp(`(^|[^\\w:.-])${escapeForRegExp(name)}(?![\\w-])`).test(text);
+}
+
+/**
+ * True when `text` names `id` as a command or gate, not as English prose: the id has
+ * to be a whole word inside some backticked span (`` `materials` ``, and
+ * `` `npm run check:materials` `` counts too — the alias names the same gate).
+ */
+function namesInCodeForm(text, id) {
+  const spans = text.match(/`[^`\n]+`/g) || [];
+  return spans.some((span) => mentions(span, id));
 }
 
 /** README lines between `## heading` and the next `## ` heading, or null. */
@@ -227,8 +268,29 @@ check('README still names the release entry points CI runs', (report) => {
   }
 });
 
+/* ---- D. every gate in the release bar is named somewhere ---- */
+
+const { gates, error: gatesError } = readGates();
+
+check('every gate in the release bar is named in a document', (report) => {
+  if (gatesError) {
+    report(gatesError + ' — this check cannot pass on an unreadable catalog.');
+    return;
+  }
+  if (gates.length < 10) {
+    report(`${GATES_FILE} only lists ${gates.length} gates — a catalog that thin means this check is grading almost nothing, so read the file before trusting a pass.`);
+  }
+  for (const gate of gates) {
+    if (namesInCodeForm(docsBlob, gate.id)) continue;
+    const label = gate.label ? ` "${gate.label}"` : '';
+    report(
+      `no document names the \`${gate.id}\` gate${label}${gate.command ? ` (\`${gate.command}\`)` : ''} in code form — required by ${GATES_FILE}, invisible to a reader. Add it to the gate catalog in docs/quality-operations.md, or to the document that explains what it protects.`
+    );
+  }
+});
+
 /* ---- report ---- */
 
-console.log(`scanned ${DOC_FILES.length} documents, ${runCommands.length} documented commands, ${scriptNames.length} scripts`);
+console.log(`scanned ${DOC_FILES.length} documents, ${runCommands.length} documented commands, ${scriptNames.length} scripts, ${gates.length} gates`);
 if (!ok) process.exit(1);
 console.log('\n[ok] the documents and package.json agree.');

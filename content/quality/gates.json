@@ -268,7 +268,7 @@
     },
     {
       "id": "doc-commands",
-      "label": "Documented commands match package.json",
+      "label": "Documented commands and gates match package.json and gates.json",
       "category": "static",
       "command": "node scripts/check-doc-commands.cjs",
       "timeoutSeconds": 60,
