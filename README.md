@@ -68,6 +68,11 @@ npm run check:labex    # licensed lab library: 1842 labs, 6580 questions, 12 cat
 npm run check:sandbox  # every generated JS/CSS exercise really executes (reference passes, starter fails)
 npm run check:vm       # offline Git VM: every scenario's reference solution passes its own checks
 npm run check:guided   # every lab is runnable here or ships a walkthrough
+npm run check:audio    # the celebration cue is still exactly five seconds (reads the WAV header)
+npm run check:casting  # character voice casting is deterministic, not first-audition-wins
+npm run check:uploads  # a 0-byte copy or an unindexed upload fails with a stated reason
+npm run check:leaderboard # xp_events grants reach authenticated, not only its RLS policies
+npm run check:docs     # every command the docs name exists, and every script is documented
 npm run audio:preflight                 # workspace + cloned-voice consent gate for the configured voice
 npm run verify:lesson-audio -- --list   # uploaded lessons available for full audio verification
 npm run verify:lesson-audio:disposable -- --plan  # free dry run with a temporary lesson
@@ -215,6 +220,11 @@ what is still missing is an email provider secret and a git remote for CI — se
   reference files, labelled **GUIDED — NO EXECUTION**
   ([components/GuidedLabPlayer.tsx](components/GuidedLabPlayer.tsx)). Chunks load
   per 40 labs, so one lab never pulls a whole category.
+- **Course generators** — the Flask walkthroughs are generated, never typed:
+  `npm run course:flask` rebuilds `lib/labex/guided/flask/` (one JSON chunk plus
+  the resolver index) from the source of truth in
+  `lab-local/flask-web-apps/tools/course.json` and its `lab_content/*.md`; edit the
+  spec, re-run the generator, then `npm run check:guided`.
 
 Interactive stages always come last in a session, and a lesson that runs here
 never also gets the walkthrough. Details, licensing and the gate table:
@@ -670,7 +680,7 @@ step), building, then
 `latest.json` to `/var/data/app-downloads` on the host. The release record is
 served `no-store`, so the next check after a publish sees it. Full runbook:
 [docs/install-from-web.md](docs/install-from-web.md); the wire-up and the
-`npm run check:web-publish` coverage of this path are in
+`npm run check:web` coverage of this path are in
 [docs/contact-and-updates.md](docs/contact-and-updates.md).
 
 ## Premium paywall (RevenueCat)

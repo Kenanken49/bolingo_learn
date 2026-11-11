@@ -265,6 +265,14 @@
       "command": "node scripts/check-adaptive-ai.cjs",
       "timeoutSeconds": 120,
       "required": true
+    },
+    {
+      "id": "doc-commands",
+      "label": "Documented commands match package.json",
+      "category": "static",
+      "command": "node scripts/check-doc-commands.cjs",
+      "timeoutSeconds": 60,
+      "required": true
     }
   ]
 }

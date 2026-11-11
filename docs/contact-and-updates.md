@@ -101,7 +101,7 @@ release down lasts the session and never silences a learner for good.
 The decision itself is pure data in `lib/releaseManifest.ts`: numeric version
 comparison (so `1.10.0` beats `1.9.0`), plus the reasons to stay quiet —
 `not-newer`, `unknown-version`, `wrong-package`, `dismissed`, `unreachable`,
-`not-installable`. `npm run check:web-publish` exercises that rule against the
+`not-installable`. `npm run check:web` exercises that rule against the
 committed `public/downloads/latest.json`, so the in-app prompt, the install page
 and the published binary cannot drift apart. Android alone is offered the build
 (there is no iOS sideload, and the web app is the server's own copy), and a failed
