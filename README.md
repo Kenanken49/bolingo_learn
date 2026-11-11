@@ -528,6 +528,7 @@ Source the helper before any Android command — it exports those variables for 
 ```bash
 source scripts/android-env.sh          # export into this shell, write the two settings
 source scripts/android-env.sh --check  # also verify SDK, AVDs, caches, ABIs and .cxx
+npm run android:warm                   # the two lines above, then a warm debug build
 
 emulator -list-avds                    # Medium_Phone, Medium_Phone_API_37.0
 emulator -avd Medium_Phone &
@@ -593,6 +594,15 @@ The `-P` is not decoration: a device-less `gradlew` build now inherits `reactNat
 3. **The build cache is a safety net, not a speedup.** Restoring 294 tasks saved ten seconds over re-executing them, because that work overlaps on 8 workers while the native and packaging tasks run. Keep `org.gradle.caching=true` regardless — `expo run:android` already passes `--build-cache` (`buildCache: !args['--no-build-cache']` in `@expo/cli`), so this property is what gives plain `./gradlew` the same treatment for free.
 4. **One ABI, not four.** `expo prebuild` writes all four ABIs into the generated `android/gradle.properties`. Pinned to one, `--dry-run` plans 779 tasks with 8 native build tasks; unpinned it plans 823 with 30. The measured price per ABI is 2 107 MB of `x86_64` Debug objects across the eight modules — 1 520 MB of it `llama.rn` — so the other three would add roughly 6.3 GB to `C:` — the same volume this layout moves everything else off precisely because it runs out. And since those tasks rerun on every build, an extra ABI slows *every* rebuild, not just the first. (The hour in row 5 was not the ABIs: `expo run:android` pins them to the device — see the `-P` note above. It was compiling every C++ target from an empty `.cxx`.)
 5. **`android/.gradle` is the up-to-date database.** `executionHistory.bin` inside it is what lets Gradle answer "nothing changed". `expo prebuild` without `--clean` leaves it alone and the row 1 numbers survive; `--clean`, or deleting `android/` to reclaim space, throws it away and pays row 3.
+
+`npm run android:warm` is rows 1 and 2 of that table as one command. It runs
+through Git Bash because sourcing is a shell feature: it sources
+`scripts/android-env.sh` (which pins the ABI list and switches the build cache on
+in `$GRADLE_USER_HOME\gradle.properties`), then runs `./gradlew :app:assembleDebug`
+in `android/`. It deliberately never calls `--stop` — that decision is worth eight
+measured minutes — and it stops with a stated reason when `android/` has not been
+generated yet. A phone instead of the emulator:
+`ANDROID_ARCHS=arm64-v8a npm run android:warm`.
 
 One Windows hazard shows up when builds are scripted back to back: `Execution failed for task ':expo-modules-core:bundleLibCompileToJarDebug' > Unable to delete file '...\compile_library_classes_jar\debug\bundleLibCompileToJarDebug\classes.jar'`. A daemon that survived an interrupted build still holds that jar. `./gradlew --stop` and rerun, and budget the eight minutes of row 2.
 

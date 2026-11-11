@@ -82,6 +82,7 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
+    "android:warm": "bash -c \"if [ ! -d android ]; then echo 'Warm rebuild needs android/: run npx expo prebuild --platform android first.' >&2; exit 1; fi; source scripts/android-env.sh && cd android && ./gradlew :app:assembleDebug\"",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "build:web": "npx expo export --platform web && node scripts/publish-wireframes.cjs && node scripts/publish-web-extras.cjs",
