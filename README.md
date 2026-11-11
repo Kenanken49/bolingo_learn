@@ -35,6 +35,26 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
    npm start
    ```
    Then press `w` (web), `a` (Android), or `i` (iOS).
+5. Run it on a device or emulator:
+   ```bash
+   npm run android   # expo run:android
+   npm run ios       # expo run:ios
+   ```
+   Either one compiles and installs a **development client**, launches it and
+   starts Metro (pass `-- --no-bundler` to stop after the install; a client
+   already on the device attaches with `npx expo start --dev-client`). Expo Go
+   is not an option here — `llama.rn`, `react-native-worklets` and
+   `expo-speech-recognition` are native modules Expo Go does not ship.
+   - **Android:** JDK 17, the SDK with platform + build-tools + NDK
+     27.1.12297006, CMake with ninja ≥ 1.11 and Windows long paths enabled, and
+     `source scripts/android-env.sh` in the same shell first so the AVDs and
+     Gradle caches land on `D:`. Details and failure modes are in
+     *Local Android toolchain* below; a cold debug build measured 1 h 7 min on
+     this machine, almost all of it the NDK/CMake compiles.
+   - **iOS:** macOS with Xcode and a simulator or device, so it cannot build
+     from Windows — use a Mac, or the cloud:
+     `npx eas-cli build --profile development --platform ios` under
+     *EAS builds*.
 
 ## Checks
 
