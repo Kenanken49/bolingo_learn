@@ -544,7 +544,7 @@ setx ANDROID_AVD_HOME "D:\android-avd"
 setx GRADLE_USER_HOME "D:\gradle-home"
 ```
 
-Both are optional: without them the build still works, it just fills `C:` — 10 GB free there against 796 GB on `D:` at the time of writing, and one ABI's native object files alone want about 2.1 GB for `x86_64`, and 6.1 GB measured for `arm64-v8a` before that build even finished — so the device ABI is the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+Both are optional: without them the build still works, it just fills `C:` — 10 GB free there against 796 GB on `D:` at the time of writing, and one ABI's native object files alone want about 2.1 GB for `x86_64`, and 9 918 MB measured for a finished `arm64-v8a` set — so the device ABI is the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
 
 #### Windows native build prerequisites
 
@@ -592,7 +592,7 @@ The `-P` is not decoration: a device-less `gradlew` build now inherits `reactNat
 1. **The warm path is pure C/C++.** Those 25 executed tasks in row 1 are the `configureCMakeDebug[x86_64]` + `buildCMakeDebug[x86_64]` pairs of the eight native modules — `app`, `expo-modules-core`, `expo-updates`, `llama.rn`, reanimated, worklets, screens, gesture-handler — plus a little bookkeeping. AGP reruns them on every build, and the Gradle build cache does not cover them. They cost about a minute *only because `node_modules/*/android/.cxx` still holds the objects for that ABI*, so ninja has nothing to do. That folder is the cache worth protecting.
 2. **Do not stop the daemon.** Rows 1 and 2 are the same project with the same caches; `--stop` (or 3 idle hours) costs about eight minutes of re-snapshotting inputs the daemon already remembered. The extra work is the app's packaging chain — `mergeDebugAssets`, `mergeDebugNativeLibs`, `stripDebugDebugSymbols`, `packageDebug`.
 3. **The build cache is a safety net, not a speedup.** Restoring 294 tasks saved ten seconds over re-executing them, because that work overlaps on 8 workers while the native and packaging tasks run. Keep `org.gradle.caching=true` regardless — `expo run:android` already passes `--build-cache` (`buildCache: !args['--no-build-cache']` in `@expo/cli`), so this property is what gives plain `./gradlew` the same treatment for free.
-4. **One ABI, not four.** `expo prebuild` writes all four ABIs into the generated `android/gradle.properties`. Pinned to one, `--dry-run` plans 779 tasks with 8 native build tasks; unpinned it plans 823 with 30. The measured price per ABI is 2 107 MB of `x86_64` Debug objects across the eight modules — 1 520 MB of it `llama.rn` — and the other ABIs are not that cheap each: pinned to `arm64-v8a`, the same command had written 6 106 MB and was only three quarters through `llama.rn` when `C:` ran out at 40 m 2 s (see *The device ABI, measured*) — the same volume this layout moves everything else off precisely because it runs out. And since those tasks rerun on every build, an extra ABI slows *every* rebuild, not just the first. (The hour in row 5 was not the ABIs: `expo run:android` pins them to the device — see the `-P` note above. It was compiling every C++ target from an empty `.cxx`.)
+4. **One ABI, not four.** `expo prebuild` writes all four ABIs into the generated `android/gradle.properties`. Pinned to one, `--dry-run` plans 779 tasks with 8 native build tasks; unpinned it plans 823 with 30. The measured price per ABI is 2 107 MB of `x86_64` Debug objects across the eight modules — 1 520 MB of it `llama.rn` — and the other ABIs are not that cheap each: a finished `arm64-v8a` set measures 9 918 MB, and the pass that ran out at 40 m 2 s had written 6 106 MB of it while only three quarters through `llama.rn` (see *The device ABI, measured*) — the same volume this layout moves everything else off precisely because it runs out. And since those tasks rerun on every build, an extra ABI slows *every* rebuild, not just the first. (The hour in row 5 was not the ABIs: `expo run:android` pins them to the device — see the `-P` note above. It was compiling every C++ target from an empty `.cxx`.)
 5. **`android/.gradle` is the up-to-date database.** `executionHistory.bin` inside it is what lets Gradle answer "nothing changed". `expo prebuild` without `--clean` leaves it alone and the row 1 numbers survive; `--clean`, or deleting `android/` to reclaim space, throws it away and pays row 3.
 
 `npm run android:warm` is rows 1 and 2 of that table as one command. It runs
@@ -602,21 +602,21 @@ in `$GRADLE_USER_HOME\gradle.properties`), then runs `./gradlew :app:assembleDeb
 in `android/`. It deliberately never calls `--stop` — that decision is worth eight
 measured minutes — and it stops with a stated reason when `android/` has not been
 generated yet. A phone instead of the emulator is the same command with the device
-pin — `ANDROID_ARCHS=arm64-v8a npm run android:warm` — and that one is measured
-separately below, because it does not fit on `C:` as things stand.
+pin — `ANDROID_ARCHS=arm64-v8a npm run android:warm` — measured separately below;
+it needed 22 GB freed on `C:` before it could finish.
 
 One Windows hazard shows up when builds are scripted back to back: `Execution failed for task ':expo-modules-core:bundleLibCompileToJarDebug' > Unable to delete file '...\compile_library_classes_jar\debug\bundleLibCompileToJarDebug\classes.jar'`. A daemon that survived an interrupted build still holds that jar. `./gradlew --stop` and rerun, and budget the eight minutes of row 2.
 
 #### The device ABI, measured
 
-The phone pin, started with 10 481 MB free on `C:`:
+The first phone pin, started with 10 481 MB free on `C:`:
 
 ```bash
 ANDROID_ARCHS=arm64-v8a npm run android:warm
 ```
 
 It stopped after **40 m 2 s** inside `:llama.rn:buildCMakeDebug[arm64-v8a]` at
-`[2256/2978]` with `ninja: build stopped: subcommand failed`, and the reason is the
+`[2256/2978]` with `ninja: build stopped: subcommand failed`, and the reason was the
 disk rather than the code — every `FAILED:` line is `fatal error: error in backend:
 IO failure on output stream: No space left on device`, and `C:` was at 0 MB free.
 
@@ -625,16 +625,48 @@ IO failure on output stream: No space left on device`, and `C:` was at 0 MB free
 `arm64-v8a`: llama.cpp compiles a separate object set per ARMv8 feature level
 (`rnllama_v8`, `rnllama_v8_2`, `rnllama_v8_2_dotprod`, `rnllama_v8_2_i8mm`,
 `rnllama_v8_2_dotprod_i8mm`, about 387 files each) plus 205 OpenCL kernel embeds.
-What that cost on disk at the moment it ran out:
+Each set is then linked into its own ~240 MB unstripped `.so`.
 
-| Footprint | `x86_64`, finished | `arm64-v8a`, incomplete |
+With 22 GB freed, the pin finished. The room came from package-manager caches (npm,
+pnpm, bun), three `.duckload` partial downloads, the Recycle Bin and three large ISOs
+moved off `C:` — no `node_modules`, `.cxx` or SDK file was deleted. What a completed
+device-ABI set costs on disk:
+
+| Footprint | `x86_64`, finished | `arm64-v8a`, finished |
 | --- | --- | --- |
-| `.cxx/Debug/<hash>/<abi>` objects, eight modules | 2 104 MB | 4 413 MB |
-| `build/intermediates/cxx/.../obj/<abi>` `.so` copies | not re-created | 1 693 MB |
+| `.cxx/Debug/<hash>/<abi>` objects, eight modules | 2 104 MB | 6 112 MB |
+| `build/intermediates/cxx/.../obj/<abi>` `.so` copies | not re-created | 3 806 MB |
+| both together | **2 104 MB** | **9 918 MB** |
 
-`llama.rn` was 3 821 MB of that at 76 % of its steps, so a complete device-ABI set
-lands near **7 GB** before the packaging chain that never got to run — 10 481 MB
-free was not enough. Deleting the two arm64 column folders recovers the 6 106 MB.
+The **7 GB** this section predicted from the interrupted run was low: it scaled
+`llama.rn`'s objects linearly, and its `.so` copies had not been linked yet. `llama.rn`
+alone ended at 5 354 MB of objects plus 2 013 MB of `.so`. Deleting the two `arm64-v8a`
+column folders recovers the 9 918 MB.
+
+**This pin resumed; it did not rebuild from empty.** The green pass reused the objects
+the earlier passes had written, so **6 m 43 s** (`BUILD SUCCESSFUL`, 650 tasks: 34
+executed, 616 up-to-date) is the time to *finish* a cached device-ABI build, not the
+time for a cold one. Five passes from empty `arm64-v8a` objects to this APK ran **2 h
+54 m** in total: 40 m 2 s out of space, 61 m killed by a dropped connection, 49 m 39 s
+and 16 m 40 s failed on the casualties described next, then 6 m 43 s green. For scale,
+`llama.rn` plans 818 steps for `x86_64` against 2 978 here, and cold `x86_64` took
+1 h 7 m 35 s (row 5 above).
+
+The interrupted passes left the more expensive mess. A `.o` truncated mid-write is
+newer than its source, so ninja skips it and the link dies with `ld.lld: error:
+.../OnLoad.cpp.o: unknown file type` — no compile error, and nothing pointing at the
+kill as the cause. Find them all at once instead of one per failed link: read the first
+four bytes of every `.o` under the ABI's `.cxx` folders and delete those whose magic is
+neither ELF (`7f 45 4c 46`) nor an LLVM bitcode wrapper (`42 43 c0 de`) — the arm64
+objects here are bitcode, so an ELF-only check condemns every healthy file in the tree.
+That scan found 1 bad file in 6 047. The first one had cost more: reanimated's whole
+`arm64-v8a` object tree deleted rather than repaired file by file (402 MB, a
+four-minute recompile).
+
+The artifact is `android/app/build/outputs/apk/debug/app-debug.apk`, 201 355 814 bytes
+(192 MB): 42 entries under `lib/arm64-v8a/` and none under any other ABI, among them
+the six runtime variants `librnllama_v8.so`, `_v8_2`, `_v8_2_dotprod`, `_v8_2_i8mm`,
+`_v8_2_dotprod_i8mm` and `_v8_2_dotprod_i8mm_hexagon_opencl`. `C:` ended at 15 GB free.
 
 What the failure did *not* cost: the `x86_64` objects are untouched, because AGP
 puts each ABI in its own subfolder *next to* the other inside the same hash folder
@@ -643,13 +675,14 @@ to `x86_64` and running `npm run android:warm` again took **48 s**, exit 0, 650
 tasks: 40 executed, 610 up-to-date — the extra 15 executed tasks over row 1 are the
 `configureCMakeDebug[x86_64]` pairs rerunning after the ABI list changed, not a
 recompile. So a phone loop on this layout is gated on free space, not on the
-emulator's caches: get roughly 12 GB free on `C:`, or move `node_modules` to `D:`,
-before the device pin can finish.
+emulator's caches: about 10 GB for `arm64-v8a` on top of whatever `x86_64` already
+holds — both ABIs together are 12 GB of objects here — or `node_modules` on `D:`.
 
-Nothing was installed on a device to check this. The attached target
-(`emulator-5554`) reports `ro.product.cpu.abi = x86_64`, and the failed run produced
-no arm64 APK — `android/app/build/outputs/apk/debug/app-debug.apk` is still the
-138 MB `x86_64` one from before it started.
+Nothing was installed on a device to check any of this, and nothing was: the attached
+target (`emulator-5554`) reports `ro.product.cpu.abi = x86_64` and `npm run
+android:warm` only assembles the APK, so this proves the device ABI *builds* here, not
+that it runs. On a phone it is the same command; on an emulator it needs an
+arm64-capable image.
 
 #### What invalidates `.cxx`
 
