@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flaskr"
+version = "1.0.0"
+description = "A small blog application, built as a wheel for deployment."
+requires-python = ">=3.9"
+dependencies = ["Flask>=3.0", "Werkzeug>=3.0", "blinker>=1.7"]
+
+[tool.setuptools]
+packages = ["flaskr"]
+
+[tool.setuptools.package-data]
+flaskr = ["templates/*.html", "templates/*/*.html", "static/*.css", "schema.sql"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["flaskr"]

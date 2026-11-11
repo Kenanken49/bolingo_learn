@@ -136,7 +136,8 @@
     "check:audiobooks": "node scripts/check-classics-audiobooks.cjs",
     "check:web": "node scripts/check-web-publish.cjs",
     "check:adaptive-ai": "node scripts/check-adaptive-ai.cjs",
-    "check:release-artifact": "node scripts/check-release-artifact.cjs"
+    "check:release-artifact": "node scripts/check-release-artifact.cjs",
+    "course:flask": "node scripts/build-flask-course.cjs"
   },
   "private": true
 }

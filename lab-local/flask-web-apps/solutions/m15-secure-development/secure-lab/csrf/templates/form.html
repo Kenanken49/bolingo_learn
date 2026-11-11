@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><title>CSRF demo</title></head>
+  <body>
+    <form action="/delete" method="post">
+      <input type="hidden" name="csrf_token" value="{{ token }}">
+      <input type="submit" value="Delete my post">
+    </form>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><title>XSS demo</title></head>
+  <body>
+    {# Autoescaping is what makes this safe: the value is treated as data, so a
+       script tag sent in the query string arrives as escaped text. #}
+    <p>Hello, {{ name }}!</p>
+    {# The unsafe version would be {{ name | safe }} - kept inside a Jinja
+       comment so it is never evaluated or rendered. #}
+  </body>
+</html>
