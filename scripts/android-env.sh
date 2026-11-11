@@ -180,7 +180,11 @@ if [ "${1:-}" = "--check" ]; then
     for d in node_modules/*/android/.cxx/Debug node_modules/@*/*/android/.cxx/Debug; do
       [ -d "$d" ] || continue
       n=$(find "$d" -mindepth 1 -maxdepth 1 -type d | wc -l)
-      [ "$n" -gt 1 ] && splits="$splits $(basename "$(dirname "$(dirname "$d")")")"
+      if [ "$n" -gt 1 ]; then
+        # Name the package, not the `android` folder the path ends in.
+        m="${d#node_modules/}"
+        splits="$splits ${m%%/android/.cxx*}"
+      fi
     done
     if [ -n "$splits" ]; then
       echo "  [warn] native cache split by changed CMake settings in:$splits (see README: what invalidates .cxx)"
@@ -189,7 +193,8 @@ if [ "${1:-}" = "--check" ]; then
     fi
   fi
 
-  # Every extra ABI wants ~2.1 GB more object files, usually on C:.
+  # The .cxx objects grow under node_modules, which is a junction onto D: here, but
+  # each extra ABI still wants ~2.1 GB of obj/*.so copies and packaging room on C:.
   free_c=$(df -Pm /c 2>/dev/null | awk 'NR==2 {print $4}')
   if [ -n "$free_c" ] && [ "$free_c" -lt 8192 ]; then
     echo "  [warn] only $((free_c / 1024)) GB free on C: — each additional ABI needs about 2.1 GB"

@@ -512,9 +512,9 @@ npm install --no-save --ignore-scripts eas-cli@27.2.0
 npx eas-cli build --profile preview --platform android
 ```
 
-### Local Android toolchain (SDK on C:, AVD + Gradle on D:)
+### Local Android toolchain (SDK on C:, AVD + Gradle + node_modules on D:)
 
-The SDK binaries are installed by Android Studio on `C:`, but the two directories that actually grow live on the `D:` volume, where there is space. Nothing exports them, so a plain `npx expo run:android` looks in `%USERPROFILE%\.android\avd` and `%USERPROFILE%\.gradle`, finds neither, and re-downloads the Gradle graph onto `C:`.
+The SDK binaries are installed by Android Studio on `C:`, but the three directories that actually grow live on the `D:` volume, where there is space: the AVDs, the Gradle caches, and `node_modules` itself — reached through a directory junction, so no path string had to change (see *Moving `node_modules` off `C:`*). Nothing exports the first two, so a plain `npx expo run:android` looks in `%USERPROFILE%\.android\avd` and `%USERPROFILE%\.gradle`, finds neither, and re-downloads the Gradle graph onto `C:`.
 
 | Path | Holds | Wired by |
 | --- | --- | --- |
@@ -522,6 +522,7 @@ The SDK binaries are installed by Android Studio on `C:`, but the two directorie
 | `D:\android-sdk-cmake` | CMake | `android/local.properties` (`cmake.dir`) |
 | `D:\android-avd` | emulator AVDs (`Medium_Phone`, `Medium_Phone_API_37.0`) | `ANDROID_AVD_HOME` |
 | `D:\gradle-home` | Gradle 9.4.1 wrapper distro + dependency caches | `GRADLE_USER_HOME` |
+| `D:\bolingo-nm\node_modules` | every installed package, so each module's `android/.cxx` native cache grows here too | directory junction at `node_modules` (no env var) |
 
 Source the helper before any Android command — it exports those variables for the current shell, prints what it found, and keeps the two build settings that decide how long every later rebuild takes in `$GRADLE_USER_HOME\gradle.properties` (see *Rebuild time, measured*):
 
@@ -544,7 +545,80 @@ setx ANDROID_AVD_HOME "D:\android-avd"
 setx GRADLE_USER_HOME "D:\gradle-home"
 ```
 
-Both are optional: without them the build still works, it just fills `C:` — 10 GB free there against 796 GB on `D:` at the time of writing, and one ABI's native object files alone want about 2.1 GB for `x86_64`, and 9 918 MB measured for a finished `arm64-v8a` set — so the device ABI is the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+Both are optional: without them the build still works, it just fills `C:` — 43 GB free there against 755 GB on `D:` at the time of writing, and that `C:` figure only holds because `node_modules` moved off it (see *Moving `node_modules` off `C:`* below). One ABI's native object files alone want about 2.1 GB for `x86_64`, and 6 112 MB measured for a finished `arm64-v8a` set, and those now grow in `node_modules/*/android/.cxx` on `D:`; what still lands on `C:` is the `obj/<abi>` copy of the linked libraries — 3 806 MB for `arm64-v8a` — so the device ABI is still the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+
+#### Moving `node_modules` off `C:`
+
+The device-ABI pin is the build that runs out: it died with `C:` at 0 MB free three
+quarters through `llama.rn`, and a finished set needs 9 918 MB (see *The device ABI,
+measured*). Most of that lives in `node_modules/*/android/.cxx` — the tree that balloons
+during a native compile was on the small volume. It now lives on `D:` behind a junction,
+which turns a phone loop into a question of minutes rather than disk. Measured here on
+2026-11-11 from a tree with 15 GB free on `C:`:
+
+```bash
+# 1. Copy the tree. /COPY:DAT carries timestamps so step 2 can compare them; /XJ
+#    refuses reparse points (node_modules held none). Run robocopy from Git Bash —
+#    through `cmd //c` the switches lose their quoting and it dies with ERROR 123.
+robocopy.exe 'C:\Users\ADMIN\projects\bolingo_learn\node_modules' 'D:\bolingo-nm\node_modules' /E /COPY:DAT /DCOPY:DAT /R:1 /W:1 /XJ /MT:16 /NP /NFL /NDL /BYTES /LOG:D:\robocopy-nm.log
+
+# 2. Compare before touching the original. /L writes nothing, and exit 0 means copied,
+#    mismatched, failed and extras are all zero.
+robocopy.exe 'C:\Users\ADMIN\projects\bolingo_learn\node_modules' 'D:\bolingo-nm\node_modules' /L /E /R:0 /W:0 /XJ /NP /BYTES /LOG:D:\robocopy-verify.log
+
+# 3. Rename the original aside (instant — same volume), then junction over it. A
+#    junction rather than a symlink: `mklink /J` needs no admin and no Developer
+#    Mode, and PowerShell creates one without cmd's quoting trap.
+powershell -Command "Rename-Item -LiteralPath .\node_modules -NewName node_modules.orig"
+powershell -Command "New-Item -ItemType Junction -Path .\node_modules -Target 'D:\bolingo-nm\node_modules'"
+
+# 4. Prove it resolves, then delete the original with `rd /s /q`.
+node -p "require.resolve('react-native/package.json')"
+npx tsc --noEmit && npx expo lint && npx expo export --platform android
+```
+
+That run copied 274 227 files in 30 397 directories — 32 985 141 583 bytes, 30.7 GB — in
+**9 m 43 s** at 3 455 MB/min, and the `/L` pass reported 0 copied, 0 mismatched, 0 failed,
+0 extras. `C:` went from 15 GB free to 43 GB; `D:` went from 787 GB free to 755 GB on its
+932 GB volume. The target root is its own folder because `D:` already holds a stale clone
+of this project at `D:\bolingo_learn`.
+
+Three things about the result are worth knowing before trusting it:
+
+1. **A junction keeps old path strings alive; Node canonicalizes anyway.** Every cached
+   `C:\Users\ADMIN\projects\bolingo_learn\node_modules\…` reference still resolves
+   through the reparse point, which is why the native caches mostly survived — yet
+   `require.resolve` now prints a `D:\` path, and AGP hands that to CMake. So five of the
+   seven modules holding a `.cxx` cache (`expo-modules-core`, `expo-updates`,
+   `gesture-handler`, `reanimated`, `worklets`) configured a *new* hash folder, while
+   `llama.rn` and `react-native-screens` kept theirs — `llama.rn`'s 6 872 MB set, arm64
+   objects and all, is still the live one.
+2. **The re-bake costs one build, then warm returns.** First `npm run android:warm`
+   through the junction: **13 m 17 s**, 650 tasks — 209 executed, 171 from cache, 270
+   up-to-date. Second: **1 m 19 s**, 650 tasks — 25 executed, 625 up-to-date, the same
+   profile as row 1 of *Rebuild time, measured*. Steady state is unchanged. The five
+   superseded folders are 1 159 MB of dead weight (see *What invalidates `.cxx`*) and
+   `scripts/android-env.sh --check` warns on them.
+3. **A reinstall replaces the junction, and which way it fails has not been measured
+   here.** `npm ci` deletes `node_modules` first: unlink the reparse point and it leaves a
+   real directory on `C:`, quietly undoing the move; follow it and it takes the 30.7 GB on
+   `D:` with it. Re-copy or keep the `robocopy /L` log before a clean install, then check
+   with `powershell -Command "(Get-Item .\node_modules).LinkType"` — it answers `Junction`
+   or nothing — and re-create it if it prints nothing. Until then `git status` stays
+   clean: the
+   ignore rule matches `node_modules` by name and walks the junction happily. It does not
+   match a leftover `node_modules.orig`, which `tsc` sweeps into the program and fails on,
+   so finish deleting the original — `rd` loses races with directory watchers and can
+   leave empty folders behind; re-run it until it reports GONE.
+
+A hazard that cost a false start: the rename was refused with `Access to the path '…' is
+denied` until three orphan `du.exe` processes from an interrupted size scan were killed. A
+stopped background shell does not mean its walkers stopped, and one open directory handle
+anywhere under `node_modules` is enough to block renaming it.
+`tasklist //FI "IMAGENAME eq du.exe"` finds them.
+
+`C:` is still not out of the build: `android/app/build` stays with the project, so the
+`obj/<abi>` `.so` copies — 3 806 MB for a finished `arm64-v8a` — and the APK land there.
 
 #### Windows native build prerequisites
 
@@ -588,8 +662,12 @@ The `-P` is not decoration: a device-less `gradlew` build now inherits `reactNat
 | `android/app/build` + `android/.gradle` deleted, build cache on | **13 m 16 s** | 650: 292 executed, 294 from cache, 64 up-to-date |
 | The same two folders deleted, `--no-build-cache` | **13 m 26 s** | 650: 614 executed, 36 up-to-date |
 | Everything cold: `expo run:android` after `prebuild --clean`, empty caches | **1 h 7 m 35 s** | 649 tasks, every C++ target compiled from source |
+| First build after moving `node_modules` to `D:` behind a junction | **13 m 17 s** | 650: 209 executed, 171 from cache, 270 up-to-date |
 
-1. **The warm path is pure C/C++.** Those 25 executed tasks in row 1 are the `configureCMakeDebug[x86_64]` + `buildCMakeDebug[x86_64]` pairs of the eight native modules — `app`, `expo-modules-core`, `expo-updates`, `llama.rn`, reanimated, worklets, screens, gesture-handler — plus a little bookkeeping. AGP reruns them on every build, and the Gradle build cache does not cover them. They cost about a minute *only because `node_modules/*/android/.cxx` still holds the objects for that ABI*, so ninja has nothing to do. That folder is the cache worth protecting.
+1. **The warm path is pure C/C++.** Those 25 executed tasks in row 1 are the `configureCMakeDebug[x86_64]` + `buildCMakeDebug[x86_64]` pairs of the eight native modules — `app`, `expo-modules-core`, `expo-updates`, `llama.rn`, reanimated, worklets, screens, gesture-handler — plus a little bookkeeping. AGP reruns them on every build, and the Gradle build cache does not cover them. They cost about a minute *only because `node_modules/*/android/.cxx` still holds the objects for that ABI*, so ninja has nothing to do. That folder is the cache worth
+protecting, and it travels with `node_modules`: moving it to `D:` re-baked five of the
+seven modules under it (row 6, and see *Moving `node_modules` off `C:`*) and the very next
+build was back to row 1.
 2. **Do not stop the daemon.** Rows 1 and 2 are the same project with the same caches; `--stop` (or 3 idle hours) costs about eight minutes of re-snapshotting inputs the daemon already remembered. The extra work is the app's packaging chain — `mergeDebugAssets`, `mergeDebugNativeLibs`, `stripDebugDebugSymbols`, `packageDebug`.
 3. **The build cache is a safety net, not a speedup.** Restoring 294 tasks saved ten seconds over re-executing them, because that work overlaps on 8 workers while the native and packaging tasks run. Keep `org.gradle.caching=true` regardless — `expo run:android` already passes `--build-cache` (`buildCache: !args['--no-build-cache']` in `@expo/cli`), so this property is what gives plain `./gradlew` the same treatment for free.
 4. **One ABI, not four.** `expo prebuild` writes all four ABIs into the generated `android/gradle.properties`. Pinned to one, `--dry-run` plans 779 tasks with 8 native build tasks; unpinned it plans 823 with 30. The measured price per ABI is 2 107 MB of `x86_64` Debug objects across the eight modules — 1 520 MB of it `llama.rn` — and the other ABIs are not that cheap each: a finished `arm64-v8a` set measures 9 918 MB, and the pass that ran out at 40 m 2 s had written 6 106 MB of it while only three quarters through `llama.rn` (see *The device ABI, measured*) — the same volume this layout moves everything else off precisely because it runs out. And since those tasks rerun on every build, an extra ABI slows *every* rebuild, not just the first. (The hour in row 5 was not the ABIs: `expo run:android` pins them to the device — see the `-P` note above. It was compiling every C++ target from an empty `.cxx`.)
@@ -630,7 +708,9 @@ Each set is then linked into its own ~240 MB unstripped `.so`.
 With 22 GB freed, the pin finished. The room came from package-manager caches (npm,
 pnpm, bun), three `.duckload` partial downloads, the Recycle Bin and three large ISOs
 moved off `C:` — no `node_modules`, `.cxx` or SDK file was deleted. What a completed
-device-ABI set costs on disk:
+device-ABI set costs on disk (measured while `node_modules` was still on `C:`; the objects
+now grow on `D:` and only the `.so` copies stay on `C:` — see *Moving `node_modules` off
+`C:`*):
 
 | Footprint | `x86_64`, finished | `arm64-v8a`, finished |
 | --- | --- | --- |
@@ -666,7 +746,8 @@ four-minute recompile).
 The artifact is `android/app/build/outputs/apk/debug/app-debug.apk`, 201 355 814 bytes
 (192 MB): 42 entries under `lib/arm64-v8a/` and none under any other ABI, among them
 the six runtime variants `librnllama_v8.so`, `_v8_2`, `_v8_2_dotprod`, `_v8_2_i8mm`,
-`_v8_2_dotprod_i8mm` and `_v8_2_dotprod_i8mm_hexagon_opencl`. `C:` ended at 15 GB free.
+`_v8_2_dotprod_i8mm` and `_v8_2_dotprod_i8mm_hexagon_opencl`. `C:` ended at 15 GB free — before `node_modules`
+moved, when both halves of that table were written there.
 
 What the failure did *not* cost: the `x86_64` objects are untouched, because AGP
 puts each ABI in its own subfolder *next to* the other inside the same hash folder
@@ -674,9 +755,10 @@ puts each ABI in its own subfolder *next to* the other inside the same hash fold
 to `x86_64` and running `npm run android:warm` again took **48 s**, exit 0, 650
 tasks: 40 executed, 610 up-to-date — the extra 15 executed tasks over row 1 are the
 `configureCMakeDebug[x86_64]` pairs rerunning after the ABI list changed, not a
-recompile. So a phone loop on this layout is gated on free space, not on the
-emulator's caches: about 10 GB for `arm64-v8a` on top of whatever `x86_64` already
-holds — both ABIs together are 12 GB of objects here — or `node_modules` on `D:`.
+recompile. So a phone loop is gated on caches and time, not on `C:` free space: with
+`node_modules` on `D:` (see *Moving `node_modules` off `C:`*) the 8 216 MB of `.cxx`
+objects for both ABIs grow there, and all `C:` still has to hold is the 3 806 MB of
+`obj/<abi>` `.so` copies plus the 192 MB APK.
 
 Nothing was installed on a device to check any of this, and nothing was: the attached
 target (`emulator-5554`) reports `ro.product.cpu.abi = x86_64` and `npm run
