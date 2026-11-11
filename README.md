@@ -545,7 +545,7 @@ setx ANDROID_AVD_HOME "D:\android-avd"
 setx GRADLE_USER_HOME "D:\gradle-home"
 ```
 
-Both are optional: without them the build still works, it just fills `C:` — 43 GB free there against 755 GB on `D:` at the time of writing, and that `C:` figure only holds because `node_modules` moved off it (see *Moving `node_modules` off `C:`* below). One ABI's native object files alone want about 2.1 GB for `x86_64`, and 6 112 MB measured for a finished `arm64-v8a` set, and those now grow in `node_modules/*/android/.cxx` on `D:`; what still lands on `C:` is the `obj/<abi>` copy of the linked libraries — 3 806 MB for `arm64-v8a` — so the device ABI is still the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+Both are optional: without them the build still works, it just fills `C:` — 43 GB free there against 755 GB on `D:` at the time of writing, and that `C:` figure only holds because `node_modules` moved off it (see *Moving `node_modules` off `C:`* below). One ABI's native object files alone want about 2.1 GB for `x86_64`, and 6 112 MB measured for a finished `arm64-v8a` set, and those now grow in `node_modules/*/android/.cxx` on `D:`; what still lands on `C:` is the `obj/<abi>` copy of the linked libraries — 3 806 MB for `arm64-v8a` at its peak, and pinning the ABI list back to one prunes it again — so the device ABI is still the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
 
 #### Moving `node_modules` off `C:`
 
@@ -553,8 +553,10 @@ The device-ABI pin is the build that runs out: it died with `C:` at 0 MB free th
 quarters through `llama.rn`, and a finished set needs 9 918 MB (see *The device ABI,
 measured*). Most of that lives in `node_modules/*/android/.cxx` — the tree that balloons
 during a native compile was on the small volume. It now lives on `D:` behind a junction,
-which turns a phone loop into a question of minutes rather than disk. Measured here on
-2026-11-11 from a tree with 15 GB free on `C:`:
+which turns a phone loop into a question of minutes rather than disk: after the move that
+9 918 MB is a `D:` figure (754 GB free), and the arm64 residue left on `C:` — the app
+module's own `.cxx` plus the packaging copies — measured 575 MB, most of it already pruned
+by pinning back to `x86_64`. Measured here on 2026-11-11 from a tree with 15 GB free on `C:`:
 
 ```bash
 # 1. Copy the tree. /COPY:DAT carries timestamps so step 2 can compare them; /XJ
@@ -617,8 +619,13 @@ stopped background shell does not mean its walkers stopped, and one open directo
 anywhere under `node_modules` is enough to block renaming it.
 `tasklist //FI "IMAGENAME eq du.exe"` finds them.
 
-`C:` is still not out of the build: `android/app/build` stays with the project, so the
-`obj/<abi>` `.so` copies — 3 806 MB for a finished `arm64-v8a` — and the APK land there.
+`C:` is still not out of the build: `android/app/build` and `android/app/.cxx` stay with
+the project, so the app module's own objects and the `obj/<abi>` `.so` copies land there
+(3 806 MB peak for a finished `arm64-v8a`). That arm64 residue decays on its own: once
+the ABI list went back to `x86_64` only, clearing it found 575 MB spread over seven
+folders rather than 3 806 — deleting them cost the `x86_64` warm rebuild nothing (**50 s**,
+27 executed, 623 up-to-date, same APK) and left the 5 944 MB of module arm64 objects
+untouched on `D:`, where most of that ABI's footprint now lives.
 
 #### Windows native build prerequisites
 
@@ -757,8 +764,9 @@ tasks: 40 executed, 610 up-to-date — the extra 15 executed tasks over row 1 ar
 `configureCMakeDebug[x86_64]` pairs rerunning after the ABI list changed, not a
 recompile. So a phone loop is gated on caches and time, not on `C:` free space: with
 `node_modules` on `D:` (see *Moving `node_modules` off `C:`*) the 8 216 MB of `.cxx`
-objects for both ABIs grow there, and all `C:` still has to hold is the 3 806 MB of
-`obj/<abi>` `.so` copies plus the 192 MB APK.
+objects for both ABIs grow there, and all `C:` still has to hold is the app module's own
+`.cxx` folder plus the `obj/<abi>` `.so` copies (3 806 MB at peak, but most of it is pruned
+by pinning back to one ABI — 575 MB was left when it was cleared here) and the APK.
 
 Nothing was installed on a device to check any of this, and nothing was: the attached
 target (`emulator-5554`) reports `ro.product.cpu.abi = x86_64` and `npm run
