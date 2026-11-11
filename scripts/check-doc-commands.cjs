@@ -35,9 +35,17 @@
  *      name. A gate nobody can find is a gate nobody can reproduce with
  *      `npm run gate -- --only=<id>` when it fails at 2 a.m.
  *
+ *   E. No dead link. Every relative path a README.md or docs/*.md link points at has
+ *      to exist in the repository, at the exact case the link spells. A sentence that
+ *      names a moved file is merely wrong; a link to it is worse, because the reader
+ *      clicked and the editor rendered it as the one thing in the document guaranteed
+ *      to be true. Case matters because a Windows laptop opens `Readme.md` for
+ *      `README.md` while the Linux runner CI uses does not.
+ *
  * Contract: reads README.md, docs/*.md, package.json and content/quality/gates.json;
- * takes no arguments; writes nothing; exits 0 when all four hold, 1 with one line per
- * drift naming the file, the line number and the closest matching script name.
+ * takes no arguments; writes nothing; exits 0 when all five hold, 1 with one line per
+ * drift naming the file, the line number, the closest matching script name and, for a
+ * dead link, what the folder that still exists does hold.
  *
  * Used by: npm run check:docs, and the `doc-commands` gate in
  *   content/quality/gates.json that `npm run gate` and CI run.
@@ -289,8 +297,128 @@ check('every gate in the release bar is named in a document', (report) => {
   }
 });
 
+/* ---- E. every file a document links to is there ---- */
+
+/**
+ * Markdown link and image targets, with the file and line they sit on. Only the
+ * `[label](target)` and `![alt](target)` forms count, and only outside fenced blocks:
+ * a path inside a ``` fence is a sample of what to type, and one in prose can be a file
+ * the reader is told to create — a link is the single form that promises the target
+ * already exists.
+ */
+function documentedFileLinks() {
+  const found = [];
+  const linkRe = /(!?)\[[^\]]*\]\(([^)]*)\)/g;
+  for (const rel of DOC_FILES) {
+    let inFence = false;
+    read(rel)
+      .split(/\r?\n/)
+      .forEach((line, i) => {
+        if (/^\s*(?:```|~~~)/.test(line)) {
+          inFence = !inFence;
+          return;
+        }
+        if (inFence) return;
+        linkRe.lastIndex = 0;
+        let m;
+        while ((m = linkRe.exec(line))) found.push({ rel, line: i + 1, target: m[2].trim() });
+      });
+  }
+  return found;
+}
+
+/**
+ * Where a link points inside the repository, or null when it is not a repo path at all:
+ * an in-page anchor (`#setup`), a URL (`http:`, `mailto:`, `//host`), or a
+ * site-absolute route (`/admin`) — the last of those would resolve against `/` on a
+ * POSIX box and "pass" on a file no document is claiming.
+ */
+function linkLocation(rel, target) {
+  const cleaned = target.replace(/^<([\s\S]*)>$/, '$1').replace(/\s+["'(].*$/, '');
+  const base = cleaned.split('#')[0];
+  if (!base) return null;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(base) || base.startsWith('//') || base.startsWith('/')) return null;
+  const abs = path.resolve(path.dirname(path.resolve(ROOT, rel)), base);
+  const back = path.relative(ROOT, abs);
+  if (back.startsWith('..') || path.isAbsolute(back)) {
+    return { outside: true, display: back.split(path.sep).join('/') };
+  }
+  return { outside: false, relPath: back.split(path.sep).join('/') };
+}
+
+/**
+ * The name a folder really holds when a link spells it with different case, or null
+ * when every segment matches. `existsSync` alone cannot see this: Windows resolves
+ * `readme.md` to README.md, so the link opens on a laptop and 404s in CI.
+ */
+function caseMismatch(abs) {
+  const parts = path.relative(ROOT, abs).split(path.sep).filter(Boolean);
+  let cur = ROOT;
+  for (const seg of parts) {
+    let entries;
+    try {
+      entries = fs.readdirSync(cur);
+    } catch {
+      return null;
+    }
+    if (entries.includes(seg)) {
+      cur = path.join(cur, seg);
+      continue;
+    }
+    const other = entries.find((e) => e.toLowerCase() === seg.toLowerCase());
+    if (other) {
+      const dir = path.relative(ROOT, cur).split(path.sep).join('/') || 'the repository root';
+      return `${dir} names it ${other}`;
+    }
+    return null;
+  }
+  return null;
+}
+
+/** For a dead link: the files in the same folder that share its prefix, if any. */
+function siblingHint(relPath) {
+  const dir = path.posix.dirname(relPath);
+  const leaf = path.posix.basename(relPath);
+  let entries;
+  try {
+    entries = fs.readdirSync(path.join(ROOT, dir));
+  } catch {
+    return ` — and ${dir === '.' ? 'the repository root' : `${dir}/`} is not there either`;
+  }
+  const head = leaf.slice(0, 5).toLowerCase();
+  const near = entries.filter((e) => e.toLowerCase().startsWith(head)).slice(0, 3);
+  if (!near.length) return '';
+  return ` — ${dir === '.' ? 'the repository root' : `${dir}/`} holds ${near.join(', ')}`;
+}
+
+const fileLinks = documentedFileLinks()
+  .map((l) => ({ ...l, at: linkLocation(l.rel, l.target) }))
+  .filter((l) => l.at);
+
+check('every file a document links to is there', (report) => {
+  if (fileLinks.length < 10) {
+    report(`only ${fileLinks.length} relative file links across ${DOC_FILES.length} documents — this check is grading almost nothing, so read the link syntax before trusting a pass.`);
+  }
+  for (const { rel, line, target, at } of fileLinks) {
+    const where = `${rel}:${line}`;
+    if (at.outside) {
+      report(`${where}: \`[${target}]\` resolves outside the repository (${at.display}) — a document link has to land on a file in it.`);
+      continue;
+    }
+    const abs = path.join(ROOT, at.relPath);
+    if (!fs.existsSync(abs)) {
+      report(`${where}: \`[${target}]\` — no such file or folder as ${at.relPath || 'the repository root'}${siblingHint(at.relPath)}`);
+      continue;
+    }
+    const wrongCase = caseMismatch(abs);
+    if (wrongCase) {
+      report(`${where}: \`${at.relPath}\` is spelled with the wrong case — ${wrongCase}. It opens on Windows and breaks on the Linux runner CI uses.`);
+    }
+  }
+});
+
 /* ---- report ---- */
 
-console.log(`scanned ${DOC_FILES.length} documents, ${runCommands.length} documented commands, ${scriptNames.length} scripts, ${gates.length} gates`);
+console.log(`scanned ${DOC_FILES.length} documents, ${runCommands.length} documented commands, ${scriptNames.length} scripts, ${gates.length} gates, ${fileLinks.length} file links`);
 if (!ok) process.exit(1);
 console.log('\n[ok] the documents and package.json agree.');

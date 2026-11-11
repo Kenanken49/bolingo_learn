@@ -72,7 +72,7 @@ npm run check:audio    # the celebration cue is still exactly five seconds (read
 npm run check:casting  # character voice casting is deterministic, not first-audition-wins
 npm run check:uploads  # a 0-byte copy or an unindexed upload fails with a stated reason
 npm run check:leaderboard # xp_events grants reach authenticated, not only its RLS policies
-npm run check:docs     # every command the docs name exists, and every script is documented
+npm run check:docs     # commands, gate ids and file links in these docs all resolve
 npm run audio:preflight                 # workspace + cloned-voice consent gate for the configured voice
 npm run verify:lesson-audio -- --list   # uploaded lessons available for full audio verification
 npm run verify:lesson-audio:disposable -- --plan  # free dry run with a temporary lesson
