@@ -124,10 +124,12 @@ executables are `zipalign.exe` and `apksigner.bat`.
 
 ## Which CPU architectures, and why the size matters
 
-`android/gradle.properties` sets `reactNativeArchitectures=x86_64`. That builds
-libs for the **emulator only**; a phone is arm64 and the APK dies at startup
-with `UnsatisfiedLinkError`. Build for devices by overriding it on the command
-line, without editing the file:
+`scripts/android-env.sh` keeps `reactNativeArchitectures=x86_64` in
+`$GRADLE_USER_HOME/gradle.properties` — the user-level file, because `android/`
+is generated and its own copy asks for all four ABIs. That pin builds libs for
+the **emulator only**; a phone is arm64 and the APK dies at startup with
+`UnsatisfiedLinkError`. Build for devices by overriding it on the command line,
+without editing any file:
 
 ```bash
 ANDROID_HOME="$LOCALAPPDATA/Android/Sdk" ./gradlew assembleRelease --no-daemon \

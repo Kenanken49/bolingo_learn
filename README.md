@@ -50,7 +50,8 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
      `source scripts/android-env.sh` in the same shell first so the AVDs and
      Gradle caches land on `D:`. Details and failure modes are in
      *Local Android toolchain* below; a cold debug build measured 1 h 7 min on
-     this machine, almost all of it the NDK/CMake compiles.
+     this machine, almost all of it the NDK/CMake compiles, and the same build
+     warm — caches and `.cxx` objects intact — takes 1 m 15 s.
    - **iOS:** macOS with Xcode and a simulator or device, so it cannot build
      from Windows — use a Mac, or the cloud:
      `npx eas-cli build --profile development --platform ios` under
@@ -512,16 +513,18 @@ The SDK binaries are installed by Android Studio on `C:`, but the two directorie
 | `D:\android-avd` | emulator AVDs (`Medium_Phone`, `Medium_Phone_API_37.0`) | `ANDROID_AVD_HOME` |
 | `D:\gradle-home` | Gradle 9.4.1 wrapper distro + dependency caches | `GRADLE_USER_HOME` |
 
-Source the helper before any Android command — it exports those variables for the current shell and prints what it found:
+Source the helper before any Android command — it exports those variables for the current shell, prints what it found, and keeps the two build settings that decide how long every later rebuild takes in `$GRADLE_USER_HOME\gradle.properties` (see *Rebuild time, measured*):
 
 ```bash
-source scripts/android-env.sh          # export into this shell
-source scripts/android-env.sh --check  # export, then verify SDK, AVDs and caches
+source scripts/android-env.sh          # export into this shell, write the two settings
+source scripts/android-env.sh --check  # also verify SDK, AVDs, caches, ABIs and .cxx
 
 emulator -list-avds                    # Medium_Phone, Medium_Phone_API_37.0
 emulator -avd Medium_Phone &
 npx expo run:android                   # Gradle now writes to D:\gradle-home
 ```
+
+`ANDROID_ARCHS` picks the ABI list written there — default `x86_64`, the emulator's own; a phone wants `arm64-v8a`, a store upload wants both — and `ANDROID_GRADLE_PROPS=off` leaves that file entirely your own. It goes in the *user-level* properties file rather than `android/gradle.properties` because `android/` is generated, so the next `expo prebuild` would undo the edit, and because Gradle reads the user file after the project one.
 
 To make it permanent instead of per-shell, set the same names once (user scope, no admin needed) and reopen the terminal:
 
@@ -530,7 +533,7 @@ setx ANDROID_AVD_HOME "D:\android-avd"
 setx GRADLE_USER_HOME "D:\gradle-home"
 ```
 
-Both are optional: without them the build still works, it just fills `C:` (58 GB free, versus 801 GB on `D:`). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+Both are optional: without them the build still works, it just fills `C:` — 10 GB free there against 796 GB on `D:` at the time of writing, and one ABI's native object files alone want about 2.1 GB. The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
 
 #### Windows native build prerequisites
 
@@ -556,11 +559,43 @@ A release APK builds and installs on an emulator with:
 
 ```bash
 source scripts/android-env.sh
-cd android && ./gradlew :app:assembleRelease      # ~25 min cold, app/build/outputs/apk/release/app-release.apk
+cd android && ./gradlew :app:assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64
+# ~25 min cold, app/build/outputs/apk/release/app-release.apk
 adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
-Delete `node_modules/*/android/.cxx` after changing CMake, ninja or the long-path setting to force a clean native configure.
+The `-P` is not decoration: a device-less `gradlew` build now inherits `reactNativeArchitectures=x86_64` from the user-level properties file, and a store artifact needs `arm64-v8a` in it. `expo run:android` never sees this problem — it detects the attached device's ABI and passes `-PreactNativeArchitectures=<that abi>` itself (`getActiveArchArg` in `node_modules/@expo/cli/build/src/start/platforms/android/gradle.js`), and a command-line `-P` outranks the properties file anyway.
+
+#### Rebuild time, measured
+
+`./gradlew :app:assembleDebug` on this machine — 8 cores, 15.8 GB RAM, no ccache, `D:\gradle-home` caches warm, one ABI (`x86_64`), after `source scripts/android-env.sh`:
+
+| Starting state | Time | Task summary |
+| --- | --- | --- |
+| Nothing deleted, same Gradle daemon, no source changes | **1 m 15 s** | 650 tasks: 25 executed, 625 up-to-date |
+| Nothing deleted, fresh daemon (`./gradlew --stop` first) | **9 m 16 s** | 650: 105 executed, 36 from cache, 509 up-to-date |
+| `android/app/build` + `android/.gradle` deleted, build cache on | **13 m 16 s** | 650: 292 executed, 294 from cache, 64 up-to-date |
+| The same two folders deleted, `--no-build-cache` | **13 m 26 s** | 650: 614 executed, 36 up-to-date |
+| Everything cold: `expo run:android` after `prebuild --clean`, empty caches | **1 h 7 m 35 s** | 649 tasks, every C++ target compiled from source |
+
+1. **The warm path is pure C/C++.** Those 25 executed tasks in row 1 are the `configureCMakeDebug[x86_64]` + `buildCMakeDebug[x86_64]` pairs of the eight native modules — `app`, `expo-modules-core`, `expo-updates`, `llama.rn`, reanimated, worklets, screens, gesture-handler — plus a little bookkeeping. AGP reruns them on every build, and the Gradle build cache does not cover them. They cost about a minute *only because `node_modules/*/android/.cxx` still holds the objects for that ABI*, so ninja has nothing to do. That folder is the cache worth protecting.
+2. **Do not stop the daemon.** Rows 1 and 2 are the same project with the same caches; `--stop` (or 3 idle hours) costs about eight minutes of re-snapshotting inputs the daemon already remembered. The extra work is the app's packaging chain — `mergeDebugAssets`, `mergeDebugNativeLibs`, `stripDebugDebugSymbols`, `packageDebug`.
+3. **The build cache is a safety net, not a speedup.** Restoring 294 tasks saved ten seconds over re-executing them, because that work overlaps on 8 workers while the native and packaging tasks run. Keep `org.gradle.caching=true` regardless — `expo run:android` already passes `--build-cache` (`buildCache: !args['--no-build-cache']` in `@expo/cli`), so this property is what gives plain `./gradlew` the same treatment for free.
+4. **One ABI, not four.** `expo prebuild` writes all four ABIs into the generated `android/gradle.properties`. Pinned to one, `--dry-run` plans 779 tasks with 8 native build tasks; unpinned it plans 823 with 30. The measured price per ABI is 2 107 MB of `x86_64` Debug objects across the eight modules — 1 520 MB of it `llama.rn` — so the other three would add roughly 6.3 GB to `C:` — the same volume this layout moves everything else off precisely because it runs out. And since those tasks rerun on every build, an extra ABI slows *every* rebuild, not just the first. (The hour in row 5 was not the ABIs: `expo run:android` pins them to the device — see the `-P` note above. It was compiling every C++ target from an empty `.cxx`.)
+5. **`android/.gradle` is the up-to-date database.** `executionHistory.bin` inside it is what lets Gradle answer "nothing changed". `expo prebuild` without `--clean` leaves it alone and the row 1 numbers survive; `--clean`, or deleting `android/` to reclaim space, throws it away and pays row 3.
+
+One Windows hazard shows up when builds are scripted back to back: `Execution failed for task ':expo-modules-core:bundleLibCompileToJarDebug' > Unable to delete file '...\compile_library_classes_jar\debug\bundleLibCompileToJarDebug\classes.jar'`. A daemon that survived an interrupted build still holds that jar. `./gradlew --stop` and rerun, and budget the eight minutes of row 2.
+
+#### What invalidates `.cxx`
+
+Each `node_modules/<module>/android/.cxx/Debug/<hash>/` folder is named after a hash of the CMake configure command, and the `hash_key.txt` sitting in it lists the inputs verbatim: the AGP version (9.2.1), the NDK path, the `$CMAKE` and `$NINJA` paths, the absolute project path and every `-D` flag — while noting that `$ABI` is *not* part of the hash. Change one input and AGP neither reuses nor repairs the old folder: it configures a fresh one and leaves the previous set of objects as dead weight.
+
+Two of those inputs move by themselves:
+
+- **Turning on Windows long paths** changed `-DCMAKE_OBJECT_PATH_MAX` from 140 to 1024 and re-hashed every module. Still on disk: `react-native-worklets/android/.cxx/RelWithDebInfo/` holds `2j564h2t` (110 MB, `=1024`) beside `734q4i31` (60 MB, `=140`) — two caches for one library, and the cold hour in row 5 is what that kind of split buys: every module then configures and compiles as if for the first time.
+- **`expo prebuild --clean`** deletes `android/local.properties`, and with it `cmake.dir=D:/android-sdk-cmake`. CMake then resolves to the SDK's own copy, which changes both `$CMAKE` and `$NINJA`, re-hashes every module, and lands back on the ninja 1.10.2 that cannot build reanimated.
+
+So keep `cmake.dir`, the NDK revision and the long-path setting steady and the objects are reused indefinitely; `source scripts/android-env.sh --check` fails on a missing `cmake.dir` and warns when a module carries more than one `.cxx/Debug` folder. Deleting a `.cxx` folder is only the right move when you swapped a binary *behind a path that never changed* — the ninja 1.10.2 ➔ 1.12.1 replacement kept `$NINJA` identical, so the hash did not move and the stale `CMakeCache.txt` survived — and then delete the stale sibling, not the folder the current hash points at.
 
 #### OTA channel for a local release build
 
