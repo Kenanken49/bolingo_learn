@@ -23,7 +23,9 @@
 /* global __dirname, globalThis, console, process -- Node provides these to CommonJS scripts. */
 
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const ts = require('typescript');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -39,6 +41,8 @@ const GATES = path.join(ROOT, 'content', 'quality', 'gates.json');
 const PACKAGE = path.join(ROOT, 'package.json');
 const README = path.join(ROOT, 'README.md');
 const ENV_EXAMPLE = path.join(ROOT, '.env.example');
+const PAYWALL_DOC = path.join(ROOT, 'docs', 'paywall-setup.md');
+const GOLIVE_CLI = path.join(ROOT, 'scripts', 'mpesa-golive.cjs');
 
 let failures = 0;
 const queue = [];
@@ -307,6 +311,171 @@ check('a settled verdict is final — no second grant from a replayed callback',
   assert(state.profiles[0].is_premium === false, 'premium was granted from a failed row');
 });
 
+// --- 1b. going live: which Daraja, and whether it can be trusted ---------
+
+// Going live is a configuration step, and every way it goes wrong costs money
+// twice: a learner pays real shillings into a callback that cannot settle, or a
+// test paybill charges a real customer. So the rules that decide it are asserted
+// in both directions — a complete live config must pass, and each incomplete one
+// must name the variable that is wrong before any push is sent.
+
+const LIVE_HOST = 'https://api.safaricom.co.ke';
+const SANDBOX_HOST = 'https://sandbox.safaricom.co.ke';
+
+// Values invented for this run. They exist to be looked for in output: if one
+// ever appears in a report, the auditor is printing the thing it is meant to
+// hide, which is the worst bug this file can catch.
+const FAKE_KEY = 'gateOnlyConsumerKeyMustNeverBePrinted';
+const FAKE_SECRET = 'gateOnlyConsumerSecretMustNeverBePrinted';
+const FAKE_PASSKEY = 'gateOnlyPasskeyMustNeverBePrinted';
+const FAKE_TOKEN = 'gateOnlyCallbackTokenMustNeverBePrinted123456';
+const FAKES = [FAKE_KEY, FAKE_SECRET, FAKE_PASSKEY, FAKE_TOKEN];
+
+/** A live configuration that has nothing wrong with it. */
+function liveConfig(extra = {}) {
+  return {
+    MPESA_ENV: 'production',
+    DARAJA_CONSUMER_KEY: FAKE_KEY,
+    DARAJA_CONSUMER_SECRET: FAKE_SECRET,
+    DARAJA_SHORTCODE: '4000100',
+    DARAJA_PASSKEY: FAKE_PASSKEY,
+    MPESA_CALLBACK_URL: `https://projectref.supabase.co/functions/v1/mpesa-callback?t=${FAKE_TOKEN}`,
+    MPESA_CALLBACK_TOKEN: FAKE_TOKEN,
+    ...extra,
+  };
+}
+
+function withEnv(values, run) {
+  const saved = { ...ENV };
+  for (const key of Object.keys(ENV)) delete ENV[key];
+  Object.assign(ENV, values);
+  try {
+    return run();
+  } finally {
+    for (const key of Object.keys(ENV)) delete ENV[key];
+    Object.assign(ENV, saved);
+  }
+}
+
+const auditOf = (values) => withEnv(values, () => mpesa.audit());
+const problemAbout = (report, name) => report.problems.some((line) => line.includes(name));
+
+check('MPESA_ENV picks the live Daraja and nothing else can redirect it', () => {
+  withEnv({ MPESA_ENV: 'production' }, () => {
+    assert(mpesa.environment() === 'production', 'MPESA_ENV was ignored');
+    assert(mpesa.baseUrl() === LIVE_HOST, `baseUrl() returned ${mpesa.baseUrl()}`);
+  });
+  withEnv({ MPESA_ENV: 'live' }, () => assert(mpesa.environment() === 'production', 'the live alias was not understood'));
+  withEnv({ DARAJA_BASE_URL: LIVE_HOST }, () => assert(mpesa.baseUrl() === LIVE_HOST, 'DARAJA_BASE_URL alone stopped selecting the host'));
+  withEnv({}, () => assert(mpesa.baseUrl() === SANDBOX_HOST, 'sandbox must stay the default when nothing is set'));
+  withEnv({ MPESA_ENV: 'production', DARAJA_BASE_URL: 'https://somewhere-else.example.com' }, () => {
+    assert(mpesa.baseUrl() === LIVE_HOST, 'a foreign DARAJA_BASE_URL changed the endpoint');
+  });
+});
+
+check('a complete live configuration passes the audit', () => {
+  const report = auditOf(liveConfig());
+  assert(report.ready, `ready=false: ${report.problems.join(' | ')}`);
+  assert(report.environment === 'production' && report.baseUrl === LIVE_HOST, JSON.stringify(report));
+  assert(report.amountKes === 770, `the live default price moved: ${report.amountKes}`);
+  assert(report.transactionType === 'CustomerPayBillOnline', 'the paybill default changed');
+  assert(!FAKES.some((value) => JSON.stringify(report).includes(value)), 'the audit quoted a secret value');
+});
+
+check('a half-configured live run is refused finding by finding', () => {
+  const mismatch = auditOf(liveConfig({ DARAJA_BASE_URL: SANDBOX_HOST }));
+  assert(!mismatch.ready && problemAbout(mismatch, 'MPESA_ENV'), `env/endpoint mismatch slipped through: ${mismatch.problems.join(' | ')}`);
+
+  const testPaybill = auditOf(liveConfig({ DARAJA_SHORTCODE: '17439' }));
+  assert(!testPaybill.ready && problemAbout(testPaybill, 'DARAJA_SHORTCODE'), 'the Daraja sandbox paybill was accepted on the live endpoint');
+
+  const foreignHost = auditOf(liveConfig({ DARAJA_BASE_URL: 'https://somewhere-else.example.com' }));
+  assert(!foreignHost.ready && problemAbout(foreignHost, 'DARAJA_BASE_URL'), 'an unrecognised DARAJA_BASE_URL was ignored silently');
+
+  const noToken = auditOf(liveConfig({ MPESA_CALLBACK_TOKEN: '' }));
+  assert(!noToken.ready && problemAbout(noToken, 'MPESA_CALLBACK_TOKEN'), 'a live run without a callback token must not be called ready');
+
+  const tokenDrift = auditOf(liveConfig({ MPESA_CALLBACK_TOKEN: 'aDifferentCallbackTokenMustNeverBePrinted99' }));
+  assert(!tokenDrift.ready && problemAbout(tokenDrift, 'MPESA_CALLBACK_TOKEN'), 'a URL token that is not the expected one was accepted');
+
+  const shortToken = auditOf(liveConfig({ MPESA_CALLBACK_TOKEN: 'tinytoken' }));
+  assert(!shortToken.ready, 'a callback token shorter than the URL token was accepted');
+
+  const plainHttp = auditOf(liveConfig({ MPESA_CALLBACK_URL: 'http://projectref.supabase.co/functions/v1/mpesa-callback?t=' + FAKE_TOKEN }));
+  assert(!plainHttp.ready && problemAbout(plainHttp, 'https'), 'Daraja refuses plain-HTTP callbacks; so must the audit');
+
+  const badType = auditOf(liveConfig({ MPESA_TRANSACTION_TYPE: 'PayToBusiness' }));
+  assert(!badType.ready && problemAbout(badType, 'MPESA_TRANSACTION_TYPE'), 'an invented transaction type was accepted');
+
+  const noKeys = auditOf({ MPESA_ENV: 'production' });
+  assert(!noKeys.ready && problemAbout(noKeys, 'DARAJA_CONSUMER_KEY'), 'a live environment with no keys reported itself ready');
+  assert(!FAKES.some((value) => JSON.stringify(noKeys).includes(value)), 'the audit echoed a value while reporting missing keys');
+});
+
+check('the audit warns about what it cannot know', () => {
+  const till = auditOf(liveConfig({ MPESA_TRANSACTION_TYPE: 'CustomerBuyGoodsOnline' }));
+  assert(till.ready && till.transactionType === 'CustomerBuyGoodsOnline', `a till deployment was refused: ${till.problems.join(' | ')}`);
+
+  const priceDrift = auditOf(liveConfig({ MPESA_PREMIUM_KES: '500' }));
+  assert(priceDrift.warnings.some((line) => line.includes('MPESA_PREMIUM_KES')), 'a live price that differs from the advertised one went unmentioned');
+  assert(!FAKES.some((value) => JSON.stringify(priceDrift).includes(value)), 'the price warning quoted a secret');
+
+  const sandboxWithLiveNumber = auditOf(liveConfig({ MPESA_ENV: '', DARAJA_SHORTCODE: '4000100' }));
+  assert(sandboxWithLiveNumber.ready && sandboxWithLiveNumber.warnings.length > 0, 'a live shortcode under sandbox should warn, not block');
+});
+
+// -- the operator CLI, run the way the operator runs it ---------------------
+
+function runCli(args) {
+  const result = spawnSync(process.execPath, [GOLIVE_CLI, ...args], { cwd: ROOT, encoding: 'utf8', timeout: 60_000 });
+  return { status: result.status, out: `${result.stdout ?? ''}${result.stderr ?? ''}` };
+}
+
+function fixture(name, values) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bolingo-mpesa-golive-'));
+  const file = path.join(dir, name);
+  // Fixtures live in the system temp folder, never in the repository: fake keys
+  // committed next to real ones teach nobody which is which.
+  fs.writeFileSync(file, `${Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n')}\n`);
+  return file;
+}
+
+check('the go-live CLI reports a broken live config without printing a value', () => {
+  const broken = runCli([
+    '--from',
+    fixture(
+      'broken.env',
+      liveConfig({
+        DARAJA_BASE_URL: SANDBOX_HOST,
+        DARAJA_SHORTCODE: '17439',
+        MPESA_CALLBACK_TOKEN: 'aDifferentCallbackTokenMustNeverBePrinted99',
+        MPESA_TRANSACTION_TYPE: 'PayToBusiness',
+      })
+    ),
+    '--verbose',
+    '--json',
+  ]);
+  assert(broken.status === 2, `exit ${broken.status}, expected 2 for a not-ready config`);
+  assert(/"ready": false/.test(broken.out), `no machine-readable verdict:\n${broken.out}`);
+  assert(/SUMMARY environment=production ready=no/.test(broken.out), `no SUMMARY line:\n${broken.out}`);
+  assert(!FAKES.some((value) => broken.out.includes(value)), 'the CLI printed a secret value');
+  assert(!/supabase (secrets|functions)/.test(broken.out), 'a read-only run touched the deployment');
+});
+
+check('the go-live CLI is ready-clean on a complete live file', () => {
+  const clean = runCli(['--from', fixture('live.env', liveConfig())]);
+  assert(clean.status === 0, `exit ${clean.status}:\n${clean.out}`);
+  assert(/SUMMARY environment=production ready=yes problems=0/.test(clean.out), clean.out);
+  assert(!FAKES.some((value) => clean.out.includes(value)), 'the CLI printed a secret value');
+});
+
+check('the go-live CLI refuses the mistakes that matter', () => {
+  assert(/committed to git/.test(runCli(['--from', '.env.example']).out), 'a secrets file inside the repository was accepted');
+  assert(/--from/.test(runCli(['--apply', '--project-ref', 'projectref']).out), 'the CLI would deploy without a keys file');
+  assert(/Apply refused/.test(runCli(['--from', fixture('bad.env', { MPESA_ENV: 'production' }), '--apply', '--project-ref', 'projectref']).out), 'the CLI applied a failing audit');
+  assert(/must be sandbox or production/.test(runCli(['--env', 'staging']).out), 'an unknown environment name was accepted');
+});
+
 // --- 2 + 3. trust boundary and wiring -----------------------------------
 
 const pushSource = read(PUSH);
@@ -401,6 +570,44 @@ check('the rail is registered, documented and safe to run without secrets', () =
   assert(/DARAJA_CONSUMER_SECRET=\s*$/m.test(read(ENV_EXAMPLE)), '.env.example must not carry a secret value');
   assert(/https:\/\/sandbox\.safaricom\.co\.ke/.test(read(SHARED)), 'the sandbox endpoint must be the default');
   assert(!/api\.safaricom\.co\.ke/.test(read(CLIENT)), 'the production Daraja host must never be hardcoded in the app');
+});
+
+check('the live host is allowlisted in the functions and absent from the app', () => {
+  const shared = read(SHARED);
+  assert(/PRODUCTION_BASE_URL = 'https:\/\/api\.safaricom\.co\.ke'/.test(shared), 'the production Daraja host is not a named constant in _shared/mpesa.ts');
+  assert(/SANDBOX_BASE_URL = 'https:\/\/sandbox\.safaricom\.co\.ke'/.test(shared), 'the sandbox Daraja host is not a named constant');
+  assert(/SANDBOX_SHORTCODES/.test(shared), 'the sandbox test paybill is not known to the audit');
+});
+
+check('mpesa-push takes the Daraja type and reference from config, and asks the audit first', () => {
+  assert(/TransactionType: transactionType\(\)/.test(pushSource), 'mpesa-push hardcoded a transaction type again — a till-number deployment would fail every push');
+  assert(/AccountReference: accountReference\(\)/.test(pushSource), 'mpesa-push hardcoded the account reference again');
+  assert(!/'CustomerPayBillOnline'/.test(pushSource), 'the paybill literal is back in the push body');
+  assert(/const report = audit\(\)/.test(pushSource), 'mpesa-push sends a push without consulting the audit');
+  assert(/!report\.ready/.test(pushSource) && /503/.test(pushSource), 'a push the audit refuses must come back as a 503, not a silent failure');
+  assert(/environment: environment\(\)/.test(pushSource), 'the deployed function does not say which Daraja it is talking to');
+  assert(!/console\.(log|error)\([^)]*(config\.passkey|consumerSecret|FAKE)/.test(pushSource), 'a push log line could print a secret');
+});
+
+check('the go-live path is a script, a doc and an npm command', () => {
+  assert(fs.existsSync(GOLIVE_CLI), 'scripts/mpesa-golive.cjs is missing');
+  assert(/"mpesa:golive": "node scripts\/mpesa-golive\.cjs"/.test(read(PACKAGE)), 'npm run mpesa:golive is not in package.json');
+  assert(/mpesa:golive/.test(read(README)), 'README must tell the operator how to go live');
+  assert(/mpesa:golive/.test(read(PAYWALL_DOC)), 'docs/paywall-setup.md must carry the go-live runbook');
+
+  const envExample = read(ENV_EXAMPLE);
+  assert(/MPESA_ENV=/.test(envExample), '.env.example must document MPESA_ENV');
+  assert(/MPESA_TRANSACTION_TYPE=/.test(envExample), '.env.example must document MPESA_TRANSACTION_TYPE');
+  assert(/MPESA_ACCOUNT_REFERENCE=/.test(envExample), '.env.example must document MPESA_ACCOUNT_REFERENCE');
+  assert(/api\.safaricom\.co\.ke/.test(envExample), '.env.example must name the live host so the switch is not folklore');
+  assert(!/DARAJA_PASSKEY=\S/.test(envExample), '.env.example must not carry a passkey value');
+});
+
+check('the price the app advertises is the price the server charges', () => {
+  assert(
+    clientSource.includes(`MPESA_PRICE_LABEL = 'KSh ${mpesa.ADVERTISED_AMOUNT_KES}/mo'`),
+    `the paywall card says ${clientSource.match(/MPESA_PRICE_LABEL = '[^']+'/)?.[0]} while the server charges ${mpesa.ADVERTISED_AMOUNT_KES}`
+  );
 });
 
 (async () => {

@@ -967,7 +967,12 @@ supabase secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
 # Optional: LLM_BASE_URL LLM_MODEL TTS_PROVIDER=elevenlabs|openai TTS_VOICE_ID TTS_OUTPUT_FORMAT
 # Optional: TTS_STABILITY TTS_SIMILARITY_BOOST TTS_STYLE TTS_SPEAKER_BOOST OPENAI_BASE_URL
 # Optional: TRANSCRIBE_PROVIDER TRANSCRIBE_MODEL TRANSCRIBE_BASE_URL TRANSCRIBE_LANGUAGE
-# Optional: DARAJA_BASE_URL (default is the Daraja sandbox) MPESA_PREMIUM_KES MPESA_PENDING_TTL_MINUTES
+# M-Pesa sandbox/live switch: MPESA_ENV=sandbox|production (production selects
+#   https://api.safaricom.co.ke, the only live host the code will use)
+# Optional: DARAJA_BASE_URL (selects the environment when MPESA_ENV is unset)
+#   MPESA_TRANSACTION_TYPE=CustomerPayBillOnline|CustomerBuyGoodsOnline
+#   MPESA_ACCOUNT_REFERENCE (12 chars, on the prompt) MPESA_PREMIUM_KES
+#   MPESA_PENDING_TTL_MINUTES
 ```
 
 Deploy with `npm run deploy:process-upload` (this runs the audiobook voice preflight first; a cloned/professional voice needs a completed, active consent record via `TTS_CONSENT_RECORD`).
@@ -1000,13 +1005,33 @@ Trust boundaries, enforced by `npm run check:mpesa`:
 - a payment is settled once — a replayed callback cannot extend the period;
 - premium lapses on its own: `mpesa-push` recomputes `profiles.is_premium` from
   the live paid-through date on every call, and `refreshPremiumStatus` will not
-  let a "not entitled" answer from the store clear an in-date M-Pesa period.
+  let a "not entitled" answer from the store clear an in-date M-Pesa period;
+- no push is sent against a configuration that cannot settle it: `mpesa-push`
+  runs the same `audit()` that `npm run mpesa:golive` runs and answers `503`
+  rather than asking Safaricom to charge a learner for a callback that would be
+  rejected.
 
-Sandbox testing uses `DARAJA_BASE_URL=https://sandbox.safaricom.co.ke` (already
-the default), the sandbox shortcode/passkey pair from the Daraja dashboard, and
-one of Safaricom's sandbox test MSISDNs. Move to `https://api.safaricom.co.ke`
-only after a live KES-1 self-test payment round-trips, then raise
-`MPESA_PREMIUM_KES` back to the real price.
+Sandbox testing uses `MPESA_ENV=sandbox` (the default when unset), the sandbox
+shortcode/passkey pair from the Daraja dashboard, and one of Safaricom's sandbox
+test MSISDNs. Going live is a configuration step. Put the live keys in a file
+**outside** this repository and let the auditor read it:
+
+```bash
+npm run mpesa:golive -- --from ~/mpesa-live.env           # report only
+npm run mpesa:golive -- --from ~/mpesa-live.env --apply   # set secrets + deploy
+```
+
+`MPESA_ENV=production` selects `https://api.safaricom.co.ke`, the only live host
+the code accepts, so a stray `DARAJA_BASE_URL` cannot point a Daraja credential
+somewhere else. The audit refuses a live run that would take money and grant
+nothing: `MPESA_ENV` disagreeing with `DARAJA_BASE_URL`, the Daraja test paybill
+`17439` on the live endpoint, a callback whose `?t=` token is missing or is not
+the value in `MPESA_CALLBACK_TOKEN`, a plain-HTTP callback, an unrecognised
+`MPESA_TRANSACTION_TYPE`, or any missing key — and it names variables only,
+never values, so its output is safe to paste into a bug report. Then pay
+yourself once at the real price from a Kenyan number, confirm the ledger row
+lands `confirmed` with the amount you were charged, and only then enable the
+`mpesa_premium` release flag.
 
 ### Trigger on upload (recommended)
 
