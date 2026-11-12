@@ -545,7 +545,7 @@ setx ANDROID_AVD_HOME "D:\android-avd"
 setx GRADLE_USER_HOME "D:\gradle-home"
 ```
 
-Both are optional: without them the build still works, it just fills `C:` — 43 GB free there against 755 GB on `D:` at the time of writing, and that `C:` figure only holds because `node_modules` moved off it (see *Moving `node_modules` off `C:`* below). One ABI's native object files alone want about 2.1 GB for `x86_64`, and 6 112 MB measured for a finished `arm64-v8a` set, and those now grow in `node_modules/*/android/.cxx` on `D:`; what still lands on `C:` is the `obj/<abi>` copy of the linked libraries — 3 806 MB for `arm64-v8a` at its peak, and pinning the ABI list back to one prunes it again — so the device ABI is still the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+Both are optional: without them the build still works, it just fills `C:` — 37 GB free there against 760 GB on `D:` at the time of writing (that `C:` figure is 6 GB lower than the last measurement, and the largest single consumer on the volume is now a 6.45 GB `hiberfil.sys`), and that figure only holds because `node_modules` moved off it (see *Moving `node_modules` off `C:`* below). One ABI's native object files alone want about 2.1 GB for `x86_64`, and 6 112 MB measured for a finished `arm64-v8a` set, and those now grow in `node_modules/*/android/.cxx` on `D:`; what still lands on `C:` is the `obj/<abi>` copy of the linked libraries — 3 806 MB for `arm64-v8a` at its peak, and pinning the ABI list back to one prunes it again — so the device ABI is still the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
 
 #### Moving `node_modules` off `C:`
 
@@ -624,8 +624,12 @@ the project, so the app module's own objects and the `obj/<abi>` `.so` copies la
 (3 806 MB peak for a finished `arm64-v8a`). That arm64 residue decays on its own: once
 the ABI list went back to `x86_64` only, clearing it found 575 MB spread over seven
 folders rather than 3 806 — deleting them cost the `x86_64` warm rebuild nothing (**50 s**,
-27 executed, 623 up-to-date, same APK) and left the 5 944 MB of module arm64 objects
-untouched on `D:`, where most of that ABI's footprint now lives.
+27 executed, 623 up-to-date, same APK). The module `Debug` objects on `D:` went next, on
+request: **5 943 MB** back on that volume (772 461 MB free before, 778 404 after), and the
+`x86_64` warm rebuild was unaffected — **35 s**, 25 executed, 625 up-to-date, the same
+153 215 821-byte APK. The cost lands later: the next `arm64-v8a` pin recompiles those
+modules from scratch instead of finishing a cached set. 2 700 MB of release-variant
+objects (`.cxx/RelWithDebInfo/*/arm64-v8a`, `llama.rn` alone 2 430 MB) are still on `D:`.
 
 #### Windows native build prerequisites
 
@@ -728,7 +732,8 @@ now grow on `D:` and only the `.so` copies stay on `C:` — see *Moving `node_mo
 The **7 GB** this section predicted from the interrupted run was low: it scaled
 `llama.rn`'s objects linearly, and its `.so` copies had not been linked yet. `llama.rn`
 alone ended at 5 354 MB of objects plus 2 013 MB of `.so`. Deleting the two `arm64-v8a`
-column folders recovers the 9 918 MB.
+column folders recovers the 9 918 MB — though after the move they straddle both volumes, and
+what clearing them actually found is in *Moving `node_modules` off `C:`*.
 
 **This pin resumed; it did not rebuild from empty.** The green pass reused the objects
 the earlier passes had written, so **6 m 43 s** (`BUILD SUCCESSFUL`, 650 tasks: 34
