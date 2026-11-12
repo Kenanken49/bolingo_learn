@@ -783,7 +783,13 @@ arm64-capable image.
 
 Those leftovers are what `npm run android:clean-abi` (`scripts/clean-abi.sh`) exists for: it
 finds the object and intermediate folders of every ABI this project is *not* currently
-building, and clears them on request. It reports by default and deletes only when told:
+building, and clears them on request. It reports by default and deletes only when told. It is also
+the **only** place that sizes reclaimable ABI disk: `source scripts/android-env.sh --check` reports
+environment state and, when it warns about space or a split `.cxx` cache, points at the command
+below rather than re-measuring. That split is deliberate — the preflight finishes in **2 s**, while
+report mode here took **71 s** on this machine (measured 2026-11-12, warm disk cache) because sizing
+means walking every generated tree — and the `abi-clean` gate asserts it, so the preflight cannot
+quietly grow its own copy of this logic:
 
 | Command | What it does |
 | --- | --- |
@@ -814,8 +820,11 @@ nothing, `--delete` removes exactly what it listed, a pinned-ABI request exits 2
 `--force` obeys and still spares `src/`, the outside junction is skipped, and a second run is a
 no-op. Two more assert what a partial delete does: clearing one ABI out of a shared task output
 removes only that ABI's folder and labels the target self-healing, and a folder whose name merely
-equals an ABI inside one ABI's object tree is dropped and reported instead of deleted. It now runs
-25 checks in **33 s**, all green, and `--real` passes against this checkout too. It never deletes
+equals an ABI inside one ABI's object tree is dropped and reported instead of deleted. Three more
+hold the line between the two entry points: `scripts/android-env.sh --check` must name the cleaner
+command (and that id must exist in `package.json`), must reach it from both disk warnings through
+one shared variable, and must not contain the `du` size walk itself. It now runs 28 checks in
+**27 s**, all green, and `--real` passes against this checkout too. It never deletes
 from the real tree; the survey of it is opt-in
 (`node scripts/check-abi-clean.cjs --real`) because sizing those folders took **64 s** with a warm
 disk cache and **186 s** cold, which is too expensive to put in front of every release.
@@ -935,7 +944,7 @@ Two of those inputs move by themselves:
 - **Turning on Windows long paths** changed `-DCMAKE_OBJECT_PATH_MAX` from 140 to 1024 and re-hashed every module. Still on disk: `react-native-worklets/android/.cxx/RelWithDebInfo/` holds `2j564h2t` (110 MB, `=1024`) beside `734q4i31` (60 MB, `=140`) — two caches for one library, and the cold hour in row 5 is what that kind of split buys: every module then configures and compiles as if for the first time.
 - **`expo prebuild --clean`** deletes `android/local.properties`, and with it `cmake.dir=D:/android-sdk-cmake`. CMake then resolves to the SDK's own copy, which changes both `$CMAKE` and `$NINJA`, re-hashes every module, and lands back on the ninja 1.10.2 that cannot build reanimated.
 
-So keep `cmake.dir`, the NDK revision and the long-path setting steady and the objects are reused indefinitely; `source scripts/android-env.sh --check` fails on a missing `cmake.dir` and warns when a module carries more than one `.cxx/Debug` folder. Deleting a `.cxx` folder is only the right move when you swapped a binary *behind a path that never changed* — the ninja 1.10.2 ➔ 1.12.1 replacement kept `$NINJA` identical, so the hash did not move and the stale `CMakeCache.txt` survived — and then delete the stale sibling, not the folder the current hash points at.
+So keep `cmake.dir`, the NDK revision and the long-path setting steady and the objects are reused indefinitely; `source scripts/android-env.sh --check` fails on a missing `cmake.dir` and warns when a module carries more than one `.cxx/Debug` folder, but it does not size that dead weight — `npm run android:clean-abi` does. Deleting a `.cxx` folder is only the right move when you swapped a binary *behind a path that never changed* — the ninja 1.10.2 ➔ 1.12.1 replacement kept `$NINJA` identical, so the hash did not move and the stale `CMakeCache.txt` survived — and then delete the stale sibling, not the folder the current hash points at.
 
 #### OTA channel for a local release build
 

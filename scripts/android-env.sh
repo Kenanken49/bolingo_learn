@@ -12,6 +12,12 @@
 #   source scripts/android-env.sh          # export into this shell
 #   source scripts/android-env.sh --check  # export, then verify both locations
 #
+# --check reports environment state (SDK, AVDs, caches, the ABI pin, .cxx split,
+# free space) and nothing else. How much ABI disk is reclaimable belongs to
+# `npm run android:clean-abi`, which --check points at rather than duplicating:
+# sizing those folders means walking every generated tree, so it stays out of a
+# preflight. The `abi-clean` gate asserts that split.
+#
 # After sourcing, the usual commands pick up the right paths:
 #   emulator -list-avds
 #   emulator -avd Medium_Phone
@@ -173,6 +179,12 @@ if [ "${1:-}" = "--check" ]; then
     fi
   fi
 
+  # Reclaimable ABI disk is deliberately NOT measured here: sizing those folders is
+  # scripts/clean-abi.sh's job, and its report mode walks every generated tree (~71 s
+  # on this machine, measured 2026-11-12), far too slow for a preflight people source
+  # before every build. This script only names it, so there is one place to look.
+  ANDROID_CLEAN_ABI_CMD='npm run android:clean-abi'
+
   # A second hash folder per module means the native cache is split across
   # configurations and the next build pays for it again.
   if [ -d node_modules ]; then
@@ -187,7 +199,7 @@ if [ "${1:-}" = "--check" ]; then
       fi
     done
     if [ -n "$splits" ]; then
-      echo "  [warn] native cache split by changed CMake settings in:$splits (see README: what invalidates .cxx)"
+      echo "  [warn] native cache split by changed CMake settings in:$splits (see README: what invalidates .cxx; $ANDROID_CLEAN_ABI_CMD sizes what is reclaimable)"
     else
       echo "  [ok]  one native (.cxx) configuration per module — compiles get reused"
     fi
@@ -195,9 +207,10 @@ if [ "${1:-}" = "--check" ]; then
 
   # The .cxx objects grow under node_modules, which is a junction onto D: here, but
   # each extra ABI still wants ~2.1 GB of obj/*.so copies and packaging room on C:.
+  # Only free space is read here; what could be cleared is the cleaner's answer.
   free_c=$(df -Pm /c 2>/dev/null | awk 'NR==2 {print $4}')
   if [ -n "$free_c" ] && [ "$free_c" -lt 8192 ]; then
-    echo "  [warn] only $((free_c / 1024)) GB free on C: — each additional ABI needs about 2.1 GB"
+    echo "  [warn] only $((free_c / 1024)) GB free on C: — each additional ABI needs about 2.1 GB; for what can be reclaimed now, $ANDROID_CLEAN_ABI_CMD (report mode: ~71 s, deletes nothing)"
   fi
 
   echo

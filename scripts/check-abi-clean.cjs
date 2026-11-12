@@ -384,7 +384,31 @@ function makeSharedTaskFixture(label) {
   cleanup(fixture);
 }
 
-/* ---- 8. the real tree, read-only, on request ---------------------------- */
+/* ---- 8. the preflight points here instead of duplicating the sizing ---- */
+{
+  const envScript = path.join(ROOT, 'scripts', 'android-env.sh');
+  const text = fs.readFileSync(envScript, 'utf8');
+  const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+  const named = /npm run (android:[a-z-]+)/.exec(text);
+  check(
+    'android-env.sh --check sends the disk warning to the cleaner',
+    !!named && Boolean(pkg.scripts && pkg.scripts[named[1]]),
+    named ? `it points at npm run ${named[1]}` : 'scripts/android-env.sh never names the cleaner command'
+  );
+  check(
+    'both disk warnings reach it, through one shared variable',
+    /ANDROID_CLEAN_ABI_CMD='npm run android:clean-abi'/.test(text) &&
+      (text.match(/\$ANDROID_CLEAN_ABI_CMD/g) || []).length === 2,
+    `pointers found=${(text.match(/\$ANDROID_CLEAN_ABI_CMD/g) || []).length}, expected 2 (split .cxx and free space)`
+  );
+  check(
+    'the preflight does not re-implement the ABI size walk',
+    !/\bdu\b/.test(text) && /\bdf\b/.test(text),
+    `du present=${/\bdu\b/.test(text)} — sizing reclaimable folders is clean-abi.sh\'s job (report mode measured at 71 s warm here)`
+  );
+}
+
+/* ---- 9. the real tree, read-only, on request ---------------------------- */
 if (process.argv.includes('--real')) {
   const result = spawnSync(shell, [SCRIPT], { cwd: ROOT, encoding: 'utf8', env: process.env });
   const stdout = String(result.stdout || '');
