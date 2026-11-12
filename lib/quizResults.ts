@@ -31,6 +31,8 @@ export interface LessonResult {
   pendingSync?: boolean;
   /** Time from the first question to submit (the Climber "Done · 4 min 12 s"). */
   durationMs?: number;
+  /** A failed lesson cost one diamond (signed-in, non-Premium learners only). */
+  diamondLost?: boolean;
 }
 
 let current: LessonResult | null = null;

@@ -1,6 +1,6 @@
 # Privacy Policy — Bolingo Learn
 
-**Effective date:** [DATE] · **Contact:** [support@bolingo.example]
+**Effective date:** 6 November 2026 · **Contact:** support@bolingo.co.ke
 
 Bolingo Learn ("we") is an educational quiz app. This policy describes what
 we collect, why, and your choices. It covers the mobile app on iOS and
@@ -10,7 +10,7 @@ Android (and web preview where available).
 
 **Account data (Supabase auth + `profiles` table).** Email address and
 authentication identifiers needed to sign you in and sync progress: XP,
-streak count, hearts and refill timestamps, lesson completions, and premium
+streak count, diamonds and refill timestamps, lesson completions, and premium
 status. Legal basis where applicable: contract (providing the service).
 
 **Your uploads (`user-images`/`user-materials` storage, `user_uploads`).**
@@ -29,8 +29,8 @@ store your card details — those stay with the app store.
 **Ads (Google AdMob).** Rewarded video ads use Google's advertising
 identifier and standard ad-serving data (device info, approximate location
 from IP, ad interactions) under Google's policies. No rewarded-ad viewing
-history is attached to your account beyond the heart refill it earns.
-Ads are optional: they appear only when you run out of hearts and choose to
+history is attached to your account beyond the diamond refill it earns.
+Ads are optional: they appear only when you run out of diamonds and choose to
 watch one. Before any ad is requested we ask Google's consent management
 platform whether you have consented — in the EEA, UK and other regions where
 it applies you will see a consent form, and declining it means no ad is ever
@@ -71,7 +71,7 @@ generated lessons are deleted with the account (cascade delete).
 ## 5. Your rights
 
 Access, correct, export, or delete your data: use in-app account controls
-or email [support@bolingo.example]. Deleting your account removes your
+or email support@bolingo.co.ke. Deleting your account removes your
 profile, uploads, lessons, and questions. EU/UK users may lodge a complaint
 with their supervisory authority; California users may exercise CCPA/CPRA
 rights at the same address.
@@ -86,7 +86,7 @@ for removal.
 
 Transport encryption (TLS), Supabase row-level security + private storage
 buckets scoped per user, service-role keys kept server-side only. No
-method is 100% secure — report issues to [support@bolingo.example].
+method is 100% secure — report issues to support@bolingo.co.ke.
 
 ## 8. Changes
 
@@ -97,9 +97,9 @@ after the effective date constitutes acceptance.
 
 ### Filling checklist (before publishing)
 
-- [ ] Replace `[DATE]`, `[support@bolingo.example]`, support URL.
+- [x] Replace `[DATE]`, `[support@bolingo.example]`, support URL (done 6 Nov 2026).
 - [ ] Confirm Supabase project region (data residency note if needed).
-- [ ] Host this file publicly (e.g. bolingo.example/privacy) — both stores
-      require a live URL, not a repo file.
+- [x] Host this file publicly — served in-app/web at `bolingo.co.ke/privacy`
+      (`src/app/privacy.tsx`); confirm it resolves on the live site after deploy.
 - [ ] Mirror the §1 categories in Play Data Safety + App Store nutrition
       labels (see store-listing.md reviewer notes).

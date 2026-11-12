@@ -23,11 +23,11 @@ button. Guided lessons and workshops let learners retry until the corrected
 answer is solid, but a retry never changes the first-attempt record used by
 labs, reviews, and exams.
 
-Hearts stay live in the quiz player: a wrong answer costs one, and the session
-pauses at zero behind the refill sheet (rewarded video, 4-hour regen, Premium —
-see [admob.md](admob.md)). Running tests and typing answers stay free, and a
-spent heart never changes the mastery record: first attempts are still what
-labs, reviews and exams count.
+Diamonds stay live around the quiz player: wrong answers are always free, a
+failed lesson costs one diamond, and the next lesson waits at zero behind the
+refill sheet (rewarded video, 4-hour regen, Premium — see [admob.md](admob.md)).
+Running tests and typing answers stay free, and a spent diamond never changes
+the mastery record: first attempts are still what labs, reviews and exams count.
 
 ## Why first-try mastery
 

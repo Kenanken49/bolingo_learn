@@ -16,7 +16,7 @@ interface Props {
   questionData: CodeQuizData;
   questionLabel: string;
   progressPct: number;
-  hearts: number;
+  diamonds: number;
   sessionKind?: BlockKind;
   /** The lesson's own voice — the recogniser listens in this language. */
   language: LanguagePreset;

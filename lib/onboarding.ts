@@ -9,7 +9,7 @@ import { completeLesson } from './progress';
  * - Goal: picked on first run, personalizes the Up-next card.
  * - Onboarded: flipped once a guest starts/finishes their first lesson —
  *   the "play first" half of play-first-profile-second.
- * - Quiz/hearts intros: contextual coach marks shown exactly once, at the
+ * - Quiz/diamonds intros: contextual coach marks shown exactly once, at the
  *   moment the user first meets the mechanic.
  * - Pending guest result: a guest's first-lesson XP waiting to be saved to
  *   their account when they sign up.
@@ -19,7 +19,7 @@ const K_GOAL = 'bolingo.goal';
 const K_ONBOARDED = 'bolingo.onboarded';
 const K_QUIZ_INTRO = 'bolingo.quizIntroSeen';
 const K_QUIZ_INTRO_LANG = 'bolingo.quizIntroSeen.lang';
-const K_HEARTS_INTRO = 'bolingo.heartsIntroSeen';
+const K_DIAMONDS_INTRO = 'bolingo.diamondsIntroSeen';
 const K_PENDING = 'bolingo.pendingGuestResult';
 
 export const GOALS = [
@@ -91,12 +91,12 @@ export async function markQuizIntroSeen(track: QuizTrack = 'code'): Promise<void
   await set(track === 'lang' ? K_QUIZ_INTRO_LANG : K_QUIZ_INTRO, '1');
 }
 
-export async function hasSeenHeartsIntro(): Promise<boolean> {
-  return (await get(K_HEARTS_INTRO)) === '1';
+export async function hasSeenDiamondsIntro(): Promise<boolean> {
+  return (await get(K_DIAMONDS_INTRO)) === '1';
 }
 
-export async function markHeartsIntroSeen(): Promise<void> {
-  await set(K_HEARTS_INTRO, '1');
+export async function markDiamondsIntroSeen(): Promise<void> {
+  await set(K_DIAMONDS_INTRO, '1');
 }
 
 /** A guest's unsaved first-lesson result (XP rescue on signup). */

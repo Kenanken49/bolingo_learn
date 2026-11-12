@@ -50,8 +50,7 @@ const LEGACY_DARK_INK: Record<string, LegacyRole> = {
 export type AppIconName =
   | 'flame'
   | 'gem'
-  | 'heart'
-  | 'heartOutline'
+  | 'diamond'
   | 'trophy'
   | 'home'
   | 'target'
@@ -143,8 +142,7 @@ type Glyph = { lib: 'ion' | 'mci'; glyph: string };
 const MAP: Record<AppIconName, Glyph> = {
   flame: { lib: 'ion', glyph: 'flame' },
   gem: { lib: 'ion', glyph: 'diamond' },
-  heart: { lib: 'ion', glyph: 'heart' },
-  heartOutline: { lib: 'ion', glyph: 'heart-outline' },
+  diamond: { lib: 'ion', glyph: 'diamond' },
   trophy: { lib: 'ion', glyph: 'trophy' },
   home: { lib: 'ion', glyph: 'home' },
   target: { lib: 'ion', glyph: 'locate' },

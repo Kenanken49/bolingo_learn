@@ -13,7 +13,7 @@
 
 export type FeatureId =
   | 'core_curriculum'
-  | 'hearts'
+  | 'diamonds'
   | 'uploads'
   | 'scan_notes'
   | 'audiobook'
@@ -49,7 +49,7 @@ export const AI_TOKENS_PER_EXCHANGE_ESTIMATE = 400;
 
 export const FEATURES: FeatureSpec[] = [
   { id: 'core_curriculum', label: 'Lessons & labs', icon: 'book', free: 'Unlimited', premium: 'Unlimited', availableTo: ['free', 'premium'], status: 'live' },
-  { id: 'hearts', label: 'Hearts', icon: 'heart', free: '5, regen 4h', premium: 'Unlimited', availableTo: ['free', 'premium'], status: 'live' },
+  { id: 'diamonds', label: 'Diamonds', icon: 'diamond', free: '5, regen 4h', premium: 'Unlimited', availableTo: ['free', 'premium'], status: 'live' },
   { id: 'uploads', label: 'Uploads', icon: 'doc', free: 'Text ≤1k', premium: 'All formats', availableTo: ['free', 'premium'], status: 'live' },
   { id: 'scan_notes', label: 'Scan notes', icon: 'camera', free: '—', premium: 'Included', availableTo: ['premium'], status: 'live' },
   { id: 'audiobook', label: 'Audiobook', icon: 'headset', free: 'Device voice', premium: 'Generated', availableTo: ['free', 'premium'], status: 'live' },

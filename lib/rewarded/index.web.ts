@@ -1,7 +1,7 @@
 /** Web stub — rewarded ads are native-only. */
 import type { RewardHook } from './types';
 
-export function useRewardedHeart(_onEarn: () => void): RewardHook {
+export function useRewardedDiamond(_onEarn: () => void): RewardHook {
   void _onEarn;
   return {
     loaded: false,

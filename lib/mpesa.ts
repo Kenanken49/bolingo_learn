@@ -16,6 +16,14 @@ import { isFlagOn } from './featureFlags';
  * is on.
  */
 export const MPESA_PLAN = 'premium_monthly' as const;
+
+/**
+ * The figure shown on the paywall card. It must equal `ADVERTISED_AMOUNT_KES`
+ * in `supabase/functions/_shared/mpesa.ts`, which is what the server charges by
+ * default — `npm run check:mpesa` compares the two, because at go live the
+ * easiest way to mislead a learner is to localize the price on one side of the
+ * network only and show a KSh 770 card while charging another amount.
+ */
 export const MPESA_PRICE_LABEL = 'KSh 770/mo';
 
 const POLL_INTERVAL_MS = 5_000;

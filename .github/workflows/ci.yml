@@ -1,0 +1,72 @@
+name: quality-gates
+
+on:
+  push:
+    branches: [main, coolify-hosting]
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # Same flags as the Coolify image (Dockerfile): llama.rn's postinstall
+      # fetches native binaries CI never uses, and the tree needs the legacy
+      # peer resolution. Plain `npm ci` fails on the optional esbuild platform
+      # packages before a single gate can run.
+      - run: npm ci --ignore-scripts --legacy-peer-deps
+      - run: npm run gate
+
+  # The Flask lab course ships as app content, so it gets its own release bar
+  # here too: build the real lab image, then sweep the course inside it. The
+  # in-container run is authoritative — the run/http graders talk to a live
+  # server on port 8080, which only exists for real in Linux here.
+  course-lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      IMAGE: labex-flask-web-apps:ci
+      LAB: lab-local/flask-web-apps
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the lab image
+        run: docker build -t "$IMAGE" "$LAB"
+
+      - name: code-server archive exists for every mapped arch
+        run: |
+          set -euo pipefail
+          # The Dockerfile picks the archive from `uname -m` so Apple Silicon
+          # builds get a native arm64 code-server instead of running amd64
+          # under emulation. Both halves are checked: the mapping is still
+          # wired, and upstream still ships what it points at.
+          grep -E 'x86_64\|amd64\)[[:space:]]+cs_arch=amd64' "$LAB/Dockerfile" > /dev/null
+          grep -E 'aarch64\|arm64\)[[:space:]]+cs_arch=arm64' "$LAB/Dockerfile" > /dev/null
+          version="$(sed -n 's/^ARG CODE_SERVER_VERSION=\(.*\)$/\1/p' "$LAB/Dockerfile" | head -1)"
+          test -n "$version"
+          for arch in amd64 arm64; do
+            url="https://github.com/coder/code-server/releases/download/v${version}/code-server-${version}-linux-${arch}.tar.gz"
+            code="$(curl -sILo /dev/null -w '%{http_code}' "$url")"
+            echo "$arch -> HTTP $code  $url"
+            test "$code" = 200
+          done
+
+      - name: Course sweep — pristine negatives, solve+check 1..84, reset --all
+        run: |
+          mkdir -p "$RUNNER_TEMP/sweep-logs"
+          docker run --rm \
+            -v "$RUNNER_TEMP/sweep-logs:/tmp/course-sweep" \
+            "$IMAGE" bash /lab/.ci/course-sweep.sh
+
+      - name: Upload sweep logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: course-sweep-logs
+          path: ${{ runner.temp }}/sweep-logs
+          retention-days: 7
+          if-no-files-found: warn

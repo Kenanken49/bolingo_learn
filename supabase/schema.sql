@@ -21,11 +21,12 @@ create table if not exists public.profiles (
 
 alter table public.profiles enable row level security;
 
--- Habit-loop counters: hearts gate the quiz loop, hearts_refilled_at drives
--- the 4-hour loss-aversion wait.
+-- Habit-loop counters: diamonds gate lesson attempts (one lost per failed
+-- lesson, wrong answers are free); diamonds_refilled_at drives the 4-hour
+-- loss-aversion wait. See migrations_diamonds.sql (one-time hearts backfill).
 alter table public.profiles
-  add column if not exists hearts integer not null default 5,
-  add column if not exists hearts_refilled_at timestamptz not null default now(),
+  add column if not exists diamonds integer not null default 5,
+  add column if not exists diamonds_refilled_at timestamptz not null default now(),
   add column if not exists gems integer not null default 0,
   add column if not exists streak_freezes integer not null default 0,
   add column if not exists ai_words_used integer not null default 0,

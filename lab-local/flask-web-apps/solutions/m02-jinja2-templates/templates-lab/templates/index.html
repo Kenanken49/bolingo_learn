@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    <h1>{{ title }}</h1>
+    <ul>
+      {% for post in posts %}
+      <li><strong>{{ post.title }}</strong> by {{ post.author }} — {{ post.body }}</li>
+      {% else %}
+      <li>No posts yet.</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

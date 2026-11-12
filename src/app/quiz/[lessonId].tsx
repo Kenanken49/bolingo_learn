@@ -15,9 +15,9 @@ import DuoButton from '../../../components/DuoButton';
 import AppIcon, { type AppIconName } from '../../../components/AppIcon';
 import AskBingo from '../../../components/AskBingo';
 import Mascot from '../../../components/AfricanMascots';
-import OutOfHeartsSheet from '../../../components/OutOfHeartsSheet';
+import OutOfDiamondsSheet from '../../../components/OutOfDiamondsSheet';
 import { supabase, toDbLessonId } from '../../../lib/supabase';
-import { getProfile, grantHearts, loseHeart, MAX_HEARTS } from '../../../lib/progress';
+import { getProfile, grantDiamonds, loseDiamond, MAX_DIAMONDS } from '../../../lib/progress';
 import { completeLessonOfflineFirst } from '../../../lib/sync/syncStore';
 import { signAudioPath } from '../../../lib/audiobook';
 import { getCourseLesson } from '../../../lib/courses';
@@ -86,9 +86,9 @@ export default function QuizPlayer() {
   const [lessonTitle, setLessonTitle] = useState(typeof title === 'string' ? title : 'Lesson');
   const [lessonTheory, setLessonTheory] = useState<string | undefined>(undefined);
   const [index, setIndex] = useState(0);
-  const [hearts, setHearts] = useState(MAX_HEARTS);
+  const [diamonds, setDiamonds] = useState(MAX_DIAMONDS);
   const [userId, setUserId] = useState<string | null>(null);
-  // Premium learners never lose hearts, so the refill sheet must never offer
+  // Premium learners never lose diamonds, so the refill sheet must never offer
   // them an ad. The flag rides along with every profile read.
   const [isPremium, setIsPremium] = useState(false);
   // One record per question: the first response and the latest practice
@@ -125,7 +125,7 @@ export default function QuizPlayer() {
     if (lessonId === 'srs-review' || lessonId.startsWith('srs-review:')) {
       const rp = await getProfile();
       setUserId(rp?.id ?? null);
-      setHearts(rp?.hearts ?? MAX_HEARTS);
+      setDiamonds(rp?.diamonds ?? MAX_DIAMONDS);
       setIsPremium(rp?.is_premium ?? false);
       if (!rp) {
         setQuestions([]);
@@ -264,7 +264,7 @@ export default function QuizPlayer() {
     }
     const p = await getProfile();
     setUserId(p?.id ?? null);
-    setHearts(p?.hearts ?? MAX_HEARTS);
+    setDiamonds(p?.diamonds ?? MAX_DIAMONDS);
     setIsPremium(p?.is_premium ?? false);
     // Kiki v3 loads its brain alongside the profile (best-effort, never blocks).
     void loadKiki(p?.id ?? null);
@@ -345,7 +345,7 @@ export default function QuizPlayer() {
       getProfile()
         .then((p) => {
           if (p) {
-            setHearts(p.hearts);
+            setDiamonds(p.diamonds);
             setIsPremium(p.is_premium);
           }
         })
@@ -353,45 +353,28 @@ export default function QuizPlayer() {
     }, [])
   );
 
-  /**
-   * Spend a heart. Signed-in learners persist it through progress.ts (which
-   * waives the cost for Premium); guests keep a session-local count, exactly
-   * like the rest of guest mode.
-   */
-  const handleHeartLost = useCallback(async () => {
-    // Guests keep their hearts: there is no account to hold a refill, so
-    // charging them would dead-end the lesson (no ad reward, no regen).
-    if (!userId) return;
-    try {
-      const p = await loseHeart(userId);
-      setHearts(p.hearts);
-    } catch {
-      // Never break the lesson over a failed write: the learner keeps playing.
-    }
-  }, [userId]);
-
-  /** The rewarded video completed — persist the heart before closing the sheet. */
-  const grantHeart = useCallback(async () => {
+  /** The rewarded video completed — persist the diamond before closing the sheet. */
+  const grantDiamond = useCallback(async () => {
     if (!userId) {
-      setHearts((h) => Math.min(MAX_HEARTS, h + 1));
+      setDiamonds((d) => Math.min(MAX_DIAMONDS, d + 1));
       return;
     }
     try {
-      const p = await grantHearts(userId, 1);
-      setHearts(p.hearts);
+      const p = await grantDiamonds(userId, 1);
+      setDiamonds(p.diamonds);
     } catch {
       // The sheet stays open; the learner can retry or take the free refill.
     }
   }, [userId]);
 
-  // Zero hearts pauses the session behind the refill sheet: ad, 4-hour wait or
-  // Premium. Derived, never stored, so a refilled heart closes the sheet and a
-  // spent one reopens it with no extra state to keep in sync.
-  const outOfHearts = (questions?.length ?? 0) > 0 && hearts <= 0;
+  // Zero diamonds pauses the session behind the refill sheet: ad, 4-hour wait
+  // or Premium. Derived, never stored, so a refilled diamond closes the sheet
+  // and a spent one reopens it with no extra state to keep in sync.
+  const outOfDiamonds = (questions?.length ?? 0) > 0 && diamonds <= 0;
 
   useEffect(() => {
-    if (outOfHearts) track('hearts_depleted', { lessonId });
-  }, [outOfHearts, lessonId]);
+    if (outOfDiamonds) track('diamonds_depleted', { lessonId });
+  }, [outOfDiamonds, lessonId]);
 
   const q = questions?.[index];
   // Sessions that contain a runnable or free-response exercise get coach copy
@@ -528,7 +511,7 @@ export default function QuizPlayer() {
       ...(standard.firstAttemptCounts ? entry.first : entry.final),
       firstTryCorrect: entry.first.correct,
     }));
-    const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0, pendingSync = false) => {
+    const goResults = (streakCount: number, leveledUp = false, newLevel = 0, totalXp = 0, pendingSync = false, diamondLost = false) => {
       setLessonResult({
         lessonId,
         title: lessonTitle,
@@ -544,20 +527,37 @@ export default function QuizPlayer() {
         newLevel,
         totalXp,
         pendingSync,
+        diamondLost,
         durationMs: startedAtRef.current > 0 ? Date.now() - startedAtRef.current : undefined,
       });
       router.replace('/results');
     };
-    // A failed mastery check does not unlock the node or award XP. The results
-    // screen keeps the retry button, so the learner can review and try again.
+    // A failed mastery check does not unlock the node or award XP — and it
+    // costs one diamond (wrong answers are free). Guests never lose diamonds:
+    // there is no account to hold a refill, so charging them would dead-end
+    // the lesson. An offline failure keeps the diamond; the retry still teaches.
+    // The results screen keeps the retry button, so the learner can review and
+    // try again.
     if (!mastered) {
-      if (userId) {
-        getProfile()
-          .then((p) => goResults(p?.streak_count ?? 0))
-          .catch(() => goResults(0));
+      const fail = (diamondLost: boolean) => {
+        if (userId) {
+          getProfile()
+            .then((p) => goResults(p?.streak_count ?? 0, false, 0, 0, false, diamondLost))
+            .catch(() => goResults(0, false, 0, 0, false, diamondLost));
+        } else {
+          void markOnboarded();
+          goResults(0);
+        }
+      };
+      if (userId && !isPremium) {
+        loseDiamond(userId)
+          .then((p) => {
+            setDiamonds(p.diamonds);
+            fail(true);
+          })
+          .catch(() => fail(false));
       } else {
-        void markOnboarded();
-        goResults(0);
+        fail(false);
       }
       return;
     }
@@ -615,7 +615,7 @@ export default function QuizPlayer() {
             questionData={q}
             questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
             progressPct={Math.round(((index + 1) / questions.length) * 100)}
-            hearts={hearts}
+            diamonds={diamonds}
             sessionKind={sessionKind}
             onCorrect={() => {}}
             onAnswer={handleAnswer}
@@ -629,7 +629,7 @@ export default function QuizPlayer() {
             prompt={q.prompt}
             questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
             progressPct={Math.round(((index + 1) / questions.length) * 100)}
-            hearts={hearts}
+            diamonds={diamonds}
             sessionKind={sessionKind}
             terminal={q.terminal}
             scenario={GIT_SCENARIOS[q.terminal.scenarioId]}
@@ -656,7 +656,7 @@ export default function QuizPlayer() {
             questionData={q}
             questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
             progressPct={Math.round(((index + 1) / questions.length) * 100)}
-            hearts={hearts}
+            diamonds={diamonds}
             sessionKind={sessionKind}
             onCorrect={() => {}}
             onAnswer={handleAnswer}
@@ -668,7 +668,7 @@ export default function QuizPlayer() {
             questionData={q}
             questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
             progressPct={Math.round(((index + 1) / questions.length) * 100)}
-            hearts={hearts}
+            diamonds={diamonds}
             sessionKind={sessionKind}
             language={lessonSpeech}
             onCorrect={() => {}}
@@ -681,7 +681,7 @@ export default function QuizPlayer() {
             questionData={q}
             questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
             progressPct={Math.round(((index + 1) / questions.length) * 100)}
-            hearts={hearts}
+            diamonds={diamonds}
             sessionKind={sessionKind}
             language={lessonSpeech}
             onCorrect={() => {}}
@@ -694,7 +694,7 @@ export default function QuizPlayer() {
             questionData={q}
             questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
             progressPct={Math.round(((index + 1) / questions.length) * 100)}
-            hearts={hearts}
+            diamonds={diamonds}
             sessionKind={sessionKind}
             onCorrect={() => {}}
             onAnswer={handleAnswer}
@@ -709,11 +709,7 @@ export default function QuizPlayer() {
             theory={lessonTheory}
             questionLabel={`${lessonTitle} • Q${index + 1}/${questions.length}`}
             progressPct={Math.round(((index + 1) / questions.length) * 100)}
-            hearts={hearts}
             sessionKind={sessionKind}
-            onHeartsChange={setHearts}
-            onHeartLost={handleHeartLost}
-            onOutOfHearts={() => router.push('/refill')}
             onCorrect={() => {}}
             onAnswer={handleAnswer}
             onContinue={() => (index + 1 >= questions.length ? finish() : setIndex((i) => i + 1))}
@@ -731,12 +727,12 @@ export default function QuizPlayer() {
             <Text className="mt-2 font-duo text-xl font-extrabold text-slate-900 dark:text-slate-100">How a lesson works</Text>
             {[
                 typedSession
-                  ? ['code', 'Write and run', 'Type your answer, then run the tests — free, no hearts lost.']
+                  ? ['code', 'Write and run', 'Type your answer, then run the tests — wrong answers are always free.']
                   : ['hand', 'Tap tokens', 'Build your answer in the drop zone. Tap again to remove one.'],
                 isLanguageLesson
                   ? ['volume', 'Hear Livia', 'Livia pronounces the phrase in its native voice — tap 🐢 to hear it slowly. Bingo can read the question too.']
-                  : ['play', 'Run tests', 'Check your code like a real dev — free, no hearts lost.'],
-                ['checkCircle', 'Check answer', 'Correct earns +10 XP. A wrong answer costs a heart — at zero, a short video gives one back.'],
+                  : ['play', 'Run tests', 'Check your code like a real dev — wrong answers are always free.'],
+                ['diamond', 'Finish lessons', 'Correct earns +10 XP. A failed lesson costs one diamond — wrong answers never do.'],
               ].map(([icon, title, body]) => (
               <View key={title} className="mt-3 flex-row items-start">
                 <AppIcon name={icon as AppIconName} size={26} color="#0F172A" />
@@ -768,11 +764,11 @@ export default function QuizPlayer() {
         userId={userId}
         isPremium={isPremium}
       />
-      <OutOfHeartsSheet
-        visible={outOfHearts}
-        hearts={hearts}
+      <OutOfDiamondsSheet
+        visible={outOfDiamonds}
+        diamonds={diamonds}
         isPremium={isPremium}
-        onEarned={grantHeart}
+        onEarned={grantDiamond}
         onClose={() => router.replace('/')}
         onOpenAllOptions={() => router.push('/refill')}
         onOpenPremium={() => router.push('/paywall')}

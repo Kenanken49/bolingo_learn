@@ -285,6 +285,14 @@ export default function Results() {
             ? 'Session cleared. The next node is unlocked on your path.'
             : 'This run did not unlock the node or award XP. Review the first-try misses below, then retry.'}
         </Text>
+        {!passed && result.diamondLost ? (
+          <View className="mt-2 flex-row items-center gap-1.5">
+            <AppIcon name="diamond" size={16} color="#0284C7" />
+            <Text className="text-sm font-extrabold text-sky-700 dark:text-sky-300">
+              −1 diamond — failed lessons cost one. Wrong answers are always free.
+            </Text>
+          </View>
+        ) : null}
         {!passed && missed.length > 0 ? (
           <View className="mt-2 gap-1">
             <Text className="text-sm font-extrabold text-slate-700 dark:text-slate-300">Review these concepts:</Text>

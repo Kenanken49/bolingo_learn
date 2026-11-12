@@ -1,6 +1,14 @@
 {
   "name": "bolingo_learn",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "description": "Bolingo Learn — languages, tech skills and work readiness for every life stage, on iOS, Android and the web.",
+  "author": "Freebuff",
+  "contributors": [
+    {
+      "name": "Freebuff",
+      "url": "https://bolingo.co.ke"
+    }
+  ],
   "main": "expo-router/entry",
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.74.0",
@@ -11,12 +19,11 @@
     "@expo-google-fonts/roboto": "^0.4.3",
     "@expo-google-fonts/schibsted-grotesk": "^0.4.2",
     "@expo/vector-icons": "^15.0.2",
-    "@netlify/database": "^2.0.1",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@revenuecat/purchases-js": "^1.73.1",
     "@supabase/supabase-js": "^2.47.0",
     "base64-arraybuffer": "^1.0.2",
-    "drizzle-orm": "^1.0.0-beta.22",
+    "drizzle-orm": "1.0.0-beta.22",
     "expo": "~58.0.23",
     "expo-asset": "~58.0.0",
     "expo-audio": "~58.0.11",
@@ -42,6 +49,8 @@
     "expo-web-browser": "~58.0.7",
     "llama.rn": "^0.13.0-rc.9",
     "nativewind": "4.2.7",
+    "pg": "^8.22.0",
+    "qrcode-generator": "^2.0.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.1",
@@ -56,7 +65,6 @@
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {
-    "@netlify/functions": "^6.0.3",
     "@prisma/orm-postgres": "^8.0.0-rc.22",
     "@supabase/server": "^1.9.2",
     "@types/node": "^26.6.5",
@@ -65,6 +73,7 @@
     "drizzle-kit": "1.0.0-beta.22",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~58.0.4",
+    "jsqr": "^1.4.0",
     "prettier-plugin-tailwindcss": "0.5.11",
     "prisma": "^8.0.0-rc.29",
     "tailwindcss": "3.4.17",
@@ -72,9 +81,15 @@
   },
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "android:warm": "bash -c \"if [ ! -d android ]; then echo 'Warm rebuild needs android/: run npx expo prebuild --platform android first.' >&2; exit 1; fi; source scripts/android-env.sh && cd android && ./gradlew :app:assembleDebug\"",
+    "android:clean-abi": "bash scripts/clean-abi.sh",
+    "ios": "expo run:ios",
     "web": "expo start --web",
+    "build:web": "npx expo export --platform web && node scripts/publish-wireframes.cjs && node scripts/publish-web-extras.cjs",
+    "apk:publish": "node scripts/publish-android-apk.cjs",
+    "start:web": "node server/index.mjs",
+    "db:migrate": "node server/migrate.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
     "check:audio": "node scripts/check-celebration-duration.cjs",
@@ -107,10 +122,12 @@
     "check:uploads": "node scripts/check-upload-pipeline.cjs",
     "check:roleplay": "node scripts/check-roleplay-personas.cjs",
     "check:mpesa": "node scripts/check-mpesa.cjs",
+    "mpesa:golive": "node scripts/mpesa-golive.cjs",
     "gate": "node scripts/run-quality-gates.cjs",
     "gate:publish": "node scripts/run-quality-gates.cjs --publish",
     "check:quality-ops": "node scripts/check-quality-ops.cjs",
-    "test": "node scripts/check-classics-audiobooks.cjs && node scripts/check-celebration-duration.cjs && node scripts/check-celebration-benchmark.cjs && node scripts/check-results-celebration.cjs && node scripts/check-speak-back.cjs && node scripts/check-voice-casting.cjs && node scripts/check-cold-tts-session.cjs && node scripts/check-fliki-swahili.cjs && node scripts/check-audiobook-voice.cjs && node scripts/check-character-voices.cjs && node scripts/check-language-catalog.cjs && node scripts/check-curriculum-quality.cjs && node scripts/check-exercise-solutions.cjs && node scripts/check-transcript-import.cjs && node scripts/check-subtitle-import.cjs && node scripts/check-content-rights.cjs && node scripts/check-transcription-pipeline.cjs && node scripts/check-upload-pipeline.cjs && node scripts/check-leaderboard-xp.cjs && node scripts/check-roleplay-personas.cjs && node scripts/check-mpesa.cjs && node scripts/check-labex.cjs && node scripts/check-labex-sandbox.cjs && node scripts/check-vm.cjs && node scripts/check-guided.cjs && node scripts/check-ads.cjs && node scripts/check-materials.cjs && node scripts/check-quality-ops.cjs && node scripts/check-web-publish.cjs && node scripts/check-adaptive-ai.cjs",
+    "check:abi-clean": "node scripts/check-abi-clean.cjs",
+    "test": "node scripts/check-classics-audiobooks.cjs && node scripts/check-celebration-duration.cjs && node scripts/check-celebration-benchmark.cjs && node scripts/check-results-celebration.cjs && node scripts/check-speak-back.cjs && node scripts/check-voice-casting.cjs && node scripts/check-cold-tts-session.cjs && node scripts/check-fliki-swahili.cjs && node scripts/check-audiobook-voice.cjs && node scripts/check-character-voices.cjs && node scripts/check-language-catalog.cjs && node scripts/check-curriculum-quality.cjs && node scripts/check-exercise-solutions.cjs && node scripts/check-transcript-import.cjs && node scripts/check-subtitle-import.cjs && node scripts/check-content-rights.cjs && node scripts/check-transcription-pipeline.cjs && node scripts/check-upload-pipeline.cjs && node scripts/check-leaderboard-xp.cjs && node scripts/check-roleplay-personas.cjs && node scripts/check-mpesa.cjs && node scripts/check-labex.cjs && node scripts/check-labex-sandbox.cjs && node scripts/check-vm.cjs && node scripts/check-guided.cjs && node scripts/check-ads.cjs && node scripts/check-materials.cjs && node scripts/check-quality-ops.cjs && node scripts/check-web-publish.cjs && node scripts/check-adaptive-ai.cjs && node scripts/check-abi-clean.cjs",
     "import:labex": "node scripts/import-labex.cjs",
     "check:labex": "node scripts/check-labex.cjs",
     "check:vm": "node scripts/check-vm.cjs",
@@ -122,7 +139,10 @@
     "check:materials": "node scripts/check-materials.cjs",
     "check:audiobooks": "node scripts/check-classics-audiobooks.cjs",
     "check:web": "node scripts/check-web-publish.cjs",
-    "check:adaptive-ai": "node scripts/check-adaptive-ai.cjs"
+    "check:docs": "node scripts/check-doc-commands.cjs",
+    "check:adaptive-ai": "node scripts/check-adaptive-ai.cjs",
+    "check:release-artifact": "node scripts/check-release-artifact.cjs",
+    "course:flask": "node scripts/build-flask-course.cjs"
   },
   "private": true
 }

@@ -20,6 +20,7 @@ import { TRACK_LINUX_GRASSHOPPER } from './tracks/linux-grasshopper';
 import { TRACK_LINUX_JOURNEYMAN } from './tracks/linux-journeyman';
 import { TRACK_LINUX_NETWORKING } from './tracks/linux-networking';
 import { LINUX_ASSESSMENTS } from './linuxAssessments';
+import { AI_ML_COURSES } from './tracks/ai-ml';
 
 export type { CourseQuestion, CourseLesson } from './quizBank';
 
@@ -1173,6 +1174,11 @@ export const COURSES: Record<string, CourseLesson> = {
 
   // Course 6 mastery layer: command labs + cumulative finals for each unit.
   ...LINUX_ASSESSMENTS,
+
+  // Courses 7–9 (AI & ML Academy) live in lib/tracks/ai-ml/. Three tiers of
+  // 20 modules each, compiled from authored module records into notes,
+  // workshop, lab and quiz banks.
+  ...AI_ML_COURSES,
 };
 
 // Fail loudly at import time — a bad seed breaks the bundle, not a session.

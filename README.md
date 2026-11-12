@@ -35,6 +35,27 @@ Fresh start: React Native (via Expo) + TypeScript, styled with NativeWind (Tailw
    npm start
    ```
    Then press `w` (web), `a` (Android), or `i` (iOS).
+5. Run it on a device or emulator:
+   ```bash
+   npm run android   # expo run:android
+   npm run ios       # expo run:ios
+   ```
+   Either one compiles and installs a **development client**, launches it and
+   starts Metro (pass `-- --no-bundler` to stop after the install; a client
+   already on the device attaches with `npx expo start --dev-client`). Expo Go
+   is not an option here — `llama.rn`, `react-native-worklets` and
+   `expo-speech-recognition` are native modules Expo Go does not ship.
+   - **Android:** JDK 17, the SDK with platform + build-tools + NDK
+     27.1.12297006, CMake with ninja ≥ 1.11 and Windows long paths enabled, and
+     `source scripts/android-env.sh` in the same shell first so the AVDs and
+     Gradle caches land on `D:`. Details and failure modes are in
+     *Local Android toolchain* below; a cold debug build measured 1 h 7 min on
+     this machine, almost all of it the NDK/CMake compiles, and the same build
+     warm — caches and `.cxx` objects intact — takes 1 m 15 s.
+   - **iOS:** macOS with Xcode and a simulator or device, so it cannot build
+     from Windows — use a Mac, or the cloud:
+     `npx eas-cli build --profile development --platform ios` under
+     *EAS builds*.
 
 ## Checks
 
@@ -43,10 +64,15 @@ npm run gate        # every required release gate (CI runs the same runner)
 npm run typecheck   # TypeScript
 npm test            # cue + benchmark + celebration + speak-back + catalog + drafts + content rights + transcription + roleplay + labs
 npm run lint        # ESLint (expo lint)
-npm run check:labex    # licensed lab library: 1842 labs, 6580 questions, 12 categories
+npm run check:labex    # licensed lab library: 1893 labs, 6734 questions, 12 categories
 npm run check:sandbox  # every generated JS/CSS exercise really executes (reference passes, starter fails)
 npm run check:vm       # offline Git VM: every scenario's reference solution passes its own checks
 npm run check:guided   # every lab is runnable here or ships a walkthrough
+npm run check:audio    # the celebration cue is still exactly five seconds (reads the WAV header)
+npm run check:casting  # character voice casting is deterministic, not first-audition-wins
+npm run check:uploads  # a 0-byte copy or an unindexed upload fails with a stated reason
+npm run check:leaderboard # xp_events grants reach authenticated, not only its RLS policies
+npm run check:docs     # commands, gate ids, file links and curriculum counts in these docs all resolve
 npm run audio:preflight                 # workspace + cloned-voice consent gate for the configured voice
 npm run verify:lesson-audio -- --list   # uploaded lessons available for full audio verification
 npm run verify:lesson-audio:disposable -- --plan  # free dry run with a temporary lesson
@@ -178,7 +204,7 @@ what is still missing is an email provider secret and a git remote for CI — se
 
 ## Runnable labs (offline VM, sandbox editors, guided)
 
-1 842 imported labs, and each one runs or says plainly that it cannot:
+1 890 imported labs, and each one runs or says plainly that it cannot:
 
 - **Offline Git VM** — `lib/vm/` is an in-memory POSIX filesystem plus the Git
   object model and porcelain (`clone`, `branch`, `switch`, `merge`, `rebase`,
@@ -194,6 +220,11 @@ what is still missing is an email provider secret and a git remote for CI — se
   reference files, labelled **GUIDED — NO EXECUTION**
   ([components/GuidedLabPlayer.tsx](components/GuidedLabPlayer.tsx)). Chunks load
   per 40 labs, so one lab never pulls a whole category.
+- **Course generators** — the Flask walkthroughs are generated, never typed:
+  `npm run course:flask` rebuilds `lib/labex/guided/flask/` (one JSON chunk plus
+  the resolver index) from the source of truth in
+  `lab-local/flask-web-apps/tools/course.json` and its `lab_content/*.md`; edit the
+  spec, re-run the generator, then `npm run check:guided`.
 
 Interactive stages always come last in a session, and a lesson that runs here
 never also gets the walkthrough. Details, licensing and the gate table:
@@ -446,13 +477,13 @@ percentile logic and verifies the route still measures the real component.
 
 Expo Router (`src/app/`) drives the habit loop:
 
-1. **Path Map** (`/`): Duolingo-style winding track of circular nodes — 🔥 streak / ⭐ XP / ❤ hearts top bar; completed nodes turn gold 🏆, the active node pulses, locked nodes are greyed 🔒 (sequential unlock once signed in). The **🧠 AI Sandbox** FAB opens an upload panel (text, PDFs and photos via the system picker → `user-materials` → pipeline); each finished upload renders a **My Custom Revision** node, with in-flight uploads shown as ⏳ nodes and live statuses.
+1. **Path Map** (`/`): Duolingo-style winding track of circular nodes — 🔥 streak / ⭐ XP / 💎 diamonds top bar; completed nodes turn gold 🏆, the active node pulses, locked nodes are greyed 🔒 (sequential unlock once signed in). The **🧠 AI Sandbox** FAB opens an upload panel (text, PDFs and photos via the system picker → `user-materials` → pipeline); each finished upload renders a **My Custom Revision** node, with in-flight uploads shown as ⏳ nodes and live statuses.
 
    The pipeline first decides **what was uploaded** (`supabase/functions/_shared/materialKind.ts`): a chaptered **book** is narrated from its first character to its last (resumable parts, chapter offsets), while **notes**, **articles** and **transcripts** get a **revision pack** built on the seven memorization techniques — active recall, spaced repetition, flashcards, chunking, mind map, memory palace and teach-it — in `components`-free form at `src/app/revision/[uploadId].tsx`. See [docs/materials.md](docs/materials.md).
-2. **Quiz Player** (`/quiz/[lessonId]` + [components/GamifiedCodePlayer.tsx](components/GamifiedCodePlayer.tsx)): the reusable core game engine — tap-token assembly (`correctChain` vs `scrambledTokens`), animated top progress bar, hearts via `progress.ts`, cheerful/soft correction chimes from [assets/sounds.ts](assets/sounds.ts) on `expo-audio`, and the 🔊 audiobook anchor (plays the generated narration URL when present, premium-locked hint otherwise). The screen is a thin wrapper: loads demo or Supabase questions (multiple-choice collapses to one token, drag-and-drop splits the stored answer chain), attaches signed segment URLs as `audioUrl`, and handles completion/streak.
-3. **Loss-Aversion Screen** (`/refill`, modal) and the **out-of-hearts sheet** (`components/OutOfHeartsSheet.tsx`) that the quiz player raises the moment a heart hits zero: real AdMob rewarded video (+1 heart only on `EARNED_REWARD`, [lib/ads.ts](lib/ads.ts) unit config with Google test ids in dev), live 4-hour countdown from `hearts_refilled_at`, Premium upgrade (honest placeholder — RevenueCat/Stripe plugs in here). Guests never spend hearts (no account to refill) and Premium never sees an ad. See [docs/admob.md](docs/admob.md). Meta Audience Network skipped (deprecated); AdMob serves iOS + Android.
+2. **Quiz Player** (`/quiz/[lessonId]` + [components/GamifiedCodePlayer.tsx](components/GamifiedCodePlayer.tsx)): the reusable core game engine — tap-token assembly (`correctChain` vs `scrambledTokens`), animated top progress bar, diamonds via `progress.ts` (one lost per failed lesson, wrong answers free), cheerful/soft correction chimes from [assets/sounds.ts](assets/sounds.ts) on `expo-audio`, and the 🔊 audiobook anchor (plays the generated narration URL when present, premium-locked hint otherwise). The screen is a thin wrapper: loads demo or Supabase questions (multiple-choice collapses to one token, drag-and-drop splits the stored answer chain), attaches signed segment URLs as `audioUrl`, and handles completion/streak.
+3. **Loss-Aversion Screen** (`/refill`, modal) and the **out-of-diamonds sheet** (`components/OutOfDiamondsSheet.tsx`) that the quiz screen raises at zero diamonds before a lesson starts: real AdMob rewarded video (+1 diamond only on `EARNED_REWARD`, [lib/ads.ts](lib/ads.ts) unit config with Google test ids in dev), live 4-hour countdown from `diamonds_refilled_at`, Premium upgrade (honest placeholder — RevenueCat/Stripe plugs in here). Guests never spend diamonds (no account to refill) and Premium never sees an ad. See [docs/admob.md](docs/admob.md). Meta Audience Network skipped (deprecated); AdMob serves iOS + Android.
 
-Progress helpers live in [lib/progress.ts](lib/progress.ts) (`getProfile`, `completeLesson`, `loseHeart`, `grantHearts`, `refillWaitRemaining`); guest mode plays with local state only.
+Progress helpers live in [lib/progress.ts](lib/progress.ts) (`getProfile`, `completeLesson`, `loseDiamond`, `grantDiamonds`, `refillWaitRemaining`); guest mode plays with local state only.
 
 ## EAS builds (device testing)
 
@@ -481,9 +512,9 @@ npm install --no-save --ignore-scripts eas-cli@27.2.0
 npx eas-cli build --profile preview --platform android
 ```
 
-### Local Android toolchain (SDK on C:, AVD + Gradle on D:)
+### Local Android toolchain (SDK on C:, AVD + Gradle + node_modules on D:)
 
-The SDK binaries are installed by Android Studio on `C:`, but the two directories that actually grow live on the `D:` volume, where there is space. Nothing exports them, so a plain `npx expo run:android` looks in `%USERPROFILE%\.android\avd` and `%USERPROFILE%\.gradle`, finds neither, and re-downloads the Gradle graph onto `C:`.
+The SDK binaries are installed by Android Studio on `C:`, but the three directories that actually grow live on the `D:` volume, where there is space: the AVDs, the Gradle caches, and `node_modules` itself — reached through a directory junction, so no path string had to change (see *Moving `node_modules` off `C:`*). Nothing exports the first two, so a plain `npx expo run:android` looks in `%USERPROFILE%\.android\avd` and `%USERPROFILE%\.gradle`, finds neither, and re-downloads the Gradle graph onto `C:`.
 
 | Path | Holds | Wired by |
 | --- | --- | --- |
@@ -491,17 +522,21 @@ The SDK binaries are installed by Android Studio on `C:`, but the two directorie
 | `D:\android-sdk-cmake` | CMake | `android/local.properties` (`cmake.dir`) |
 | `D:\android-avd` | emulator AVDs (`Medium_Phone`, `Medium_Phone_API_37.0`) | `ANDROID_AVD_HOME` |
 | `D:\gradle-home` | Gradle 9.4.1 wrapper distro + dependency caches | `GRADLE_USER_HOME` |
+| `D:\bolingo-nm\node_modules` | every installed package, so each module's `android/.cxx` native cache grows here too | directory junction at `node_modules` (no env var) |
 
-Source the helper before any Android command — it exports those variables for the current shell and prints what it found:
+Source the helper before any Android command — it exports those variables for the current shell, prints what it found, and keeps the two build settings that decide how long every later rebuild takes in `$GRADLE_USER_HOME\gradle.properties` (see *Rebuild time, measured*):
 
 ```bash
-source scripts/android-env.sh          # export into this shell
-source scripts/android-env.sh --check  # export, then verify SDK, AVDs and caches
+source scripts/android-env.sh          # export into this shell, write the two settings
+source scripts/android-env.sh --check  # also verify SDK, AVDs, caches, ABIs and .cxx
+npm run android:warm                   # the two lines above, then a warm debug build
 
 emulator -list-avds                    # Medium_Phone, Medium_Phone_API_37.0
 emulator -avd Medium_Phone &
 npx expo run:android                   # Gradle now writes to D:\gradle-home
 ```
+
+`ANDROID_ARCHS` picks the ABI list written there — default `x86_64`, the emulator's own; a phone wants `arm64-v8a`, a store upload wants both — and `ANDROID_GRADLE_PROPS=off` leaves that file entirely your own. It goes in the *user-level* properties file rather than `android/gradle.properties` because `android/` is generated, so the next `expo prebuild` would undo the edit, and because Gradle reads the user file after the project one.
 
 To make it permanent instead of per-shell, set the same names once (user scope, no admin needed) and reopen the terminal:
 
@@ -510,7 +545,91 @@ setx ANDROID_AVD_HOME "D:\android-avd"
 setx GRADLE_USER_HOME "D:\gradle-home"
 ```
 
-Both are optional: without them the build still works, it just fills `C:` (58 GB free, versus 801 GB on `D:`). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+Both are optional: without them the build still works, it just fills `C:` — 37 GB free there against 760 GB on `D:` at the time of writing (that `C:` figure is 6 GB lower than the last measurement, and the largest single consumer on the volume is now a 6.45 GB `hiberfil.sys`), and that figure only holds because `node_modules` moved off it (see *Moving `node_modules` off `C:`* below). One ABI's native object files alone want about 2.1 GB for `x86_64`, and 6 112 MB measured for a finished `arm64-v8a` set, and those now grow in `node_modules/*/android/.cxx` on `D:`; what still lands on `C:` is the `obj/<abi>` copy of the linked libraries — 3 806 MB for `arm64-v8a` at its peak, and pinning the ABI list back to one prunes it again — so the device ABI is still the one that needs room (see *The device ABI, measured*). The NDK needs no variable — it ships inside the SDK at `ndk/27.1.12297006`, the same revision as the `android-ndk-r27b` copy on `D:`.
+
+#### Moving `node_modules` off `C:`
+
+The device-ABI pin is the build that runs out: it died with `C:` at 0 MB free three
+quarters through `llama.rn`, and a finished set needs 9 918 MB (see *The device ABI,
+measured*). Most of that lives in `node_modules/*/android/.cxx` — the tree that balloons
+during a native compile was on the small volume. It now lives on `D:` behind a junction,
+which turns a phone loop into a question of minutes rather than disk: after the move that
+9 918 MB is a `D:` figure (754 GB free), and the arm64 residue left on `C:` — the app
+module's own `.cxx` plus the packaging copies — measured 575 MB, most of it already pruned
+by pinning back to `x86_64`. Measured here on 2026-11-11 from a tree with 15 GB free on `C:`:
+
+```bash
+# 1. Copy the tree. /COPY:DAT carries timestamps so step 2 can compare them; /XJ
+#    refuses reparse points (node_modules held none). Run robocopy from Git Bash —
+#    through `cmd //c` the switches lose their quoting and it dies with ERROR 123.
+robocopy.exe 'C:\Users\ADMIN\projects\bolingo_learn\node_modules' 'D:\bolingo-nm\node_modules' /E /COPY:DAT /DCOPY:DAT /R:1 /W:1 /XJ /MT:16 /NP /NFL /NDL /BYTES /LOG:D:\robocopy-nm.log
+
+# 2. Compare before touching the original. /L writes nothing, and exit 0 means copied,
+#    mismatched, failed and extras are all zero.
+robocopy.exe 'C:\Users\ADMIN\projects\bolingo_learn\node_modules' 'D:\bolingo-nm\node_modules' /L /E /R:0 /W:0 /XJ /NP /BYTES /LOG:D:\robocopy-verify.log
+
+# 3. Rename the original aside (instant — same volume), then junction over it. A
+#    junction rather than a symlink: `mklink /J` needs no admin and no Developer
+#    Mode, and PowerShell creates one without cmd's quoting trap.
+powershell -Command "Rename-Item -LiteralPath .\node_modules -NewName node_modules.orig"
+powershell -Command "New-Item -ItemType Junction -Path .\node_modules -Target 'D:\bolingo-nm\node_modules'"
+
+# 4. Prove it resolves, then delete the original with `rd /s /q`.
+node -p "require.resolve('react-native/package.json')"
+npx tsc --noEmit && npx expo lint && npx expo export --platform android
+```
+
+That run copied 274 227 files in 30 397 directories — 32 985 141 583 bytes, 30.7 GB — in
+**9 m 43 s** at 3 455 MB/min, and the `/L` pass reported 0 copied, 0 mismatched, 0 failed,
+0 extras. `C:` went from 15 GB free to 43 GB; `D:` went from 787 GB free to 755 GB on its
+932 GB volume. The target root is its own folder because `D:` already holds a stale clone
+of this project at `D:\bolingo_learn`.
+
+Three things about the result are worth knowing before trusting it:
+
+1. **A junction keeps old path strings alive; Node canonicalizes anyway.** Every cached
+   `C:\Users\ADMIN\projects\bolingo_learn\node_modules\…` reference still resolves
+   through the reparse point, which is why the native caches mostly survived — yet
+   `require.resolve` now prints a `D:\` path, and AGP hands that to CMake. So five of the
+   seven modules holding a `.cxx` cache (`expo-modules-core`, `expo-updates`,
+   `gesture-handler`, `reanimated`, `worklets`) configured a *new* hash folder, while
+   `llama.rn` and `react-native-screens` kept theirs — `llama.rn`'s 6 872 MB set, arm64
+   objects and all, is still the live one.
+2. **The re-bake costs one build, then warm returns.** First `npm run android:warm`
+   through the junction: **13 m 17 s**, 650 tasks — 209 executed, 171 from cache, 270
+   up-to-date. Second: **1 m 19 s**, 650 tasks — 25 executed, 625 up-to-date, the same
+   profile as row 1 of *Rebuild time, measured*. Steady state is unchanged. The five
+   superseded folders are 1 159 MB of dead weight (see *What invalidates `.cxx`*) and
+   `scripts/android-env.sh --check` warns on them.
+3. **A reinstall replaces the junction, and which way it fails has not been measured
+   here.** `npm ci` deletes `node_modules` first: unlink the reparse point and it leaves a
+   real directory on `C:`, quietly undoing the move; follow it and it takes the 30.7 GB on
+   `D:` with it. Re-copy or keep the `robocopy /L` log before a clean install, then check
+   with `powershell -Command "(Get-Item .\node_modules).LinkType"` — it answers `Junction`
+   or nothing — and re-create it if it prints nothing. Until then `git status` stays
+   clean: the
+   ignore rule matches `node_modules` by name and walks the junction happily. It does not
+   match a leftover `node_modules.orig`, which `tsc` sweeps into the program and fails on,
+   so finish deleting the original — `rd` loses races with directory watchers and can
+   leave empty folders behind; re-run it until it reports GONE.
+
+A hazard that cost a false start: the rename was refused with `Access to the path '…' is
+denied` until three orphan `du.exe` processes from an interrupted size scan were killed. A
+stopped background shell does not mean its walkers stopped, and one open directory handle
+anywhere under `node_modules` is enough to block renaming it.
+`tasklist //FI "IMAGENAME eq du.exe"` finds them.
+
+`C:` is still not out of the build: `android/app/build` and `android/app/.cxx` stay with
+the project, so the app module's own objects and the `obj/<abi>` `.so` copies land there
+(3 806 MB peak for a finished `arm64-v8a`). That arm64 residue decays on its own: once
+the ABI list went back to `x86_64` only, clearing it found 575 MB spread over seven
+folders rather than 3 806 — deleting them cost the `x86_64` warm rebuild nothing (**50 s**,
+27 executed, 623 up-to-date, same APK). The module `Debug` objects on `D:` went next, on
+request: **5 943 MB** back on that volume (772 461 MB free before, 778 404 after), and the
+`x86_64` warm rebuild was unaffected — **35 s**, 25 executed, 625 up-to-date, the same
+153 215 821-byte APK. The cost lands later: the next `arm64-v8a` pin recompiles those
+modules from scratch instead of finishing a cached set. 2 700 MB of release-variant
+objects (`.cxx/RelWithDebInfo/*/arm64-v8a`, `llama.rn` alone 2 430 MB) are still on `D:`.
 
 #### Windows native build prerequisites
 
@@ -536,11 +655,296 @@ A release APK builds and installs on an emulator with:
 
 ```bash
 source scripts/android-env.sh
-cd android && ./gradlew :app:assembleRelease      # ~25 min cold, app/build/outputs/apk/release/app-release.apk
+cd android && ./gradlew :app:assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64
+# ~25 min cold, app/build/outputs/apk/release/app-release.apk
 adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
-Delete `node_modules/*/android/.cxx` after changing CMake, ninja or the long-path setting to force a clean native configure.
+The `-P` is not decoration: a device-less `gradlew` build now inherits `reactNativeArchitectures=x86_64` from the user-level properties file, and a store artifact needs `arm64-v8a` in it. `expo run:android` never sees this problem — it detects the attached device's ABI and passes `-PreactNativeArchitectures=<that abi>` itself (`getActiveArchArg` in `node_modules/@expo/cli/build/src/start/platforms/android/gradle.js`), and a command-line `-P` outranks the properties file anyway.
+
+#### Rebuild time, measured
+
+`./gradlew :app:assembleDebug` on this machine — 8 cores, 15.8 GB RAM, no ccache, `D:\gradle-home` caches warm, one ABI (`x86_64`), after `source scripts/android-env.sh`:
+
+| Starting state | Time | Task summary |
+| --- | --- | --- |
+| Nothing deleted, same Gradle daemon, no source changes | **1 m 15 s** | 650 tasks: 25 executed, 625 up-to-date |
+| Nothing deleted, fresh daemon (`./gradlew --stop` first) | **9 m 16 s** | 650: 105 executed, 36 from cache, 509 up-to-date |
+| `android/app/build` + `android/.gradle` deleted, build cache on | **13 m 16 s** | 650: 292 executed, 294 from cache, 64 up-to-date |
+| The same two folders deleted, `--no-build-cache` | **13 m 26 s** | 650: 614 executed, 36 up-to-date |
+| Everything cold: `expo run:android` after `prebuild --clean`, empty caches | **1 h 7 m 35 s** | 649 tasks, every C++ target compiled from source |
+| First build after moving `node_modules` to `D:` behind a junction | **13 m 17 s** | 650: 209 executed, 171 from cache, 270 up-to-date |
+
+1. **The warm path is pure C/C++.** Those 25 executed tasks in row 1 are the `configureCMakeDebug[x86_64]` + `buildCMakeDebug[x86_64]` pairs of the eight native modules — `app`, `expo-modules-core`, `expo-updates`, `llama.rn`, reanimated, worklets, screens, gesture-handler — plus a little bookkeeping. AGP reruns them on every build, and the Gradle build cache does not cover them. They cost about a minute *only because `node_modules/*/android/.cxx` still holds the objects for that ABI*, so ninja has nothing to do. That folder is the cache worth
+protecting, and it travels with `node_modules`: moving it to `D:` re-baked five of the
+seven modules under it (row 6, and see *Moving `node_modules` off `C:`*) and the very next
+build was back to row 1.
+2. **Do not stop the daemon.** Rows 1 and 2 are the same project with the same caches; `--stop` (or 3 idle hours) costs about eight minutes of re-snapshotting inputs the daemon already remembered. The extra work is the app's packaging chain — `mergeDebugAssets`, `mergeDebugNativeLibs`, `stripDebugDebugSymbols`, `packageDebug`.
+3. **The build cache is a safety net, not a speedup.** Restoring 294 tasks saved ten seconds over re-executing them, because that work overlaps on 8 workers while the native and packaging tasks run. Keep `org.gradle.caching=true` regardless — `expo run:android` already passes `--build-cache` (`buildCache: !args['--no-build-cache']` in `@expo/cli`), so this property is what gives plain `./gradlew` the same treatment for free.
+4. **One ABI, not four.** `expo prebuild` writes all four ABIs into the generated `android/gradle.properties`. Pinned to one, `--dry-run` plans 779 tasks with 8 native build tasks; unpinned it plans 823 with 30. The measured price per ABI is 2 107 MB of `x86_64` Debug objects across the eight modules — 1 520 MB of it `llama.rn` — and the other ABIs are not that cheap each: a finished `arm64-v8a` set measures 9 918 MB, and the pass that ran out at 40 m 2 s had written 6 106 MB of it while only three quarters through `llama.rn` (see *The device ABI, measured*) — the same volume this layout moves everything else off precisely because it runs out. And since those tasks rerun on every build, an extra ABI slows *every* rebuild, not just the first. (The hour in row 5 was not the ABIs: `expo run:android` pins them to the device — see the `-P` note above. It was compiling every C++ target from an empty `.cxx`.)
+5. **`android/.gradle` is the up-to-date database.** `executionHistory.bin` inside it is what lets Gradle answer "nothing changed". `expo prebuild` without `--clean` leaves it alone and the row 1 numbers survive; `--clean`, or deleting `android/` to reclaim space, throws it away and pays row 3.
+
+`npm run android:warm` is rows 1 and 2 of that table as one command. It runs
+through Git Bash because sourcing is a shell feature: it sources
+`scripts/android-env.sh` (which pins the ABI list and switches the build cache on
+in `$GRADLE_USER_HOME\gradle.properties`), then runs `./gradlew :app:assembleDebug`
+in `android/`. It deliberately never calls `--stop` — that decision is worth eight
+measured minutes — and it stops with a stated reason when `android/` has not been
+generated yet. A phone instead of the emulator is the same command with the device
+pin — `ANDROID_ARCHS=arm64-v8a npm run android:warm` — measured separately below;
+it needed 22 GB freed on `C:` before it could finish.
+
+One Windows hazard shows up when builds are scripted back to back: `Execution failed for task ':expo-modules-core:bundleLibCompileToJarDebug' > Unable to delete file '...\compile_library_classes_jar\debug\bundleLibCompileToJarDebug\classes.jar'`. A daemon that survived an interrupted build still holds that jar. `./gradlew --stop` and rerun, and budget the eight minutes of row 2.
+
+#### The device ABI, measured
+
+The first phone pin, started with 10 481 MB free on `C:`:
+
+```bash
+ANDROID_ARCHS=arm64-v8a npm run android:warm
+```
+
+It stopped after **40 m 2 s** inside `:llama.rn:buildCMakeDebug[arm64-v8a]` at
+`[2256/2978]` with `ninja: build stopped: subcommand failed`, and the reason was the
+disk rather than the code — every `FAILED:` line is `fatal error: error in backend:
+IO failure on output stream: No space left on device`, and `C:` was at 0 MB free.
+
+`arm64-v8a` is not "another `x86_64`". `llama.rn` plans 818 ninja steps for
+`x86_64`, in two object sets (`rnllama`, `rnllama_x86_64`), and **2 978** for
+`arm64-v8a`: llama.cpp compiles a separate object set per ARMv8 feature level
+(`rnllama_v8`, `rnllama_v8_2`, `rnllama_v8_2_dotprod`, `rnllama_v8_2_i8mm`,
+`rnllama_v8_2_dotprod_i8mm`, about 387 files each) plus 205 OpenCL kernel embeds.
+Each set is then linked into its own ~240 MB unstripped `.so`.
+
+With 22 GB freed, the pin finished. The room came from package-manager caches (npm,
+pnpm, bun), three `.duckload` partial downloads, the Recycle Bin and three large ISOs
+moved off `C:` — no `node_modules`, `.cxx` or SDK file was deleted. What a completed
+device-ABI set costs on disk (measured while `node_modules` was still on `C:`; the objects
+now grow on `D:` and only the `.so` copies stay on `C:` — see *Moving `node_modules` off
+`C:`*):
+
+| Footprint | `x86_64`, finished | `arm64-v8a`, finished |
+| --- | --- | --- |
+| `.cxx/Debug/<hash>/<abi>` objects, eight modules | 2 104 MB | 6 112 MB |
+| `build/intermediates/cxx/.../obj/<abi>` `.so` copies | not re-created | 3 806 MB |
+| both together | **2 104 MB** | **9 918 MB** |
+
+The **7 GB** this section predicted from the interrupted run was low: it scaled
+`llama.rn`'s objects linearly, and its `.so` copies had not been linked yet. `llama.rn`
+alone ended at 5 354 MB of objects plus 2 013 MB of `.so`. Deleting the two `arm64-v8a`
+column folders recovers the 9 918 MB — though after the move they straddle both volumes, and
+what clearing them actually found is in *Moving `node_modules` off `C:`*.
+
+**This pin resumed; it did not rebuild from empty.** The green pass reused the objects
+the earlier passes had written, so **6 m 43 s** (`BUILD SUCCESSFUL`, 650 tasks: 34
+executed, 616 up-to-date) is the time to *finish* a cached device-ABI build, not the
+time for a cold one. Five passes from empty `arm64-v8a` objects to this APK ran **2 h
+54 m** in total: 40 m 2 s out of space, 61 m killed by a dropped connection, 49 m 39 s
+and 16 m 40 s failed on the casualties described next, then 6 m 43 s green. For scale,
+`llama.rn` plans 818 steps for `x86_64` against 2 978 here, and cold `x86_64` took
+1 h 7 m 35 s (row 5 above).
+
+The interrupted passes left the more expensive mess. A `.o` truncated mid-write is
+newer than its source, so ninja skips it and the link dies with `ld.lld: error:
+.../OnLoad.cpp.o: unknown file type` — no compile error, and nothing pointing at the
+kill as the cause. Find them all at once instead of one per failed link: read the first
+four bytes of every `.o` under the ABI's `.cxx` folders and delete those whose magic is
+neither ELF (`7f 45 4c 46`) nor an LLVM bitcode wrapper (`42 43 c0 de`) — the arm64
+objects here are bitcode, so an ELF-only check condemns every healthy file in the tree.
+That scan found 1 bad file in 6 047. The first one had cost more: reanimated's whole
+`arm64-v8a` object tree deleted rather than repaired file by file (402 MB, a
+four-minute recompile).
+
+The artifact is `android/app/build/outputs/apk/debug/app-debug.apk`, 201 355 814 bytes
+(192 MB): 42 entries under `lib/arm64-v8a/` and none under any other ABI, among them
+the six runtime variants `librnllama_v8.so`, `_v8_2`, `_v8_2_dotprod`, `_v8_2_i8mm`,
+`_v8_2_dotprod_i8mm` and `_v8_2_dotprod_i8mm_hexagon_opencl`. `C:` ended at 15 GB free — before `node_modules`
+moved, when both halves of that table were written there.
+
+What the failure did *not* cost: the `x86_64` objects are untouched, because AGP
+puts each ABI in its own subfolder *next to* the other inside the same hash folder
+(which is how `hash_key.txt` can say `$ABI` is not part of the hash). Pinning back
+to `x86_64` and running `npm run android:warm` again took **48 s**, exit 0, 650
+tasks: 40 executed, 610 up-to-date — the extra 15 executed tasks over row 1 are the
+`configureCMakeDebug[x86_64]` pairs rerunning after the ABI list changed, not a
+recompile. So a phone loop is gated on caches and time, not on `C:` free space: with
+`node_modules` on `D:` (see *Moving `node_modules` off `C:`*) the 8 216 MB of `.cxx`
+objects for both ABIs grow there, and all `C:` still has to hold is the app module's own
+`.cxx` folder plus the `obj/<abi>` `.so` copies (3 806 MB at peak, but most of it is pruned
+by pinning back to one ABI — 575 MB was left when it was cleared here) and the APK.
+
+Nothing was installed on a device to check any of this, and nothing was: the attached
+target (`emulator-5554`) reports `ro.product.cpu.abi = x86_64` and `npm run
+android:warm` only assembles the APK, so this proves the device ABI *builds* here, not
+that it runs. On a phone it is the same command; on an emulator it needs an
+arm64-capable image.
+
+#### Clearing an ABI's build artifacts
+
+Those leftovers are what `npm run android:clean-abi` (`scripts/clean-abi.sh`) exists for: it
+finds the object and intermediate folders of every ABI this project is *not* currently
+building, and clears them on request. It reports by default and deletes only when told. It is also
+the **only** place that sizes reclaimable ABI disk: `source scripts/android-env.sh --check` reports
+environment state and, when it warns about space or a split `.cxx` cache, points at the command
+below rather than re-measuring. That split is deliberate — the preflight finishes in **2 s**, while
+report mode here took **71 s** on this machine (measured 2026-11-12, warm disk cache) because sizing
+means walking every generated tree — and the `abi-clean` gate asserts it, so the preflight cannot
+quietly grow its own copy of this logic:
+
+| Command | What it does |
+| --- | --- |
+| `npm run android:clean-abi` | Lists every artifact folder for every ABI except the pinned one, with its size. Deletes nothing. |
+| `npm run android:clean-abi -- --delete` | Removes exactly the folders that list printed, then reports the total it freed. |
+| `npm run android:clean-abi -- --abi arm64-v8a --delete` | One ABI only. |
+| `npm run android:warm` | The build to run afterwards. It reads the same pin, and it is where a cleared ABI gets written back (measured below). |
+| `npm run android:clean-abi -- --abi x86_64 --delete` | Refused with exit 2: `x86_64` is the pin in `$GRADLE_USER_HOME/gradle.properties`, so clearing it would cost the next warm build. Add `--force` to mean it. |
+
+Four rules keep it from being a footgun. It walks *generated* trees only — `.cxx/` and
+`build/` — so a checked-in `src/main/jniLibs/<abi>/` library can never be a target, not even
+with `--force`. The ABI it refuses to touch is read from the same `gradle.properties` the build
+reads (the one `scripts/android-env.sh` exports as `$ANDROID_ARCHS`), never hardcoded; pass
+`--active <abis>` to say otherwise, or `--project <dir>` for another checkout. Every candidate
+is resolved with `cd` + `pwd -P` and must stay inside the root it came from, so a folder that
+resolves elsewhere — a junction, a symlink — lands in `skipped_links` instead of being deleted,
+and `node_modules` itself is never a target. The last line is machine-readable
+(`SUMMARY targets=… size_kb=… deleted=… skipped_links=… mode=report|delete|refused heals=…
+durable=… dropped=…`), which is what the gate parses. `heals=` counts targets sitting inside a
+Gradle task's own output, which the next build writes back; `durable=` counts `.cxx` object trees,
+whose return costs compiles; `dropped=` counts candidates rejected as not being per-ABI folders, and
+they are never deleted.
+
+That gate is `abi-clean` (`npm run check:abi-clean`). It builds a throwaway project in the temp
+folder — a fake `arm64-v8a`/`x86_64` tree, a fake `gradle.properties`, and a junction that points
+outside the fixture — and asserts that report mode lists only the arm64 artifacts and deletes
+nothing, `--delete` removes exactly what it listed, a pinned-ABI request exits 2 *before* deleting,
+`--force` obeys and still spares `src/`, the outside junction is skipped, and a second run is a
+no-op. Two more assert what a partial delete does: clearing one ABI out of a shared task output
+removes only that ABI's folder and labels the target self-healing, and a folder whose name merely
+equals an ABI inside one ABI's object tree is dropped and reported instead of deleted. Three more
+hold the line between the two entry points: `scripts/android-env.sh --check` must name the cleaner
+command (and that id must exist in `package.json`), must reach it from both disk warnings through
+one shared variable, and must not contain the `du` size walk itself. It now runs 28 checks in
+**27 s**, all green, and `--real` passes against this checkout too. It never deletes
+from the real tree; the survey of it is opt-in
+(`node scripts/check-abi-clean.cjs --real`) because sizing those folders took **64 s** with a warm
+disk cache and **186 s** cold, which is too expensive to put in front of every release.
+
+What report mode found on 2026-11-12, after the `arm64-v8a` clear and two warm builds, with the
+`x86_64` build finished: **31 folders / 247 888 KB**, all of them `heals` (task outputs the next
+build writes back), `durable=0`, plus 3 candidates `dropped`. An earlier survey of the same script,
+before that clear, reported **129 folders, 13 003 MB**, none of them the pinned ABI (103
+`arm64-v8a`, 14 `x86`, 12 `armeabi-v7a`). Only 2 718 MB of it is `.cxx` objects — the `RelWithDebInfo` half that this
+project has so far never been authorized to delete — while 10 275 MB is `build/intermediates`
+`.so` copies left by earlier multi-ABI and release builds, the largest single folder being
+`llama.rn`'s `RelWithDebInfo` objects at 2 430 MB, with its release `merged_native_libs` and
+`library_jni` copies weighing 1 302 MB each. So the 9 918 MB the table above promises is a
+smaller number than what is actually recoverable here, and that survey deleted nothing — it is
+report mode, and this paragraph was written from it.
+
+Clearing `arm64-v8a` is still a trade, not a free lunch: those objects from empty cost **2 h
+54 m** across five passes above. Park the phone loop before you run `--delete`.
+
+**Cleared for real, and what the rebuild then cost.** On 2026-11-12 the one-ABI command ran
+against the live tree, not a fixture: `npm run android:clean-abi -- --abi arm64-v8a --delete`
+found **103 folders / 13 155 519 KB (≈12.5 GiB)** and deleted all 103 — exit 0, `SUMMARY …
+deleted=103 skipped_links=0 mode=delete`, nothing refused and no delete failing. `D:` went from
+794 278 MB free to 807 047 MB (**+12 769 MB**) and `C:` from 26 733 to 26 811 (**+78 MB**), so
+**12.8 GiB was actually reclaimed**, a little less than the script summed: `du` rounds every
+folder up to its own 1 KiB block and the two `obj/<abi>` copies shared bytes with folders that
+stayed. Re-reporting `arm64-v8a` immediately after the delete found 0 targets.
+
+Then `npm run android:warm` — the `x86_64` pin untouched — twice, and the honest answer is that
+the first pass was **not** the 48 s this section previously quoted from an older layout. It took
+**25 m 52 s**, `BUILD SUCCESSFUL`, 650 tasks: 157 executed, 145 from cache, 348 up-to-date, exit 0.
+With nothing changed on disk the second pass took **57 s** (25 executed, 625 up-to-date). The
+reclaim is real and the settled warm pass is still under a minute. **What the 25 m 52 s was not:**
+this paragraph previously attributed it to a "one-time ~26-minute toll on the ABI you kept", caused
+by clearing `arm64-v8a` sibling folders out of the shared `.cxx/Debug/<hash>/` and
+`build/intermediates/cxx/<hash>/` trees. That attribution does not survive comparison. The 25 m 52 s
+pass and the 57 s pass executed the *same 20* native tasks (8 `configureCMakeDebug[x86_64]`, 8
+distinct `buildCMakeDebug[x86_64]`, plus the `generateJsonModelDebug`/`externalNativeBuildDebug`
+pairs) — `comm` finds no task unique to either list; the only difference is that 23 lines were
+printed for those 20 tasks because `:llama.rn:` ran `buildCMakeDebug[x86_64]` three times and
+`:app:` twice. And those `x86_64` configure/build tasks re-run on **every** warm pass, cleared ABI
+or not. So no native work distinguishes the two passes, and the cost sits in the 157 executed and
+145 from-cache tasks, which these numbers do not explain. What is still true from that pass: two cross-volume
+`libreactnative.so` hard links fell back to "a slower copy" (the Gradle transform cache is on `D:`,
+the app's objects on `C:`), Ninja printed **0 `Building CXX object` lines** so no C++ was
+recompiled, and of the 12.5 GiB roughly 2.2 GiB went straight back to the `x86_64` objects and the
+APK the rebuild wrote — `D:` ended at 804 865 MB free, **+10.5 GiB net** for the whole
+delete-and-rebuild, +12 769 MB at the instant the delete finished. The 25 m 52 s itself is one
+observation on a machine with an active daemon, not an average.
+
+Both builds are green, and the pin is what they were built for: the APK is 152 607 637 bytes with
+32 `lib/x86_64/` entries and no other ABI folder in it; `source scripts/android-env.sh --check`
+(the check has no `npm run` id of its own — it is sourced, not scripted) exits 0 afterwards with
+`ABIs pinned: x86_64`. A follow-up report finds 34 folders / 248 284 KB still reclaimable, 7 of
+them `arm64-v8a` (88 224 KB) — the rebuild wrote a few `RelWithDebInfo` ABI entries back, which is
+what "cleared" means here: cleared, not emptied and kept empty. What was **not** measured: this
+APK was never installed, so nothing here says the rebuilt app runs on a device or in the emulator,
+only that the pinned `x86_64` build completes; the 25 m 52 s is one observation on a machine with
+an active Gradle daemon, not an average; and the 48 s quoted above stands only for the layout it
+was taken in.
+
+#### Partial deletes, checked against Gradle's up-to-date checks
+
+The script's targets are folders, and for task outputs it deletes the `<abi>` folder *inside* a
+larger task output rather than the output as a whole. That question was answered by experiment on
+the live tree, not from Gradle documentation. After the `arm64-v8a` clear above, exactly the **7
+`arm64-v8a` folders that sat inside task outputs (88 224 KB: two at 39 480 KB in
+`:app:`'s `merged_native_libs` and `stripped_native_libs`, five at 1 648-1 904 KB in
+`expo-modules-core`)** were removed by hand, leaving every `.cxx` tree untouched, so any re-run
+would have to be attributable to the output snapshot alone. Then `npm run android:warm`.
+
+Gradle noticed and repaired it. `BUILD SUCCESSFUL in **45 s**, exit 0, no error: 650 actionable
+tasks, 31 executed / 619 up-to-date against the 25 executed / 625 up-to-date baseline — and all 6
+extra executed tasks are owners of the 7 deleted folders: `:app:mergeDebugNativeLibs`,
+`:app:stripDebugDebugSymbols`, `:expo-modules-core:{mergeDebugJniLibFolders,
+copyDebugJniLibsProjectOnly, mergeDebugNativeLibs}` and
+`:expo-modules-core:decompressPrebuiltNativeLibs` (UP-TO-DATE in the baseline, executed once the
+folder under it was gone). All 7 folders were **repopulated to exactly their original sizes** — 39
+480 / 39 480 / 1 904 / 1 648 / 1 904 / 1 904 / 1 904 KB, verified afterwards with `du`. The executed
+native/CMake task list is identical to the baseline (20 tasks, byte-equal after sorting). So a
+partial delete does not leave a build half-cleared, does not report a false UP-TO-DATE, and does not
+produce a stale APK — but the space it freed is gone again after one build. That is why targets of
+this shape are now labelled `heals` in the report and counted in `SUMMARY … heals=N`: deleting them
+buys a re-run, not a reclaim. `.cxx` targets are counted as `durable=` because bringing those back
+costs compiles.
+
+Scope was deliberately **not** widened to the owning task directory. The fixture and the live tree
+both place the pinned `x86_64` sibling under the same parent as the `arm64-v8a` folder being
+cleared (`lib/` in a merged-native-libs output, `.cxx/Debug/<hash>/` in an object tree), so deleting
+the whole task output would delete the one ABI the pin exists to protect, and would clear the pinned
+ABI's *inputs* as well as its outputs. Case 6 of `npm run check:abi-clean` pins that behaviour down:
+a partial delete removes only the named ABI's folder, the sibling survives, and the target is
+reported as self-healing.
+
+Two honest limits. First, what was observed is that *these* tasks re-ran and repaired themselves;
+no task was tested that goes falsely UP-TO-DATE after a partial delete, so "self-heals" is an
+observation about this project's AGP 9.2.1 task set, not a guarantee for every task. Second, the
+same any-depth search that finds these folders also matches directories whose name merely equals an
+ABI: llama.rn ships CMake object dirs at
+`.cxx/Debug/<hash>/x86_64/rnllama/CMakeFiles/rnllama_x86_64.dir/<…>/ggml-cpu/arch/x86`, i.e. *inside
+the pinned `x86_64` tree*. Running `--abi x86 --delete` would therefore have cleared build state for
+an ABI nobody asked about. The script now rejects any candidate that is not genuinely a per-ABI
+folder (task output parent `lib`/`jni`/`out`/`obj`/`debug`/`release`; `.cxx` a `<Config>` or `tools`
+tree at most four levels above the ABI), prints a `drop` line for it, and counts it in
+`SUMMARY … dropped=N`. Measured on this tree: those 3 dirs are dropped, worth **408 KB** between
+them, which reconciles exactly — the `x86` survey went from 15 folders / 98 764 KB to 12 / 98 368 KB
+and the default survey from 34 / 248 284 KB to 31 / 247 888 KB. No real artifact was lost to the
+rule: the 2 dropped `expo-prebuilt-natives/{debug,release}/arm64-v8a` folders still show up, because
+those parents do hold one child per ABI.
+
+#### What invalidates `.cxx`
+
+Each `node_modules/<module>/android/.cxx/Debug/<hash>/` folder is named after a hash of the CMake configure command, and the `hash_key.txt` sitting in it lists the inputs verbatim: the AGP version (9.2.1), the NDK path, the `$CMAKE` and `$NINJA` paths, the absolute project path and every `-D` flag — while noting that `$ABI` is *not* part of the hash. Change one input and AGP neither reuses nor repairs the old folder: it configures a fresh one and leaves the previous set of objects as dead weight.
+
+Two of those inputs move by themselves:
+
+- **Turning on Windows long paths** changed `-DCMAKE_OBJECT_PATH_MAX` from 140 to 1024 and re-hashed every module. Still on disk: `react-native-worklets/android/.cxx/RelWithDebInfo/` holds `2j564h2t` (110 MB, `=1024`) beside `734q4i31` (60 MB, `=140`) — two caches for one library, and the cold hour in row 5 is what that kind of split buys: every module then configures and compiles as if for the first time.
+- **`expo prebuild --clean`** deletes `android/local.properties`, and with it `cmake.dir=D:/android-sdk-cmake`. CMake then resolves to the SDK's own copy, which changes both `$CMAKE` and `$NINJA`, re-hashes every module, and lands back on the ninja 1.10.2 that cannot build reanimated.
+
+So keep `cmake.dir`, the NDK revision and the long-path setting steady and the objects are reused indefinitely; `source scripts/android-env.sh --check` fails on a missing `cmake.dir` and warns when a module carries more than one `.cxx/Debug` folder, but it does not size that dead weight — `npm run android:clean-abi` does. Deleting a `.cxx` folder is only the right move when you swapped a binary *behind a path that never changed* — the ninja 1.10.2 ➔ 1.12.1 replacement kept `$NINJA` identical, so the hash did not move and the stale `CMakeCache.txt` survived — and then delete the stale sibling, not the folder the current hash points at.
 
 #### OTA channel for a local release build
 
@@ -594,6 +998,29 @@ npx eas-cli@latest update --branch production --environment production -p all --
 ```
 
 The flag is `-p/--platform` (there is no `--platforms`), and a non-interactive publish must name `--environment`. A published rollout only reaches builds that were made with a channel: `preview` and `production` both carry one, a local release build carries whichever channel `EXPO_UPDATES_CHANNEL` named at prebuild, and the `development` profile carries none — so a dev client always runs whatever the Metro bundler serves. Native changes (new SDKs, AdMob/RevenueCat config, splash/icon, adding `expo-updates` itself) still need a rebuild — OTA covers JS only.
+
+### When a rebuild is out (the app checks the website)
+
+The APK is distributed from `https://bolingo.co.ke/install` — no store — so
+nothing would tell an installed phone about a rebuild. It tells itself: the
+dashboard fetches `/downloads/latest.json` once a session, compares its
+`version` with the version baked into the binary (`lib/releaseManifest.ts`,
+numeric, so `1.10.0` beats `1.9.0`), and offers the download through
+`components/dashboard/UpdateCard.tsx`. Accepting opens the APK in the browser,
+because Android will not let an app install over itself; "Not now" lasts the
+session, and *Settings → App update* re-checks on demand. The record also
+carries a `buildNumber` — the Android `versionCode` declared in
+`app.config.js` — because two builds published under one version look identical
+to a phone otherwise: a rebuild that does not move the version must move
+`versionCode`, and the app offers it on that alone. Publish a build by bumping
+`app.config.js` `version` and `android.versionCode` (keeping `package.json` in
+step), building, then
+`node scripts/publish-android-apk.cjs <apk> --local` and copying the APK plus
+`latest.json` to `/var/data/app-downloads` on the host. The release record is
+served `no-store`, so the next check after a publish sees it. Full runbook:
+[docs/install-from-web.md](docs/install-from-web.md); the wire-up and the
+`npm run check:web` coverage of this path are in
+[docs/contact-and-updates.md](docs/contact-and-updates.md).
 
 ## Premium paywall (RevenueCat)
 
@@ -650,7 +1077,12 @@ supabase secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
 # Optional: LLM_BASE_URL LLM_MODEL TTS_PROVIDER=elevenlabs|openai TTS_VOICE_ID TTS_OUTPUT_FORMAT
 # Optional: TTS_STABILITY TTS_SIMILARITY_BOOST TTS_STYLE TTS_SPEAKER_BOOST OPENAI_BASE_URL
 # Optional: TRANSCRIBE_PROVIDER TRANSCRIBE_MODEL TRANSCRIBE_BASE_URL TRANSCRIBE_LANGUAGE
-# Optional: DARAJA_BASE_URL (default is the Daraja sandbox) MPESA_PREMIUM_KES MPESA_PENDING_TTL_MINUTES
+# M-Pesa sandbox/live switch: MPESA_ENV=sandbox|production (production selects
+#   https://api.safaricom.co.ke, the only live host the code will use)
+# Optional: DARAJA_BASE_URL (selects the environment when MPESA_ENV is unset)
+#   MPESA_TRANSACTION_TYPE=CustomerPayBillOnline|CustomerBuyGoodsOnline
+#   MPESA_ACCOUNT_REFERENCE (12 chars, on the prompt) MPESA_PREMIUM_KES
+#   MPESA_PENDING_TTL_MINUTES
 ```
 
 Deploy with `npm run deploy:process-upload` (this runs the audiobook voice preflight first; a cloned/professional voice needs a completed, active consent record via `TTS_CONSENT_RECORD`).
@@ -683,13 +1115,33 @@ Trust boundaries, enforced by `npm run check:mpesa`:
 - a payment is settled once — a replayed callback cannot extend the period;
 - premium lapses on its own: `mpesa-push` recomputes `profiles.is_premium` from
   the live paid-through date on every call, and `refreshPremiumStatus` will not
-  let a "not entitled" answer from the store clear an in-date M-Pesa period.
+  let a "not entitled" answer from the store clear an in-date M-Pesa period;
+- no push is sent against a configuration that cannot settle it: `mpesa-push`
+  runs the same `audit()` that `npm run mpesa:golive` runs and answers `503`
+  rather than asking Safaricom to charge a learner for a callback that would be
+  rejected.
 
-Sandbox testing uses `DARAJA_BASE_URL=https://sandbox.safaricom.co.ke` (already
-the default), the sandbox shortcode/passkey pair from the Daraja dashboard, and
-one of Safaricom's sandbox test MSISDNs. Move to `https://api.safaricom.co.ke`
-only after a live KES-1 self-test payment round-trips, then raise
-`MPESA_PREMIUM_KES` back to the real price.
+Sandbox testing uses `MPESA_ENV=sandbox` (the default when unset), the sandbox
+shortcode/passkey pair from the Daraja dashboard, and one of Safaricom's sandbox
+test MSISDNs. Going live is a configuration step. Put the live keys in a file
+**outside** this repository and let the auditor read it:
+
+```bash
+npm run mpesa:golive -- --from ~/mpesa-live.env           # report only
+npm run mpesa:golive -- --from ~/mpesa-live.env --apply   # set secrets + deploy
+```
+
+`MPESA_ENV=production` selects `https://api.safaricom.co.ke`, the only live host
+the code accepts, so a stray `DARAJA_BASE_URL` cannot point a Daraja credential
+somewhere else. The audit refuses a live run that would take money and grant
+nothing: `MPESA_ENV` disagreeing with `DARAJA_BASE_URL`, the Daraja test paybill
+`17439` on the live endpoint, a callback whose `?t=` token is missing or is not
+the value in `MPESA_CALLBACK_TOKEN`, a plain-HTTP callback, an unrecognised
+`MPESA_TRANSACTION_TYPE`, or any missing key — and it names variables only,
+never values, so its output is safe to paste into a bug report. Then pay
+yourself once at the real price from a Kenyan number, confirm the ledger row
+lands `confirmed` with the amount you were charged, and only then enable the
+`mpesa_premium` release flag.
 
 ### Trigger on upload (recommended)
 
@@ -697,3 +1149,25 @@ The function accepts both shapes, so uploads trigger it immediately either way:
 
 - **Storage webhook (immediate, no client change needed):** Supabase Dashboard → Database → Webhooks → Create webhook on table `storage.objects`, events `INSERT`, filter `bucket_id = 'user-materials'`, pointing at your `process-upload` URL. `uploadRawFile()` already writes the `user_uploads` row first, so the function resolves the upload from `record` metadata.
 - **Client invocation (fallback, zero dashboard config):** `uploadRawFile()` calls `supabase.functions.invoke('process-upload', { body: { upload_id } })` right after the bucket upload — this path works out of the box.
+
+## Credits, contact and releases
+
+**Bolingo Learn is built and maintained by Freebuff.** No third-party coding
+agent, bot account or vendor is credited as a contributor to this codebase. The
+AI services the product calls at runtime (OpenAI, ElevenLabs, Deepgram, Groq,
+Supabase) are APIs behind the upload, voice and chat features — they are not
+contributors, and no bot identity of theirs appears in the app or on the site.
+
+- **Support:** support@bolingo.co.ke · +254 711 617 407 (support, calls &
+  WhatsApp) · 0735 336 030 (admin, calls)
+- **Feedback inbox for the admin/support team:** bolingolearn@pm.me
+- **Contact screen:** `bolingo.co.ke/contact`, and in the app under
+  Settings → **Contact & feedback**. A message is stored in Postgres before an
+  email is attempted, so nothing is lost when no provider is configured.
+- **Automatic releases:** `.github/workflows/release.yml` deploys the website
+  and publishes an OTA app update on every push to `coolify-hosting` / `main`
+  (needs `COOLIFY_DEPLOY_WEBHOOK` and `EXPO_TOKEN`).
+- **Install without a store:** `bolingo.co.ke/install`.
+
+Details: [docs/contact-and-updates.md](docs/contact-and-updates.md),
+[docs/install-from-web.md](docs/install-from-web.md).

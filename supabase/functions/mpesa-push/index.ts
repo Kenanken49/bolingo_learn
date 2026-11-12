@@ -15,19 +15,27 @@
 // Secrets: DARAJA_CONSUMER_KEY, DARAJA_CONSUMER_SECRET, DARAJA_SHORTCODE,
 // DARAJA_PASSKEY, MPESA_CALLBACK_URL, optional MPESA_PREMIUM_KES,
 // MPESA_PENDING_TTL_MINUTES.
+// Go live: set MPESA_ENV=production with the live Daraja keys, then run
+//   node scripts/mpesa-golive.cjs --from <secrets file> --apply
+// which audits the pair before anything is deployed (see audit() in
+// _shared/mpesa.ts — it reports variable names, never values).
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import {
+  accountReference,
   admin,
+  audit,
   baseUrl,
   darajaConfig,
   darajaToken,
+  environment,
   nairobiStamp,
   normalizePhone,
   plans,
   settleCheckout,
   settlePremium,
+  transactionType,
 } from '../_shared/mpesa.ts';
 
 const corsHeaders = {
@@ -79,6 +87,16 @@ async function startPush(userId: string, phone: string, planKey: string) {
   const config = darajaConfig();
   if ('error' in config) return json({ error: config.error }, 500);
 
+  // A push whose callback cannot settle the row is a payment taken for nothing,
+  // so the whole environment is refused before Safaricom is asked for anything.
+  // The learner gets the ordinary unavailable message; the variable names that
+  // are wrong go to the function log, never to the client.
+  const report = audit();
+  if (!report.ready) {
+    console.error(`mpesa-push: refusing a ${report.environment} push —`, report.problems.join(' | '));
+    return json({ error: 'M-Pesa is unavailable right now. Please try again shortly.' }, 503);
+  }
+
   const catalog = plans();
   const plan = catalog[planKey];
   if (!plan) return json({ error: `Unknown plan '${planKey}'.` }, 400);
@@ -108,13 +126,13 @@ async function startPush(userId: string, phone: string, planKey: string) {
         BusinessShortCode: Number(config.shortcode),
         Password: password,
         Timestamp: timestamp,
-        TransactionType: 'CustomerPayBillOnline',
+        TransactionType: transactionType(),
         Amount: plan.amountKes,
         PartyA: phone,
         PartyB: Number(config.shortcode),
         PhoneNumber: phone,
         CallBackURL: config.callbackUrl,
-        AccountReference: 'BolingoLearn',
+        AccountReference: accountReference(),
         TransactionDesc: plan.label,
       }),
     });
@@ -211,7 +229,18 @@ async function queryPush(userId: string, checkoutRequestId: string) {
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   if (req.method === 'GET') {
-    return json({ ok: true, usage: 'POST { action: start | query | status } with a signed-in session.' });
+    // The go-live smoke test asked from the outside: which Daraja is this
+    // deployment pointed at, and does its own audit pass? Names and booleans
+    // only — no shortcode, no key, no passkey, no callback token.
+    const report = audit();
+    return json({
+      ok: true,
+      environment: environment(),
+      transactionType: report.transactionType,
+      amountKes: report.amountKes,
+      ready: report.ready,
+      usage: 'POST { action: start | query | status } with a signed-in session.',
+    });
   }
   try {
     const userId = await callerId(req);

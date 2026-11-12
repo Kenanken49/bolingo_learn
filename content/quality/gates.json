@@ -220,7 +220,7 @@
     },
     {
       "id": "ads",
-      "label": "AdMob rewarded hearts",
+      "label": "AdMob rewarded diamonds",
       "category": "monetization",
       "command": "node scripts/check-ads.cjs",
       "timeoutSeconds": 120,
@@ -251,11 +251,35 @@
       "required": true
     },
     {
+      "id": "release-artifact",
+      "label": "Served APK matches its published record",
+      "category": "platform",
+      "command": "node scripts/check-release-artifact.cjs",
+      "timeoutSeconds": 900,
+      "required": true
+    },
+    {
       "id": "adaptive-ai",
       "label": "Adaptive UI + offline AI",
       "category": "platform",
       "command": "node scripts/check-adaptive-ai.cjs",
       "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "abi-clean",
+      "label": "ABI artifact cleaner stays inside its guard rails",
+      "category": "platform",
+      "command": "node scripts/check-abi-clean.cjs",
+      "timeoutSeconds": 180,
+      "required": true
+    },
+    {
+      "id": "doc-commands",
+      "label": "Documented commands, gates, file links and curriculum counts match the repository",
+      "category": "static",
+      "command": "node scripts/check-doc-commands.cjs",
+      "timeoutSeconds": 60,
       "required": true
     }
   ]

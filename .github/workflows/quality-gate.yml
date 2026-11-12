@@ -34,6 +34,9 @@ jobs:
         env:
           QUALITY_SUPABASE_URL: ${{ secrets.QUALITY_SUPABASE_URL }}
           QUALITY_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.QUALITY_SUPABASE_SERVICE_ROLE_KEY }}
+          # Lets scripts/check-release-artifact.cjs ask the container to hash its own
+          # release volume. Empty means CI hashes the download itself: slower, same proof.
+          BOLINGO_INTEGRITY_TOKEN: ${{ secrets.BOLINGO_INTEGRITY_TOKEN }}
           QUALITY_ENV: ci
         # Direct node keeps the gate independent of the local npm wrapper;
         # `npm run gate` is the same runner for developers.

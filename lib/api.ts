@@ -2,10 +2,10 @@ import { Platform } from 'react-native';
 import { supabase } from './supabase';
 
 /**
- * Client for the website's Netlify Functions (/api/*): public credential
- * links and the job marketplace. On the web the API is same-origin; the
- * native apps call the production site. Requests carry the learner's
- * Supabase access token, which the functions verify with Supabase.
+ * Client for the website's API (/api/*, server/index.mjs on Coolify): public
+ * credential links and the job marketplace. On the web the API is same-origin;
+ * the native apps call the production site. Requests carry the learner's
+ * Supabase access token, which the server verifies with Supabase.
  */
 export const PUBLIC_SITE = (process.env.EXPO_PUBLIC_SITE_URL || 'https://bolingo.co.ke').replace(/\/$/, '');
 const API_BASE = Platform.OS === 'web' ? '' : PUBLIC_SITE;
@@ -48,6 +48,24 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
   // A 200 that isn't JSON (e.g. an HTML fallback page) is not a valid answer.
   if (data === null) throw new ApiError("Bolingo's server sent an unexpected response. Please try again.", res.status);
   return data as T;
+}
+
+export type FeedbackInput = {
+  name?: string;
+  email: string;
+  phone?: string;
+  topic?: string;
+  message: string;
+  page?: string;
+};
+
+/**
+ * Contact form. Public — no session needed, because someone locked out of their
+ * account is exactly who needs to reach support. `delivery` is `sent` when the
+ * owner notification left the server and `stored` when it was only saved.
+ */
+export async function sendFeedback(input: FeedbackInput): Promise<{ ok: true; id: number; delivery: string }> {
+  return api('/api/feedback', { method: 'POST', body: input });
 }
 
 /** Public, shareable URL for a credential code. */

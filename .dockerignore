@@ -1,0 +1,33 @@
+# Keep the Coolify build context to source only: the export rebuilds `dist`,
+# and no local secret or native build output belongs in the image.
+.git
+.github
+.gitignore
+node_modules
+# The release signing key must never enter a build context or an image.
+.keystores
+dist
+web-build
+.expo
+.quality
+.expo-shared
+android
+ios
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+screenshots
+.preview-audio
+.cloud-attachments
+.figma-ref
+.gradle
+.idea
+.exe
+docs
+reports
+*.apk
+*.aab
+# NOTE: design/ must stay in the context — publish-wireframes.cjs copies the
+# adaptive board from it into dist/ during the image build.

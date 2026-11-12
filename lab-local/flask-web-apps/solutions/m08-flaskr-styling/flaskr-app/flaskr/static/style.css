@@ -1,0 +1,100 @@
+html {
+  font-family: sans-serif;
+  background: #f7f7f7;
+  padding: 1rem;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 42rem;
+  background: white;
+  padding: 0 1rem 1rem;
+  border-radius: 0 0 6px 6px;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  margin: 0 -1rem 1rem;
+  background: #3f51b5;
+  color: white;
+}
+
+nav h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+nav a, a:visited {
+  text-decoration: none;
+  color: white;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.flash, .error {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+}
+
+.flash {
+  background: #cae6ff;
+}
+
+.content {
+  padding: 0 1rem;
+}
+
+.content:last-child {
+  margin-bottom: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 24rem;
+}
+
+input {
+  padding: 0.4rem;
+  font: inherit;
+}
+
+input[type=submit] {
+  align-self: flex-start;
+}
+
+posts {
+  margin: 0;
+  padding: 0;
+}
+
+posts > article {
+  border-bottom: 1px solid #ececf0;
+  padding: 0.5rem 0;
+}
+
+posts > article:last-of-type {
+  border-bottom: none;
+}
+
+posts h1, posts h2 {
+  font-size: 1.2rem;
+  margin: 0.2rem 0;
+}
+
+posts .info, posts .actions {
+  font-size: 0.8rem;
+  color: #57697a;
+  margin: 0.2rem 0;
+}

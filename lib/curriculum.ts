@@ -8,6 +8,7 @@
 import { LINUX_UNITS } from './linuxCurriculum';
 import { LINUX_ASSESSMENT_BLOCKS } from './linuxAssessments';
 import { TRACK_UNITS } from './trackUnits';
+import { AI_ML_UNITS } from './aiMlUnits';
 
 export type BlockKind = 'lesson' | 'workshop' | 'lab' | 'review' | 'quiz' | 'project';
 
@@ -52,6 +53,9 @@ export const COURSES_META: {
   { id: 'lang', name: 'Course 4 · World Languages & Chess', icon: '\u{1F30D}', blurb: 'Duolingo style — basics, phrases, tenses, review, checkpoints.', difficulty: 'Beginner', hours: 'ongoing' },
   { id: 'certs', name: 'Course 5 · Leveled Certifications', icon: '\u{1F393}', blurb: '7 tracks · 5 unlockable levels each — bite-sized lessons into real capstone projects.', difficulty: 'Intermediate', hours: '~300h' },
   { id: 'linux', name: 'Course 6 · Linux Journey', icon: '\u{1F427}', blurb: '22 courses · 185 bite-sized lessons — the full Linux Journey, no daily limit.', difficulty: 'Intermediate', hours: '~25h' },
+  { id: 'aiml-explorer', name: 'Course 7 · AI & ML Academy · Explorer', icon: '\u{1F9EA}', blurb: 'Ages 10–18 · 20 modules × 10 submodules — data, regression, vision, language, ethics, each with a runnable lab.', difficulty: 'Beginner', hours: '~40h' },
+  { id: 'aiml-launcher', name: 'Course 8 · AI & ML Academy · Launcher', icon: '\u{1F4C8}', blurb: 'Ages 19–25 · maths to MLOps — 20 modules with portfolio labs and interview preparation.', difficulty: 'Intermediate', hours: '~80h' },
+  { id: 'aiml-leader', name: 'Course 9 · AI & ML Academy · Leader', icon: '\u{1F3DB}\uFE0F', blurb: 'Ages 26–40 · 20 modules of enterprise strategy, governance, cost and vertical case studies.', difficulty: 'Advanced', hours: '~50h' },
 ];
 
 export const KIND_META: Record<BlockKind, { label: string; icon: string; color: string }> = {
@@ -1580,6 +1584,7 @@ export const CURRICULUM: CurriculumUnit[] = [
 /* Course 5 (leveled certification tracks) lives in lib/trackUnits.ts — appended
    here so the Path renders all 7 tracks with the same sequential unlock. */
 CURRICULUM.push(...TRACK_UNITS);
+CURRICULUM.push(...AI_ML_UNITS);
 
 /* Course 6 (Linux Journey) lives in lib/linuxCurriculum.ts — generated from
    the imported banks so ids/titles can never drift from the lessons. */
