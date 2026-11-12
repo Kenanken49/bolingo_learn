@@ -26,11 +26,27 @@
 #     file `scripts/android-env.sh` keeps pointed at one ABI for the emulator),
 #     then `$ANDROID_ARCHS`, then `x86_64`.
 #
-# Clearing an ABI is not free: the next build that asks for it recompiles those
-# modules from scratch instead of resuming a cached set. A full `arm64-v8a` set
-# here took 2 h 54 m of compiles across five passes, and `llama.rn` alone plans
-# 2 978 ninja steps for it. The `abi-clean` gate (`npm run check:abi-clean`)
-# proves these rules against a fixture tree, so the guard rails cannot rot.
+# Two facts about what clearing actually buys, both measured against a real
+# `assembleDebug` (see README: "Partial deletes, checked against Gradle's
+# up-to-date checks"):
+#   - an ABI folder sitting inside a Gradle task's own output directory
+#     self-heals: the task's output fingerprint no longer matches, the task
+#     re-runs and writes the same bytes back. Such targets are reported as
+#     `heals`, and deleting one reclaims nothing durable.
+#   - only `.cxx` object trees stay gone, because bringing those back means
+#     recompiling the ABI — a full `arm64-v8a` set here took 2 h 54 m of
+#     compiles across five passes, and `llama.rn` alone plans 2 978 ninja steps.
+#
+# A candidate is only accepted when it really is a folder of one ABI's artifacts
+# (task outputs: parent `lib`, `jni`, `out`, `obj`, `debug` or `release`; `.cxx`:
+# a `<Config>` or `tools` tree at most four levels above the ABI folder). Without
+# that test the any-depth search also matches folders whose
+# *name* merely equals an ABI string: llama.rn carries object dirs at
+# `.../ggml-cpu/arch/x86`, which sit *inside* the pinned `x86_64` tree, so
+# `--abi x86 --delete` would have deleted part of the one ABI the pin is supposed
+# to protect. Those candidates are counted in `dropped=` and never deleted. The
+# `abi-clean` gate (`npm run check:abi-clean`) proves these rules against a
+# fixture tree, so the guard rails cannot rot.
 #
 # Exit codes: 0 ran (including a report that found nothing), 2 bad arguments or a
 # refusal to clear the pinned ABI without `--force`, 1 a delete that failed.
@@ -146,7 +162,7 @@ if [ -n "$refused" ] && [ "$force" -ne 1 ]; then
     echo "clean-abi: refusing to clear $refused — it is in the active pin ($active_from). A build with this pin needs those objects; re-run with --force to clear them anyway." >&2
     # Refusals are machine-readable too: mode=refused says "nothing was looked
     # for and nothing was deleted", which an exit code alone cannot.
-    echo "SUMMARY targets=0 size_kb=0 deleted=0 skipped_links=0 mode=refused"
+    echo "SUMMARY targets=0 size_kb=0 deleted=0 skipped_links=0 mode=refused heals=0 durable=0 dropped=0"
     exit 2
   fi
   echo "clean-abi: $refused is in the active pin ($active_from) — listed below, never deleted without --force." >&2
@@ -154,7 +170,7 @@ fi
 
 if [ -z "$wanted" ]; then
   echo "clean-abi: nothing to clear — every supported ABI is in the active pin ($active)." >&2
-  echo "SUMMARY targets=0 size_kb=0 deleted=0 skipped_links=0 mode=report"
+  echo "SUMMARY targets=0 size_kb=0 deleted=0 skipped_links=0 mode=report heals=0 durable=0 dropped=0"
   exit 0
 fi
 
@@ -165,9 +181,12 @@ for d in "$project"/node_modules/*/android "$project"/node_modules/@*/*/android;
 $d"
 done
 
-targets=""          # one "<kb>|<abi>|<path>" per line, sorted later
+targets=""          # one "<kb>|<abi>|<path>|<kind>" per line, sorted later
 anchors_hit=""
 skipped_links=0
+heals=0
+durable=0
+dropped=0
 while IFS= read -r root; do
   [ -n "$root" ] || continue
   [ -d "$root" ] || continue
@@ -193,11 +212,60 @@ while IFS= read -r root; do
             continue
             ;;
         esac
+        # Is this a real per-ABI artifact, or a directory that merely happens to
+        # be spelled like an ABI? The two trees key their folders differently, so
+        # each needs its own test — AGP and CMake both reuse ABI-shaped names
+        # deeper inside a *single* ABI's tree, and deleting those reaches into the
+        # ABI the pin protects. `case` globs cannot express that, since `*` matches
+        # across `/`, so the .cxx test counts path components instead.
+        #   task output : the parent holds one child per ABI
+        #                 (lib/, jni/, out/, obj/, or a variant dir like debug/)
+        #   .cxx        : <Config>/<hash>[/<extra>]/<abi>, i.e. at most 4
+        #                 components below the config dir that starts the path
+        parent=${found%/*}
+        parent=${parent##*/}
+        rel=${found#$anchor/}
+        head=${rel%%/*}
+        depth=1
+        rest=$rel
+        while [ "$rest" != "${rest%%/*}" ]; do
+          rest=${rest#*/}
+          depth=$((depth + 1))
+        done
+        kind=""
+        case "$anchor" in
+          */.cxx)
+            case "$head" in
+              Debug|Release|RelWithDebInfo|MinSizeRel|tools)
+                [ "$depth" -le 4 ] && kind=cxx
+                ;;
+            esac
+            ;;
+          *)
+            case "$parent" in
+              lib|jni|out|obj|debug|release) kind=heals ;;
+            esac
+            ;;
+        esac
+        if [ -z "$kind" ]; then
+          dropped=$((dropped + 1))
+          [ "$quiet" -eq 1 ] || echo "  drop    $found (parent $parent/ is not a per-ABI folder — not an ABI artifact, never deleted)"
+          continue
+        fi
         kb=$(du -sk "$found" 2>/dev/null | cut -f1)
         [ -n "$kb" ] || kb=0
         anchors_hit="$anchors_hit
 $anchor"
-        targets="$targets$kb|$abi|$found
+        # `.cxx` holds compiled objects, whose loss is durable because restoring
+        # them costs compiles. Anything else sits in a task's own output
+        # directory, which Gradle re-runs and writes back on the next build.
+        if [ "$kind" = cxx ]; then
+          durable=$((durable + 1))
+        else
+          kind=heals
+          heals=$((heals + 1))
+        fi
+        targets="$targets$kb|$abi|$found|$kind
 "
       # -type l as well as -type d: a link or junction named after the ABI is a
       # candidate too, and the containment test below decides whether it is safe.
@@ -226,7 +294,7 @@ deleted=0
 fail=0
 anchors_hit=$(printf '%s' "${anchors_hit:-}" | sed '/^$/d' | sort -u)
 if [ "$delete" -eq 1 ] && [ -n "$targets" ]; then
-  while IFS='|' read -r kb abi path; do
+  while IFS='|' read -r kb abi path kind; do
     [ -n "$path" ] || continue
     if is_pinned "$abi" && [ "$force" -ne 1 ]; then
       continue
@@ -268,11 +336,12 @@ if [ "$quiet" -ne 1 ]; then
   echo "  active pin : $(printf '%s' "$active" | tr ' ' ',')  ($active_from)"
   echo "  clearing   : $(printf '%s' "$wanted" | tr ' ' ',')"
   if [ -n "$targets" ]; then
-    while IFS='|' read -r kb abi path; do
+    while IFS='|' read -r kb abi path kind; do
       [ -n "$path" ] || continue
       mark=""
       is_pinned "$abi" && mark="  [pinned]"
-      echo "  target  $abi  $kb KB  $path$mark"
+      # `heals` goes before the path: the gate reads the path as the last token.
+      echo "  target  $abi  $kb KB  $kind  $path$mark"
     done <<EOFP
 $targets
 EOFP
@@ -282,7 +351,7 @@ EOFP
     # Free space is reported per volume, because node_modules artifacts are on D:
     # while the app module's own objects stay on C:.
     seen_vols=""
-    while IFS='|' read -r kb abi path; do
+    while IFS='|' read -r kb abi path kind; do
       [ -n "$path" ] || continue
       fsname=$(df -P "$path" 2>/dev/null | awk 'NR==2 {print $1}')
       [ -n "$fsname" ] || continue
@@ -295,7 +364,13 @@ $targets
 EOFV
   fi
 fi
-echo "SUMMARY targets=$count size_kb=$total_kb deleted=$deleted skipped_links=$skipped_links mode=$mode"
+if [ "$heals" -gt 0 ] && [ "$quiet" -ne 1 ]; then
+  echo "  note     $heals of $count target(s) sit in a task's own output dir: the next build re-runs that task and writes the same files back (measured: 39 480 KB restored by one warm assembleDebug). Deleting them frees space only until then; the reclaim that stays is in .cxx objects, and those cost a recompile to bring back."
+fi
+if [ "$dropped" -gt 0 ] && [ "$quiet" -ne 1 ]; then
+  echo "  note     $dropped candidate(s) dropped for not being per-ABI folders (see the drop lines above); never deleted."
+fi
+echo "SUMMARY targets=$count size_kb=$total_kb deleted=$deleted skipped_links=$skipped_links mode=$mode heals=$heals durable=$durable dropped=$dropped"
 
 if [ "$fail" -gt 0 ]; then
   echo "clean-abi: $fail delete(s) failed." >&2

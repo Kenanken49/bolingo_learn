@@ -790,7 +790,7 @@ building, and clears them on request. It reports by default and deletes only whe
 | `npm run android:clean-abi` | Lists every artifact folder for every ABI except the pinned one, with its size. Deletes nothing. |
 | `npm run android:clean-abi -- --delete` | Removes exactly the folders that list printed, then reports the total it freed. |
 | `npm run android:clean-abi -- --abi arm64-v8a --delete` | One ABI only. |
-| `npm run android:warm` | The build to run afterwards. It reads the same pin, and it is where the one-time reconfiguration cost lands (measured below). |
+| `npm run android:warm` | The build to run afterwards. It reads the same pin, and it is where a cleared ABI gets written back (measured below). |
 | `npm run android:clean-abi -- --abi x86_64 --delete` | Refused with exit 2: `x86_64` is the pin in `$GRADLE_USER_HOME/gradle.properties`, so clearing it would cost the next warm build. Add `--force` to mean it. |
 
 Four rules keep it from being a footgun. It walks *generated* trees only — `.cxx/` and
@@ -801,21 +801,30 @@ reads (the one `scripts/android-env.sh` exports as `$ANDROID_ARCHS`), never hard
 is resolved with `cd` + `pwd -P` and must stay inside the root it came from, so a folder that
 resolves elsewhere — a junction, a symlink — lands in `skipped_links` instead of being deleted,
 and `node_modules` itself is never a target. The last line is machine-readable
-(`SUMMARY targets=… size_kb=… deleted=… skipped_links=… mode=report|delete|refused`), which is
-what the gate parses.
+(`SUMMARY targets=… size_kb=… deleted=… skipped_links=… mode=report|delete|refused heals=…
+durable=… dropped=…`), which is what the gate parses. `heals=` counts targets sitting inside a
+Gradle task's own output, which the next build writes back; `durable=` counts `.cxx` object trees,
+whose return costs compiles; `dropped=` counts candidates rejected as not being per-ABI folders, and
+they are never deleted.
 
 That gate is `abi-clean` (`npm run check:abi-clean`). It builds a throwaway project in the temp
 folder — a fake `arm64-v8a`/`x86_64` tree, a fake `gradle.properties`, and a junction that points
 outside the fixture — and asserts that report mode lists only the arm64 artifacts and deletes
 nothing, `--delete` removes exactly what it listed, a pinned-ABI request exits 2 *before* deleting,
 `--force` obeys and still spares `src/`, the outside junction is skipped, and a second run is a
-no-op: 19 checks, **26 s**. It never deletes from the real tree; the survey of it is opt-in
+no-op. Two more assert what a partial delete does: clearing one ABI out of a shared task output
+removes only that ABI's folder and labels the target self-healing, and a folder whose name merely
+equals an ABI inside one ABI's object tree is dropped and reported instead of deleted. It now runs
+25 checks in **33 s**, all green, and `--real` passes against this checkout too. It never deletes
+from the real tree; the survey of it is opt-in
 (`node scripts/check-abi-clean.cjs --real`) because sizing those folders took **64 s** with a warm
 disk cache and **186 s** cold, which is too expensive to put in front of every release.
 
-What report mode finds here right now, with `node_modules` on `D:` and the `x86_64` build
-finished: **129 folders, 13 003 MB**, none of them the pinned ABI (103 `arm64-v8a`, 14 `x86`,
-12 `armeabi-v7a`). Only 2 718 MB of it is `.cxx` objects — the `RelWithDebInfo` half that this
+What report mode found on 2026-11-12, after the `arm64-v8a` clear and two warm builds, with the
+`x86_64` build finished: **31 folders / 247 888 KB**, all of them `heals` (task outputs the next
+build writes back), `durable=0`, plus 3 candidates `dropped`. An earlier survey of the same script,
+before that clear, reported **129 folders, 13 003 MB**, none of them the pinned ABI (103
+`arm64-v8a`, 14 `x86`, 12 `armeabi-v7a`). Only 2 718 MB of it is `.cxx` objects — the `RelWithDebInfo` half that this
 project has so far never been authorized to delete — while 10 275 MB is `build/intermediates`
 `.so` copies left by earlier multi-ABI and release builds, the largest single folder being
 `llama.rn`'s `RelWithDebInfo` objects at 2 430 MB, with its release `merged_native_libs` and
@@ -838,18 +847,24 @@ stayed. Re-reporting `arm64-v8a` immediately after the delete found 0 targets.
 Then `npm run android:warm` — the `x86_64` pin untouched — twice, and the honest answer is that
 the first pass was **not** the 48 s this section previously quoted from an older layout. It took
 **25 m 52 s**, `BUILD SUCCESSFUL`, 650 tasks: 157 executed, 145 from cache, 348 up-to-date, exit 0.
-With nothing changed on disk the second pass took **57 s** (25 executed, 625 up-to-date). So the
-reclaim is real and the settled warm pass is still under a minute, but clearing one ABI charges a
-one-time ~26-minute toll on the ABI you kept: deleting `arm64-v8a` took its sibling folders out
-from *inside* the shared `.cxx/Debug/<hash>/` and `build/intermediates/cxx/<hash>/` trees — the
-hash does not contain `$ABI`, so the folders that survive are the ones holding the `x86_64`
-objects — and the build re-ran `configureCMakeDebug[x86_64]` for 8 modules and
-`buildCMakeDebug[x86_64]` for 11, plus two cross-volume `libreactnative.so` hard links that fell
-back to "a slower copy" (the Gradle transform cache is on `D:`, the app's own objects are on `C:`).
-Ninja printed **0 `Building CXX object` lines**, so that is reconfiguration, relinking and copying
-— no C++ was recompiled — and of the 12.5 GiB, roughly 2.2 GiB went straight back to the
-`x86_64` objects and the APK the rebuild wrote: `D:` ended at 804 865 MB free, i.e. **+10.5 GiB net**
-for the whole delete-and-rebuild, +12 769 MB at the instant the delete finished.
+With nothing changed on disk the second pass took **57 s** (25 executed, 625 up-to-date). The
+reclaim is real and the settled warm pass is still under a minute. **What the 25 m 52 s was not:**
+this paragraph previously attributed it to a "one-time ~26-minute toll on the ABI you kept", caused
+by clearing `arm64-v8a` sibling folders out of the shared `.cxx/Debug/<hash>/` and
+`build/intermediates/cxx/<hash>/` trees. That attribution does not survive comparison. The 25 m 52 s
+pass and the 57 s pass executed the *same 20* native tasks (8 `configureCMakeDebug[x86_64]`, 8
+distinct `buildCMakeDebug[x86_64]`, plus the `generateJsonModelDebug`/`externalNativeBuildDebug`
+pairs) — `comm` finds no task unique to either list; the only difference is that 23 lines were
+printed for those 20 tasks because `:llama.rn:` ran `buildCMakeDebug[x86_64]` three times and
+`:app:` twice. And those `x86_64` configure/build tasks re-run on **every** warm pass, cleared ABI
+or not. So no native work distinguishes the two passes, and the cost sits in the 157 executed and
+145 from-cache tasks, which these numbers do not explain. What is still true from that pass: two cross-volume
+`libreactnative.so` hard links fell back to "a slower copy" (the Gradle transform cache is on `D:`,
+the app's objects on `C:`), Ninja printed **0 `Building CXX object` lines** so no C++ was
+recompiled, and of the 12.5 GiB roughly 2.2 GiB went straight back to the `x86_64` objects and the
+APK the rebuild wrote — `D:` ended at 804 865 MB free, **+10.5 GiB net** for the whole
+delete-and-rebuild, +12 769 MB at the instant the delete finished. The 25 m 52 s itself is one
+observation on a machine with an active daemon, not an average.
 
 Both builds are green, and the pin is what they were built for: the APK is 152 607 637 bytes with
 32 `lib/x86_64/` entries and no other ABI folder in it; `source scripts/android-env.sh --check`
@@ -861,6 +876,55 @@ APK was never installed, so nothing here says the rebuilt app runs on a device o
 only that the pinned `x86_64` build completes; the 25 m 52 s is one observation on a machine with
 an active Gradle daemon, not an average; and the 48 s quoted above stands only for the layout it
 was taken in.
+
+#### Partial deletes, checked against Gradle's up-to-date checks
+
+The script's targets are folders, and for task outputs it deletes the `<abi>` folder *inside* a
+larger task output rather than the output as a whole. That question was answered by experiment on
+the live tree, not from Gradle documentation. After the `arm64-v8a` clear above, exactly the **7
+`arm64-v8a` folders that sat inside task outputs (88 224 KB: two at 39 480 KB in
+`:app:`'s `merged_native_libs` and `stripped_native_libs`, five at 1 648-1 904 KB in
+`expo-modules-core`)** were removed by hand, leaving every `.cxx` tree untouched, so any re-run
+would have to be attributable to the output snapshot alone. Then `npm run android:warm`.
+
+Gradle noticed and repaired it. `BUILD SUCCESSFUL in **45 s**, exit 0, no error: 650 actionable
+tasks, 31 executed / 619 up-to-date against the 25 executed / 625 up-to-date baseline — and all 6
+extra executed tasks are owners of the 7 deleted folders: `:app:mergeDebugNativeLibs`,
+`:app:stripDebugDebugSymbols`, `:expo-modules-core:{mergeDebugJniLibFolders,
+copyDebugJniLibsProjectOnly, mergeDebugNativeLibs}` and
+`:expo-modules-core:decompressPrebuiltNativeLibs` (UP-TO-DATE in the baseline, executed once the
+folder under it was gone). All 7 folders were **repopulated to exactly their original sizes** — 39
+480 / 39 480 / 1 904 / 1 648 / 1 904 / 1 904 / 1 904 KB, verified afterwards with `du`. The executed
+native/CMake task list is identical to the baseline (20 tasks, byte-equal after sorting). So a
+partial delete does not leave a build half-cleared, does not report a false UP-TO-DATE, and does not
+produce a stale APK — but the space it freed is gone again after one build. That is why targets of
+this shape are now labelled `heals` in the report and counted in `SUMMARY … heals=N`: deleting them
+buys a re-run, not a reclaim. `.cxx` targets are counted as `durable=` because bringing those back
+costs compiles.
+
+Scope was deliberately **not** widened to the owning task directory. The fixture and the live tree
+both place the pinned `x86_64` sibling under the same parent as the `arm64-v8a` folder being
+cleared (`lib/` in a merged-native-libs output, `.cxx/Debug/<hash>/` in an object tree), so deleting
+the whole task output would delete the one ABI the pin exists to protect, and would clear the pinned
+ABI's *inputs* as well as its outputs. Case 6 of `npm run check:abi-clean` pins that behaviour down:
+a partial delete removes only the named ABI's folder, the sibling survives, and the target is
+reported as self-healing.
+
+Two honest limits. First, what was observed is that *these* tasks re-ran and repaired themselves;
+no task was tested that goes falsely UP-TO-DATE after a partial delete, so "self-heals" is an
+observation about this project's AGP 9.2.1 task set, not a guarantee for every task. Second, the
+same any-depth search that finds these folders also matches directories whose name merely equals an
+ABI: llama.rn ships CMake object dirs at
+`.cxx/Debug/<hash>/x86_64/rnllama/CMakeFiles/rnllama_x86_64.dir/<…>/ggml-cpu/arch/x86`, i.e. *inside
+the pinned `x86_64` tree*. Running `--abi x86 --delete` would therefore have cleared build state for
+an ABI nobody asked about. The script now rejects any candidate that is not genuinely a per-ABI
+folder (task output parent `lib`/`jni`/`out`/`obj`/`debug`/`release`; `.cxx` a `<Config>` or `tools`
+tree at most four levels above the ABI), prints a `drop` line for it, and counts it in
+`SUMMARY … dropped=N`. Measured on this tree: those 3 dirs are dropped, worth **408 KB** between
+them, which reconciles exactly — the `x86` survey went from 15 folders / 98 764 KB to 12 / 98 368 KB
+and the default survey from 34 / 248 284 KB to 31 / 247 888 KB. No real artifact was lost to the
+rule: the 2 dropped `expo-prebuilt-natives/{debug,release}/arm64-v8a` folders still show up, because
+those parents do hold one child per ABI.
 
 #### What invalidates `.cxx`
 
