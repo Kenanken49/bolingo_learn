@@ -469,6 +469,103 @@ check('the go-live CLI is ready-clean on a complete live file', () => {
   assert(!FAKES.some((value) => clean.out.includes(value)), 'the CLI printed a secret value');
 });
 
+/** Requiring the go-live CLI installs its own `globalThis.Deno` stub over this
+ * file's (each keeps a private ENV), so load it once, keep its exports, and put
+ * this file's stub back before any other check runs. */
+let goliveModule = null;
+function goliveExports() {
+  if (goliveModule) return goliveModule;
+  const saved = globalThis.Deno;
+  try {
+    goliveModule = require(GOLIVE_CLI);
+  } finally {
+    globalThis.Deno = saved;
+  }
+  return goliveModule;
+}
+
+check('--apply uploads the resolved variable names, not the labels in the file', () => {
+  const golive = goliveExports();
+  const parsed = golive.parseEnvFile(
+    [
+      `Consumer Key:${FAKE_KEY}`,
+      `Consumer Secret:${FAKE_SECRET}`,
+      `Passkey:${FAKE_PASSKEY}`,
+      'Short Code:4000100',
+      'MPESA_ENV:production',
+      `MPESA_CALLBACK_URL:https://projectref.supabase.co/functions/v1/mpesa-callback?t=${FAKE_TOKEN}`,
+      `MPESA_CALLBACK_TOKEN:${FAKE_TOKEN}`,
+    ].join('\n')
+  );
+  assert(parsed.DARAJA_CONSUMER_KEY === FAKE_KEY, 'the dashboard label did not resolve to DARAJA_CONSUMER_KEY');
+
+  const upload = golive.resolveUpload(parsed, { environment: 'production', baseUrl: LIVE_HOST }, new Set(Object.keys(parsed)));
+  const names = upload.written.map((entry) => entry.name);
+  for (const name of golive.REQUIRED_NAMES) {
+    assert(names.includes(name), `--apply would not upload the required ${name}`);
+  }
+  assert(names.includes('DARAJA_BASE_URL'), '--apply did not pin the endpoint the audit resolved');
+  assert(!upload.written.some((entry) => /^(Consumer|Passkey|Short)/i.test(entry.name)), '--apply uploaded a dashboard label as a variable name');
+  assert(upload.written.every((entry) => golive.MANAGED.includes(entry.name)), '--apply queued a name the Edge Function never reads');
+  assert(upload.lines.includes(`DARAJA_BASE_URL=${LIVE_HOST}`), 'the uploaded endpoint is not the one the audit used');
+  assert(upload.lines.includes('MPESA_ENV=production'), 'the uploaded environment is not the one the audit used');
+  const derived = upload.written.filter((entry) => entry.source === 'derived').map((entry) => entry.name).sort();
+  assert(derived.join(',') === 'DARAJA_BASE_URL', `unexpected derived names: ${derived.join(',')}`);
+  assert(upload.written.filter((entry) => entry.source === 'file').length === golive.REQUIRED_NAMES.length, 'a name the file carried was not marked as read from the file');
+  assert(upload.written.length === golive.REQUIRED_NAMES.length + 1, 'the upload is not exactly the required names plus the derived endpoint');
+  assert(upload.absentRequired.length === 0, `a complete file was reported missing: ${upload.absentRequired.join(',')}`);
+  assert(upload.unsafe.length === 0, 'a clean value was flagged unsafe');
+
+  const warnings = golive.uploadWarnings(upload, 'labeled.env').join('\n');
+  assert(warnings.includes('MPESA_TRANSACTION_TYPE'), 'an absent optional knob went unmentioned');
+  assert(!warnings.includes('REQUIRED variable'), 'a file that carries every required name was told it was missing one');
+  assert(!FAKES.some((value) => warnings.includes(value)), 'the upload warning block printed a secret value');
+});
+
+check('--apply names the required variables the file does not carry, instead of leaving them stale', () => {
+  const golive = goliveExports();
+
+  // The list of what must be uploaded has to track what the deployed code
+  // actually demands, or a renamed secret reads as "absent" here and "fine"
+  // there, which is exactly how a live push ended up on sandbox credentials.
+  const shared = read(SHARED);
+  const demanded = [...shared.matchAll(/requiredEnv\(['"]([A-Z0-9_]+)['"]\)/g)].map((match) => match[1]);
+  assert(demanded.length >= 5, `the shared module stopped declaring its required names (${demanded.length})`);
+  for (const name of demanded) {
+    assert(golive.REQUIRED_NAMES.includes(name), `the Edge Function needs ${name}, but --apply does not treat it as required`);
+  }
+
+  const withoutPasskey = { ...liveConfig() };
+  delete withoutPasskey.DARAJA_PASSKEY;
+  const upload = golive.resolveUpload(
+    withoutPasskey,
+    { environment: 'production', baseUrl: LIVE_HOST },
+    new Set(Object.keys(withoutPasskey))
+  );
+  assert(upload.absentRequired.join(',') === 'DARAJA_PASSKEY', `absent required was: ${upload.absentRequired.join(',')}`);
+  assert(!upload.lines.some((line) => line.startsWith('DARAJA_PASSKEY=')), 'a passkey that was not supplied still went into the upload');
+  const loud = golive.uploadWarnings(upload, 'C:/temp/live.env').join('\n');
+  assert(loud.includes('!! 1 REQUIRED variable'), `a missing required name was not called out loudly:\n${loud}`);
+  assert(loud.includes('DARAJA_PASSKEY') && loud.includes('NOT WRITTEN'), 'the warning did not name the variable left at its server value');
+  assert(loud.includes('supabase secrets list'), 'the warning did not say how to see what the server holds now');
+  assert(!FAKES.some((value) => loud.includes(value)), 'the loud warning printed a secret value');
+
+  const quoted = golive.resolveUpload(
+    { DARAJA_CONSUMER_KEY: 'has"quote' },
+    { environment: 'sandbox', baseUrl: SANDBOX_HOST },
+    new Set(['DARAJA_CONSUMER_KEY'])
+  );
+  assert(quoted.unsafe.join(',') === 'DARAJA_CONSUMER_KEY', 'a value the CLI would read back differently was accepted');
+  assert(!quoted.lines.some((line) => line.startsWith('DARAJA_CONSUMER_KEY=')), 'a refused value was still queued for upload');
+  assert(quoted.lines.includes(`DARAJA_BASE_URL=${SANDBOX_HOST}`), 'the sandbox endpoint was not pinned for a sandbox audit');
+
+  const source = read(GOLIVE_CLI);
+  assert(/mode: 0o600/.test(source), 'the upload file is not written private');
+  assert(/fs\.rmSync\(uploadFile/.test(source), 'the upload file is not deleted once the CLI has read it');
+  assert(!/'--env-file',\s*JSON\.stringify\(absolute\)/.test(source), '--apply is handing the operator file to the CLI verbatim again');
+  assert(/bolingo-mpesa-apply-/.test(source), 'the upload file is not the resolved-name file these asserts describe');
+});
+
 check('the go-live CLI refuses the mistakes that matter', () => {
   assert(/committed to git/.test(runCli(['--from', '.env.example']).out), 'a secrets file inside the repository was accepted');
   assert(/--from/.test(runCli(['--apply', '--project-ref', 'projectref']).out), 'the CLI would deploy without a keys file');
