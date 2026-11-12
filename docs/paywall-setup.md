@@ -90,6 +90,22 @@ M-Pesa PIN **on the phone**, and Safaricom tells the server whether it landed.
    `MPESA_ENV=production`, `MPESA_CALLBACK_TOKEN=…`, and
    `MPESA_CALLBACK_URL=https://<project-ref>.supabase.co/functions/v1/mpesa-callback?t=<token>`.
 
+   Run the non-charging preflight before sending anything:
+
+   ```bash
+   npm run mpesa:preflight
+   ```
+
+   It reads the sibling `../mpesa-live.env`, obtains a Daraja OAuth token,
+   checks the shortcode shape and passkey presence, and posts a synthetic
+   callback with an impossible `CheckoutRequestID` to prove the deployed
+   callback accepts the configured token. It never calls STK Push and never
+   asks anyone to pay. Shortcode ownership and passkey correctness cannot be
+   proven without a real push; the first live payment is their only
+   confirmation. If the callback is not deployed yet, the preflight reports
+   that instead of pretending the configuration is ready. For a file elsewhere,
+   run `node scripts/mpesa-golive.cjs --from <path> --preflight`.
+
    The auditor checks the pair that a live outage actually comes from: `MPESA_ENV`
    against `DARAJA_BASE_URL`, the Daraja test paybill `17439` sitting on the live
    endpoint, a `MPESA_CALLBACK_URL` whose `?t=` token is missing or is not the

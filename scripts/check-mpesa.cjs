@@ -625,6 +625,16 @@ check('--apply names the required variables the file does not carry, instead of 
   assert(/bolingo-mpesa-apply-/.test(source), 'the upload file is not the resolved-name file these asserts describe');
 });
 
+check('the non-charging preflight fails closed on an empty file without network', () => {
+  const empty = fixture('empty.env', {});
+  const result = runCli(['--from', empty, '--preflight']);
+  assert(result.status === 2, `exit ${result.status}:\n${result.out}`);
+  assert(/Non-charging preflight/.test(result.out), `preflight did not run:\n${result.out}`);
+  assert(/DARAJA_CONSUMER_KEY/.test(result.out), `missing key not named:\n${result.out}`);
+  assert(/PREFLIGHT environment=sandbox passed=no/.test(result.out), `unexpected preflight verdict:\n${result.out}`);
+  assert(!/mpesa\/stkpush/i.test(result.out), 'the preflight called STK Push');
+});
+
 check('the go-live CLI refuses the mistakes that matter', () => {
   assert(/committed to git/.test(runCli(['--from', '.env.example']).out), 'a secrets file inside the repository was accepted');
   assert(/--from/.test(runCli(['--apply', '--project-ref', 'projectref']).out), 'the CLI would deploy without a keys file');

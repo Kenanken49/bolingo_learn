@@ -22,6 +22,7 @@
  *   node scripts/mpesa-golive.cjs                        # audit the process env
  *   node scripts/mpesa-golive.cjs --from <file>          # audit a secrets file
  *   node scripts/mpesa-golive.cjs --from <file> --json   # machine-readable
+ *   node scripts/mpesa-golive.cjs --from <file> --preflight  # token + callback probe
  *   node scripts/mpesa-golive.cjs --from <file> --apply  # + push and deploy
  *
  *   --from <file>       dotenv-style or Daraja-dashboard-label file holding the
@@ -38,6 +39,14 @@
  *                       and is written as a plain (non-secret) secret on --apply.
  *   --project-ref <ref> Supabase project to write to. Defaults to the ref in
  *                       EXPO_PUBLIC_SUPABASE_URL, which is public by design.
+ *   --preflight         Non-charging readiness check: obtains a Daraja OAuth
+ *                       token (validates the consumer key/secret), checks the
+ *                       shortcode shape and passkey presence, and posts a
+ *                       synthetic callback with an impossible CheckoutRequestID
+ *                       to prove the deployed callback accepts the configured
+ *                       token. It never calls STK Push and never asks anyone to
+ *                       pay. Shortcode ownership and passkey correctness cannot
+ *                       be proven without a real push; the report says so.
  *   --apply             write the resolved variables with `supabase secrets set
  *                       --env-file` and run `supabase functions deploy` for both
  *                       functions. The file the CLI reads is a short-lived 0600
@@ -60,7 +69,8 @@
  *
  * Exit: 0 ready, 2 not ready (problems found / apply refused), 1 usage or
  * command failure. Prints `SUMMARY environment= ready= problems= warnings=`
- * last so a caller can read the verdict without parsing prose.
+ * last so a caller can read the verdict without parsing prose. With
+ * --preflight the last line is `PREFLIGHT environment= passed= auditProblems=`.
  *
  * Used by: docs/paywall-setup.md §6 (the go-live runbook), README "Paying with
  * M-Pesa", and the `mpesa` gate, which runs this script against two throwaway
@@ -182,8 +192,9 @@ function normalizeKey(raw) {
   return KEY_ALIASES[flat] ?? flat;
 }
 
-/** Parse a dotenv-style file into a map. Values stay in memory; they are never
- * printed, and they are scrubbed out of anything a child process echoes. */
+/** Parse a dotenv file, a `KEY: value` file, or the label format the Daraja
+ * dashboard displays. Values stay in memory; they are never printed, and they
+ * are scrubbed out of anything a child process echoes. */
 function parseEnvFile(text) {
   const out = {};
   for (const line of text.split(/\r?\n/)) {
@@ -407,14 +418,190 @@ function runSupabase(args, label) {
   return true;
 }
 
+// --- non-charging preflight ----------------------------------------------
+
+/** Never let a fetch error quote a credential or the callback token. */
+function maskedError(error) {
+  return scrub(error && error.message ? error.message : String(error));
+}
+
+/** OAuth is read-only: it proves the consumer key/secret pair is accepted and
+ * costs nothing. It is the only Daraja call this script makes for the token. */
+async function requestDarajaToken(key, secret, endpoint) {
+  const basic = Buffer.from(`${key}:${secret}`, 'utf8').toString('base64');
+  try {
+    const res = await fetch(`${endpoint}/oauth/v1/generate?grant_type=client_credentials`, {
+      headers: { Authorization: `Basic ${basic}` },
+      signal: AbortSignal.timeout(15_000),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.access_token) {
+      const detail = typeof body.errorMessage === 'string' ? ` — ${body.errorMessage}` : '';
+      return { ok: false, error: `HTTP ${res.status}${detail}` };
+    }
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: `could not reach ${endpoint}: ${maskedError(error)}` };
+  }
+}
+
+/**
+ * Prove the deployed callback accepts the configured ?t= token without taking a
+ * payment. It posts a synthetic, deliberately impossible CheckoutRequestID:
+ * the callback validates the token first, then settleCheckout() finds no row and
+ * returns without writing anything. A 200 therefore means the token was accepted
+ * and an unknown id was ignored; 401 means the token or JWT mode is wrong.
+ */
+async function probeCallback(callbackUrl) {
+  const id = `PREFLIGHT-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  try {
+    const res = await fetch(callbackUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        Body: {
+          stkCallback: {
+            ResultCode: 1,
+            ResultDesc: 'Preflight only — no payment was initiated.',
+            CheckoutRequestID: id,
+            MerchantRequestID: id,
+          },
+        },
+      }),
+      redirect: 'manual',
+      signal: AbortSignal.timeout(15_000),
+    });
+    const text = (await res.text().catch(() => '')).slice(0, 500);
+    if (res.status === 404) {
+      return { ok: false, error: 'HTTP 404 — mpesa-callback is not deployed at this URL' };
+    }
+    if (res.status === 401 || res.status === 403) {
+      const jwt = /authorization|jwt/i.test(text);
+      return {
+        ok: false,
+        error: jwt
+          ? `HTTP ${res.status} — JWT verification is still on; deploy mpesa-callback with --no-verify-jwt`
+          : `HTTP ${res.status} — the deployed callback rejected the ?t= token`,
+      };
+    }
+    if (res.status >= 500) {
+      return { ok: false, error: `HTTP ${res.status} — the callback is deployed but unhealthy` };
+    }
+    if (res.status >= 300 && res.status < 400) {
+      return { ok: false, error: `HTTP ${res.status} — the callback redirects; use its final HTTPS URL` };
+    }
+    return { ok: true, status: res.status };
+  } catch (error) {
+    return { ok: false, error: `unreachable: ${maskedError(error)}` };
+  }
+}
+
+function preflightLine(ok, name, detail) {
+  print(`  ${ok ? '✓' : '✗'} ${name}: ${detail}`);
+}
+
+async function preflight(report, values) {
+  const failures = [];
+  print('');
+  print('Non-charging preflight — no STK Push and no payment request will be sent.');
+  print('');
+
+  const key = (values.DARAJA_CONSUMER_KEY ?? '').trim();
+  const secret = (values.DARAJA_CONSUMER_SECRET ?? '').trim();
+  if (!key || !secret) {
+    preflightLine(false, 'OAuth token', 'DARAJA_CONSUMER_KEY and DARAJA_CONSUMER_SECRET are required');
+    failures.push('OAuth token');
+  } else {
+    const token = await requestDarajaToken(key, secret, report.baseUrl);
+    if (token.ok) {
+      preflightLine(true, 'OAuth token', `accepted by ${report.baseUrl}`);
+    } else {
+      preflightLine(false, 'OAuth token', token.error);
+      failures.push('OAuth token');
+    }
+  }
+
+  const shortcode = (values.DARAJA_SHORTCODE ?? '').trim();
+  if (!shortcode) {
+    preflightLine(false, 'DARAJA_SHORTCODE', 'missing');
+    failures.push('DARAJA_SHORTCODE');
+  } else if (!/^\d{5,8}$/.test(shortcode)) {
+    preflightLine(false, 'DARAJA_SHORTCODE', 'must be 5 to 8 digits');
+    failures.push('DARAJA_SHORTCODE');
+  } else {
+    preflightLine(true, 'DARAJA_SHORTCODE', '5–8 digits; ownership is only confirmed by Safaricom on the first push');
+  }
+
+  const passkey = (values.DARAJA_PASSKEY ?? '').trim();
+  if (!passkey) {
+    preflightLine(false, 'DARAJA_PASSKEY', 'missing');
+    failures.push('DARAJA_PASSKEY');
+  } else {
+    preflightLine(true, 'DARAJA_PASSKEY', 'present; Daraja has no non-charging check for it, so the first push confirms it');
+  }
+
+  const callbackUrl = (values.MPESA_CALLBACK_URL ?? '').trim();
+  const callbackToken = (values.MPESA_CALLBACK_TOKEN ?? '').trim();
+  let parsed = null;
+  try {
+    parsed = callbackUrl ? new URL(callbackUrl) : null;
+  } catch {
+    parsed = null;
+  }
+
+  if (!callbackUrl) {
+    preflightLine(false, 'MPESA_CALLBACK_URL', 'missing');
+    failures.push('MPESA_CALLBACK_URL');
+  } else if (!parsed || parsed.protocol !== 'https:') {
+    preflightLine(false, 'MPESA_CALLBACK_URL', 'must be an absolute https URL');
+    failures.push('MPESA_CALLBACK_URL');
+  } else if (!parsed.pathname.includes('/functions/v1/mpesa-callback')) {
+    preflightLine(false, 'MPESA_CALLBACK_URL', 'does not point at the mpesa-callback Edge Function path');
+    failures.push('MPESA_CALLBACK_URL');
+  } else if (!callbackToken) {
+    preflightLine(false, 'MPESA_CALLBACK_TOKEN', 'missing');
+    failures.push('MPESA_CALLBACK_TOKEN');
+  } else if (!parsed.searchParams.get('t')) {
+    preflightLine(false, 'MPESA_CALLBACK_URL', 'has no ?t= token');
+    failures.push('MPESA_CALLBACK_URL');
+  } else if (parsed.searchParams.get('t') !== callbackToken) {
+    preflightLine(false, 'MPESA_CALLBACK_TOKEN', 'does not match the ?t= value in MPESA_CALLBACK_URL');
+    failures.push('MPESA_CALLBACK_TOKEN');
+  } else {
+    if (callbackToken.length < 16) {
+      print('  ! MPESA_CALLBACK_TOKEN: shorter than 16 characters');
+    }
+    const callback = await probeCallback(callbackUrl);
+    if (callback.ok) {
+      preflightLine(true, 'MPESA_CALLBACK_URL', `answered HTTP ${callback.status} to a synthetic callback; deployed token accepted`);
+    } else {
+      preflightLine(false, 'MPESA_CALLBACK_URL', callback.error);
+      failures.push('MPESA_CALLBACK_URL');
+    }
+  }
+
+  print('');
+  if (failures.length || report.problems.length) {
+    if (report.problems.length) {
+      print(`Audit problems (${report.problems.length}):`);
+      for (const problem of report.problems) print(`  ✗ ${problem}`);
+    }
+    print(`Preflight failed: ${failures.length} preflight check(s), ${report.problems.length} audit problem(s).`);
+    return false;
+  }
+  print('Preflight passed. No payment was initiated.');
+  return true;
+}
+
 // --- main ----------------------------------------------------------------
 
-function main(argv) {
+async function main(argv) {
   const options = {
     from: '',
     env: '',
     projectRef: '',
     apply: false,
+    preflight: false,
     skipDeploy: false,
     force: false,
     json: false,
@@ -426,6 +613,7 @@ function main(argv) {
     if (arg === '--from' || arg === '--file') options.from = argv[++i] ?? '';
     else if (arg === '--env') options.env = argv[++i] ?? '';
     else if (arg === '--project-ref') options.projectRef = argv[++i] ?? '';
+    else if (arg === '--preflight') options.preflight = true;
     else if (arg === '--apply') options.apply = true;
     else if (arg === '--skip-deploy') options.skipDeploy = true;
     else if (arg === '--force') options.force = true;
@@ -435,12 +623,15 @@ function main(argv) {
       print(
         [
           'Usage: node scripts/mpesa-golive.cjs [--from <secrets file>] [--env sandbox|production]',
-          '       [--project-ref <ref>] [--apply] [--skip-deploy] [--force] [--json] [--verbose]',
+          '       [--project-ref <ref>] [--preflight] [--apply] [--skip-deploy] [--force]',
+          '       [--json] [--verbose]',
           '',
           'Audits the Daraja configuration for one environment and reports variable',
-          'names only — never values. Add --apply to write the secrets under the',
-          'resolved variable names with `supabase secrets set --env-file` (from a',
-          'temp file this script builds) and deploy mpesa-push / mpesa-callback.',
+          'names only — never values. Add --preflight to obtain a Daraja OAuth token',
+          'and prove the deployed callback accepts the configured token. It never',
+          'calls STK Push and never initiates a payment. Add --apply to write the',
+          'secrets under the resolved variable names with `supabase secrets set',
+          '--env-file` (from a temp file it builds) and deploy both functions.',
           '',
           'Exit 0 = ready, 2 = not ready, 1 = usage or command failure.',
         ].join('\n')
@@ -480,6 +671,17 @@ function main(argv) {
   for (const name of MANAGED) ENV[name] = (values[name] ?? '').trim();
 
   const report = mpesa.audit();
+
+  if (options.preflight) {
+    if (options.json) die('--json is not supported with --preflight; the preflight report is human-readable.');
+    print(`Daraja environment : ${report.environment}`);
+    print(`Endpoint           : ${report.baseUrl}`);
+    const passed = await preflight(report, values);
+    print(
+      `PREFLIGHT environment=${report.environment} passed=${passed && report.ready ? 'yes' : 'no'} auditProblems=${report.problems.length}`
+    );
+    return passed && report.ready ? 0 : 2;
+  }
 
   if (options.json) {
     const payload = {
@@ -643,4 +845,13 @@ module.exports = {
   uploadWarnings,
 };
 
-if (require.main === module) process.exitCode = main(process.argv.slice(2));
+if (require.main === module) {
+  main(process.argv.slice(2))
+    .then((code) => {
+      process.exitCode = code;
+    })
+    .catch((error) => {
+      console.error(`mpesa-golive: ${error && error.stack ? error.stack : error}`);
+      process.exitCode = 1;
+    });
+}

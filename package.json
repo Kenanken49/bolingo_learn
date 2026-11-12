@@ -123,6 +123,7 @@
     "check:roleplay": "node scripts/check-roleplay-personas.cjs",
     "check:mpesa": "node scripts/check-mpesa.cjs",
     "mpesa:golive": "node scripts/mpesa-golive.cjs",
+    "mpesa:preflight": "node scripts/mpesa-golive.cjs --from ../mpesa-live.env --preflight",
     "gate": "node scripts/run-quality-gates.cjs",
     "gate:publish": "node scripts/run-quality-gates.cjs --publish",
     "check:quality-ops": "node scripts/check-quality-ops.cjs",
