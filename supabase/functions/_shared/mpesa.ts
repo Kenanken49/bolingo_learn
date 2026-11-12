@@ -115,6 +115,45 @@ export function safeEqual(a: string, b: string): boolean {
   return mismatch === 0;
 }
 
+/**
+ * Remove any configured Daraja secret from a log line or an error response.
+ * The callback token is also embedded in MPESA_CALLBACK_URL, so this covers the
+ * URL an exception might quote as well as the raw credential fields.
+ */
+export function redactSecrets(value: unknown): string {
+  let out = value instanceof Error ? value.message : String(value);
+  for (const name of [
+    'DARAJA_CONSUMER_KEY',
+    'DARAJA_CONSUMER_SECRET',
+    'DARAJA_PASSKEY',
+    'MPESA_CALLBACK_TOKEN',
+  ]) {
+    const secret = (Deno.env.get(name) ?? '').trim();
+    if (secret) out = out.split(secret).join('••••••');
+  }
+  return out;
+}
+
+/**
+ * Read the amount Daraja actually charged. STK Push callbacks carry it inside
+ * CallbackMetadata.Item as `{ Name: 'Amount', Value: 770 }`, not as a top-level
+ * field; query responses may carry it directly. Returning undefined must never
+ * be treated as a successful payment by the callback route.
+ */
+export function callbackAmount(callback: {
+  Amount?: string | number | { value?: string | number };
+  CallbackMetadata?: { Item?: Array<{ Name?: string; Value?: string | number }> };
+}): string | number | undefined {
+  const direct = callback.Amount;
+  if (direct !== undefined && direct !== null) {
+    return typeof direct === 'object' ? direct.value : direct;
+  }
+  const items = callback.CallbackMetadata?.Item;
+  if (!Array.isArray(items)) return undefined;
+  const amount = items.find((item) => String(item?.Name ?? '').toLowerCase() === 'amount');
+  return amount?.Value;
+}
+
 /** Daraja wants yyyyMMddHHmmss in East Africa Time, not UTC. */
 export function nairobiStamp(at: Date = new Date()): string {
   const parts = new Intl.DateTimeFormat('en-GB', {

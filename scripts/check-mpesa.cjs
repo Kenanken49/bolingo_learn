@@ -33,6 +33,7 @@ const SHARED = path.join(ROOT, 'supabase', 'functions', '_shared', 'mpesa.ts');
 const PUSH = path.join(ROOT, 'supabase', 'functions', 'mpesa-push', 'index.ts');
 const CALLBACK = path.join(ROOT, 'supabase', 'functions', 'mpesa-callback', 'index.ts');
 const CLIENT = path.join(ROOT, 'lib', 'mpesa.ts');
+const EDGE_ERROR = path.join(ROOT, 'lib', 'edgeFunctionError.ts');
 const PURCHASES = path.join(ROOT, 'lib', 'purchases.ts');
 const PAYWALL = path.join(ROOT, 'src', 'app', 'paywall.tsx');
 const MIGRATION = path.join(ROOT, 'supabase', 'migrations_mpesa_premium.sql');
@@ -209,6 +210,41 @@ check('the callback token compare is constant-time and rejects mismatches', () =
   assert(mpesa.safeEqual('abc123', 'abc124') === false, 'wrong token accepted');
   assert(mpesa.safeEqual('abc123', 'abc1234') === false, 'length difference accepted');
   assert(mpesa.safeEqual('', '') === false, 'an empty secret must never match an empty token');
+});
+
+check('Daraja secrets are redacted from logs and error responses', () => {
+  ENV.MPESA_CALLBACK_TOKEN = 'callback-token-for-redaction';
+  ENV.DARAJA_PASSKEY = 'passkey-for-redaction';
+  const line = mpesa.redactSecrets('failed callback-token-for-redaction and passkey-for-redaction');
+  assert(line === 'failed •••••• and ••••••', line);
+  delete ENV.MPESA_CALLBACK_TOKEN;
+  delete ENV.DARAJA_PASSKEY;
+});
+
+check('the amount Daraja actually charged is read from CallbackMetadata', () => {
+  assert(
+    mpesa.callbackAmount({ CallbackMetadata: { Item: [{ Name: 'Amount', Value: 770 }] } }) === 770,
+    'the real callback metadata amount was not read'
+  );
+  assert(mpesa.callbackAmount({ Amount: 1 }) === 1, 'a direct amount was not read');
+  assert(mpesa.callbackAmount({ Amount: { value: '770' } }) === '770', 'an object amount was not read');
+  assert(
+    mpesa.callbackAmount({ CallbackMetadata: { Item: [{ Name: 'MpesaReceiptNumber', Value: 'x' }] } }) === undefined,
+    'a callback without an amount must be undefined, not a free success'
+  );
+});
+
+check('a real 1 KES callback amount cannot buy 770 KES of premium', async () => {
+  resetLedger([pendingCheckout()], [profile()]);
+  const amount = mpesa.callbackAmount({ CallbackMetadata: { Item: [{ Name: 'Amount', Value: 1 }] } });
+  const outcome = await mpesa.settleCheckout('co-1', {
+    resultCode: '0',
+    resultDesc: 'Success',
+    paidAmountKes: amount,
+  });
+  assert(outcome.ok === true, JSON.stringify(outcome));
+  assert(state.mpesa_checkouts[0].status === 'failed', `underpayment became ${state.mpesa_checkouts[0].status}`);
+  assert(state.profiles[0].is_premium === false, 'an underpayer kept premium');
 });
 
 check('a missing Daraja secret names itself instead of half-configuring', () => {
@@ -432,11 +468,18 @@ function runCli(args) {
 }
 
 function fixture(name, values) {
+  return fixtureLines(
+    name,
+    Object.entries(values).map(([key, value]) => `${key}=${value}`)
+  );
+}
+
+function fixtureLines(name, lines) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bolingo-mpesa-golive-'));
   const file = path.join(dir, name);
   // Fixtures live in the system temp folder, never in the repository: fake keys
   // committed next to real ones teach nobody which is which.
-  fs.writeFileSync(file, `${Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n')}\n`);
+  fs.writeFileSync(file, `${lines.join('\n')}\n`);
   return file;
 }
 
@@ -467,6 +510,22 @@ check('the go-live CLI is ready-clean on a complete live file', () => {
   assert(clean.status === 0, `exit ${clean.status}:\n${clean.out}`);
   assert(/SUMMARY environment=production ready=yes problems=0/.test(clean.out), clean.out);
   assert(!FAKES.some((value) => clean.out.includes(value)), 'the CLI printed a secret value');
+});
+
+check('the go-live CLI reads the Daraja dashboard label format', () => {
+  const labeled = fixtureLines('labeled.env', [
+    `Consumer Key:${FAKE_KEY}`,
+    `Consumer Secret:${FAKE_SECRET}`,
+    `Passkey:${FAKE_PASSKEY}`,
+    'Short Code:4000100',
+    'MPESA_ENV:production',
+    `MPESA_CALLBACK_URL:https://projectref.supabase.co/functions/v1/mpesa-callback?t=${FAKE_TOKEN}`,
+    `MPESA_CALLBACK_TOKEN:${FAKE_TOKEN}`,
+  ]);
+  const result = runCli(['--from', labeled, '--json']);
+  assert(result.status === 0, `exit ${result.status}:\n${result.out}`);
+  assert(/"ready": true/.test(result.out), `label format was not read:\n${result.out}`);
+  assert(!FAKES.some((value) => result.out.includes(value)), 'the CLI printed a secret value');
 });
 
 /** Requiring the go-live CLI installs its own `globalThis.Deno` stub over this
@@ -578,6 +637,7 @@ check('the go-live CLI refuses the mistakes that matter', () => {
 const pushSource = read(PUSH);
 const callbackSource = read(CALLBACK);
 const clientSource = read(CLIENT);
+const edgeSource = read(EDGE_ERROR);
 const purchasesSource = read(PURCHASES);
 const paywallSource = read(PAYWALL);
 const migrationSource = read(MIGRATION);
@@ -604,6 +664,41 @@ check('the app never writes the premium flag from an M-Pesa path', () => {
   assert(!/is_premium\s*[:=]\s*true/.test(clientSource), 'lib/mpesa.ts must not grant premium locally');
 });
 
+check('a failed push tells the learner what mpesa-push answered', () => {
+  // supabase-js gives every non-2xx the same message — "Edge Function returned a
+  // non-2xx status code" — and leaves the function's own body unread in
+  // error.context. The rail must read that body, or a sign-out, a bad number,
+  // a throttled retry and an unconfigured Daraja all print one stack-trace
+  // string on a payment screen.
+  assert(
+    /from '\.\/edgeFunctionError'/.test(clientSource),
+    'lib/mpesa.ts must read invoke errors through lib/edgeFunctionError.ts'
+  );
+  assert(
+    /throw new Error\(await edgeFunctionReason\(error, 'M-Pesa is unavailable right now\.'\)\)/.test(clientSource),
+    'lib/mpesa.ts no longer throws the reason edgeFunctionReason read, with the rail\'s own fallback'
+  );
+  assert(!/error\.message/.test(clientSource), 'lib/mpesa.ts reads error.message — that is the SDK constant, not the answer');
+  assert(!/\.message \|\|/.test(clientSource), 'lib/mpesa.ts builds copy from `.message ||` again');
+  assert(!/throw new Error\([^)]*\.message/.test(clientSource), 'lib/mpesa.ts throws a raw error message');
+  assert(!/non-2xx status code/.test(clientSource), 'the SDK constant was pasted into the rail as copy');
+
+  // The shared reader is only safe while it opens the Response and refuses the
+  // constant: drop either half and the constant reaches the UI from ten screens.
+  // These match code, not the docblock — the file's own comments name the constant.
+  assert(/err\?\.context as \{ text\?: \(\) => Promise<string> \}/.test(edgeSource), 'edgeFunctionReason no longer opens the Response supabase-js leaves in error.context');
+  assert(/await response\.text\(\)/.test(edgeSource), 'edgeFunctionReason no longer reads that body as text');
+  assert(/typeof parsed\.error === 'string' \? parsed\.error\.trim\(\) : ''/.test(edgeSource), 'edgeFunctionReason no longer takes the { error } text the function chose — mpesa-push answers every failure that way');
+  assert(/\/non-2xx status code\/i\.test\(raw\)/.test(edgeSource), 'edgeFunctionReason no longer refuses the SDK constant, so it can return it to a learner');
+  assert(/return fallback;/.test(edgeSource), 'edgeFunctionReason lost its fallback path');
+  assert(!/console\./.test(edgeSource), 'edgeFunctionReason must display bodies, never log them');
+  assert(!/non-2xx status code/i.test(paywallSource), 'paywall.tsx shows the SDK constant');
+  assert(
+    /setMpesaError\(res\.error \?\? 'Payment did not go through\. No money was taken\.'\)/.test(paywallSource),
+    'the paywall no longer shows the error the rail returned'
+  );
+});
+
 check('M-Pesa is offered on Android only (App Store rule 3.1.1)', () => {
   assert(/Platform\.OS !== 'android'/.test(clientSource), 'lib/mpesa.ts lost its Android gate');
   assert(/mpesaAvailable\(\)/.test(clientSource) && /isFlagOn\('mpesa_premium'/.test(clientSource), 'availability must also respect the release flag');
@@ -621,6 +716,11 @@ check('the unauthenticated callback is token-gated and fails closed', () => {
   assert(/safeEqual\(supplied, expected\)/.test(callbackSource), 'callback stopped comparing tokens safely');
   assert(/if \(!expected\)/.test(callbackSource), 'callback must refuse everything when the secret is unset');
   assert(/paidAmountKes: paidAmount/.test(callbackSource), 'callback no longer reports the paid amount');
+  assert(/callbackAmount\(callback\)/.test(callbackSource), 'callback does not read the Daraja CallbackMetadata amount');
+  assert(/success callback has no Amount/.test(callbackSource), 'a success callback without an amount is not refused');
+  assert(/req\.method !== 'POST'/.test(callbackSource) && /status: 405/.test(callbackSource), 'the callback must reject non-POST methods');
+  assert(/redactSecrets\(e\)/.test(callbackSource), 'callback errors must be redacted before logging');
+  assert(!/console\.error\('mpesa-callback failed:', e\)/.test(callbackSource), 'the raw callback error is logged');
 });
 
 check('deploy flags are stated per function (verify_jwt is sticky)', () => {
@@ -683,6 +783,7 @@ check('mpesa-push takes the Daraja type and reference from config, and asks the 
   assert(/const report = audit\(\)/.test(pushSource), 'mpesa-push sends a push without consulting the audit');
   assert(/!report\.ready/.test(pushSource) && /503/.test(pushSource), 'a push the audit refuses must come back as a 503, not a silent failure');
   assert(/environment: environment\(\)/.test(pushSource), 'the deployed function does not say which Daraja it is talking to');
+  assert(/redactSecrets\(e\)/.test(pushSource), 'mpesa-push errors must be redacted before logging or returning');
   assert(!/console\.(log|error)\([^)]*(config\.passkey|consumerSecret|FAKE)/.test(pushSource), 'a push log line could print a secret');
 });
 

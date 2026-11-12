@@ -33,6 +33,7 @@ import {
   nairobiStamp,
   normalizePhone,
   plans,
+  redactSecrets,
   settleCheckout,
   settlePremium,
   transactionType,
@@ -280,7 +281,7 @@ serve(async (req: Request) => {
     ]);
     return json({ isPremium: settled.isPremium, periodEnds: settled.periodEnds, lastCheckout: latest.data ?? null });
   } catch (e) {
-    console.error('mpesa-push failed:', e);
-    return json({ error: String(e) }, 500);
+    console.error('mpesa-push failed:', redactSecrets(e));
+    return json({ error: redactSecrets(e) }, 500);
   }
 });
