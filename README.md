@@ -64,7 +64,7 @@ npm run gate        # every required release gate (CI runs the same runner)
 npm run typecheck   # TypeScript
 npm test            # cue + benchmark + celebration + speak-back + catalog + drafts + content rights + transcription + roleplay + labs
 npm run lint        # ESLint (expo lint)
-npm run check:labex    # licensed lab library: 1842 labs, 6580 questions, 12 categories
+npm run check:labex    # licensed lab library: 1893 labs, 6734 questions, 12 categories
 npm run check:sandbox  # every generated JS/CSS exercise really executes (reference passes, starter fails)
 npm run check:vm       # offline Git VM: every scenario's reference solution passes its own checks
 npm run check:guided   # every lab is runnable here or ships a walkthrough
@@ -72,7 +72,7 @@ npm run check:audio    # the celebration cue is still exactly five seconds (read
 npm run check:casting  # character voice casting is deterministic, not first-audition-wins
 npm run check:uploads  # a 0-byte copy or an unindexed upload fails with a stated reason
 npm run check:leaderboard # xp_events grants reach authenticated, not only its RLS policies
-npm run check:docs     # commands, gate ids and file links in these docs all resolve
+npm run check:docs     # commands, gate ids, file links and curriculum counts in these docs all resolve
 npm run audio:preflight                 # workspace + cloned-voice consent gate for the configured voice
 npm run verify:lesson-audio -- --list   # uploaded lessons available for full audio verification
 npm run verify:lesson-audio:disposable -- --plan  # free dry run with a temporary lesson
@@ -204,7 +204,7 @@ what is still missing is an email provider secret and a git remote for CI — se
 
 ## Runnable labs (offline VM, sandbox editors, guided)
 
-1 842 imported labs, and each one runs or says plainly that it cannot:
+1 890 imported labs, and each one runs or says plainly that it cannot:
 
 - **Offline Git VM** — `lib/vm/` is an in-memory POSIX filesystem plus the Git
   object model and porcelain (`clone`, `branch`, `switch`, `merge`, `rebase`,
@@ -790,6 +790,7 @@ building, and clears them on request. It reports by default and deletes only whe
 | `npm run android:clean-abi` | Lists every artifact folder for every ABI except the pinned one, with its size. Deletes nothing. |
 | `npm run android:clean-abi -- --delete` | Removes exactly the folders that list printed, then reports the total it freed. |
 | `npm run android:clean-abi -- --abi arm64-v8a --delete` | One ABI only. |
+| `npm run android:warm` | The build to run afterwards. It reads the same pin, and it is where the one-time reconfiguration cost lands (measured below). |
 | `npm run android:clean-abi -- --abi x86_64 --delete` | Refused with exit 2: `x86_64` is the pin in `$GRADLE_USER_HOME/gradle.properties`, so clearing it would cost the next warm build. Add `--force` to mean it. |
 
 Four rules keep it from being a footgun. It walks *generated* trees only — `.cxx/` and
@@ -800,7 +801,7 @@ reads (the one `scripts/android-env.sh` exports as `$ANDROID_ARCHS`), never hard
 is resolved with `cd` + `pwd -P` and must stay inside the root it came from, so a folder that
 resolves elsewhere — a junction, a symlink — lands in `skipped_links` instead of being deleted,
 and `node_modules` itself is never a target. The last line is machine-readable
-(`SUMMARY targets=… size_kb=… deleted=… skipped_links=… mode=report|deleted|refused`), which is
+(`SUMMARY targets=… size_kb=… deleted=… skipped_links=… mode=report|delete|refused`), which is
 what the gate parses.
 
 That gate is `abi-clean` (`npm run check:abi-clean`). It builds a throwaway project in the temp
@@ -824,6 +825,42 @@ report mode, and this paragraph was written from it.
 
 Clearing `arm64-v8a` is still a trade, not a free lunch: those objects from empty cost **2 h
 54 m** across five passes above. Park the phone loop before you run `--delete`.
+
+**Cleared for real, and what the rebuild then cost.** On 2026-11-12 the one-ABI command ran
+against the live tree, not a fixture: `npm run android:clean-abi -- --abi arm64-v8a --delete`
+found **103 folders / 13 155 519 KB (≈12.5 GiB)** and deleted all 103 — exit 0, `SUMMARY …
+deleted=103 skipped_links=0 mode=delete`, nothing refused and no delete failing. `D:` went from
+794 278 MB free to 807 047 MB (**+12 769 MB**) and `C:` from 26 733 to 26 811 (**+78 MB**), so
+**12.8 GiB was actually reclaimed**, a little less than the script summed: `du` rounds every
+folder up to its own 1 KiB block and the two `obj/<abi>` copies shared bytes with folders that
+stayed. Re-reporting `arm64-v8a` immediately after the delete found 0 targets.
+
+Then `npm run android:warm` — the `x86_64` pin untouched — twice, and the honest answer is that
+the first pass was **not** the 48 s this section previously quoted from an older layout. It took
+**25 m 52 s**, `BUILD SUCCESSFUL`, 650 tasks: 157 executed, 145 from cache, 348 up-to-date, exit 0.
+With nothing changed on disk the second pass took **57 s** (25 executed, 625 up-to-date). So the
+reclaim is real and the settled warm pass is still under a minute, but clearing one ABI charges a
+one-time ~26-minute toll on the ABI you kept: deleting `arm64-v8a` took its sibling folders out
+from *inside* the shared `.cxx/Debug/<hash>/` and `build/intermediates/cxx/<hash>/` trees — the
+hash does not contain `$ABI`, so the folders that survive are the ones holding the `x86_64`
+objects — and the build re-ran `configureCMakeDebug[x86_64]` for 8 modules and
+`buildCMakeDebug[x86_64]` for 11, plus two cross-volume `libreactnative.so` hard links that fell
+back to "a slower copy" (the Gradle transform cache is on `D:`, the app's own objects are on `C:`).
+Ninja printed **0 `Building CXX object` lines**, so that is reconfiguration, relinking and copying
+— no C++ was recompiled — and of the 12.5 GiB, roughly 2.2 GiB went straight back to the
+`x86_64` objects and the APK the rebuild wrote: `D:` ended at 804 865 MB free, i.e. **+10.5 GiB net**
+for the whole delete-and-rebuild, +12 769 MB at the instant the delete finished.
+
+Both builds are green, and the pin is what they were built for: the APK is 152 607 637 bytes with
+32 `lib/x86_64/` entries and no other ABI folder in it; `source scripts/android-env.sh --check`
+(the check has no `npm run` id of its own — it is sourced, not scripted) exits 0 afterwards with
+`ABIs pinned: x86_64`. A follow-up report finds 34 folders / 248 284 KB still reclaimable, 7 of
+them `arm64-v8a` (88 224 KB) — the rebuild wrote a few `RelWithDebInfo` ABI entries back, which is
+what "cleared" means here: cleared, not emptied and kept empty. What was **not** measured: this
+APK was never installed, so nothing here says the rebuilt app runs on a device or in the emulator,
+only that the pinned `x86_64` build completes; the 25 m 52 s is one observation on a machine with
+an active Gradle daemon, not an average; and the 48 s quoted above stands only for the layout it
+was taken in.
 
 #### What invalidates `.cxx`
 
