@@ -267,8 +267,16 @@
       "required": true
     },
     {
+      "id": "abi-clean",
+      "label": "ABI artifact cleaner stays inside its guard rails",
+      "category": "platform",
+      "command": "node scripts/check-abi-clean.cjs",
+      "timeoutSeconds": 180,
+      "required": true
+    },
+    {
       "id": "doc-commands",
-      "label": "Documented commands, gates and file links match the repository",
+      "label": "Documented commands, gates, file links and curriculum counts match the repository",
       "category": "static",
       "command": "node scripts/check-doc-commands.cjs",
       "timeoutSeconds": 60,

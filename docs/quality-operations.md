@@ -256,6 +256,7 @@ script's own header, not inferred from its name. Reproduce a single failure with
 | `web-publish` | platform | `npm run check:web` | The Dockerfile runs the Expo export and the server keeps the SPA fallback, so deep links, store-review clicks and `app-ads.txt` answer instead of 404. |
 | `release-artifact` | platform | `npm run check:release-artifact` | The APK the production container serves still matches the release record committed in git — the one gate that reaches outside the repository. |
 | `adaptive-ai` | platform | `npm run check:adaptive-ai` | The adaptive UI engine, the free/premium feature list and the offline-first stack as pure modules under Node: age → stage mapping, hub honesty, the daily AI allowance, the tutor router and the sync queue. |
+| `abi-clean` | platform | `npm run check:abi-clean` | `scripts/clean-abi.sh` clears only generated `<abi>` trees, refuses the ABI the build is pinned to unless `--force`, skips any folder that resolves outside the project and never touches `src/main/jniLibs` — proved on a throwaway fixture tree, so it runs on a fresh clone and on Linux CI as well as on a machine with a 13 GB pile to reclaim. |
 | `doc-commands` | static | `npm run check:docs` | The commands and gate ids this project teaches resolve to real scripts and real gates, in both directions, and every relative file link in a document lands on a file that is there. |
 
 `labex`, `sandbox-labs`, `vm-labs`, `guided-labs` and `release-artifact` also get their

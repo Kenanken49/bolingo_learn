@@ -779,6 +779,52 @@ android:warm` only assembles the APK, so this proves the device ABI *builds* her
 that it runs. On a phone it is the same command; on an emulator it needs an
 arm64-capable image.
 
+#### Clearing an ABI's build artifacts
+
+Those leftovers are what `npm run android:clean-abi` (`scripts/clean-abi.sh`) exists for: it
+finds the object and intermediate folders of every ABI this project is *not* currently
+building, and clears them on request. It reports by default and deletes only when told:
+
+| Command | What it does |
+| --- | --- |
+| `npm run android:clean-abi` | Lists every artifact folder for every ABI except the pinned one, with its size. Deletes nothing. |
+| `npm run android:clean-abi -- --delete` | Removes exactly the folders that list printed, then reports the total it freed. |
+| `npm run android:clean-abi -- --abi arm64-v8a --delete` | One ABI only. |
+| `npm run android:clean-abi -- --abi x86_64 --delete` | Refused with exit 2: `x86_64` is the pin in `$GRADLE_USER_HOME/gradle.properties`, so clearing it would cost the next warm build. Add `--force` to mean it. |
+
+Four rules keep it from being a footgun. It walks *generated* trees only — `.cxx/` and
+`build/` — so a checked-in `src/main/jniLibs/<abi>/` library can never be a target, not even
+with `--force`. The ABI it refuses to touch is read from the same `gradle.properties` the build
+reads (the one `scripts/android-env.sh` exports as `$ANDROID_ARCHS`), never hardcoded; pass
+`--active <abis>` to say otherwise, or `--project <dir>` for another checkout. Every candidate
+is resolved with `cd` + `pwd -P` and must stay inside the root it came from, so a folder that
+resolves elsewhere — a junction, a symlink — lands in `skipped_links` instead of being deleted,
+and `node_modules` itself is never a target. The last line is machine-readable
+(`SUMMARY targets=… size_kb=… deleted=… skipped_links=… mode=report|deleted|refused`), which is
+what the gate parses.
+
+That gate is `abi-clean` (`npm run check:abi-clean`). It builds a throwaway project in the temp
+folder — a fake `arm64-v8a`/`x86_64` tree, a fake `gradle.properties`, and a junction that points
+outside the fixture — and asserts that report mode lists only the arm64 artifacts and deletes
+nothing, `--delete` removes exactly what it listed, a pinned-ABI request exits 2 *before* deleting,
+`--force` obeys and still spares `src/`, the outside junction is skipped, and a second run is a
+no-op: 19 checks, **26 s**. It never deletes from the real tree; the survey of it is opt-in
+(`node scripts/check-abi-clean.cjs --real`) because sizing those folders took **64 s** with a warm
+disk cache and **186 s** cold, which is too expensive to put in front of every release.
+
+What report mode finds here right now, with `node_modules` on `D:` and the `x86_64` build
+finished: **129 folders, 13 003 MB**, none of them the pinned ABI (103 `arm64-v8a`, 14 `x86`,
+12 `armeabi-v7a`). Only 2 718 MB of it is `.cxx` objects — the `RelWithDebInfo` half that this
+project has so far never been authorized to delete — while 10 275 MB is `build/intermediates`
+`.so` copies left by earlier multi-ABI and release builds, the largest single folder being
+`llama.rn`'s `RelWithDebInfo` objects at 2 430 MB, with its release `merged_native_libs` and
+`library_jni` copies weighing 1 302 MB each. So the 9 918 MB the table above promises is a
+smaller number than what is actually recoverable here, and that survey deleted nothing — it is
+report mode, and this paragraph was written from it.
+
+Clearing `arm64-v8a` is still a trade, not a free lunch: those objects from empty cost **2 h
+54 m** across five passes above. Park the phone loop before you run `--delete`.
+
 #### What invalidates `.cxx`
 
 Each `node_modules/<module>/android/.cxx/Debug/<hash>/` folder is named after a hash of the CMake configure command, and the `hash_key.txt` sitting in it lists the inputs verbatim: the AGP version (9.2.1), the NDK path, the `$CMAKE` and `$NINJA` paths, the absolute project path and every `-D` flag — while noting that `$ABI` is *not* part of the hash. Change one input and AGP neither reuses nor repairs the old folder: it configures a fresh one and leaves the previous set of objects as dead weight.
