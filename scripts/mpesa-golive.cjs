@@ -15,7 +15,8 @@
  * `audit()` the deployed Edge Function runs before it will send a push, and
  * prints findings as variable names only. It cannot print a secret value even
  * if it wanted to — every reporting path goes through a mask. Then, with
- * `--apply`, it hands the file to the Supabase CLI and deploys both functions.
+ * `--apply`, it writes the variable names the Edge Function actually reads,
+ * mapped from whatever spelling the file used, and deploys both functions.
  *
  * Contract:
  *   node scripts/mpesa-golive.cjs                        # audit the process env
@@ -23,17 +24,34 @@
  *   node scripts/mpesa-golive.cjs --from <file> --json   # machine-readable
  *   node scripts/mpesa-golive.cjs --from <file> --apply  # + push and deploy
  *
- *   --from <file>       dotenv-style file holding the Daraja and M-Pesa values.
- *                       Keep it outside the repo, or git-ignore it: a file that
- *                       is tracked is refused outright. Its values are never
- *                       read into this console, a log line or a committed file.
+ *   --from <file>       dotenv-style or Daraja-dashboard-label file holding the
+ *                       Daraja and M-Pesa values. It accepts `KEY=value`,
+ *                       `KEY: value`, `export KEY=value`, and the dashboard's
+ *                       `Consumer Key:...`, `Consumer Secret:...`,
+ *                       `Passkey:...`, `Short Code:...` labels. Keep it outside
+ *                       the repo, or git-ignore it: a file that is tracked is
+ *                       refused outright. Its values are never read into this
+ *                       console, a log line or a committed file, and the file's
+ *                       own labels are mapped to the canonical names below —
+ *                       that is what `--apply` uploads, not the file as written.
  *   --env <name>        sandbox | production. Overrides MPESA_ENV for the audit
  *                       and is written as a plain (non-secret) secret on --apply.
  *   --project-ref <ref> Supabase project to write to. Defaults to the ref in
  *                       EXPO_PUBLIC_SUPABASE_URL, which is public by design.
- *   --apply             actually run `supabase secrets set --env-file` and
- *                       `supabase functions deploy`. Without it, nothing leaves
- *                       the machine and the script only reports.
+ *   --apply             write the resolved variables with `supabase secrets set
+ *                       --env-file` and run `supabase functions deploy` for both
+ *                       functions. The file the CLI reads is a short-lived 0600
+ *                       temp file this script builds, never your own file: the
+ *                       CLI stores what it finds verbatim, so a `Consumer Key:`
+ *                       label would land as a secret named `Consumer_Key` while
+ *                       the function went on reading the old
+ *                       `DARAJA_CONSUMER_KEY` — a green audit with stale sandbox
+ *                       credentials still on the server. `DARAJA_BASE_URL` and
+ *                       `MPESA_ENV` are written from what the audit resolved,
+ *                       and every variable this run cannot supply is named
+ *                       loudly instead of silently left at its old value.
+ *                       Without --apply nothing leaves the machine and the
+ *                       script only reports.
  *   --skip-deploy       with --apply: write the secrets, do not deploy.
  *   --force             with --apply: proceed even when the audit has problems.
  *   --json              one JSON report on stdout, for `npm run gate` glue.
@@ -81,6 +99,20 @@ const MANAGED = [
 /** Values that must never reach stdout, stderr, a log or a child-process argv. */
 const SECRET_NAMES = ['DARAJA_CONSUMER_KEY', 'DARAJA_CONSUMER_SECRET', 'DARAJA_PASSKEY', 'MPESA_CALLBACK_TOKEN'];
 
+/** The names a payment cannot happen without. When --apply cannot supply one it
+ * reports it instead of writing nothing: the server keeps whatever it already
+ * holds, and a value left over from another environment is the failure nobody
+ * sees until a learner pays and gets nothing. */
+const REQUIRED_NAMES = [
+  'MPESA_ENV',
+  'DARAJA_CONSUMER_KEY',
+  'DARAJA_CONSUMER_SECRET',
+  'DARAJA_SHORTCODE',
+  'DARAJA_PASSKEY',
+  'MPESA_CALLBACK_URL',
+  'MPESA_CALLBACK_TOKEN',
+];
+
 const ENV_NAMES = { sandbox: 'sandbox', test: 'sandbox', production: 'production', live: 'production', prod: 'production' };
 
 function die(message) {
@@ -122,15 +154,46 @@ const mpesa = loadShared();
 
 /** Parse a dotenv-style file into a map. Values stay in memory; they are never
  * printed, and they are scrubbed out of anything a child process echoes. */
+const KEY_ALIASES = {
+  CONSUMER_KEY: 'DARAJA_CONSUMER_KEY',
+  CONSUMERKEY: 'DARAJA_CONSUMER_KEY',
+  DARAJA_CONSUMER_KEY: 'DARAJA_CONSUMER_KEY',
+  CONSUMER_SECRET: 'DARAJA_CONSUMER_SECRET',
+  CONSUMERSECRET: 'DARAJA_CONSUMER_SECRET',
+  DARAJA_CONSUMER_SECRET: 'DARAJA_CONSUMER_SECRET',
+  PASSKEY: 'DARAJA_PASSKEY',
+  PASS_KEY: 'DARAJA_PASSKEY',
+  LIPA_NA_MPESA_PASSKEY: 'DARAJA_PASSKEY',
+  DARAJA_PASSKEY: 'DARAJA_PASSKEY',
+  SHORT_CODE: 'DARAJA_SHORTCODE',
+  SHORTCODE: 'DARAJA_SHORTCODE',
+  BUSINESS_SHORT_CODE: 'DARAJA_SHORTCODE',
+  BUSINESS_SHORTCODE: 'DARAJA_SHORTCODE',
+  DARAJA_SHORTCODE: 'DARAJA_SHORTCODE',
+};
+
+function normalizeKey(raw) {
+  const flat = raw
+    .trim()
+    .replace(/^export\s+/i, '')
+    .replace(/[^A-Za-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .toUpperCase();
+  return KEY_ALIASES[flat] ?? flat;
+}
+
+/** Parse a dotenv-style file into a map. Values stay in memory; they are never
+ * printed, and they are scrubbed out of anything a child process echoes. */
 function parseEnvFile(text) {
   const out = {};
   for (const line of text.split(/\r?\n/)) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith('#')) continue;
-    const eq = trimmed.indexOf('=');
-    if (eq < 1) continue;
-    const key = trimmed.slice(0, eq).trim();
-    let value = trimmed.slice(eq + 1).trim();
+    const match = /^(?:export\s+)?([^:=]+?)\s*[:=]\s*(.*)$/.exec(trimmed);
+    if (!match) continue;
+    const key = normalizeKey(match[1]);
+    if (!key) continue;
+    let value = match[2].trim();
     if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
       value = value.slice(1, -1);
     }
@@ -228,6 +291,85 @@ function summaryLine(report) {
 
 // --- apply ---------------------------------------------------------------
 
+// --- what --apply writes ---------------------------------------------------
+
+/** A quote, a backtick, a backslash or a line break inside a value is not
+ * something the CLI's .env reader gives back unchanged, so uploading it would
+ * store a different secret than the one the audit checked. Only names are ever
+ * reported, which makes refusing on one safe. */
+function unsafeValue(value) {
+  return /[\r\n"'\`]/.test(value);
+}
+
+/**
+ * Build the exact set of variables `--apply` uploads.
+ *
+ * Why this exists instead of `--env-file <your file>`: the CLI reads a file
+ * literally, so the dashboard labels it holds (`Consumer Key:...`) become a
+ * secret called `Consumer_Key`, and the Edge Function keeps reading the old
+ * `DARAJA_CONSUMER_KEY`. The audit cannot see that, because the audit parses
+ * the file through the aliases and reports ready. So the upload is rebuilt from
+ * resolved values under canonical names, the endpoint and environment are
+ * pinned to what the audit actually used, and any variable this run cannot
+ * supply is named instead of being left quietly at its server value.
+ */
+function resolveUpload(values, report, fileNames) {
+  const written = [];
+  const absentRequired = [];
+  const absentOptional = [];
+  const unsafe = [];
+
+  for (const name of MANAGED) {
+    const value = (values[name] ?? '').trim();
+    if (!value) {
+      if (name === 'DARAJA_BASE_URL' || name === 'MPESA_ENV') {
+        const resolved = name === 'DARAJA_BASE_URL' ? report.baseUrl : report.environment;
+        if (resolved) {
+          written.push({ name, value: resolved, source: 'derived' });
+          continue;
+        }
+      }
+      (REQUIRED_NAMES.includes(name) ? absentRequired : absentOptional).push(name);
+      continue;
+    }
+    if (unsafeValue(value)) {
+      unsafe.push(name);
+      continue;
+    }
+    written.push({ name, value, source: fileNames.has(name) ? 'file' : 'env' });
+  }
+
+  return {
+    written,
+    absentRequired,
+    absentOptional,
+    unsafe,
+    lines: written.map((entry) => `${entry.name}=${entry.value}`),
+  };
+}
+
+/** The loud half: what this run leaves at whatever the server already holds. */
+function uploadWarnings(upload, origin) {
+  const lines = [];
+  if (upload.absentRequired.length) {
+    lines.push('');
+    lines.push(`  !! ${upload.absentRequired.length} REQUIRED variable(s) are not in ${origin}.`);
+    lines.push('     --apply cannot invent them, so the server keeps the value it has');
+    lines.push('     already. A stale value from another environment is how a live push');
+    lines.push('     charges a real customer against a test account:');
+    for (const name of upload.absentRequired) lines.push(`       ✗ ${name}  — NOT WRITTEN, the old server value stays live`);
+    lines.push('     Add them to the file, or look at what is live now (digests only):');
+    lines.push('       supabase secrets list --project-ref <ref>');
+  }
+  if (upload.absentOptional.length) {
+    lines.push('');
+    lines.push(`  ! ${upload.absentOptional.length} optional variable(s) are not in ${origin}; for each,`);
+    lines.push('    the server keeps its current value, which may not be the one you mean:');
+    for (const name of upload.absentOptional) lines.push(`    ! ${name}  — NOT WRITTEN, the old server value stays live`);
+  }
+  return lines;
+}
+
 /** Only the parts of a Supabase CLI reply that are safe: drop any line that
  * looks like it is echoing a KEY=value pair we consider secret. */
 function safeChildOutput(stdout, stderr) {
@@ -296,8 +438,9 @@ function main(argv) {
           '       [--project-ref <ref>] [--apply] [--skip-deploy] [--force] [--json] [--verbose]',
           '',
           'Audits the Daraja configuration for one environment and reports variable',
-          'names only — never values. Add --apply to write the secrets with',
-          '`supabase secrets set --env-file` and deploy mpesa-push / mpesa-callback.',
+          'names only — never values. Add --apply to write the secrets under the',
+          'resolved variable names with `supabase secrets set --env-file` (from a',
+          'temp file this script builds) and deploy mpesa-push / mpesa-callback.',
           '',
           'Exit 0 = ready, 2 = not ready, 1 = usage or command failure.',
         ].join('\n')
@@ -308,6 +451,10 @@ function main(argv) {
 
   // Start from the ambient environment, then let the file override it, then the
   // explicit --env flag. The last one wins because the operator typed it now.
+  // Which names the file itself supplied, so a name it does not carry can be
+  // reported by --apply instead of quietly keeping the server's old value.
+  const fileNames = new Set();
+
   const values = {};
   for (const name of MANAGED) {
     if (typeof process.env[name] === 'string') values[name] = process.env[name];
@@ -318,7 +465,9 @@ function main(argv) {
     if (!fs.existsSync(absolute)) die(`--from '${options.from}' does not exist`);
     const guard = fileIsSafeToRead(absolute);
     if (!guard.ok) die(guard.reason);
-    Object.assign(values, parseEnvFile(fs.readFileSync(absolute, 'utf8')));
+    const fromFile = parseEnvFile(fs.readFileSync(absolute, 'utf8'));
+    Object.assign(values, fromFile);
+    for (const name of Object.keys(fromFile)) fileNames.add(name);
   }
 
   if (options.env) {
@@ -389,25 +538,58 @@ function main(argv) {
 
   const absolute = path.resolve(ROOT, options.from);
   print(`Target project   : ${ref}`);
-  print(`Secrets file     : ${options.from} (values stay unread here)`);
+  print(`Values read from : ${options.from} (labels mapped to variable names; values stay unread here)`);
   print(`Environment      : ${report.environment} → ${report.baseUrl}`);
+
+  // What goes to the CLI, and why it is not the operator's own file: the CLI
+  // reads a file literally, so uploading `Consumer Key:` verbatim would create a
+  // secret named Consumer_Key while the Edge Function kept reading the old
+  // DARAJA_CONSUMER_KEY. Secret values must never reach a command line either —
+  // they would sit in shell history and in the process list — so the resolved
+  // names go through a 0600 temp file that is deleted as soon as the CLI has
+  // read it. MPESA_ENV travels in the same file now: it is written from what the
+  // audit resolved, so the environment cannot stay stale behind a green report.
+  const upload = resolveUpload(values, report, fileNames);
+  for (const line of uploadWarnings(upload, absolute)) print(line);
+
+  if (upload.unsafe.length) {
+    print('');
+    print('Apply refused: these values contain a quote, a backtick, a backslash or a line');
+    print('break, which the CLI would read back differently from what the audit checked.');
+    print('Only the names are shown:');
+    for (const name of upload.unsafe) print(`  ✗ ${name}`);
+    print('Nothing has been written. No command ran, no deploy happened, no money moved.');
+    summaryLine(report);
+    return 2;
+  }
+
+  print('');
+  print(`--apply uploads ${upload.written.length} of ${MANAGED.length} variables, by the name the function reads:`);
+  for (const entry of upload.written) print(`  ${entry.name.padEnd(24)} ${entry.source}`);
+  print('  file = from your file, env = inherited from this shell, derived = resolved by the audit');
+  print('  (no values are printed, and nothing is uploaded verbatim from your file)');
   print('');
 
-  // The file the CLI reads is the operator's own file; this script never copies
-  // it, rewrites it or prints it. MPESA_ENV is written separately because it is
-  // not a secret and --env must be able to select it on its own.
-  const secretsOk = runSupabase(
-    ['secrets', 'set', '--env-file', JSON.stringify(absolute), '--project-ref', ref],
-    'supabase secrets set'
-  );
+  const uploadFile = path.join(os.tmpdir(), `bolingo-mpesa-apply-${process.pid}.env`);
+  let secretsOk = false;
+  try {
+    fs.writeFileSync(uploadFile, `${upload.lines.join('\n')}\n`, { mode: 0o600 });
+    secretsOk = runSupabase(
+      // Forward slashes so the quoted path reads the same on screen as on disk.
+      ['secrets', 'set', '--env-file', JSON.stringify(uploadFile.split('\\').join('/')), '--project-ref', ref],
+      'supabase secrets set'
+    );
+  } finally {
+    try {
+      fs.rmSync(uploadFile, { force: true });
+    } catch {
+      print(`  ${uploadFile} still holds live keys: delete it.`);
+    }
+  }
   if (!secretsOk) {
     print('Stopped: the secrets did not land, so the functions were not deployed against them.');
     summaryLine(report);
     return 1;
-  }
-
-  if (values.MPESA_ENV) {
-    runSupabase(['secrets', 'set', `MPESA_ENV=${values.MPESA_ENV}`, '--project-ref', ref], 'MPESA_ENV');
   }
 
   if (options.skipDeploy) {
@@ -447,5 +629,18 @@ function main(argv) {
   summaryLine(report);
   return 1;
 }
+
+/** Exported for `npm run check:mpesa`, which proves what --apply uploads and
+ * what it refuses to upload without touching a network or the Supabase CLI.
+ * Requiring this file has no side effects: the run below is guarded. */
+module.exports = {
+  MANAGED,
+  REQUIRED_NAMES,
+  SECRET_NAMES,
+  normalizeKey,
+  parseEnvFile,
+  resolveUpload,
+  uploadWarnings,
+};
 
 if (require.main === module) process.exitCode = main(process.argv.slice(2));

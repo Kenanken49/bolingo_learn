@@ -83,6 +83,13 @@ M-Pesa PIN **on the phone**, and Safaricom tells the server whether it landed.
    npm run mpesa:golive -- --from ~/mpesa-live.env --apply    # secrets + deploy
    ```
 
+   The file may be dotenv (`DARAJA_CONSUMER_KEY=…`) or the label form Daraja’s
+   dashboard shows (`Consumer Key:…`, `Consumer Secret:…`, `Passkey:…`,
+   `Short Code:…`); the reader maps those labels to the canonical names the Edge
+   Function reads. It also needs
+   `MPESA_ENV=production`, `MPESA_CALLBACK_TOKEN=…`, and
+   `MPESA_CALLBACK_URL=https://<project-ref>.supabase.co/functions/v1/mpesa-callback?t=<token>`.
+
    The auditor checks the pair that a live outage actually comes from: `MPESA_ENV`
    against `DARAJA_BASE_URL`, the Daraja test paybill `17439` sitting on the live
    endpoint, a `MPESA_CALLBACK_URL` whose `?t=` token is missing or is not the
@@ -93,10 +100,18 @@ M-Pesa PIN **on the phone**, and Safaricom tells the server whether it landed.
    from the `KSh 770/mo` card and a sandbox number under `MPESA_ENV=sandbox` are
    warnings the report prints without blocking. It names variables and their
    lengths, never values, which is what makes its output safe to paste into a
-   report. `--apply` writes the secrets and deploys
-   both functions, and refuses to do either while the audit has problems unless
-   `--force` is given — `mpesa-push` runs the same audit on every request and
-   answers `503` rather than push a configuration that cannot settle.
+   report. `--apply` builds its own private temp file out of the resolved
+   variable names and hands that to the CLI — never your file as written,
+   because `supabase secrets set --env-file` reads names literally and would
+   create a secret called `Consumer_Key` while the Edge Function went on reading
+   the old `DARAJA_CONSUMER_KEY`. It prints, by name only, where each uploaded
+   value came from (your file, this shell, or resolved by the audit), and warns
+   loudly about any required variable the file does not carry: for those the
+   server keeps whatever it already holds, which is how a stale sandbox
+   credential survives a green report. It then deploys both functions, and
+   refuses to do either while the audit has problems unless `--force` is given —
+   `mpesa-push` runs the same audit on every request and answers `503` rather
+   than push a configuration that cannot settle.
 6. Live self-test: `MPESA_ENV=production` selects `https://api.safaricom.co.ke`,
    the only live host the code accepts. Pay yourself once from a Kenyan number at
    the real price, check the ledger row lands `confirmed` with `amount_kes` equal
