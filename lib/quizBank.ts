@@ -27,6 +27,24 @@ export type QuestionKind =
   | 'terminal'
   | 'guided';
 
+/**
+ * Kinds where the learner produces or performs something the engine can grade,
+ * instead of tapping a pre-written option. The course-score guard reads this
+ * list, so a lab can never pass one gate and fail the other over a question
+ * kind nobody agreed on. `match`, `listen` and `speak` are the weak members:
+ * pairing heard or seen prompts is nearer recognition than production, so a
+ * lesson whose only hands-on item is a MATCH still teaches recognition.
+ */
+export const PRODUCTION_KINDS: QuestionKind[] = [
+  'code',
+  'terminal',
+  'guided',
+  'text',
+  'listen',
+  'speak',
+  'match',
+];
+
 /** A matched pair in a tap-the-pairs exercise. `left` is the cue, `right` the answer. */
 export interface MatchPair {
   left: string;

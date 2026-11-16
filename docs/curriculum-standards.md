@@ -110,7 +110,50 @@ npm run check:courses
 It runs inside `npm test`. Adding a new lesson without an explanation, adding an
 unsolvable token, thinning the theory, or dropping a capstone fails the suite.
 
-`check:courses` is the `course-score` gate: it grades each course on four dimensions
-(theory in every lesson, a real production item in every lesson, an explanation for
-every answer, and a unit test of six or more items with a finisher for the course).
-Every course must score 100, so thinning any dimension fails the release bar.
+### Course floors — `npm run check:courses`
+
+`check:courses` (the `course-score` gate) walks the path of each course and checks
+seven floors. The release bar is that every course clears every one:
+
+| floor | requirement |
+| --- | --- |
+| `teach` | 2+ theory lines and 25+ words in every lesson |
+| `produce` | a production item in every lesson — an assembled token chain of 2+, or a kind in `PRODUCTION_KINDS` ([`lib/quizBank.ts`](../lib/quizBank.ts)) |
+| `runs` | every build block executes something on the device, or its title **and** blurb say plainly that it is a paper exercise |
+| `explain` | 20+ characters of explanation on every question |
+| `units` | a build block (workshop, lab, or project) and a graded quiz block in every unit |
+| `session` | every graded quiz fills a session (6 items) with at least 2 production items |
+| `finisher` | the last unit's last block closes the course: project, final, checkpoint, or capstone |
+
+A graded block means a block with `kind: 'quiz'`, and the finisher has to be
+*positionally* last: naming a lab `…-checkpoint` no longer counts as assessing or
+finishing a course. A block that points at missing content fails outright.
+
+`produce` asks whether a lesson makes the learner build something; `runs` asks
+whether a build block actually executes, and it is the stricter question. A block
+runs when the app grades real state — the offline Git VM, a `code` question whose
+test carries a `run`, a `speak` question scored by on-device recognition, or a
+capstone story with a live `check` in the preview frame. Assembled tokens, `match`,
+`text` and `listen` are graded against strings, so a workshop whose tokens happen
+to spell `git status` has not run git: it either gains an item that executes or
+says in its own words that the work is on paper (see
+[`docs/hands-on-labs.md`](hands-on-labs.md)).
+
+136 pre-existing blocks do neither yet, so they are listed by id in
+[`content/quality/paper-debt.json`](../content/quality/paper-debt.json) and kept
+out of the floor's total. That ledger is a ratchet: a build block that is not on
+it must run or be labelled, a listed block that gets fixed should be deleted from
+the file, and a listed id that no longer names a build block fails the gate. The
+`runs` cell in the table therefore shows only what the floor enforces today, and
+`--why` prints how many blocks each course still defers.
+
+There is no weighted score any more. The gate always required every dimension to
+be complete, so 30/25/20/25 arithmetic only dressed up a pass/fail verdict; the
+table prints `met/total` per floor and `--why <course>` lists the shortfalls.
+
+What the floors still cannot see, so it is reviewed by hand instead: a question
+repeated from an earlier lesson counts as new material (the AI/ML tier finals are
+assembled that way, deliberately, as retrieval practice), `match` and `listen`
+count as production although pairing and hearing are closer to recognition, a
+`speak` item scores recognised audio rather than a produced meaning, and 20
+characters of explanation is a floor, not a quality bar.

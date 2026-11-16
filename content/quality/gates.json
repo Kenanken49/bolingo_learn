@@ -36,7 +36,7 @@
     },
     {
       "id": "course-score",
-      "label": "Course quality score (100 each)",
+      "label": "Course quality floors (all clear)",
       "category": "curriculum",
       "command": "node scripts/score-courses.cjs",
       "timeoutSeconds": 180,

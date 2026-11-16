@@ -187,8 +187,11 @@ block the workflow. Each run writes:
 
 The runner is deliberately boring: sequential child processes, no hidden
 retries, no `continue-on-error`. Adding a gate is a JSON edit plus the script.
-The workflow publishes to `quality_runs`; the console reads the newest row and
-sorts failed gates first.
+One category is different: an `advisory` gate carries `required: false`, so the
+runner records its failure as a `warn` run instead of blocking the release — it
+describes the machine, not the code. Every other gate must block, and
+`check:quality-ops` enforces both halves of that rule. The workflow publishes to
+`quality_runs`; the console reads the newest row and sorts failed gates first.
 
 **Branch protection:** mark the `Required checks` job as a required status check
 for `main`. The workflow alone is advice until branch protection enforces it.
@@ -202,6 +205,7 @@ regression in an exercise is caught before a learner meets it:
 | `sandbox-labs` | `npm run check:sandbox` | Each generated JS exercise executes in `node:vm` with harness-identical semantics: the reference passes every test, the starter fails at least one, assertions are non-trivial and offline. CSS/HTML fixtures stay script- and network-free and every DOM/CSSOM test has a pattern that matches the reference and not the starter. |
 | `vm-labs` | `npm run check:vm` | The offline Git shell resolves every task and reference solution for each terminal lab. |
 | `guided-labs` | `npm run check:guided` | Labs with no on-device runtime still ship a complete step-by-step walkthrough. |
+
 **The live gate.** `release-artifact` (`npm run check:release-artifact`) is the one
 required gate that reaches outside the repository: it verifies that the APK the
 production container serves still matches the release record committed in git.
@@ -237,7 +241,7 @@ script's own header, not inferred from its name. Reproduce a single failure with
 | `uploads` | platform | `npm run check:uploads` | A picker URI that copied across as 0 bytes is refused before upload, and a book that overruns the isolate records a reason instead of failing with `error = null`. |
 | `leaderboard` | platform | `npm run check:leaderboard` | `xp_events` has table privileges for `authenticated`, so XP writes from `lib/progress.ts` reach the weekly board instead of the silent 403 that emptied it. |
 | `roleplay` | curriculum | `npm run check:roleplay` | The picker and the Edge Function keep the same persona and language ids, every pair has an opener and starters, and the bilingual reply parser holds. |
-| `course-score` | curriculum | `npm run check:courses` | Every course scores 100 on the four curriculum dimensions: theory in every lesson, a production item in every lesson, an explanation for every answer, and a unit test with six or more items plus a finisher for the course. |
+| `course-score` | curriculum | `npm run check:courses` | Every course clears seven floors over its path: 2+ theory lines in every lesson, a production item in every lesson, a build block that either executes on the device or says plainly in its title and blurb that it is a paper exercise (136 older blocks sit on the shrinking ledger in `content/quality/paper-debt.json`), an explanation on every answer, a build and a graded quiz in every unit, six items with two production tasks in every graded quiz, and a finisher as the course's last block. |
 | `labex` | curriculum | `npm run check:labex` | Every imported lab lesson is well-formed, licensed and solvable as written. |
 | `sandbox-labs` | curriculum | `npm run check:sandbox` | Each generated JS exercise executes in `node:vm` with harness-identical semantics: the reference passes every test, the starter fails at least one, assertions are non-trivial and offline. |
 | `vm-labs` | curriculum | `npm run check:vm` | The offline Git shell resolves every task and reference solution for each terminal lab. |

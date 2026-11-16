@@ -1,4 +1,4 @@
-import type { QuestionKind } from './quizBank';
+import { PRODUCTION_KINDS, type QuestionKind } from './quizBank';
 
 /**
  * Session assembly — one owner for "what a learner actually sees".
@@ -15,12 +15,13 @@ export const SESSION_MAX = 6;
 
 /**
  * Skills that must never be squeezed out of a session by a crowd of
- * tap-to-choose items: they are the ones that produce or run something.
+ * tap-to-choose items: they are the ones that produce or run something. The
+ * list lives in lib/quizBank.ts with the question builders, because the
+ * course-score floor that promises "2+ production items per quiz" checks the
+ * same set this shuffle protects.
  */
-const PERFORMANCE_KINDS: QuestionKind[] = ['code', 'terminal', 'guided', 'text', 'listen', 'speak', 'match'];
-
 function isPerformance(question: { kind?: QuestionKind }): boolean {
-  return !!question.kind && PERFORMANCE_KINDS.includes(question.kind);
+  return !!question.kind && PRODUCTION_KINDS.includes(question.kind);
 }
 
 /**

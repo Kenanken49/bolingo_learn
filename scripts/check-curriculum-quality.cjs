@@ -344,22 +344,11 @@ for (const block of ALL_BLOCKS) {
     fail(`${at}: ${block.kind} ${block.lessonId} needs ${minimum}+ questions, has ${lesson.questions.length}.`);
   }
 
-  // A lab must do something, not just recall; a workshop must scaffold a
-  // build. Without this, a block can wear the label but teach only MCQ.
-  if (block.kind === 'lab') {
-    const handsOn = lesson.questions.some((question) =>
-      ['code', 'terminal', 'guided', 'text', 'listen', 'speak', 'match'].includes(question.kind)
-    );
-    if (!handsOn) fail(`${at}: lab needs at least one hands-on or production task.`);
-  }
-  if (block.kind === 'workshop') {
-    const stepwise = lesson.questions.some(
-      (question) =>
-        (question.correctChain || []).length > 1 ||
-        ['code', 'text', 'listen', 'speak', 'match', 'guided'].includes(question.kind)
-    );
-    if (!stepwise) fail(`${at}: workshop needs a step-by-step build or production task.`);
-  }
+  // "A lab must do something, a workshop must scaffold a build" is owned by
+  // score-courses.cjs (its `produce` floor covers every lesson on the path,
+  // including labs and workshops) against PRODUCTION_KINDS in lib/quizBank.ts.
+  // It is not repeated here: two lists of question kinds drift, and the weaker
+  // one starts failing work the stronger one accepts.
 }
 
 /* ---- Every course card has a real path, and capstones where expected ---- */

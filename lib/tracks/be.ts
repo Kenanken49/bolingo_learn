@@ -96,8 +96,8 @@ export const TRACK_BE: Record<string, CourseLesson> = {
       ),
       BUILD(
         'Redirect a short URL visitor to the stored original',
-        ['res.redirect(', 'original_url', ');'],
-        ['res.redirect(', 'original_url', ');', 'res.json', 'redirect_to', 'render'],
+        ['res.redirect(original_url);'],
+        ['res.redirect(original_url);', 'res.json', 'redirect_to', 'render'],
         'GET /api/shorturl/:id looks the id up, then redirects — never renders.'
       ),
       MCQ(
