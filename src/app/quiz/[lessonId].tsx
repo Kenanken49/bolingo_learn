@@ -11,6 +11,7 @@ import ListenAnswer from '../../../components/ListenAnswer';
 import SpeakAnswer from '../../../components/SpeakAnswer';
 import TerminalPlayer from '../../../components/TerminalPlayer';
 import GuidedLabPlayer from '../../../components/GuidedLabPlayer';
+import NoExecutionBadge from '../../../components/lesson/NoExecutionBadge';
 import DuoButton from '../../../components/DuoButton';
 import AppIcon, { type AppIconName } from '../../../components/AppIcon';
 import AskBingo from '../../../components/AskBingo';
@@ -192,6 +193,7 @@ export default function QuizPlayer() {
           speak: q.speak,
           code: q.code,
           text: q.text,
+          terminal: q.terminal,
         }));
         // Guided labs stay bite-sized: four recall items, then the walkthrough.
         baseQuestions = guided ? recall.slice(0, 4) : selectSession(recall);
@@ -593,6 +595,8 @@ export default function QuizPlayer() {
   return (
     <View className="flex-1">
       <ScrollView className="flex-1" contentContainerClassName="mx-auto w-full max-w-xl self-center px-4 pb-24 pt-8" contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+        {/* The header says what the `runs` floor knows: this build executes nothing here. */}
+        <NoExecutionBadge block={block} detailed />
         {/* Combo banner: pops every time the streak extends past 1. */}
         {combo >= 2 ? (
           <Animated.View

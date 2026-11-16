@@ -452,7 +452,14 @@ function curriculumGateNumbers() {
     return match ? match.slice(1).map((value) => Number(value.replace(/,/g, ''))) : null;
   };
   const totals = numbers(/Curriculum quality OK — ([\d,]+) lessons, ([\d,]+) questions, ([\d,]+) path blocks\./);
-  const mix = numbers(/Question mix: ([\d,]+) tokens · ([\d,]+) code · ([\d,]+) match · ([\d,]+) listen · ([\d,]+) speak · ([\d,]+) text\./);
+  // The gate lists only the kinds the catalog ships, so a trailing kind is
+  // optional here and reads as zero when absent.
+  const mixLine = output.match(
+    /Question mix: ([\d,]+) tokens · ([\d,]+) code · ([\d,]+) match · ([\d,]+) listen · ([\d,]+) speak · ([\d,]+) text(?: · ([\d,]+) terminal)?\./
+  );
+  const mix = mixLine
+    ? mixLine.slice(1, 8).map((value) => Number(String(value || '0').replace(/,/g, '')))
+    : null;
   const modes = numbers(/Practice modes: ([\d,]+) workshops · ([\d,]+) labs · ([\d,]+) quizzes\/checkpoints\/finals\./);
   if (!totals || !mix || !modes) {
     return { error: 'the curriculum gate printed a summary this check does not recognise; update the parser beside the gate.' };

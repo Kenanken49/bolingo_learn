@@ -95,10 +95,10 @@ or free-response task alongside its token questions.
 
 The guard currently reports:
 
-- 699 lessons and 3,472 questions;
-- 725 path blocks;
-- 144 workshops, 91 labs, and 103 quizzes/checkpoints/finals;
-- 2,706 token questions, 81 runnable code exercises, 333 matching, 95 listening, 96 speaking, and 161 typed production exercises.
+- 704 lessons and 3,500 questions;
+- 730 path blocks;
+- 144 workshops, 96 labs, and 103 quizzes/checkpoints/finals;
+- 2,714 token questions, 83 runnable code exercises, 337 matching, 95 listening, 96 speaking, 164 typed production exercises, and 11 exercises graded by the offline Git VM.
 
 Run the gate alone with:
 
@@ -139,13 +139,18 @@ to spell `git status` has not run git: it either gains an item that executes or
 says in its own words that the work is on paper (see
 [`docs/hands-on-labs.md`](hands-on-labs.md)).
 
-136 pre-existing blocks do neither yet, so they are listed by id in
-[`content/quality/paper-debt.json`](../content/quality/paper-debt.json) and kept
-out of the floor's total. That ledger is a ratchet: a build block that is not on
-it must run or be labelled, a listed block that gets fixed should be deleted from
-the file, and a listed id that no longer names a build block fails the gate. The
-`runs` cell in the table therefore shows only what the floor enforces today, and
-`--why` prints how many blocks each course still defers.
+That test lives in `lib/execution.ts` because the learner has to be able to read
+it too: the same function drives the **NO EXECUTION** badge on the path card and
+on the lesson and project headers, so a block this floor counts is a block the
+app labels out loud rather than a number in a file.
+
+Nothing is exempt from it. There is no ledger of deferred blocks and no per-course
+cap; the older blocks it used to forgive now say plainly in their own title and
+blurb that they are a paper exercise instead. The floor measures all 278 build
+blocks in every course, and a block that runs nothing without saying so fails the
+day it is written. The `runs` cell in the table is
+therefore the whole course, and `--why` prints each block that runs nothing while
+its copy still sounds like something runs.
 
 There is no weighted score any more. The gate always required every dimension to
 be complete, so 30/25/20/25 arithmetic only dressed up a pass/fail verdict; the

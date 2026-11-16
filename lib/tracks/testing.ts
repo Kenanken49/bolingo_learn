@@ -8,7 +8,7 @@
  * reasoning is what is being graded.
  */
 
-import { MATCH, MCQ, TEXT, type CourseLesson } from '../quizBank';
+import { BUILD, CODE, MATCH, MCQ, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_TESTING: Record<string, CourseLesson> = {
   /* ---------------- Unit 1 · What a test is for ---------------- */
@@ -134,7 +134,7 @@ export const TRACK_TESTING: Record<string, CourseLesson> = {
 
   'test-workshop-first': {
     id: 'test-workshop-first',
-    title: 'Workshop: write the failing test first',
+    title: 'Paper workshop: write the failing test first',
     theory: [
       'Test-first works as a design tool before it works as a check. Writing the test first forces you to state the interface you want, and if the test is awkward to write, the interface is awkward. The cycle is red, green, refactor: watch it fail for the expected reason, make it pass with the simplest code, then improve the shape without changing behaviour.',
       'In Jest or Vitest the shape is describe plus test with an expect assertion; in pytest a plain function named test_ plus an assert statement. Writing the assertion in words before the code is what keeps the test about behaviour rather than about implementation.',
@@ -374,7 +374,7 @@ export const TRACK_TESTING: Record<string, CourseLesson> = {
 
   'test-workshop-debug': {
     id: 'test-workshop-debug',
-    title: 'Workshop: from report to regression test',
+    title: 'Paper workshop: from report to regression test',
     theory: [
       'The report: on Android only, an offline session that lasted more than an hour loses its saved notes on the next launch. That is a real bug report — vague, conditional, and reproducible for somebody. The workshop walks the whole path from that sentence to a merged fix.',
       'The order that works is: restate the report as a claim, reduce it until only the parts that matter remain, write the test that expresses the reduced claim, watch it fail, then fix the code. The test written from the reproduction becomes the regression test for free.',
@@ -543,6 +543,206 @@ export const TRACK_TESTING: Record<string, CourseLesson> = {
           { left: 'Written note of each attempt', right: 'A search that can be resumed and trusted' },
         ],
         'The final exam is really this: name the technique and say what it proves. A method that produces no evidence is wandering.'
+      ),
+    ],
+  },
+
+  /* ---------------- Labs that run in this build ---------------- */
+
+  'test-lab-boundary': {
+    id: 'test-lab-boundary',
+    title: 'Lab: the boundary that breaks it',
+    theory: [
+      'Most production bugs live at the edges of a range: zero items, exactly one page, the last element, the empty string. A suite that only checks the comfortable middle case is decoration, which is why a review question as short as “what happens at zero?” catches defects long before a user does.',
+      'Boundary-value analysis means one assertion for each side of every edge you can name — below it, exactly on it, and one past it. When you inherit a function you did not write, call it in that order: the boring case first, then empty, then one too many. The second call is usually the one that fails.',
+      'This lab runs in the sandbox, so the red or green you see is real. The starter fails the empty-catalogue test because Math.ceil(0 / 10) is 0, and a store with no products still has one page to render: its empty state. Fix the implementation, never the assertion — a test you weakened to go green has stopped reporting the truth.',
+    ],
+    questions: [
+      CODE(
+        'Make every test pass by fixing pageCount(totalItems, perPage), the number of pages needed to show a catalogue. Keep the assertions as they are: they are the specification.',
+        {
+          language: 'js',
+          starter:
+            '// Fix pageCount so all five tests pass. Do not edit the tests.\nfunction pageCount(totalItems, perPage) {\n  return Math.ceil(totalItems / perPage);\n}\n',
+          tests: [
+            {
+              id: 'empty',
+              label: 'an empty catalogue still has one page',
+              run: 'pageCount(0, 10) === 1',
+              hint: 'Math.ceil(0 / 10) is 0. A page of “no results” is still a page, so the floor here is 1.',
+            },
+            {
+              id: 'partial',
+              label: 'three items on a ten-item page fit on one page',
+              run: 'pageCount(3, 10) === 1',
+              hint: 'Rounding up a fraction below 1 gives 1, which is already correct for this case.',
+            },
+            {
+              id: 'exact',
+              label: 'twenty items fill exactly two pages',
+              run: 'pageCount(20, 10) === 2',
+              hint: 'An exact multiple must not create a phantom third page — that is what ceil gets right.',
+            },
+            {
+              id: 'over',
+              label: 'twenty-one items need a third page',
+              run: 'pageCount(21, 10) === 3',
+              hint: 'One item past a full page opens a new page; ceil handles it.',
+            },
+            {
+              id: 'single-item-page',
+              label: 'one item with a page size of one is one page',
+              run: 'pageCount(1, 1) === 1',
+              hint: 'The smallest legal input: one item, one page, no rounding surprises.',
+            },
+          ],
+        },
+        'function pageCount(totalItems, perPage) {\n  return Math.max(1, Math.ceil(totalItems / perPage));\n}',
+        'Math.ceil does the division; Math.max(1, …) supplies the edge the original author missed. Two behaviours, one line, and every boundary assertion now holds.'
+      ),
+      MCQ(
+        'A teammate “fixes” the failing empty-catalogue test by changing it to expect 0 pages. What did the suite just do?',
+        'It stopped asserting the product rule, so the empty screen can crash again unnoticed',
+        [
+          'It stopped asserting the product rule, so the empty screen can crash again unnoticed',
+          'It improved, because tests should match the implementation',
+          'Nothing: the number of pages is a display detail',
+          'It made the suite faster, which is what flaky tests need',
+        ],
+        'A test encodes a decision. Changing the expectation to match broken code deletes the decision, and the next reader of that test will trust a lie.'
+      ),
+      TEXT(
+        'Name the boundary case missing from a suite that tests a login lockout at “3 wrong attempts” with 1 and 5 attempts. Type the number of attempts the missing case uses.',
+        ['3', 'three', 'exactly 3', 'exactly three', 'at 3'],
+        'Testing 1 and 5 skips the rule itself. The boundary is exactly 3: the attempt at which the account locks, where off-by-one errors live.',
+        { placeholder: 'number of attempts' }
+      ),
+      MATCH(
+        'Pair each edge case with the kind of defect it usually exposes',
+        [
+          { left: 'Zero items', right: 'Empty state never rendered, or a divide-by-zero' },
+          { left: 'Exactly one page of items', right: 'An off-by-one that invents a blank final page' },
+          { left: 'One item past the limit', right: 'A rounding or fencepost error at the boundary' },
+          { left: 'The largest input', right: 'An overflow, a timeout, or a memory cliff' },
+        ],
+        'Every edge fails in its own characteristic way. Naming the edge you are aiming at tells you what defect you are hunting.'
+      ),
+      MCQ(
+        'Why is Math.ceil(totalItems / perPage) alone the wrong model for page count?',
+        'It returns 0 for an empty list, but a store with no products still shows one empty page',
+        [
+          'It returns 0 for an empty list, but a store with no products still shows one empty page',
+          'It rounds the exact-multiple case up by one',
+          'It cannot handle a page size larger than the item count',
+          'It is slower than a loop over the items',
+        ],
+        'ceil is right for every non-zero input. The bug is the missing floor at one page, which only the zero-item case reveals.'
+      ),
+    ],
+  },
+
+  'test-lab-regression': {
+    id: 'test-lab-regression',
+    title: 'Lab: pin the bug with a failing test',
+    theory: [
+      'A bug report is a hypothesis; a failing test is evidence. Write the test first, watch it fail for exactly the reason the report describes, and you have both a reproduction and a permanent guard — the fix is not finished when the symptom disappears, it is finished when a test would catch the symptom returning.',
+      'Money is the classic regression. A binary float cannot hold 0.1 + 0.2 exactly, and 19.99 times 100 comes back as 1998.9999999999998, so multiplying a parsed price by 100 can land a fraction of a cent short. Store integer cents, or round deliberately at the boundary, and never let a float reach a database or a ledger.',
+      'In this lab the sandbox runs your code against a regression suite: strip the currency symbol and thousands separators, then return whole cents. Four of the five tests fail on the starter — three from separators and one from floating point — which is why the suite has five tests rather than one.',
+    ],
+    questions: [
+      CODE(
+        'parsePrice(text) must return the price in whole cents. Make the suite pass: handle the currency symbol, the thousands separator, and floating-point rounding.',
+        {
+          language: 'js',
+          starter:
+            '// The report: “£5.00 shows as NaN in the cart”. Fix parsePrice.\nfunction parsePrice(text) {\n  return Number(text.replace(\'$\', \'\')) * 100;\n}\n',
+          tests: [
+            {
+              id: 'plain',
+              label: 'a price of $19.99 becomes 1999 cents',
+              run: "parsePrice('$19.99') === 1999",
+              hint: '19.99 multiplied by 100 in a float gives 1998.9999999999998; round the product, do not truncate it.',
+            },
+            {
+              id: 'grouped',
+              label: 'a thousands separator does not break the parse',
+              run: "parsePrice('$1,234.50') === 123450",
+              hint: 'Number("1,234.50") is NaN — the comma has to go before the conversion.',
+            },
+            {
+              id: 'other-symbol',
+              label: 'any currency symbol is stripped, not just $',
+              run: "parsePrice('£5.00') === 500",
+              hint: 'Replacing only the dollar sign leaves £5.00 unparseable. Strip everything that is not a digit or a point.',
+            },
+            {
+              id: 'round-number',
+              label: 'a price with no decimals still becomes cents',
+              run: "parsePrice('$12.00') === 1200",
+              hint: 'This one is the sanity check: whole numbers should already work once the symbols are gone.',
+            },
+            {
+              id: 'large',
+              label: 'a large grouped price keeps full precision',
+              run: "parsePrice('$1,000.00') === 100000",
+              hint: 'Grouping plus a whole unit: strip non-numeric characters first, then round the scaled value.',
+            },
+          ],
+        },
+        'function parsePrice(text) {\n  const digits = String(text).replace(/[^0-9.]/g, \'\');\n  return Math.round(Number(digits) * 100);\n}',
+        'Two decisions, both forced by a failing test: normalise the string to digits and a point, then round after scaling. Math.round turns 1998.9999999999998 back into 1999 cents.'
+      ),
+      BUILD(
+        'Put the debug loop in the order this course teaches it.',
+        ['Reproduce the failure', 'Reduce it to the smallest case', 'Name the boundary it crossed', 'Fix the cause', 'Keep the test as a regression guard'],
+        [
+          'Reproduce the failure',
+          'Reduce it to the smallest case',
+          'Name the boundary it crossed',
+          'Fix the cause',
+          'Keep the test as a regression guard',
+          'Ship the fix and close the ticket',
+          'Rewrite the module from scratch',
+        ],
+        'Evidence first, change last. Fixing before you can reproduce means you cannot prove the fix, and closing without the test means the bug is free to return.'
+      ),
+      MCQ(
+        'Why does the suite test both $1,234.50 and $19.99 rather than one representative price?',
+        'They fail for different causes, so one test cannot prove the other is fixed',
+        [
+          'They fail for different causes, so one test cannot prove the other is fixed',
+          'Two tests run faster than one long test',
+          'The formatter needs both for rounding rules',
+          'It is convention to have at least three cases per function',
+        ],
+        'The comma exposes a parsing defect; 19.99 exposes a floating-point one. A suite of cases that all fail for the same reason is one test written five times.'
+      ),
+      MCQ(
+        'The report says “the cart total is wrong on Safari”. Which response makes the bug findable?',
+        'A failing test that reproduces it on any machine, checked into the suite',
+        [
+          'A failing test that reproduces it on any machine, checked into the suite',
+          'Waiting for a user to send a screenshot of the wrong total',
+          'Adding a try/catch so the wrong number is not displayed',
+          'Assuming a browser quirk and shipping a Safari-only patch',
+        ],
+        '“Works on my machine” is a missing reproduction. Once the failure exists as a test, every machine in the world agrees on whether it is fixed.'
+      ),
+      MATCH(
+        'Pair each kind of test failure with the most likely cause',
+        [
+          { left: 'NaN where a number was expected', right: 'Unparsed formatting: a symbol, comma, or space' },
+          { left: '1998.9999999999998 instead of 1999', right: 'Binary float arithmetic on money' },
+          { left: 'Passes alone, fails in the full suite', right: 'Shared state leaking between tests' },
+          { left: 'Fails on Monday, passes on Tuesday', right: 'A dependency on the clock or the network' },
+        ],
+        'The shape of a failure is a diagnosis. Learn to read the difference between a parsing bug, an arithmetic bug, and a test-harness bug.'
+      ),
+      TEXT(
+        'You are about to fix the £5.00 defect. What must exist in the repository before you write the fix, in as few words as you can?',
+        ['a failing test', 'failing test', 'a test that fails', 'test that fails', 'a regression test', 'regression test', 'a reproduction test', 'reproduction test'],
+        'The failing test is the definition of done for the reproduction: it proves the bug, survives the fix, and stops the bug coming back.',
+        { placeholder: 'what exists before the fix?' }
       ),
     ],
   },

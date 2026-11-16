@@ -141,35 +141,58 @@ export const TRACK_GIT: Record<string, CourseLesson> = {
 
   'git-workshop-history': {
     id: 'git-workshop-history',
-    title: 'Workshop: a clean commit',
+    title: 'Workshop: a clean commit, staged in the VM',
     theory: [
       'A commit that is easy to read is a commit that is easy to review. The habit is: look before you stage, stage deliberately, describe the change in the imperative mood, and keep one logical change per commit.',
-      '`git status` shows what changed and where each change sits. `git diff` shows unstaged changes in the working directory; `git diff --staged` shows what is already in the index. `git add -p` lets you stage one hunk at a time, which is how you split a mixed-up work session into focused commits.',
-      'The commit message has a subject line and an optional body. The subject answers what the codebase will do after this commit, in imperative mood: Fix the timeout, not Fixed the timeout or Fixing the timeout. Git and tooling read the subject alone in logs and in `git log --oneline`.',
+      'Four of the five steps below run in the offline Git VM, and each one is graded from the repository the VM builds rather than from the command you can recall. `git status` shows what changed and where each change sits: `git diff` compares the working directory with the index, `git diff --staged` compares the index with the commit. Nothing counts as staged for naming a command here — a file counts only when `git status` in the repository reports it as added.',
+      'The commit message has a subject line and an optional body. The subject answers what the codebase will do after this commit, in imperative mood: Fix the timeout, not Fixed the timeout or Fixing the timeout. Git and tooling read the subject alone in logs and in `git log --oneline`, and so does the VM: in step 3 your words are checked out of the finished commit, and in step 4 an amend has to keep them while changing the content. Patch staging with `git add -p` is the one move this VM cannot grade, because patch mode is interactive and no shipped scenario checks it, so it stays the last step and is labelled as a spelling drill.',
     ],
     questions: [
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'Step 1, in the terminal: clone git-playground, create index.html, style.css, one.js, two.js, 1.py and 2.py, then build the index the way a reviewable commit builds it — the two front-end files by name, both JavaScript files with one glob, and everything left over so nothing stays untracked. Read git status after each step; every task is verified against the repository the VM actually builds.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'The VM re-reads the index rather than your intent: each file has to show as added in git status, and the shell history has to prove the by-name stage and the glob were actually typed. A file that is only on disk never reaches the commit, and a stage you did not run cannot be graded.',
+        terminal: { scenarioId: 'labex-git-add-files-to-the-staging-area' },
+      },
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'Step 2, in the terminal: this repository is already set up for you, with newfile.txt staged by accident and a README.md edit staged on purpose. Enter git-playground and take only newfile.txt out of the index, leaving the README change staged and the file itself on disk.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'git restore --staged newfile.txt edits one index entry and nothing else. The VM reads git status for both halves of that sentence: the staged line for newfile.txt has to be gone while modified: README.md stays, and newfile.txt has to appear under Untracked files. Fixing an accident means editing the index, not starting the whole stage over.',
+        terminal: { scenarioId: 'labex-git-remove-files-from-the-staging-area' },
+      },
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'Step 3, in the terminal: clone git-playground, set core.editor to vim in your global Git configuration, then create hello.txt containing “Hello, Git” and commit it with the imperative subject “Update hello.txt”.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'The subject is graded out of the finished commit, not out of a text box: git log -1 has to contain “Update hello.txt” and hello.txt has to hold the line you wrote, so the stage and the message both have to be real. core.editor is the setting behind every message composed without -m, which is why the task pins it before the commit rather than after.',
+        terminal: { scenarioId: 'labex-git-configure-the-git-text-editor' },
+      },
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'Step 4, in the terminal: clone git-playground again — one line is missing from its newest commit. Append “New content” to README.md, stage it, and fold it into that commit with --amend --no-edit, leaving the original subject alone.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'Three facts have to hold at once and the VM reads all three: git log -1 still says “Added file2.txt”, git show HEAD now carries “New content”, and git status reports a clean tree. --no-edit is the difference between a repair and a rewrite — the forgotten line belongs to the commit you already described, so the description stays and only the snapshot changes.',
+        terminal: { scenarioId: 'labex-git-edit-the-last-commit' },
+      },
       BUILD(
-        'Step 1 — inspect the working tree before staging anything',
-        ['git', 'status'],
-        ['git', 'status', 'git log', '--oneline', 'git push'],
-        'git status. Read the list of changes before you decide what belongs in the commit.'
-      ),
-      BUILD(
-        'Step 2 — view only what you have already staged',
-        ['git', 'diff', '--staged'],
-        ['git', 'diff', '--staged', 'git status', '--oneline', 'git add'],
-        'git diff --staged (the older alias --cached means the same thing).'
-      ),
-      BUILD(
-        'Step 3 — stage hunks one at a time instead of the whole file',
+        'Step 5 — assemble the command that splits one file across two commits. Patch mode is interactive, so this is the one step the VM cannot grade: drill the spelling.',
         ['git', 'add -p', 'src/session.ts'],
         ['git', 'add -p', 'src/session.ts', 'git commit', '--all'],
-        'git add -p with a path opens each hunk and asks y or n, so unrelated edits stay out of the commit.'
-      ),
-      TEXT(
-        'Write the subject line for a commit that repairs a broken session timeout. Keep it in imperative mood, at most eight words.',
-        ['Fix the session timeout'],
-        'Imperative mood reads as an instruction to the codebase: this commit fixes the timeout. Past tense subjects read like a changelog of the file.'
+        'git add -p with a path opens each hunk and asks y or n, so unrelated edits stay out of the commit and each commit carries one logical change.'
       ),
     ],
   },
@@ -360,39 +383,57 @@ export const TRACK_GIT: Record<string, CourseLesson> = {
 
   'git-workshop-recovery': {
     id: 'git-workshop-recovery',
-    title: 'Workshop: putting a mess right',
+    title: 'Workshop: putting a mess right in the VM',
     theory: [
-      'This workshop is a real sequence: you staged three unrelated files, committed with a placeholder message, then discovered the commit contains a file that should never have been tracked. Fix it in the order a reviewer would want to see.',
-      'The moves are: unstage or restage precisely, amend the message when the commit is still yours alone, add the path to .gitignore so it stops reappearing, and reach for revert rather than force whenever the commit has left your machine.',
-      'Read the output of every step. `git status` after each command tells you which area the change sits in, which is how you know the recovery worked before moving on.',
+      'This workshop is a realistic sequence and it runs: four of its five steps are graded in the offline Git VM from the repository state you leave behind, not from the command you can recall. A committed file has to come out of a commit that stays, a subject line has to be rewritten and published over the old one, and two kinds of damage have to be undone without touching history at all.',
+      'The moves split by how far the mistake travelled. Work that was never committed is thrown away with `git reset --hard`, and a tracked file deleted by mistake comes back from HEAD with `git checkout HEAD -- <path>` or `git restore` — neither rewrites anything. A commit that is still yours alone is amended, and if it was already pushed the rewritten history is force-published; anything other people have built on top gets reverted instead, the move `git-lab-undo` drills.',
+      'Read the output of every step before moving on: `git status` tells you which area the change sits in, `git log -1` tells you whether the commit message changed, and `git show HEAD` tells you whether the snapshot did. The VM runs those same three reads as its checks, which is why a command that failed silently cannot tick a task here.',
     ],
     questions: [
-      BUILD(
-        'Step 1 — the commit message says wip and the commit is yours alone. Repair it.',
-        ['git', 'commit --amend', '-m', 'Add session expiry check'],
-        ['git', 'commit --amend', '-m', 'Add session expiry check', 'git revert', 'git stash'],
-        'git commit --amend -m with a real subject. Amend is safe only while no one else has the old commit.'
-      ),
-      BUILD(
-        'Step 2 — stop tracking the file that should never be committed, keeping your local copy',
-        ['git', 'rm --cached', 'config/local.env'],
-        ['git', 'rm --cached', 'config/local.env', 'restore --staged', 'delete the file', 'git push'],
-        'git rm --cached removes it from the index only. The file stays on disk, and the commit stops carrying it.'
-      ),
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'Step 1, in the terminal: clone git-playground and take file2.txt out of its newest commit without losing the file — untrack it from the index, fold that into the commit with the message left alone, and keep your copy on disk. Every task is verified against the repository the VM actually builds.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'Three facts have to hold at once and the VM reads all three: git log -1 still carries the original subject, git show HEAD no longer contains the change, and file2.txt is still on disk while git status lists it under Untracked files. That is why the move is git rm --cached and not a delete — the index forgets the path, the working tree keeps it.',
+        terminal: { scenarioId: 'labex-git-remove-a-file-from-the-last-commit' },
+      },
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'Step 2, in the terminal: clone your fork (https://github.com/your-username/git-playground), rewrite the newest commit so its subject reads “Update file2.txt” instead of “Added file2.txt”, then publish that rewritten history to origin/master with a force push.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'The amend is graded from git log -1 and the publish from the remote ref: origin/master has to carry “Update file2.txt” and no longer carry “Added file2.txt”. A plain push is refused first, because the remote still holds the commit you replaced — that refusal is the lesson. Rewriting is safe here because this fork is yours alone; once other people have built on the commit, the same repair is a revert.',
+        terminal: { scenarioId: 'labex-git-update-remote-branch-after-rewriting-history' },
+      },
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'Step 3, in the terminal: the damage here is uncommitted. Clone git-playground, create hello.txt containing “hello,world”, stage it, then throw that experiment away so the tree is clean and the file is gone.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'This is the undo that reaches only uncommitted work: git reset --hard HEAD copies the commit back over the index and the working tree at once. The VM checks both halves — a tree reporting nothing to commit, and a hello.txt that no longer exists — because a reset that leaves the file on disk has not finished the job, and no history had to be rewritten to get here.',
+        terminal: { scenarioId: 'labex-git-discard-uncommitted-changes' },
+      },
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'Step 4, in the terminal: in git-playground, file2.txt has been deleted from the working tree by mistake and nothing else is broken. Bring it back from the newest commit and leave the tree clean.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'A deletion of a tracked file is just an unstaged change, so the repair is the same move that discards any other edit: git checkout HEAD -- file2.txt, or git restore file2.txt. The VM greps the restored content and reads git status for nothing to commit — recovering a file from the commit is a different job from rewinding the branch, and this one costs no history.',
+        terminal: { scenarioId: 'labex-git-restore-a-deleted-file' },
+      },
       TEXT(
-        'Name the file you must edit so the untracked copy never gets staged again, and what you add to it.',
+        'Step 5 — config/local.env keeps showing up as untracked and you keep almost staging it. Name the file you edit to stop that, and the line you add to it.',
         ['.gitignore with the path config/local.env'],
-        'Once a path is in .gitignore, git status stops offering it. Ignore rules only apply to untracked files, which is why the --cached step was needed first.'
-      ),
-      MATCH(
-        'Pair each symptom with the check that confirms the fix',
-        [
-          { left: 'Did the amend work', right: 'git log -1 shows the new message' },
-          { left: 'Is the file still local', right: 'The path exists on disk but is untracked' },
-          { left: 'Is the ignore rule active', right: 'git status --ignored lists the path' },
-          { left: 'Is the branch clean', right: 'git status reports nothing to commit' },
-        ],
-        'Recovery is not finished until you have read the output that proves it. Four checks, four commands.'
+        'A path in .gitignore stops being offered as untracked, so git status stops suggesting it. Ignore rules apply only to untracked files, which is why the git rm --cached in step 1 had to happen first for a file already committed. This is the one step the VM cannot grade: no shipped scenario checks an ignore rule, so the answer is written, not run.',
       ),
     ],
   },
@@ -516,6 +557,184 @@ export const TRACK_GIT: Record<string, CourseLesson> = {
         ['git push -u origin', 'HEAD'],
         ['git push -u origin', 'HEAD', 'git fetch', '--all', 'git switch -c'],
         'git push -u origin HEAD. The -u records the upstream so later git push and git status know which remote ref to compare against.'
+      ),
+    ],
+  },
+
+  /* ---------------- Labs that run in the offline Git VM ---------------- */
+
+  'git-lab-branch': {
+    id: 'git-lab-branch',
+    title: 'Lab: branch, publish, and prove it',
+    theory: [
+      'A branch is a one-line file that holds a commit id, which is why creating one is instant and why deleting one loses nothing by itself. The work lives in the commits; the branch is only a movable label pointing at one of them, and HEAD is a pointer to the label you are standing on.',
+      'This lab runs in the offline Git VM, so the repository it grades is a real one. Three tasks, three checks against repository state: the clone exists, git branch --show-current prints feature-1, and git branch -r lists origin/feature-1. Nothing counts as done because you typed a command; it counts because the repository changed.',
+      'Publishing is two decisions, not one. git push copies commits; the -u flag records an upstream link so that later git push and git status know which remote ref to compare your branch against. A branch that exists only on your machine is a private idea, which is the difference between a local branch and a published one.',
+    ],
+    questions: [
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'In the terminal: clone your fork of git-playground, create and switch to a branch named feature-1, then push it to origin with its upstream set. Each task is verified against the repository the VM actually builds.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'The VM re-reads the repository after every command: the .git folder, the current branch name, and the remote refs. Only state counts, so a command that failed silently cannot tick a task.',
+        terminal: { scenarioId: 'labex-git-create-a-new-branch' },
+      },
+      MCQ(
+        'What two things does git checkout -b feature-1 do?',
+        'It creates the branch feature-1 at your current commit and moves HEAD onto it',
+        [
+          'It creates the branch feature-1 at your current commit and moves HEAD onto it',
+          'It creates the branch and pushes it to origin',
+          'It copies every commit from the branch it was created on',
+          'It creates the branch at the newest commit in the repository',
+        ],
+        'The branch starts where you are standing, not at the newest commit in the whole repository. Pushing is a separate act, which is why an unpushed branch stays local.'
+      ),
+      BUILD(
+        'Assemble the command that publishes your current branch and records its upstream in one step',
+        ['git push -u origin', 'feature-1'],
+        ['git push -u origin', 'feature-1', 'git clone origin', '--set-upstream-branch', 'git remote add'],
+        'git push -u origin feature-1. Without -u the commits still travel, but the next push has to name the remote and branch again because no upstream was recorded.'
+      ),
+      MATCH(
+        'Pair each Git name with the thing it actually is',
+        [
+          { left: 'feature-1', right: 'A label on one commit, stored as a 40-character file' },
+          { left: 'origin/feature-1', right: 'Your memory of where the remote branch was at your last fetch' },
+          { left: 'HEAD', right: 'The pointer to the branch you are currently on' },
+          { left: 'upstream', right: 'The remote branch a local branch is configured to track' },
+        ],
+        'A local branch, a remote-tracking branch, and the remote branch itself are three different things. Confusing the first two is where most push-and-pull panic starts.'
+      ),
+      TEXT(
+        'Which single command prints only the name of the branch you are on, with no asterisk and no list? Type it in full.',
+        ['git branch --show-current'],
+        'git branch --show-current prints one line: the current branch name, and nothing at all when HEAD is detached — a useful signal in scripts.',
+        { placeholder: 'git branch …' }
+      ),
+    ],
+  },
+
+  'git-lab-stash': {
+    id: 'git-lab-stash',
+    title: 'Lab: park unfinished work and bring it back',
+    theory: [
+      'A stash entry is a commit-like object holding your index and working-tree state, kept on its own ref rather than on your branch. That is what makes it safe to switch branches mid-edit: the unfinished work leaves the working directory without becoming a commit you did not mean to make.',
+      'This lab runs in the offline Git VM and grades the outcome, not the typing. The checks are that git stash list shows On feature: My changes, and that after you return to feature the stashed line is back in README.md. A stash you cannot find again is the same as work you threw away, which is why the message is part of the task.',
+      'Learn three verbs and stay out of trouble: git stash push -m names an entry, git stash apply restores it while keeping the entry, and git stash pop restores and drops it. List before you pop, because pop always takes the most recent entry, and applying the wrong one is a merge you did not plan.',
+    ],
+    questions: [
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'In the terminal: clone git-playground, append the line “Some changes” to README.md while on feature, stash it with the message “My changes”, then go back to feature and reapply it. Every task is verified against the repository the VM builds.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'The VM reads git stash list and the contents of README.md. Both halves matter: an entry that exists and content that came back — a stash left unapplied is a task half done.',
+        terminal: { scenarioId: 'labex-git-create-a-git-stash' },
+      },
+      MCQ(
+        'Why does git stash make the working directory clean?',
+        'It saves the index and working-tree changes as an object on a stash ref, then resets the files to HEAD',
+        [
+          'It saves the index and working-tree changes as an object on a stash ref, then resets the files to HEAD',
+          'It commits the changes to a hidden branch it deletes on checkout',
+          'It copies the files to a temporary folder outside the repository',
+          'It marks the files as ignored until you pop them',
+        ],
+        'The stash ref (refs/stash) holds the saved state inside .git, so it travels with the repository but stays off your branch history.'
+      ),
+      MCQ(
+        'What is the practical difference between git stash apply and git stash pop?',
+        'apply restores the entry and keeps it in the list; pop restores it and drops it',
+        [
+          'apply restores the entry and keeps it in the list; pop restores it and drops it',
+          'pop works on any entry, apply only on the newest one',
+          'apply restores tracked files, pop restores untracked ones',
+          'They are aliases with identical behaviour',
+        ],
+        'apply is the reversible choice: if the restore conflicts, the entry is still in the list. pop is tidier but you have to reach for the reflog if it goes wrong.'
+      ),
+      BUILD(
+        'Assemble the command that stores your current changes with a searchable message',
+        ['git stash push', '-m', '"work on player volume"'],
+        ['git stash push', '-m', '"work on player volume"', 'git stash clear', 'git commit', '--all'],
+        'git stash push -m “work on player volume”. An unnamed stash becomes WIP on feature, which tells you nothing three entries later.'
+      ),
+      MATCH(
+        'Pair each command with what it does to a stash entry',
+        [
+          { left: 'git stash list', right: 'Shows every stored entry with its message and origin branch' },
+          { left: 'git stash show -p stash@{1}', right: 'Prints the diff stored in that specific entry' },
+          { left: 'git stash drop stash@{2}', right: 'Deletes one entry without restoring it' },
+          { left: 'git stash clear', right: 'Empties the whole stash list at once' },
+        ],
+        'Entries are addressed by position and renumber when one is removed, so name the entry you mean and check the list again after you delete.'
+      ),
+    ],
+  },
+
+  'git-lab-undo': {
+    id: 'git-lab-undo',
+    title: 'Lab: undo a commit other people can see',
+    theory: [
+      'There are two ways to take something back. git reset moves your branch pointer backwards and leaves the old commits unreachable, which rewrites history. git revert keeps the history and adds a new commit whose changes are the inverse of the one you named. Both undo the change; only one of them is honest to your collaborators.',
+      'Once commits are pushed, other people have built on them. If you reset and force-push, their next pull replays work onto a history that no longer exists, and their merge conflicts become your bug report. Revert costs one extra commit in the log and cannot strand anybody — which is why the default answer on a shared branch is a revert.',
+      'The VM grades this lab on three facts at once: file2.txt no longer exists on disk, the newest commit message starts with Revert, and the working tree is clean. That last one matters because a half-applied revert is exactly the state people describe as “I undid it but nothing changed”.',
+    ],
+    questions: [
+      {
+        kind: 'terminal' as const,
+        prompt:
+          'In the terminal: clone git-playground and take back its newest commit without rewriting history, so file2.txt is gone, the log records the reversal, and the working tree is clean. Tasks are verified against the repository the VM builds.',
+        correctChain: ['Complete every task in the terminal'],
+        scrambledTokens: [],
+        explain:
+          'The check reads the files, git log -1 and git status. A reverted commit plus a clean tree is the only state that counts, because that is the state the next person clones.',
+        terminal: { scenarioId: 'labex-git-undo-the-last-commit' },
+      },
+      MCQ(
+        'Your branch is public and the newest commit is wrong. Why prefer git revert HEAD over git reset --hard HEAD~1?',
+        'revert adds a new commit, so nobody else has a history that no longer exists',
+        [
+          'revert adds a new commit, so nobody else has a history that no longer exists',
+          'revert is faster because it does not touch the working tree',
+          'reset only works on branches that have never been pushed',
+          'revert also deletes the original commit from the object database',
+        ],
+        'reset rewrites which commits are reachable; revert keeps the record and moves forwards. The cost of revert is an extra log line, and the reward is that every clone of the branch agrees on history.'
+      ),
+      TEXT(
+        'Type the command that undoes your newest commit by creating a new commit that reverses it.',
+        ['git revert HEAD'],
+        'git revert HEAD. Add --no-edit to accept the generated message in scripts and in a hurry.',
+        { placeholder: 'git revert …' }
+      ),
+      MCQ(
+        'git revert stops with conflicts. What does the repository look like at that moment?',
+        'A revert is in progress: the conflicted files are marked, and the reversal is not committed yet',
+        [
+          'A revert is in progress: the conflicted files are marked, and the reversal is not committed yet',
+          'The original commit has already been deleted',
+          'The branch pointer has moved back one commit',
+          'Nothing happened, and the files are unchanged',
+        ],
+        'Resolve the files and git revert --continue, or give up with git revert --abort to return exactly where you started. A revert is a normal commit in the making, so it can be finished or abandoned.'
+      ),
+      MATCH(
+        'Pair each undo with the situation it fits',
+        [
+          { left: 'git restore README.md', right: 'Throw away uncommitted edits in one file' },
+          { left: 'git restore --staged README.md', right: 'Unstage a file while keeping the edits' },
+          { left: 'git commit --amend', right: 'Rewrite the newest commit before anyone has it' },
+          { left: 'git revert HEAD', right: 'Undo a commit that other people have already pulled' },
+          { left: 'git reflog', right: 'Find a commit that no branch points at any more' },
+        ],
+        'Each undo has a scope: the file, the index, one commit, shared history, or your own pointer trail. Choosing the scope is the whole skill.'
       ),
     ],
   },
