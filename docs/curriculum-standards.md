@@ -95,16 +95,22 @@ or free-response task alongside its token questions.
 
 The guard currently reports:
 
-- 420 lessons and 2,269 questions;
-- 446 path blocks;
-- 77 workshops, 31 labs, and 28 quizzes/checkpoints/finals;
-- 20 runnable code exercises, 95 listening, 95 speaking, and 49 typed production exercises.
+- 699 lessons and 3,472 questions;
+- 725 path blocks;
+- 144 workshops, 91 labs, and 103 quizzes/checkpoints/finals;
+- 2,706 token questions, 81 runnable code exercises, 333 matching, 95 listening, 96 speaking, and 161 typed production exercises.
 
 Run the gate alone with:
 
 ```bash
 npm run check:curriculum
+npm run check:courses
 ```
 
 It runs inside `npm test`. Adding a new lesson without an explanation, adding an
 unsolvable token, thinning the theory, or dropping a capstone fails the suite.
+
+`check:courses` is the `course-score` gate: it grades each course on four dimensions
+(theory in every lesson, a real production item in every lesson, an explanation for
+every answer, and a unit test of six or more items with a finisher for the course).
+Every course must score 100, so thinning any dimension fails the release bar.

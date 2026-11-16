@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: GPL-3.0-only (this file).
  */
 
-import { MCQ, BUILD, TEXT, type CourseLesson } from '../quizBank';
+import { MATCH, MCQ, BUILD, TEXT, type CourseLesson } from '../quizBank';
 
 export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
   'linux-getting-started-1': {
@@ -40,6 +40,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Linux History', 'Choosing A Distro', 'Debian', 'Red Hat EnterPrise'],
         'Those lines are from ‘Linux History’.'
       ),
+      MATCH(
+        'Pair each Linux landmark with what happened.',
+        [
+          { left: '1969', right: 'Ken Thompson and Dennis Ritchie build UNIX at Bell Labs' },
+          { left: 'C', right: 'the language UNIX was rewritten in for portability' },
+          { left: 'GNU', right: 'the project whose own kernel, Hurd, never finished' },
+          { left: '1991', right: 'Linus Torvalds starts what becomes the Linux kernel' },
+        ],
+        'UNIX comes first in 1969 and is rewritten in C so it can move between machines; GNU supplied the licence and the tools, and the kernel itself arrived in 1991.'
+      ),
     ],
   },
   'linux-getting-started-2': {
@@ -70,6 +80,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Choosing A Distro',
         ['Choosing A Distro', 'Linux History', 'Debian', 'Red Hat EnterPrise'],
         'Those lines are from ‘Choosing A Distro’.'
+      ),
+      MATCH(
+        'Pair each part of a Linux system with its job.',
+        [
+          { left: 'Hardware', right: 'CPU, memory and disks' },
+          { left: 'Linux Kernel', right: 'the core that tells the hardware how to interact' },
+          { left: 'User Space', right: 'where you work on the system' },
+          { left: 'Distribution', right: 'the whole Linux system you install' },
+        ],
+        'Hardware sits at the bottom, the kernel drives it, user space is where you spend your time, and a distribution is the bundle you install to get all three.'
       ),
     ],
   },
@@ -108,6 +128,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Debian', 'Linux History', 'Choosing A Distro', 'Red Hat EnterPrise'],
         'Those lines are from ‘Debian’.'
       ),
+      MATCH(
+        'Pair each Debian branch with its description.',
+        [
+          { left: 'Stable', right: 'the overall good branch to be on' },
+          { left: 'Testing', right: 'a rolling branch that feeds the next Stable' },
+          { left: 'Unstable', right: 'the other rolling branch' },
+          { left: 'Free and open-source software', right: 'what Debian is composed of' },
+        ],
+        'Debian ships three branches: Stable is the conservative choice, while Testing and Unstable roll forward and their incremental changes eventually become the next Stable.'
+      ),
     ],
   },
   'linux-getting-started-4': {
@@ -137,6 +167,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Red Hat EnterPrise',
         ['Red Hat EnterPrise', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those lines are from ‘Red Hat EnterPrise’.'
+      ),
+      MATCH(
+        'Pair each Red Hat detail with what it means.',
+        [
+          { left: 'RHEL', right: 'the short name for Red Hat Enterprise Linux' },
+          { left: 'RPM', right: 'the package manager RHEL uses' },
+          { left: 'Source code', right: 'what Red Hat still provides for free' },
+          { left: 'Strict rules', right: 'what limit free re-distribution of RHEL' },
+        ],
+        'RHEL gives you the source but keeps tight control over redistribution, and its RPM package manager is the most noticeable difference from a Debian-based system.'
       ),
     ],
   },
@@ -168,6 +208,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Ubuntu', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those lines are from ‘Ubuntu’.'
       ),
+      MATCH(
+        'Pair each Ubuntu detail with its source.',
+        [
+          { left: 'Canonical', right: 'the company behind Ubuntu' },
+          { left: 'Debian', right: 'the base Ubuntu is built on' },
+          { left: 'Unity', right: 'the desktop environment Ubuntu ships by default' },
+          { left: 'Ease of use', right: 'why Ubuntu suits a beginner' },
+        ],
+        'Ubuntu takes the Debian package management core, adds the Unity desktop, and its friendliness is what drove wide adoption on personal machines.'
+      ),
     ],
   },
   'linux-getting-started-6': {
@@ -197,6 +247,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Fedora',
         ['Fedora', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those lines are from ‘Fedora’.'
+      ),
+      MATCH(
+        'Pair each Fedora detail with its role.',
+        [
+          { left: 'Fedora Project', right: 'the community that drives Fedora' },
+          { left: 'Upstream of RHEL', right: 'how Fedora sits relative to Red Hat Enterprise Linux' },
+          { left: 'Red Hat package manager', right: 'what Fedora uses' },
+          { left: 'Thorough testing', right: 'what updates pass through before reaching RHEL' },
+        ],
+        'Fedora sits in front of RHEL: changes land there first and only flow into the enterprise release after testing, all on the Red Hat package manager.'
       ),
     ],
   },
@@ -228,6 +288,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Linux Mint', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those lines are from ‘Linux Mint’.'
       ),
+      MATCH(
+        'Pair each Linux Mint detail with its reason.',
+        [
+          { left: 'Ubuntu repositories', right: 'where Mint gets its packages' },
+          { left: 'Unity', right: 'the proprietary piece Mint leaves out' },
+          { left: 'Debian package manager', right: 'what Mint inherits from Ubuntu' },
+          { left: 'Less bloated', right: 'why some people prefer Mint' },
+        ],
+        'Mint is Ubuntu underneath, so it shares the repositories and the package manager, but it skips some of the proprietary software and keeps the desktop lighter.'
+      ),
     ],
   },
   'linux-getting-started-8': {
@@ -257,6 +327,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Gentoo',
         ['Gentoo', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those lines are from ‘Gentoo’.'
+      ),
+      MATCH(
+        'Pair each Gentoo trait with its meaning.',
+        [
+          { left: 'Portage', right: 'the package manager Gentoo ships with' },
+          { left: 'Modular', right: 'how Portage is described' },
+          { left: 'Advanced users', right: 'who Gentoo is made for' },
+          { left: 'Ridiculous flexibility', right: 'what Gentoo offers at a price' },
+        ],
+        'Gentoo buys flexibility with effort: Portage is modular and easy to maintain, and the whole system assumes a user happy to get their hands dirty.'
       ),
     ],
   },
@@ -288,6 +368,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Arch Linux', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those lines are from ‘Arch Linux’.'
       ),
+      MATCH(
+        'Pair each Arch Linux trait with its meaning.',
+        [
+          { left: 'Pacman', right: 'the package manager Arch uses' },
+          { left: 'Rolling release', right: 'the model Arch shares with Debian' },
+          { left: '100 percent community', right: 'who drives Arch' },
+          { left: 'Complete and total control', right: 'what you get for the effort' },
+        ],
+        'Arch is lightweight and community built: incremental updates become the stable release through Pacman, and in exchange for the work you own the whole system.'
+      ),
     ],
   },
   'linux-getting-started-10': {
@@ -317,6 +407,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'OpenSuse',
         ['OpenSuse', 'Linux History', 'Choosing A Distro', 'Debian'],
         'Those lines are from ‘OpenSuse’.'
+      ),
+      MATCH(
+        'Pair each openSUSE fact with its detail.',
+        [
+          { left: 'openSUSE Project', right: 'the community that creates openSUSE' },
+          { left: 'RPM', right: 'the package manager openSUSE uses' },
+          { left: 'Second oldest', right: 'how long-running openSUSE is as a distribution' },
+          { left: 'SUSE Linux Enterprise', right: 'the product openSUSE shares its base system with' },
+        ],
+        'openSUSE is the community side of SUSE: it uses RPM like RHEL, shares a base with the enterprise product, and stays a friendly first choice for a new user.'
       ),
     ],
   },
@@ -714,6 +814,17 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'History Command',
         ['History Command', 'The Shell', 'Pwd Command', 'Cd Command'],
         'Those lines are from ‘History Command’.'
+      ),
+      MATCH(
+        'Pair each history shortcut with what it does.',
+        [
+          { left: 'history', right: 'prints the commands you ran before' },
+          { left: 'up arrow', right: 'steps back through the list one command at a time' },
+          { left: 'two exclamation marks', right: 'runs the previous command again' },
+          { left: 'ctrl-R', right: 'searches your history while you type' },
+          { left: 'clear', right: 'tidies a cluttered terminal' },
+        ],
+        'You rarely retype a command: the list is there to search with ctrl-R, replay with !!, and walk back through with the up arrow, and clear resets what you can see.'
       ),
     ],
   },
@@ -1164,6 +1275,11 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Exit Command',
         ['Exit Command', 'The Shell', 'Pwd Command', 'Cd Command'],
         'Those lines are from ‘Exit Command’.'
+      ),
+      TEXT(
+        'Type the command that closes your shell session:',
+        ['exit', 'logout'],
+        'Both exit and logout end the session, and in a graphical terminal simply closing the window does the same thing.'
       ),
     ],
   },
@@ -1983,6 +2099,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Vim Or Emacs', 'Regex', 'Vim', 'Vim Search'],
         'Those lines are from ‘Vim Or Emacs’.'
       ),
+      MATCH(
+        'Pair each editor claim with the editor it belongs to.',
+        [
+          { left: 'vim', right: 'an improved version of vi' },
+          { left: 'emacs', right: 'extensible enough to script the editor itself' },
+          { left: 'both', right: 'installed by default on most distributions' },
+          { left: 'GUI editor', right: 'the thing not to mention in front of diehards' },
+        ],
+        'Vim and emacs are the two names in this argument, both ship with most distributions, and neither camp welcomes a GUI editor being suggested.'
+      ),
     ],
   },
   'linux-advanced-text-fu-3': {
@@ -2017,6 +2143,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Vim',
         ['Vim', 'Regex', 'Vim Or Emacs', 'Vim Search'],
         'Those lines are from ‘Vim’.'
+      ),
+      MATCH(
+        'Pair each vim claim with its reason.',
+        [
+          { left: 'vi improved', right: 'what the name vim stands for' },
+          { left: 'Super lightweight', right: 'why opening and editing a file is quick' },
+          { left: 'Almost always available', right: 'why you can rely on vim on any machine' },
+          { left: 'vim', right: 'the command that starts the editor' },
+        ],
+        'Vim improves on vi: it starts fast, it is installed by default on most distributions you boot into, and a single word launches it.'
       ),
     ],
   },
@@ -2057,6 +2193,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Vim Search', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Vim Search’.'
       ),
+      MATCH(
+        'Pair each vim search key with its effect.',
+        [
+          { left: 'slash /', right: 'start a search toward the end of the file' },
+          { left: 'question mark ?', right: 'start a search toward the start of the file' },
+          { left: 'lowercase n', right: 'go forward through the search results' },
+          { left: 'uppercase N', right: 'go backward through the search results' },
+        ],
+        'Slash searches forward and question mark searches backward; once the search runs, lowercase n steps through the results and uppercase N reverses direction.'
+      ),
     ],
   },
   'linux-advanced-text-fu-5': {
@@ -2064,7 +2210,7 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
     title: 'Vim Navigation',
     theory: [
       'Now you may notice, the mouse is nowhere is use here. To navigate a text document in vim, use the following keys:',
-      'h or the left arrow - will move you left one character j or the up arrow - will move you up one line k or the down arrow - will move you down one line l or the right arrow - will move you right one character',
+      'h or the left arrow - will move you left one character j or the down arrow - will move you down one line k or the up arrow - will move you up one line l or the right arrow - will move you right one character'
     ],
     questions: [
       MCQ(
@@ -2084,6 +2230,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Vim Navigation',
         ['Vim Navigation', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Vim Navigation’.'
+      ),
+      MATCH(
+        'Pair each vim navigation key with its movement.',
+        [
+          { left: 'h', right: 'left one character' },
+          { left: 'j', right: 'down one line' },
+          { left: 'k', right: 'up one line' },
+          { left: 'l', right: 'right one character' },
+        ],
+        'The home row mirrors the arrow keys: h and l move sideways, and the middle two step through lines, j down and k up.'
       ),
     ],
   },
@@ -2121,6 +2277,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Vim Editing', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Vim Editing’.'
       ),
+      MATCH(
+        'Pair each vim editing key with its effect.',
+        [
+          { left: 'i', right: 'enter INSERT mode at the cursor' },
+          { left: 'a', right: 'enter INSERT mode after the cursor' },
+          { left: 'INSERT', right: 'the mode where vim behaves like a plain text editor' },
+          { left: 'ESC', right: 'the key that returns you to NORMAL mode' },
+        ],
+        'Insert and append both open INSERT mode, the difference being whether the cursor lands before or after the character you are on, and ESC closes the mode again.'
+      ),
     ],
   },
   'linux-advanced-text-fu-8': {
@@ -2151,6 +2317,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Vim Save/Exit',
         ['Vim Save/Exit', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Vim Save/Exit’.'
+      ),
+      MATCH(
+        'Pair each vim command with what it does.',
+        [
+          { left: ':w', right: 'write the file' },
+          { left: ':q', right: 'quit without writing' },
+          { left: ':wq', right: 'write and then quit' },
+          { left: 'q with a bang', right: 'quit without saving the file' },
+          { left: 'ZZ', right: 'the same as :wq, but one character faster' },
+          { left: 'u', right: 'undo your last action' },
+        ],
+        'Colon commands run from NORMAL mode: w writes, q quits, :wq does both, and the bang version quits without saving. Undo with u, redo with Ctrl-r, and favour ZZ over :wq once your fingers learn it.'
       ),
     ],
   },
@@ -2189,6 +2367,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Emacs', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Emacs’.'
       ),
+      MATCH(
+        'Pair each emacs trait with its consequence.',
+        [
+          { left: 'Extensible', right: 'you write scripts to change how emacs behaves' },
+          { left: 'Slower to load', right: 'how emacs starts compared with vim' },
+          { left: 'Steeper learning curve', right: 'the price of all that power' },
+          { left: 'Code editing and file manipulation', right: 'what you can do without leaving emacs' },
+        ],
+        'Emacs is an environment rather than an editor: it loads slower and takes longer to learn, in exchange for being scripted and lived in.'
+      ),
     ],
   },
   'linux-advanced-text-fu-10': {
@@ -2219,6 +2407,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Emacs Files',
         ['Emacs Files', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Emacs Files’.'
+      ),
+      MATCH(
+        'Pair each emacs file key with its job.',
+        [
+          { left: 'C-x C-s', right: 'save the current file' },
+          { left: 'C-x C-w', right: 'save the buffer under another name' },
+          { left: 'C-x s', right: 'save every modified buffer' },
+          { left: 'C-x C-f', right: 'open a file, or create one' },
+        ],
+        'In emacs documentation C means Ctrl and M means Meta; the save chords differ only in the second letter, and C-f visits a file, creating it when it is missing.'
       ),
     ],
   },
@@ -2253,6 +2451,17 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Emacs Buffer', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Emacs Buffer’.'
       ),
+      MATCH(
+        'Pair each emacs buffer command with its effect.',
+        [
+          { left: 'C-x b', right: 'switch to another buffer' },
+          { left: 'C-x k', right: 'close the current buffer' },
+          { left: 'C-x 2', right: 'split the window to see two buffers' },
+          { left: 'C-x o', right: 'move into the other window' },
+          { left: 'C-x 1', right: 'reduce the screen to a single buffer' },
+        ],
+        'Buffers are the files you are visiting: b switches between them, k closes one, 2 splits the screen, o hops across the split, and 1 gives the screen back.'
+      ),
     ],
   },
   'linux-advanced-text-fu-12': {
@@ -2282,6 +2491,17 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Emacs Editing',
         ['Emacs Editing', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Emacs Editing’.'
+      ),
+      MATCH(
+        'Pair each emacs motion or term with its meaning.',
+        [
+          { left: 'C-up arrow', right: 'move up one paragraph' },
+          { left: 'C-right arrow', right: 'move one word right' },
+          { left: 'M->', right: 'move to the end of the buffer' },
+          { left: 'kill', right: 'what emacs calls cutting' },
+          { left: 'yank', right: 'what emacs calls pasting' },
+        ],
+        'Ctrl steps by word or paragraph while Meta jumps through the buffer, and remember the vocabulary: kill is cutting, yank is pasting.'
       ),
     ],
   },
@@ -2313,6 +2533,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Emacs Exiting',
         ['Emacs Exiting', 'Regex', 'Vim Or Emacs', 'Vim'],
         'Those lines are from ‘Emacs Exiting’.'
+      ),
+      MATCH(
+        'Pair each emacs exit or help key with its job.',
+        [
+          { left: 'C-x C-c', right: 'close emacs' },
+          { left: 'C-h C-h', right: 'open the help menu' },
+          { left: 'C-x u', right: 'undo the last action' },
+          { left: 'open buffers', right: 'what emacs asks you about before it closes' },
+        ],
+        'Emacs checks unsaved buffers before quitting, and when you are lost the help chord C-h C-h is the way out.'
       ),
     ],
   },
@@ -3165,6 +3395,17 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Process Termination', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those lines are from ‘Process Termination’.'
       ),
+      MATCH(
+        'Pair each part of process death with what happens.',
+        [
+          { left: '_exit', right: 'the system call a process uses to free its resources' },
+          { left: 'wait', right: 'what the parent calls to acknowledge the child terminated' },
+          { left: 'Orphan', right: 'a child whose parent died first, put under the care of init' },
+          { left: 'Zombie', right: 'a finished child that still has an entry in the process table' },
+          { left: 'Reaping', right: 'what it is called when the zombie finally disappears' },
+        ],
+        'A child exits with a termination status, and 0 is the most common success value. Until the parent calls wait the entry stays behind as a zombie; init adopts orphans and reaps zombies so the process table does not fill up.'
+      ),
     ],
   },
   'linux-process-6': {
@@ -3200,6 +3441,18 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Process Signals',
         ['Process Signals', 'Monitor Process', 'Controlling Terminal', 'Process Details'],
         'Those lines are from ‘Process Signals’.'
+      ),
+      MATCH(
+        'Pair each signal with what the lesson names it.',
+        [
+          { left: 'SIGHUP', right: 'hangup' },
+          { left: 'SIGINT', right: 'interrupt' },
+          { left: 'SIGKILL', right: 'destroys the process and cannot be blocked' },
+          { left: 'SIGSEGV', right: 'segmentation fault' },
+          { left: 'SIGTERM', right: 'software termination' },
+          { left: 'SIGSTOP', right: 'stop' },
+        ],
+        'Signals are software interrupts: Ctrl-C and Ctrl-Z generate them, a process can ignore, catch, block or die from one, and they are named in the form SIGxxx because the numbers can vary.'
       ),
     ],
   },
@@ -3503,6 +3756,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         ['Packages Repositories', 'Software Distribution', 'Compressed Archives Tar', 'Package Dependencies'],
         'Those lines are from ‘Packages Repositories’.'
       ),
+      MATCH(
+        'Pair each repository detail with its role.',
+        [
+          { left: 'Repository', right: 'a central storage location for packages' },
+          { left: 'http://download.widgets/linux/deb/', right: 'the source link where a vendor hosts packages' },
+          { left: 'Pre-approved sources', right: 'what your distribution already ships with' },
+          { left: '/etc/apt/sources.list', right: 'where a Debian machine looks for sources' },
+        ],
+        'Instead of downloading every package by hand you point the machine at a repository, and the sources file is what tells it where to look.'
+      ),
     ],
   },
   'linux-packages-3': {
@@ -3584,6 +3847,16 @@ export const TRACK_LINUX_GRASSHOPPER: Record<string, CourseLesson> = {
         'Package Dependencies',
         ['Package Dependencies', 'Software Distribution', 'Packages Repositories', 'Compressed Archives Tar'],
         'Those lines are from ‘Package Dependencies’.'
+      ),
+      MATCH(
+        'Pair each dependency term with its description.',
+        [
+          { left: 'Dependencies', right: 'other packages or libraries a package needs to run' },
+          { left: 'Shared libraries', right: 'code other programs use rather than rewriting it' },
+          { left: 'The farm in the restaurant story', right: 'the supplier everything else depends on' },
+          { left: 'A missing dependency', right: 'why a package ends up broken or never installs' },
+        ],
+        'Packages lean on other packages and on shared libraries, so if the supplier disappears the whole group of dependents is in a bad state.'
       ),
     ],
   },

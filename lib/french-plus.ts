@@ -452,7 +452,8 @@ export const FRENCH_PLUS: Record<string, CourseLesson> = {
   'french-final': {
     id: 'french-final',
     title: 'French Final Exam',
-    theory: ['Final exam: greetings, numbers, food, travel, family, present verbs, and past stories — the whole comprehensive course.'],
+    theory: ['Final exam: greetings, numbers, food, travel, family, present verbs, and past stories — the whole comprehensive course.',
+    'Because the exam jumps between genders, partitives and verb tenses, a miss usually means an article agreed with the wrong noun rather than a word you forgot. Fix the agreement in the unit, then come back to the whole set.'],
     questions: [
       BUILD(
         'Ask a friend “How is it going?”:',

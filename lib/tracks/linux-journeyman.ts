@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: GPL-3.0-only (this file).
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MATCH, MCQ, BUILD, type CourseLesson } from '../quizBank';
 
 export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
   'linux-devices-1': {
@@ -132,6 +132,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Device Names', 'Dev Directory', 'Device Types', 'Sysfs'],
         'Those lines are from ‘Device Names’.'
       ),
+      MATCH(
+        'Pair each device file with what it is.',
+        [
+          { left: '/dev/sda', right: 'the first hard disk in the SCSI scheme' },
+          { left: '/dev/sda3', right: 'the third partition on the first hard disk' },
+          { left: '/dev/hda', right: 'the first hard disk in the older PATA naming' },
+          { left: '/dev/null', right: 'accepts and discards all input, produces no output' },
+          { left: '/dev/zero', right: 'produces a continuous stream of zero bytes' },
+          { left: '/dev/random', right: 'produces random numbers' },
+        ],
+        'SCSI stands for Small Computer System Interface and most mass storage speaks it, so disks get the sd prefix; the pseudo devices are kernel manufactured files rather than hardware.'
+      ),
     ],
   },
   'linux-devices-4': {
@@ -251,6 +263,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Listing Devices',
         ['Listing Devices', 'Dev Directory', 'Device Types', 'Device Names'],
         'Those lines are from ‘Listing Devices’.'
+      ),
+      MATCH(
+        'Pair each listing command with what it shows.',
+        [
+          { left: 'ls', right: 'files and directories, the comparison this lesson starts from' },
+          { left: 'lsusb', right: 'the USB devices on the machine' },
+          { left: 'lspci', right: 'the devices on the PCI bus' },
+          { left: 'lsscsi', right: 'the SCSI devices' },
+        ],
+        'Three tools do for hardware what ls does for files: usb, pci and scsi each get their own lister.'
       ),
     ],
   },
@@ -650,6 +672,17 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Swap Space', 'FileSystem Hierarchy', 'FileSystem Types', 'Anatomy Of A Disk'],
         'Those lines are from ‘Swap Space’.'
       ),
+      MATCH(
+        'Pair each swap step with its command or purpose.',
+        [
+          { left: 'mkswap /dev/sdb2', right: 'initialize a partition as a swap area' },
+          { left: 'swapon /dev/sdb2', right: 'enable the swap device' },
+          { left: 'swapoff /dev/sdb2', right: 'remove the swap device' },
+          { left: '/etc/fstab', right: 'the entry that makes swap persist on bootup' },
+          { left: 'Virtual memory', right: 'what swap space allocates when memory runs low' },
+        ],
+        'Swap moves the memory of idle processes to the disk so you are not bogged down, and the partition table line showing linux-swap is exactly this area.'
+      ),
     ],
   },
   'linux-the-filesystem-9': {
@@ -912,6 +945,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader', 'Boot Process Kernel'],
         'Those lines are from ‘Boot Process Overview’.'
       ),
+      MATCH(
+        'Pair each boot stage with its job.',
+        [
+          { left: 'BIOS', right: 'initializes the hardware and loads the bootloader' },
+          { left: 'Bootloader', right: 'loads the kernel into memory and starts it with parameters' },
+          { left: 'Kernel', right: 'initializes devices and memory, then loads init' },
+          { left: 'Init', right: 'the first process, which starts and stops essential services' },
+        ],
+        'The four stages run in order: the BIOS performs the power-on self test, GRUB is the universal Linux bootloader, and init has three major implementations.'
+      ),
     ],
   },
   'linux-boot-the-system-2': {
@@ -993,6 +1036,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Boot Process Bootloader', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Kernel'],
         'Those lines are from ‘Boot Process Bootloader’.'
       ),
+      MATCH(
+        'Pair each kernel parameter with what it specifies.',
+        [
+          { left: 'initrd', right: 'the location of the initial RAM disk' },
+          { left: 'BOOT_IMAGE', right: 'where the kernel image is located' },
+          { left: 'root', right: 'the root filesystem the kernel searches to find init' },
+          { left: 'ro', right: 'mounts the filesystem read-only' },
+          { left: 'quiet', right: 'keeps the background boot messages off the screen' },
+          { left: 'splash', right: 'lets the splash screen be shown' },
+        ],
+        'You reach these parameters from the GRUB menu with the e key; GRUB is the common bootloader, other options include LILO, efilinux, coreboot and SYSLINUX.'
+      ),
     ],
   },
   'linux-boot-the-system-4': {
@@ -1024,6 +1079,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Boot Process Kernel',
         ['Boot Process Kernel', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader'],
         'Those lines are from ‘Boot Process Kernel’.'
+      ),
+      MATCH(
+        'Pair each early boot piece with its description.',
+        [
+          { left: 'initrd', right: 'the older temporary root filesystem the kernel replaces after loading drivers' },
+          { left: 'initramfs', right: 'a temporary root filesystem built into the kernel itself' },
+          { left: 'Read-only', right: 'how the root partition mounts first so fsck can run safely' },
+          { left: 'fsck', right: 'what checks system integrity before the filesystem becomes writable' },
+        ],
+        'The kernel does not have every driver at first, so a temporary filesystem supplies the essentials, then the root partition is mounted, checked, remounted read-write, and init is executed.'
       ),
     ],
   },
@@ -1057,6 +1122,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Boot Process Init', 'Boot Process Overview', 'Boot Process Bios', 'Boot Process Bootloader'],
         'Those lines are from ‘Boot Process Init’.'
       ),
+      MATCH(
+        'Pair each init implementation with its style.',
+        [
+          { left: 'System V init', right: 'the traditional system, starting and stopping processes sequentially' },
+          { left: 'Runlevels', right: 'how sysv denotes the state of the machine' },
+          { left: 'Upstart', right: 'the init of older Ubuntu installs, built on jobs and events' },
+          { left: 'Systemd', right: 'the new standard, goal oriented and dependency driven' },
+        ],
+        'All three do the same first-process job in different ways: scripts by runlevel, jobs reacting to events, or chasing a goal by satisfying its dependencies.'
+      ),
     ],
   },
   'linux-kernel-1': {
@@ -1087,6 +1162,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Kernel Overview',
         ['Kernel Overview', 'Kernel Privelege Levels', 'System Calls', 'Kernel Installation'],
         'Those lines are from ‘Kernel Overview’.'
+      ),
+      MATCH(
+        'Pair each level of a Linux system with what lives there.',
+        [
+          { left: 'Hardware', right: 'CPU, memory, hard disks and networking ports' },
+          { left: 'The physical layer', right: 'the level that actually computes what the machine is doing' },
+          { left: 'Kernel', right: 'process and memory management, device communication and system calls' },
+          { left: 'User space', right: 'the shell, the programs you run and the graphics' },
+        ],
+        'Three levels of abstraction: hardware at the bottom, the kernel talking to it on behalf of your processes, and user space as the layer you actually see.'
       ),
     ],
   },
@@ -1258,6 +1343,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Kernel Location', 'Kernel Overview', 'Kernel Privelege Levels', 'System Calls'],
         'Those lines are from ‘Kernel Location’.'
       ),
+      MATCH(
+        'Pair each file in /boot with what it is.',
+        [
+          { left: 'vmlinuz', right: 'the actual Linux kernel' },
+          { left: 'initrd', right: 'a temporary filesystem used before loading the kernel' },
+          { left: 'System.map', right: 'the symbolic lookup table' },
+          { left: 'config', right: 'kernel configuration settings, including which modules can be loaded' },
+        ],
+        'A new kernel adds a set of these files to /boot, one set per version, and old versions can be deleted when the partition runs out of space, as long as you keep the running kernel.'
+      ),
     ],
   },
   'linux-kernel-6': {
@@ -1344,6 +1439,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Sysv Overview',
         ['Sysv Overview', 'Sysv Services', 'Upstart Overview', 'Upstart Jobs'],
         'Those lines are from ‘Sysv Overview’.'
+      ),
+      MATCH(
+        'Pair each Sys V detail with its meaning.',
+        [
+          { left: '/etc/inittab', right: 'its presence means you probably run Sys V, and it holds the default runlevel' },
+          { left: 'Runlevel 0', right: 'shutdown' },
+          { left: 'Runlevel 1', right: 'single user mode' },
+          { left: 'Runlevel 5', right: 'multiuser with networking and a GUI' },
+          { left: 'K10updates', right: 'a script that kills the updates service early in the sequence' },
+          { left: 'S', right: 'the prefix on scripts that start services' },
+        ],
+        'Sys V walks scripts in order, so foo-a must be running before foo-b works; the S and K prefixes choose start or kill, the number after them sets the order, and runlevels 0 to 6 describe the state of the machine.'
       ),
     ],
   },
@@ -1468,6 +1575,17 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Upstart Jobs', 'Sysv Overview', 'Sysv Services', 'Upstart Overview'],
         'Those lines are from ‘Upstart Jobs’.'
       ),
+      MATCH(
+        'Pair each Upstart command with what it does.',
+        [
+          { left: 'initctl list', right: 'shows every job with its goal and current status' },
+          { left: 'initctl status networking', right: 'reports on a single job' },
+          { left: 'sudo initctl start networking', right: 'starts a job by hand' },
+          { left: 'sudo initctl stop networking', right: 'stops a job by hand' },
+          { left: 'sudo initctl emit some_event', right: 'triggers an event yourself' },
+        ],
+        'In list output the first value is the job name, the field before the slash is the goal and the one after it is the status, so shutdown stop/waiting is a job that wants to stop and is waiting. Job configurations live in /etc/init.'
+      ),
     ],
   },
   'linux-init-5': {
@@ -1502,6 +1620,17 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'SystemD Overview',
         ['SystemD Overview', 'Sysv Overview', 'Sysv Services', 'Upstart Overview'],
         'Those lines are from ‘SystemD Overview’.'
+      ),
+      MATCH(
+        'Pair each systemd object with its role.',
+        [
+          { left: 'default.target', right: 'the usual boot goal, which points at graphical.target' },
+          { left: '.service', right: 'the unit file suffix for a service' },
+          { left: '.mount', right: 'the unit file suffix for mounting a filesystem' },
+          { left: '.target', right: 'the unit file suffix for a group of other units' },
+          { left: 'poweroff.target', right: 'the systemd equivalent of a shutdown runlevel' },
+        ],
+        'Systemd chases goals instead of a strict sequence: it loads configuration from /etc/systemd/system, picks a boot target, then activates the dependencies that target groups together.'
       ),
     ],
   },
@@ -1822,6 +1951,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['IO Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
         'Those lines are from ‘IO Monitoring’.'
       ),
+      MATCH(
+        'Pair each iostat field with what it measures.',
+        [
+          { left: '%user', right: 'CPU utilization at the user level, in applications' },
+          { left: '%system', right: 'CPU utilization at the system level, in the kernel' },
+          { left: '%iowait', right: 'idle CPU time while the system had an outstanding disk request' },
+          { left: '%steal', right: 'involuntary wait while the hypervisor serviced another virtual CPU' },
+          { left: 'tps', right: 'transfers per second issued to a device' },
+          { left: 'kB_read/s', right: 'data read from the device in kilobytes per second' },
+        ],
+        'iostat prints CPU information first and disk utilization second: the percent columns say where CPU time goes, the device columns say how much traffic each disk sees.'
+      ),
     ],
   },
   'linux-process-utilization-6': {
@@ -1861,6 +2002,18 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Memory Monitoring',
         ['Memory Monitoring', 'Top', 'Lsof/Fuser', 'Threads'],
         'Those lines are from ‘Memory Monitoring’.'
+      ),
+      MATCH(
+        'Pair each vmstat field with what it reports.',
+        [
+          { left: 'r', right: 'number of processes for run time' },
+          { left: 'b', right: 'number of processes in uninterruptible sleep' },
+          { left: 'swpd', right: 'amount of virtual memory used' },
+          { left: 'si', right: 'amount of memory swapped in from disk' },
+          { left: 'bi', right: 'amount of blocks received in from a block device' },
+          { left: 'wa', right: 'time spent waiting for IO' },
+        ],
+        'vmstat groups its columns by subsystem: procs, memory, swap, io, system and cpu, so r and b come from procs, si and so from swap, and us, sy, id and wa from the cpu group.'
       ),
     ],
   },
@@ -2061,6 +2214,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['General Logging', 'System Logging', 'Syslog', 'Kernel Logging'],
         'Those lines are from ‘General Logging’.'
       ),
+      MATCH(
+        'Pair each general log file with what it holds.',
+        [
+          { left: '/var/log', right: 'the directory where many important logs live' },
+          { left: '/var/log/messages', right: 'non-critical, non-debug messages, including bootup, auth, cron and daemon' },
+          { left: '/var/log/syslog', right: 'logs everything except auth messages' },
+          { left: 'dmesg', right: 'bootup messages that also show up in the messages log' },
+        ],
+        'These two give a glimpse of how the machine is acting and are enough to start troubleshooting, while separate logs exist for a specific component.'
+      ),
     ],
   },
   'linux-logging-4': {
@@ -2089,6 +2252,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Kernel Logging',
         ['Kernel Logging', 'System Logging', 'Syslog', 'General Logging'],
         'Those lines are from ‘Kernel Logging’.'
+      ),
+      MATCH(
+        'Pair each kernel logging source with its description.',
+        [
+          { left: '/var/log/dmesg', right: 'the kernel ring buffer at boot time, reset on every boot' },
+          { left: 'dmesg', right: 'the command that shows the same information' },
+          { left: '/var/log/kern.log', right: 'kernel information and events, and it logs dmesg output too' },
+          { left: 'Hardware drivers', right: 'what the boot-time log tells you about' },
+        ],
+        'If something goes wrong during bootup or with a hardware issue, this is the best place to look.'
       ),
     ],
   },
@@ -2119,6 +2292,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         ['Authentication Logging', 'System Logging', 'Syslog', 'General Logging'],
         'Those lines are from ‘Authentication Logging’.'
       ),
+      MATCH(
+        'Pair each authentication logging detail with its meaning.',
+        [
+          { left: '/var/log/auth.log', right: 'the file holding system authorization logs' },
+          { left: 'User login', right: 'one of the events auth.log records' },
+          { left: 'Authentication method', right: 'what auth.log records alongside the login' },
+          { left: 'pam_unix', right: 'the module named in the sample log line' },
+        ],
+        'When you have trouble logging in this is the log to read; the sample line shows a session opened for user root through polkit-1 by uid 1000.'
+      ),
     ],
   },
   'linux-logging-6': {
@@ -2147,6 +2330,16 @@ export const TRACK_LINUX_JOURNEYMAN: Record<string, CourseLesson> = {
         'Managing Log Files',
         ['Managing Log Files', 'System Logging', 'Syslog', 'General Logging'],
         'Those lines are from ‘Managing Log Files’.'
+      ),
+      MATCH(
+        'Pair each logrotate detail with its purpose.',
+        [
+          { left: 'logrotate', right: 'the utility that manages log files' },
+          { left: '/etc/logrotate.d', right: 'where the configuration files can be found' },
+          { left: 'cron', right: 'what runs logrotate once a day' },
+          { left: 'Compress', right: 'what logrotate does to your logs to save space' },
+        ],
+        'Logs generate a lot of data on your disks and you mostly want the newer ones, so logrotate decides how many to keep, how to shrink them and does it daily.'
       ),
     ],
   },

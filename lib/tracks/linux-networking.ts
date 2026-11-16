@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: GPL-3.0-only (this file).
  */
 
-import { MCQ, BUILD, type CourseLesson } from '../quizBank';
+import { MATCH, MCQ, BUILD, type CourseLesson } from '../quizBank';
 
 export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
   'linux-network-sharing-1': {
@@ -264,6 +264,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Network Basics', 'Osi Model', 'Tcp/Ip Model', 'Network Addressing'],
         'Those lines are from ‘Network Basics’.'
       ),
+      MATCH(
+        'Pair each part of a home network with its description.',
+        [
+          { left: 'ISP', right: 'the company you pay to get Internet at your house' },
+          { left: 'Router', right: 'allows each machine on your network to connect to the Internet' },
+          { left: 'WAN', right: 'everything between your router and a wider network such as the Internet' },
+          { left: 'WLAN', right: 'the network between your router and any wireless devices' },
+          { left: 'LAN', right: 'the network between your router and any wired devices' },
+          { left: 'Hosts', right: 'the name for each machine on a network' },
+        ],
+        'Data and information transmitted through these networks travel as packets, and by the end of this section you will see how a packet gets to and from hosts.'
+      ),
     ],
   },
   'linux-network-basics-2': {
@@ -291,6 +303,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Osi Model',
         ['Osi Model', 'Network Basics', 'Tcp/Ip Model', 'Network Addressing'],
         'Those lines are from ‘Osi Model’.'
+      ),
+      MATCH(
+        'Pair each OSI detail with what the lesson says.',
+        [
+          { left: 'OSI', right: 'Open Systems Interconnection' },
+          { left: 'Seven layers', right: 'how the model shows a packet traversing a network' },
+          { left: 'A theoretical model', right: 'the kind of model the OSI model is' },
+          { left: 'TCP/IP', right: 'the model these courses focus on instead' },
+        ],
+        'The OSI model is jargon you should recognize rather than memorize, but it played a large part in the TCP/IP model we use today.'
       ),
     ],
   },
@@ -328,6 +350,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Tcp/Ip Model', 'Network Basics', 'Osi Model', 'Network Addressing'],
         'Those lines are from ‘Tcp/Ip Model’.'
       ),
+      MATCH(
+        'Pair each TCP/IP layer with what it handles.',
+        [
+          { left: 'Application layer', right: 'how your programs interface with transport layer services' },
+          { left: 'Transport layer', right: 'checking the correct ports, the integrity of the data and delivering packets' },
+          { left: 'Network layer', right: 'how to move packets between hosts and across networks' },
+          { left: 'Link layer', right: 'how to send data across a physical piece of hardware' },
+        ],
+        'Top to bottom the four layers go application, transport, network and link, each carrying its own protocols: HTTP and SMTP at the top, TCP and UDP next, then IP and ICMP.'
+      ),
     ],
   },
   'linux-network-basics-4': {
@@ -360,6 +392,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Network Addressing',
         ['Network Addressing', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those lines are from ‘Network Addressing’.'
+      ),
+      MATCH(
+        'Pair each address type with its property.',
+        [
+          { left: 'MAC address', right: 'a unique hardware identifier that never changes' },
+          { left: 'OUI', right: 'the first 3 bytes of a MAC address, identifying the manufacturer' },
+          { left: 'IP address', right: 'a hardware independent identifier that can change with your network' },
+          { left: 'Hostname', right: 'a human readable name tied to an IP address' },
+          { left: '10.24.12.4', right: 'what a typical IPv4 address looks like' },
+        ],
+        'Like a letter, a packet needs a destination and a sender: MAC covers the hardware side, IP the software side, and hostnames spare you from memorizing either.'
       ),
     ],
   },
@@ -396,6 +439,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Application Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those lines are from ‘Application Layer’.'
       ),
+      MATCH(
+        'Pair each packet term with what it means.',
+        [
+          { left: 'Header', right: 'where the packet is going and where it came from' },
+          { left: 'Payload', right: 'the actual data that is being transferred' },
+          { left: 'Segment', right: 'what the transport layer calls our packet' },
+          { left: 'Frame', right: 'what the link layer calls it' },
+          { left: 'Port 25', right: 'the port SMTP sends email data through' },
+        ],
+        'Each layer adds information to the header as the packet travels, and the application layer talks to the transport layer through a specified port.'
+      ),
     ],
   },
   'linux-network-basics-6': {
@@ -429,6 +483,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Transport Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those lines are from ‘Transport Layer’.'
       ),
+      MATCH(
+        'Pair each transport detail with its protocol or purpose.',
+        [
+          { left: 'Segments', right: 'the chunks the transport layer breaks data into' },
+          { left: 'Port 80', right: 'where webpage data goes for HTTP' },
+          { left: 'UDP', right: 'unreliable delivery, fine for media streaming' },
+          { left: 'TCP', right: 'a reliable connection-oriented stream of data' },
+          { left: 'SYN, then SYN-ACK, then ACK', right: 'the steps of the TCP handshake' },
+        ],
+        'IP addresses are not specific enough to reach a certain process, so ports carry the last step, and sequence numbers keep the segments in the right order when they arrive.'
+      ),
     ],
   },
   'linux-network-basics-7': {
@@ -456,6 +521,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Network Layer',
         ['Network Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those lines are from ‘Network Layer’.'
+      ),
+      MATCH(
+        'Pair each network layer fact with its role.',
+        [
+          { left: 'Network layer', right: 'determines the routing of packets from source host to destination host' },
+          { left: 'Subnets', right: 'the smaller networks that make up the Internet' },
+          { left: 'IP addresses', right: 'what define the rules to travel to different subnets' },
+          { left: 'IP packet', right: 'what the layer forms by encapsulating the segment with both IP addresses' },
+        ],
+        'All subnets connect to each other in some way, which is why you can reach a site that lives on its own network.'
       ),
     ],
   },
@@ -500,6 +575,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Link Layer', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those lines are from ‘Link Layer’.'
       ),
+      MATCH(
+        'Pair each link layer detail with what it does.',
+        [
+          { left: 'Frame', right: 'what the link layer encapsulates our packet into' },
+          { left: 'Checksums and packet separators', right: 'what let the receiver tell when a packet ends' },
+          { left: 'ARP', right: 'finds the MAC address associated with an IP address' },
+          { left: 'Broadcast message', right: 'what ARP sends out to all hosts on a network' },
+          { left: 'ARP look-up table', right: 'what a system checks before using ARP' },
+        ],
+        'ARP only works within the same network; for a remote destination a routing system picks the next router first, and only then can ARP be used again.'
+      ),
     ],
   },
   'linux-network-basics-9': {
@@ -531,6 +617,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Dhcp Overview',
         ['Dhcp Overview', 'Network Basics', 'Osi Model', 'Tcp/Ip Model'],
         'Those lines are from ‘Dhcp Overview’.'
+      ),
+      MATCH(
+        'Pair each DHCP detail with its meaning.',
+        [
+          { left: 'DHCP', right: 'assigns IP addresses, subnet masks and gateways to our machines' },
+          { left: 'Lease', right: 'how long an address is yours before it gets renewed' },
+          { left: 'DHCP DISCOVER', right: 'the broadcast that searches for a DHCP server' },
+          { left: 'DHCP OFFER', right: 'the reply containing lease time, subnet mask and IP address' },
+          { left: 'DHCP REQUEST', right: 'the broadcast telling every server which offer was accepted' },
+          { left: 'DHCP ACK', right: 'the acknowledgement sent by the server' },
+        ],
+        'In the analogy DHCP is the phone carrier that hands out your number. Every physical network should have its own server, and at home the router usually plays that role.'
       ),
     ],
   },
@@ -642,6 +740,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Subnet Math', 'Ipv4', 'Subnets', 'Subnetting Cheats'],
         'Those lines are from ‘Subnet Math’.'
       ),
+      MATCH(
+        'Pair each subnet number with what it counts.',
+        [
+          { left: '255.255.255.0', right: 'the mask that leaves one octet for hosts' },
+          { left: '256', right: 'the possible options once you count zero' },
+          { left: 'Subtract 2', right: 'what you do for the broadcast address and the subnet address' },
+          { left: '254', right: 'the possible hosts on this subnet' },
+          { left: '192.168.1.1 to 192.168.1.254', right: 'the range of host addresses that leaves' },
+        ],
+        'Where the mask shows a 1 you pretend the bit is not there, so only the zeros of the mask give you host addresses.'
+      ),
     ],
   },
   'linux-subnetting-4': {
@@ -679,6 +788,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Subnetting Cheats', 'Ipv4', 'Subnets', 'Subnet Math'],
         'Those lines are from ‘Subnetting Cheats’.'
       ),
+      MATCH(
+        'Pair each conversion step with its result.',
+        [
+          { left: '192 minus 128', right: 'leaves 64, so the first two bits are both 1' },
+          { left: '11000000', right: 'the binary form of 192' },
+          { left: '128 plus 64', right: 'how to get 192 back out of binary' },
+          { left: '2^8', right: '256' },
+          { left: '2^10', right: '1024' },
+        ],
+        'Decimal to binary subtracts down the chart of 128, 64, 32 and so on; binary to decimal adds up the values that sit under a 1. In the real world you rarely do this by hand, unless an interview asks.'
+      ),
     ],
   },
   'linux-subnetting-5': {
@@ -707,6 +827,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Classless Interdomain Routing (CIDR)',
         ['Classless Interdomain Routing (CIDR)', 'Ipv4', 'Subnets', 'Subnet Math'],
         'Those lines are from ‘Classless Interdomain Routing (CIDR)’.'
+      ),
+      MATCH(
+        'Pair each CIDR fact with its number.',
+        [
+          { left: '10.42.3.0/24', right: 'CIDR for the subnet masked by 255.255.255.0' },
+          { left: '32 bits', right: 'how many bits an IP address consists of' },
+          { left: 'The number after the slash', right: 'how many bits are used as the network prefix' },
+          { left: '510 usable hosts', right: 'what a /23 works out to' },
+        ],
+        'Subtract the prefix from 32, raise 2 to what is left and take away the subnet and broadcast addresses: for /23 that is 9 bits, 512, then 510.'
       ),
     ],
   },
@@ -741,6 +871,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Network Adress Translation (NAT)', 'Ipv4', 'Subnets', 'Subnet Math'],
         'Those lines are from ‘Network Adress Translation (NAT)’.'
       ),
+      MATCH(
+        'Pair each NAT detail with its meaning.',
+        [
+          { left: 'NAT', right: 'network address translation' },
+          { left: 'The router', right: 'the intermediary between the Internet and the private network' },
+          { left: 'A single unique IP address', right: 'what represents an entire group of computers' },
+          { left: 'The receptionist analogy', right: 'how an office number finds your extension' },
+        ],
+        'Google never sees your machine: the request goes through the router, the router opens its own connection, and all the far side can see is the router.'
+      ),
     ],
   },
   'linux-subnetting-7': {
@@ -769,6 +909,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Ipv6',
         ['Ipv6', 'Ipv4', 'Subnets', 'Subnet Math'],
         'Those lines are from ‘Ipv6’.'
+      ),
+      MATCH(
+        'Pair each IPv6 fact with its description.',
+        [
+          { left: 'IPv6', right: 'created to allow us to connect more hosts to the Internet' },
+          { left: 'The way the address is written', right: 'the major difference from IPv4' },
+          { left: 'Quite slow', right: 'how the adoption of IPv6 has been' },
+          { left: '2dde:1235:1256:3:200:f8ed:fe23:59cf', right: 'what a typical IPv6 address looks like' },
+        ],
+        'Every device connected to the Internet needs its own address and that number is finite, yet IPv6 complements IPv4 rather than replacing it, and the two protocols are very similar.'
       ),
     ],
   },
@@ -809,6 +959,18 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'What Is A Router?',
         ['What Is A Router?', 'Routing Table', 'Path Of A Packet', 'Routing Protocols'],
         'Those lines are from ‘What Is A Router?’.'
+      ),
+      MATCH(
+        'Pair each routing term with its meaning.',
+        [
+          { left: 'LAN ports', right: 'let your machines connect to the same local area network' },
+          { left: 'Internet uplink port', right: 'the port sometimes labelled WAN' },
+          { left: 'Default route', right: 'what packets use when no route is set for them' },
+          { left: 'Hop', right: 'a rough measure of the distance a packet must travel' },
+          { left: 'Flooding', right: 'sending every incoming packet out every link except the one it arrived on' },
+          { left: 'Switching', right: 'receiving, processing and forwarding data to the destination device' },
+        ],
+        'Routing is the process of creating the routing table so that switching works better, and flooding came before routing. Routes for a packet look up addresses the way mail does: network by network, zip code by zip code.'
       ),
     ],
   },
@@ -887,6 +1049,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Path Of A Packet', 'What Is A Router?', 'Routing Table', 'Routing Protocols'],
         'Those lines are from ‘Path Of A Packet’.'
       ),
+      MATCH(
+        'Pair each step of a packet journey with what happens.',
+        [
+          { left: 'Subnet mask', right: 'what the local machine compares the destination IP against first' },
+          { left: 'ARP broadcast', right: 'how a host finds a destination MAC address it does not know' },
+          { left: 'Default gateway', right: 'where a packet goes when the routing table has no match' },
+          { left: 'Source and destination MAC addresses', right: 'what each router strips and replaces as the packet moves on' },
+          { left: 'Source and destination IP address', right: 'what stays the same during the whole trip' },
+        ],
+        'MAC addresses are only reachable on the same network, so an outside destination means ARP for the gateway instead, and the final MAC only gets resolved once the packet reaches that network.'
+      ),
     ],
   },
   'linux-routing-4': {
@@ -924,6 +1097,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Routing Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
         'Those lines are from ‘Routing Protocols’.'
       ),
+      MATCH(
+        'Pair each routing protocol term with its description.',
+        [
+          { left: 'Routing protocols', right: 'how a system learns routes and adapts to network changes' },
+          { left: 'Distance vector and link state', right: 'the two primary routing protocol types' },
+          { left: 'Convergence', right: 'when every routing table maps out the complete topology' },
+          { left: 'A change in the topology', right: 'what breaks convergence until all routers know about it' },
+        ],
+        'Manually configuring a route for every device would be a pain, so routers communicate with each other to collect and exchange network information instead.'
+      ),
     ],
   },
   'linux-routing-5': {
@@ -954,6 +1137,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Distance Vector Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
         'Those lines are from ‘Distance Vector Protocols’.'
       ),
+      MATCH(
+        'Pair each distance vector fact with its consequence.',
+        [
+          { left: 'Hop count', right: 'what these protocols use to determine the path to other networks' },
+          { left: 'Least amount of hops', right: 'the route a distance vector protocol picks' },
+          { left: 'Periodically sends the entire routing table', right: 'why convergence takes longer as the network scales' },
+          { left: 'RIP', right: 'the common distance vector protocol' },
+          { left: '15', right: 'the hop count RIP limits itself to' },
+        ],
+        'RIP broadcasts the routing table to every router every 30 seconds, which takes serious juice on a large network, and the shortest hop count is not always the most efficient route.'
+      ),
     ],
   },
   'linux-routing-6': {
@@ -982,6 +1176,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Link State Protocols',
         ['Link State Protocols', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
         'Those lines are from ‘Link State Protocols’.'
+      ),
+      MATCH(
+        'Pair each link state fact with its detail.',
+        [
+          { left: 'Link state protocols', right: 'the type that suits large scale networks' },
+          { left: 'Updates to neighboring routes', right: 'what they send instead of the whole routing table' },
+          { left: 'Shortest path first', right: 'the calculation their algorithm makes' },
+          { left: 'A graph', right: 'the form their network topology takes' },
+          { left: 'OSPF', right: 'the common link state protocol, with no hop limit' },
+        ],
+        'These protocols are more complex than distance vector ones but converge quickly, and OSPF only updates the routing tables when there was a network change.'
       ),
     ],
   },
@@ -1012,6 +1217,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Border Gateway Protocol (BGP)',
         ['Border Gateway Protocol (BGP)', 'What Is A Router?', 'Routing Table', 'Path Of A Packet'],
         'Those lines are from ‘Border Gateway Protocol (BGP)’.'
+      ),
+      MATCH(
+        'Pair each BGP fact with its meaning.',
+        [
+          { left: 'BGP', right: 'Border Gateway Protocol, basically how the Internet runs' },
+          { left: 'Autonomous systems', right: 'the groups BGP exchanges routing information among' },
+          { left: 'An Internet service provider, a company, a university', right: 'examples of autonomous systems' },
+          { left: 'Between them', right: 'where BGP routes, rather than inside an autonomous system' },
+          { left: 'The border of the network', right: 'where a packet is passed to a Border Gateway router' },
+        ],
+        'Without BGP these systems would just be siloed off; the border router holds what the packet needs to leave one network and traverse the others.'
       ),
     ],
   },
@@ -1190,6 +1406,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['Network Manager', 'Network Interfaces', 'Route', 'Dhclient'],
         'Those lines are from ‘Network Manager’.'
       ),
+      MATCH(
+        'Pair each NetworkManager detail with its meaning.',
+        [
+          { left: 'NetworkManager', right: 'the daemon most distributions use to configure networks automatically' },
+          { left: 'The applet on your taskbar', right: 'how you notice NetworkManager when using a GUI' },
+          { left: 'nm-tool', right: 'reports the state of NetworkManager and its devices' },
+          { left: 'nmcli', right: 'controls and modifies NetworkManager' },
+          { left: 'Wired and wireless connections', right: 'what the daemon searches for on startup and then activates' },
+        ],
+        'The report it prints shows each device with its type, driver, state, hardware address and IPv4 settings such as address, prefix, gateway and DNS.'
+      ),
     ],
   },
   'linux-network-config-5': {
@@ -1266,6 +1493,17 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'Icmp',
         ['Icmp', 'Ping', 'Traceroute', 'Netstat'],
         'Those lines are from ‘Icmp’.'
+      ),
+      MATCH(
+        'Pair each ICMP message with what it reports.',
+        [
+          { left: 'Type 0', right: 'echo reply' },
+          { left: 'Type 3', right: 'destination unreachable' },
+          { left: 'Type 8', right: 'echo request' },
+          { left: 'Type 11', right: 'time exceeded' },
+          { left: 'Code', right: 'the sub-type that describes a message further' },
+        ],
+        'ICMP is part of the TCP/IP suite and carries updates and error messages, which makes it extremely useful for debugging a failed packet delivery. Within Type 3 there are 16 code values, network unreachable and host unreachable being the first two.'
       ),
     ],
   },
@@ -1476,6 +1714,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['What is DNS?', 'DNS Components', 'DNS Process', 'Etc hosts'],
         'Those lines are from ‘What is DNS?’.'
       ),
+      MATCH(
+        'Pair each DNS idea with its description.',
+        [
+          { left: 'DNS', right: 'Domain Name System' },
+          { left: 'A contact list for the Internet', right: 'what the lesson compares DNS to' },
+          { left: 'Low level networking', right: 'the part that only understands the raw IP address' },
+          { left: 'A distributed database', right: 'what DNS fundamentally is: hostnames to IP addresses' },
+        ],
+        'Without it you would type an address like 192.78.12.4 to search Google. Each person manages their own part of the database so others can reach their domain.'
+      ),
     ],
   },
   'linux-dns-2': {
@@ -1557,6 +1805,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         ['DNS Process', 'What is DNS?', 'DNS Components', 'Etc hosts'],
         'Those lines are from ‘DNS Process’.'
       ),
+      MATCH(
+        'Pair each step of a DNS lookup with who answers.',
+        [
+          { left: 'Recursive DNS server', right: 'the server your host asks, usually provided by your ISP' },
+          { left: 'Root Servers', right: '13 of them, mirrored worldwide, holding information about top-level domains' },
+          { left: 'Top-Level Domain', right: 'the step that knows about .com and hands over a name server address' },
+          { left: 'Authoritative DNS server', right: 'the one holding the zone file and the resource record you want' },
+        ],
+        'You funnel down from the top: every answer is a pointer to the next server until the authoritative one returns the IP address of the host.'
+      ),
     ],
   },
   'linux-dns-4': {
@@ -1627,6 +1885,16 @@ export const TRACK_LINUX_NETWORKING: Record<string, CourseLesson> = {
         'DNS Setup',
         ['DNS Setup', 'What is DNS?', 'DNS Components', 'DNS Process'],
         'Those lines are from ‘DNS Setup’.'
+      ),
+      MATCH(
+        'Pair each DNS server package with its strength.',
+        [
+          { left: 'BIND', right: 'the most popular DNS server on the Internet and the Linux standard' },
+          { left: 'Berkeley Internet Name Domain', right: 'what the name BIND stands for' },
+          { left: 'DNSmasq', right: 'lightweight, easy to configure, recommended for a smaller network' },
+          { left: 'PowerDNS', right: 'reads from multiple databases such as MySQL and PostgreSQL' },
+        ],
+        'BIND was developed at the University of California at Berkeley and offers full-featured power; DNSmasq drops the bells and whistles and ships the tools for both DHCP and DNS.'
       ),
     ],
   },

@@ -172,6 +172,12 @@ export const TRACK_PY: Record<string, CourseLesson> = {
         ['df.groupby(\"occupation\")[\"hours-per-week\"].mean()', '.sum()', '.max()', 'df.sort'],
         'Group rows by job, average the hours column within each group.'
       ),
+      BUILD(
+        'Assemble the split-then-average behind the age question',
+        ['df.groupby(', '"sex"', ')[', '"age"', '].mean()'],
+        ['df.groupby(', '"sex"', ')[', '"age"', '].mean()', '.value_counts()', 'df.sort'],
+        'Partition the rows by sex, then average the age column inside each partition: group first, summarise second.'
+      ),
     ],
   },
 
@@ -292,6 +298,7 @@ export const TRACK_PY: Record<string, CourseLesson> = {
     title: 'Grow a ledger step by step',
     theory: [
       'Workshop: deposit, refuse overdrafts, total the ledger.',
+      'Append to the ledger only after the guard has accepted the amount, so a refused withdrawal never leaves a row behind. Totals come from the list at the end, never from a running number you maintain by hand.',
     ],
     questions: [
       BUILD(
@@ -347,13 +354,14 @@ export const TRACK_PY: Record<string, CourseLesson> = {
     title: 'Shape a square step by step',
     theory: [
       'Workshop: inherit everything, construct with one side.',
+      'Inherit the behaviour you already proved and narrow the constructor to the one field that is new. A Square that subclasses Rectangle needs a single side, and every Rectangle method keeps working on it.',
     ],
     questions: [
       BUILD(
         'Step 1 — compute the area',
         ['return', 'self.width', '*', 'self.height'],
         ['return', 'self.width', '*', 'self.height', '+'],
-        'Width times height.'
+        'return self.width * self.height reads the instance attributes set in __init__ and hands the product back to whoever called the method.'
       ),
       BUILD(
         'Step 2 — construct via the parent',
@@ -391,6 +399,7 @@ export const TRACK_PY: Record<string, CourseLesson> = {
     title: 'Summarize people step by step',
     theory: [
       'Workshop: load the frame, split rows, summarize.',
+      'Load once, then split the rows on a column and summarise each group. Reading the CSV again per question is how numbers quietly disagree with each other.',
     ],
     questions: [
       BUILD(
@@ -414,7 +423,7 @@ export const TRACK_PY: Record<string, CourseLesson> = {
           'Delete under-18s first',
           'Average the two oldest',
         ],
-        'groupby, then mean.'
+        'df.groupby("sex")["age"].mean() partitions the rows by sex first, then averages the age column inside each partition.'
       ),
       MCQ(
         'pd.read_csv returns what?',
@@ -427,6 +436,11 @@ export const TRACK_PY: Record<string, CourseLesson> = {
         ],
         'Everything starts from the frame.'
       ),
+      TEXT(
+        'Type the Pandas expression that averages hours-per-week within each occupation.',
+        ['df.groupby("occupation")["hours-per-week"].mean()', "df.groupby('occupation')['hours-per-week'].mean()"],
+        'Split rows by occupation, pick the hours column, then mean each group.'
+      ),
     ],
   },
 
@@ -435,6 +449,7 @@ export const TRACK_PY: Record<string, CourseLesson> = {
     title: 'Roll time forward step by step',
     theory: [
       'Workshop: declare, flip, roll over, name the day.',
+      'Add a duration to a time and let the library roll the overflow: 11:59 PM plus two minutes becomes 12:01 AM on the next day. Naming the weekday comes from the date object, so roll the date before you ask it.',
     ],
     questions: [
       BUILD(
@@ -479,6 +494,7 @@ export const TRACK_PY: Record<string, CourseLesson> = {
     title: 'Stack problems step by step',
     theory: [
       'Workshop: validate first, right-align second, join last.',
+      'Reject impossible input before formatting, align with a fixed width so columns line up, then join the lines. Padding after validation keeps a rejected row out of the printed block entirely.',
     ],
     questions: [
       BUILD(
@@ -523,19 +539,20 @@ export const TRACK_PY: Record<string, CourseLesson> = {
     title: 'Python checkpoint',
     theory: [
       'Final check across all five levels: ledgers, classes, frames, time, and formatting.',
+      'Every prompt is a short program: read the guard, follow the call, and predict the printed value before you tap. Two items in this set come from the workshop code, so replaying that code settles both.',
     ],
     questions: [
       MCQ(
         'Balance 30, withdraw(50). Result?',
         'False — no overdraft',
         ['False — no overdraft', 'True, balance -20', 'Ledger deleted', 'Withdraw 30'],
-        'Guard first.'
+        'The guard compares the amount with the funds available before mutating anything, so 50 against 30 returns False and the ledger still totals 30.'
       ),
       MCQ(
         'Square(Rectangle) means?',
         'Inherits every method',
         ['Inherits every method', 'Deletes them', 'Reverses the relation', 'Isolation'],
-        'IS-A reuse.'
+        'class Square(Rectangle) makes Rectangle the parent, so area() and every other inherited method works without being rewritten inside Square.'
       ),
       BUILD(
         'Count people by race',
@@ -553,19 +570,25 @@ export const TRACK_PY: Record<string, CourseLesson> = {
         '11:59 PM + 0:02 gives?',
         '12:01 AM next day',
         ['12:01 AM next day', '11:61 PM', '12:01 PM', 'An error'],
-        'Flip and roll.'
+        'Time arithmetic carries past the unit: 11:59 PM plus two minutes rolls through midnight to 12:01 AM and moves the date forward one day.'
       ),
       MCQ(
         'Six problems arrive. First move?',
         'Return the too-many error, arrange nothing',
         ['Return the too-many error, arrange nothing', 'Arrange 5 silently', 'Squeeze narrower', 'Ask the user'],
-        'Validate first.'
+        'Validate the count before arranging anything: the too-many error returns immediately and the grid keeps whatever it held before the call.'
       ),
       TEXT(
         'Type the Python list comprehension that doubles every number in nums.',
         ['[n * 2 for n in nums]', '[n*2 for n in nums]'],
         'A list comprehension puts the expression first, then the loop: [n * 2 for n in nums]. It preserves order and returns a new list.',
         { misconceptions: { '[for n in nums: n * 2]': 'The expression comes before the loop; a colon belongs to a regular for-loop.' } }
+      ),
+      BUILD(
+        'Record the withdrawal once the funds have covered it',
+        ['self.ledger.append({\"amount\":', '-amount,', '\"description\":', 'desc', '})'],
+        ['self.ledger.append({\"amount\":', '-amount,', '\"description\":', 'desc', '})', 'add', '\"amount\": amount,'],
+        'The guard has already refused anything the funds cannot cover, so what is left is one more ledger row with a negative amount.'
       ),
     ],
   },

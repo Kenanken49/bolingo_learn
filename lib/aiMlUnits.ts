@@ -14,6 +14,7 @@
 
 import type { CurriculumBlock, CurriculumUnit } from './curriculum';
 import { AI_ML_MODULES, AI_ML_TIER_META, type AiTierId } from './tracks/ai-ml';
+import type { AiModule } from './tracks/ai-ml/build';
 
 const CHUNKS: { title: string; goal: string }[] = [
   { title: 'Weeks 1–2 · Foundations', goal: 'The concepts everything later depends on.' },
@@ -79,6 +80,21 @@ function moduleBlocks(moduleId: string, title: string, goal: string, workshopTit
   ];
 }
 
+/** The exam that closes a tier: one block after the last module of the last unit. */
+function finalBlock(modules: AiModule[]): CurriculumBlock {
+  const prefix = modules[0].id.split('-')[0];
+  return {
+    id: `${prefix}-b-final`,
+    kind: 'quiz',
+    title: 'Tier final exam',
+    blurb: 'Mastery check: retrieval over every module in the tier, production tasks included.',
+    minutes: 12,
+    xp: 80,
+    lessonId: `${prefix}-final`,
+    lessonTitle: 'Tier final exam',
+  };
+}
+
 export const AI_ML_UNITS: CurriculumUnit[] = AI_ML_TIER_META.flatMap((tier) => {
   const modules = AI_ML_MODULES[tier.id];
   const units: CurriculumUnit[] = [];
@@ -94,9 +110,10 @@ export const AI_ML_UNITS: CurriculumUnit[] = AI_ML_TIER_META.flatMap((tier) => {
       goal: chunk.goal,
       color: COLORS[tier.id],
       icon: tier.icon,
-      blocks: slice.flatMap((mod) =>
-        moduleBlocks(mod.id, mod.title, mod.goal, mod.workshop.title)
-      ),
+      blocks: [
+        ...slice.flatMap((mod) => moduleBlocks(mod.id, mod.title, mod.goal, mod.workshop.title)),
+        ...(start + 5 >= modules.length ? [finalBlock(modules)] : []),
+      ],
     });
   }
   return units;

@@ -458,7 +458,8 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   'spanish-quiz': {
     id: 'spanish-quiz',
     title: 'Spanish Checkpoint',
-    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full Spanish course.'],
+    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full Spanish course.',
+    'Answer the whole course at once here: greetings and phrases, then genders, then present and past verbs. Say each noun with its article first, and let any hesitation point you back to that unit before you continue.'],
     questions: [
       MCQ(
         'How do you say "Hello" in Spanish?',
@@ -625,7 +626,7 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
         '"Ils ___ contents." (They are happy.)',
         'sont',
         ['est', 'sommes', 'sont', 'êtes'],
-        'Ils + être → sont.'
+        'Ils takes the third-person plural of être: sont. est belongs to il/elle, sommes to nous, and êtes to vous.'
       ),
       MATCH(
         'Pair each subject with its form of être (to be).',
@@ -655,7 +656,8 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   'french-quiz': {
     id: 'french-quiz',
     title: 'French Checkpoint',
-    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full French course.'],
+    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full French course.',
+    'Work the checkpoint in one sitting, greeting, counting, then choosing genders and tenses. Say each noun with its article rather than after it: the article is where most of the slips in this course hide.'],
     questions: [
       MCQ(
         '"Bonjour" means…',
@@ -851,7 +853,8 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   'german-quiz': {
     id: 'german-quiz',
     title: 'German Checkpoint',
-    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full German course.'],
+    theory: ['Checkpoint: greetings, phrases, gender, and tenses from the full German course.',
+    'Treat the checkpoint as one conversation rather than ten unrelated cards: greet, count, order food, talk about the family, then say what happened. Recalling without a unit title above you is the actual skill being measured.'],
     questions: [
       MCQ(
         '"Hallo" means…',
@@ -1048,7 +1051,8 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   'swahili-quiz': {
     id: 'swahili-quiz',
     title: 'Swahili Checkpoint',
-    theory: ['Checkpoint: greetings, questions and negation, adjective agreement, health, verbs, and tenses from the full Swahili course.'],
+    theory: ['Checkpoint: greetings, questions and negation, adjective agreement, health, verbs, and tenses from the full Swahili course.',
+    'Run the checkpoint in one sitting and keep the concord in mind: noun class, agreement and the tense prefix move together, so a slip on one of them usually tells you which of the three to reopen.'],
     questions: [
       MCQ(
         '"Habari" means…',
@@ -1188,7 +1192,8 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   'chess-quiz': {
     id: 'chess-quiz',
     title: 'Chess Checkpoint',
-    theory: ['Checkpoint: piece movement, notation, tactics, and mating from the full chess course.'],
+    theory: ['Checkpoint: piece movement, notation, tactics, and mating from the full chess course.',
+    'The checkpoint samples every unit instead of finishing one, so say the idea behind each move before answering. Replay the units you had to think about rather than the ones you flew through, because speed on a lucky guess teaches nothing.'],
     questions: [
       MCQ(
         'How does a knight move?',
@@ -1431,7 +1436,8 @@ export const LANGUAGE_COURSES: Record<string, CourseLesson> = {
   'english-quiz': {
     id: 'english-quiz',
     title: 'English Checkpoint',
-    theory: ['Checkpoint: alphabet, articles, everyday phrases, questions, describing and comparing, health, and tenses from the full English course.'],
+    theory: ['Checkpoint: alphabet, articles, everyday phrases, questions, describing and comparing, health, and tenses from the full English course.',
+    'Answer as if you were speaking: the checkpoint jumps from the alphabet and articles to everyday phrases, then to questions, comparison, health and the past. Where you hesitate is the unit to reread, not a score to shrug at.'],
     questions: [
       MCQ(
         'Fill the gap: "___ hour".',

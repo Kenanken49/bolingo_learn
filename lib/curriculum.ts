@@ -9,6 +9,7 @@ import { LINUX_UNITS } from './linuxCurriculum';
 import { LINUX_ASSESSMENT_BLOCKS } from './linuxAssessments';
 import { TRACK_UNITS } from './trackUnits';
 import { AI_ML_UNITS } from './aiMlUnits';
+import { FUNDAMENTALS_UNITS } from './fundamentalsUnits';
 
 export type BlockKind = 'lesson' | 'workshop' | 'lab' | 'review' | 'quiz' | 'project';
 
@@ -56,6 +57,10 @@ export const COURSES_META: {
   { id: 'aiml-explorer', name: 'Course 7 · AI & ML Academy · Explorer', icon: '\u{1F9EA}', blurb: 'Ages 10–18 · 20 modules × 10 submodules — data, regression, vision, language, ethics, each with a runnable lab.', difficulty: 'Beginner', hours: '~40h' },
   { id: 'aiml-launcher', name: 'Course 8 · AI & ML Academy · Launcher', icon: '\u{1F4C8}', blurb: 'Ages 19–25 · maths to MLOps — 20 modules with portfolio labs and interview preparation.', difficulty: 'Intermediate', hours: '~80h' },
   { id: 'aiml-leader', name: 'Course 9 · AI & ML Academy · Leader', icon: '\u{1F3DB}\uFE0F', blurb: 'Ages 26–40 · 20 modules of enterprise strategy, governance, cost and vertical case studies.', difficulty: 'Advanced', hours: '~50h' },
+  { id: 'git', name: 'Course 10 · Git & Version Control', icon: '\u{1F500}', blurb: 'Snapshots, branches, remotes and recovery — every reversible undo before the destructive one.', difficulty: 'Beginner', hours: '~10h' },
+  { id: 'testing', name: 'Course 11 · Testing & Debugging', icon: '\u{1F41E}', blurb: 'Unit to end-to-end, doubles with limits, and a search method that explains the fix.', difficulty: 'Intermediate', hours: '~12h' },
+  { id: 'typescript', name: 'Course 12 · TypeScript & Type Systems', icon: '\u{1F537}', blurb: 'Types as specification: boundaries, narrowing, generics, and what strict mode enforces.', difficulty: 'Intermediate', hours: '~14h' },
+  { id: 'crypto', name: 'Course 13 · Applied Cryptography', icon: '\u{1F510}', blurb: 'Which primitive for which job: ciphers, hashes, MACs, signatures, password storage, and TLS trust.', difficulty: 'Advanced', hours: '~12h' },
 ];
 
 export const KIND_META: Record<BlockKind, { label: string; icon: string; color: string }> = {
@@ -1086,7 +1091,7 @@ export const CURRICULUM: CurriculumUnit[] = [
       },
       {
         id: 'sw-fsi-morning',
-        kind: 'workshop',
+        kind: 'lesson',
         title: 'FSI morning greetings',
         blurb: 'Read a real FSI dialogue: Jambo, bwana → Habari za asubuhi? → Njema.',
         minutes: 4,
@@ -1585,6 +1590,7 @@ export const CURRICULUM: CurriculumUnit[] = [
    here so the Path renders all 7 tracks with the same sequential unlock. */
 CURRICULUM.push(...TRACK_UNITS);
 CURRICULUM.push(...AI_ML_UNITS);
+CURRICULUM.push(...FUNDAMENTALS_UNITS);
 
 /* Course 6 (Linux Journey) lives in lib/linuxCurriculum.ts — generated from
    the imported banks so ids/titles can never drift from the lessons. */

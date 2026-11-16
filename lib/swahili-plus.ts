@@ -521,6 +521,7 @@ export const SWAHILI_PLUS: Record<string, CourseLesson> = {
     title: 'Swahili Final Exam',
     theory: [
       'Final exam: greetings, numbers, noun classes, family, food, travel, questions and negation, adjectives, health, verbs, and time — the whole comprehensive course.',
+      'The exam spans noun classes, agreement, question words, negation and the tense prefixes, so one miss usually names a prefix that disagreed rather than vocabulary you lost. Reread that unit before you take it again.',
     ],
     questions: [
       BUILD(

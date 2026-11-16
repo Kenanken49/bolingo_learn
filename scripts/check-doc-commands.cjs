@@ -42,8 +42,14 @@
  *      to be true. Case matters because a Windows laptop opens `Readme.md` for
  *      `README.md` while the Linux runner CI uses does not.
  *
+ *   F. No stale coverage. The counts in docs/curriculum-standards.md — lessons,
+ *      questions, blocks, practice modes and the question mix — must equal what
+ *      the curriculum gate prints. Those numbers are the curriculum's public
+ *      shape; a page that quotes last quarter's counts is wrong as soon as a
+ *      lesson ships, and this check owns keeping the documents true.
+ *
  * Contract: reads README.md, docs/*.md, package.json and content/quality/gates.json;
- * takes no arguments; writes nothing; exits 0 when all five hold, 1 with one line per
+ * takes no arguments; writes nothing; exits 0 when all six hold, 1 with one line per
  * drift naming the file, the line number, the closest matching script name and, for a
  * dead link, what the folder that still exists does hold.
  *
@@ -55,6 +61,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -413,6 +420,103 @@ check('every file a document links to is there', (report) => {
     const wrongCase = caseMismatch(abs);
     if (wrongCase) {
       report(`${where}: \`${at.relPath}\` is spelled with the wrong case — ${wrongCase}. It opens on Windows and breaks on the Linux runner CI uses.`);
+    }
+  }
+});
+
+/* ---- F. curriculum coverage counts match the gate ---- */
+
+const CURRICULUM_DOC = 'docs/curriculum-standards.md';
+
+/**
+ * The curriculum gate is the one source for these numbers. Running it here,
+ * instead of recounting the banks, compares the document with what the release
+ * actually reports; if the gate fails, this check fails too rather than
+ * certifying a table against a failed run.
+ */
+function curriculumGateNumbers() {
+  const result = spawnSync(process.execPath, ['scripts/check-curriculum-quality.cjs'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    timeout: 30000,
+  });
+  const output = String(result.stdout || '') + String(result.stderr || '');
+  if (result.error) return { error: 'could not run the curriculum gate: ' + result.error.message };
+  if (result.status !== 0) {
+    return {
+      error: 'the curriculum gate failed (exit ' + result.status + '), so its numbers cannot vouch for the document.',
+    };
+  }
+  const numbers = (re) => {
+    const match = output.match(re);
+    return match ? match.slice(1).map((value) => Number(value.replace(/,/g, ''))) : null;
+  };
+  const totals = numbers(/Curriculum quality OK — ([\d,]+) lessons, ([\d,]+) questions, ([\d,]+) path blocks\./);
+  const mix = numbers(/Question mix: ([\d,]+) tokens · ([\d,]+) code · ([\d,]+) match · ([\d,]+) listen · ([\d,]+) speak · ([\d,]+) text\./);
+  const modes = numbers(/Practice modes: ([\d,]+) workshops · ([\d,]+) labs · ([\d,]+) quizzes\/checkpoints\/finals\./);
+  if (!totals || !mix || !modes) {
+    return { error: 'the curriculum gate printed a summary this check does not recognise; update the parser beside the gate.' };
+  }
+  return { totals: totals, mix: mix, modes: modes };
+}
+
+/** The first line matching re, its 1-based line number and every number on it. */
+function numbersOnLine(text, re) {
+  const lines = text.split(/\r?\n/);
+  for (let i = 0; i < lines.length; i++) {
+    if (re.test(lines[i])) {
+      const numbers = (lines[i].match(/\d[\d,]*/g) || []).map((value) => Number(value.replace(/,/g, '')));
+      return { line: i + 1, numbers: numbers };
+    }
+  }
+  return null;
+}
+
+check('the curriculum coverage counts in the documentation match the gate', (report) => {
+  const gate = curriculumGateNumbers();
+  if (gate.error) {
+    report(gate.error);
+    return;
+  }
+  if (!fs.existsSync(path.join(ROOT, CURRICULUM_DOC))) {
+    report(CURRICULUM_DOC + ' is missing — the coverage page has nowhere to state the counts.');
+    return;
+  }
+  const doc = read(CURRICULUM_DOC);
+  const claims = [
+    {
+      label: 'lessons and questions',
+      line: numbersOnLine(doc, /lessons and .*questions/i),
+      expected: gate.totals.slice(0, 2),
+    },
+    {
+      label: 'path blocks',
+      line: numbersOnLine(doc, /path blocks/i),
+      expected: gate.totals.slice(2, 3),
+    },
+    {
+      label: 'workshops, labs and quizzes',
+      line: numbersOnLine(doc, /workshops.*labs.*quizzes/i),
+      expected: gate.modes,
+    },
+    {
+      label: 'question mix',
+      line: numbersOnLine(doc, /token questions.*code.*matching.*listening.*speaking.*typed/i),
+      expected: gate.mix,
+    },
+  ];
+  for (const claim of claims) {
+    if (!claim.line) {
+      report(CURRICULUM_DOC + ': no line states the ' + claim.label + ' any more; keep the coverage block so this check can verify it.');
+      continue;
+    }
+    const found = claim.line.numbers.slice(0, claim.expected.length);
+    const same = found.length === claim.expected.length && found.every((value, index) => value === claim.expected[index]);
+    if (!same) {
+      report(
+        CURRICULUM_DOC + ':' + claim.line.line + ': ' + claim.label + ' says ' + (found.join(', ') || 'no numbers') +
+          ', but the curriculum gate reports ' + claim.expected.join(', ') + '. Update the coverage block to the gate numbers.'
+      );
     }
   }
 });

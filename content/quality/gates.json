@@ -35,6 +35,14 @@
       "required": true
     },
     {
+      "id": "course-score",
+      "label": "Course quality score (100 each)",
+      "category": "curriculum",
+      "command": "node scripts/score-courses.cjs",
+      "timeoutSeconds": 180,
+      "required": true
+    },
+    {
       "id": "solutions",
       "label": "Exercise solutions",
       "category": "curriculum",

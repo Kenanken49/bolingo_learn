@@ -96,8 +96,8 @@ export const TRACK_BE: Record<string, CourseLesson> = {
       ),
       BUILD(
         'Redirect a short URL visitor to the stored original',
-        ['res.redirect(original_url);'],
-        ['res.redirect(original_url);', 'res.json', 'redirect_to', 'render'],
+        ['res.redirect(', 'original_url', ');'],
+        ['res.redirect(', 'original_url', ');', 'res.json', 'redirect_to', 'render'],
         'GET /api/shorturl/:id looks the id up, then redirects — never renders.'
       ),
       MCQ(
@@ -116,6 +116,12 @@ export const TRACK_BE: Record<string, CourseLesson> = {
         ['upload.single(\"upfile\")'],
         ['upload.single(\"upfile\")', 'upload.many', '.array(', 'singlefile'],
         'single() with the field name: one file, known field.'
+      ),
+      BUILD(
+        'Refuse the post when the submitted URL cannot be parsed',
+        ['try {', 'new URL(url);', '} catch {', 'res.sendStatus(400);', '}'],
+        ['try {', 'new URL(url);', '} catch {', 'res.sendStatus(400);', '}', 'res.json', 'render'],
+        'Parsing is the test: new URL throws on anything unusable, so the catch answers 400 and no row is ever written.'
       ),
     ],
   },
@@ -293,6 +299,7 @@ export const TRACK_BE: Record<string, CourseLesson> = {
     title: 'Answer dates step by step',
     theory: [
       'Workshop: assemble the timestamp route exactly as instructed.',
+      'Answer in the same order a request arrives: match the path, read what the client sent, then send one response and stop. A route that never calls res is the reason a browser keeps spinning.',
     ],
     questions: [
       BUILD(
@@ -353,6 +360,7 @@ export const TRACK_BE: Record<string, CourseLesson> = {
     title: 'Guard inputs step by step',
     theory: [
       'Workshop: validate URLs, parse uploads, redirect cleanly.',
+      'Treat every byte from the network as hostile until a check says otherwise. Parse first, reject on the first failure, and only then touch the database or a file, so bad input never leaves a trace behind.',
     ],
     questions: [
       BUILD(
@@ -389,6 +397,11 @@ export const TRACK_BE: Record<string, CourseLesson> = {
         ],
         'Multer exposes all three on req.file.'
       ),
+      TEXT(
+        'Type the middleware that accepts exactly one uploaded file from the upfile field.',
+        ['upload.single("upfile")', "upload.single('upfile')"],
+        'One file, one known field: upload.single("upfile") hands the file to req.file.'
+      ),
     ],
   },
 
@@ -397,6 +410,7 @@ export const TRACK_BE: Record<string, CourseLesson> = {
     title: 'Shape data step by step',
     theory: [
       'Workshop: declare schemas, then persist through models.',
+      'A schema is a promise about shape: name the fields, their types, and which one identifies the row. Write the schema before the query, and the model layer becomes the single place that decides what valid data looks like.',
     ],
     questions: [
       BUILD(
@@ -441,6 +455,7 @@ export const TRACK_BE: Record<string, CourseLesson> = {
     title: 'Filter and stamp step by step',
     theory: [
       'Workshop: narrow reads with queries, audit writes with timestamps.',
+      'Reads narrow, writes record. Filter by the fields the caller actually asked for, and stamp created and updated timestamps in the same statement, so an audit trail exists without anyone remembering to write it.',
     ],
     questions: [
       BUILD(
@@ -480,6 +495,7 @@ export const TRACK_BE: Record<string, CourseLesson> = {
     title: 'Read requests step by step',
     theory: [
       'Workshop: extract the three whoami facts from headers.',
+      'Headers describe the request, not the truth: user agent, language, and a forwarding chain are all client-supplied. Extract them the same way you would read a signature on an envelope — useful, never trusted.',
     ],
     questions: [
       BUILD(
@@ -503,7 +519,7 @@ export const TRACK_BE: Record<string, CourseLesson> = {
           'Express randomizes req.ip',
           'Proxies convert IPs to hostnames',
         ],
-        'Trust, but verify.'
+        'req.ip reports the socket that connected, which behind a reverse proxy is the proxy itself; the real client sits in X-Forwarded-For, and only trust proxy makes Express read it.'
       ),
       MCQ(
         'A 500MB "profile picture" arrives. First move?',
@@ -524,6 +540,7 @@ export const TRACK_BE: Record<string, CourseLesson> = {
     title: 'Back End checkpoint',
     theory: [
       'Final check across all five levels: routes, validation, models, filters, and headers.',
+      'Work the same way you debug a live request: locate the layer responsible, then answer for that layer only. A slipped tap names the level to replay, not a score to apologise for.',
     ],
     questions: [
       MCQ(
@@ -536,19 +553,19 @@ export const TRACK_BE: Record<string, CourseLesson> = {
         'Posted URL fails parsing. Action?',
         'Reject — store nothing',
         ['Reject — store nothing', 'Store and hope', 'Guess and save', 'Redirect silently'],
-        'Validate first.'
+        'Parsing is the cheapest test of a URL: if it throws, the value is not addressable, so reject the request instead of storing something you can never follow.'
       ),
       BUILD(
         'Persist the posted user',
         ['await', 'User.create({', 'username', '}));'],
         ['await', 'User.create({', 'username', '}));', 'find'],
-        'Create and await.'
+        'await User.create({ username }) inserts the row and resolves only once the database has it, so the response you send afterwards describes a real record.'
       ),
       MCQ(
         '?from=2024-01-01&limit=2 means?',
         'That log from January 1st, at most 2 entries',
         ['That log from January 1st, at most 2 entries', 'Delete 2 entries', 'Create user "from"', 'Only the 2nd of January'],
-        'Range plus cap.'
+        'from sets the earliest entry to read and limit caps how many come back — a range plus a ceiling, not a delete and not a filter on the day number.'
       ),
       BUILD(
         'Read the language header',

@@ -457,6 +457,7 @@ export const ENGLISH_PLUS: Record<string, CourseLesson> = {
     title: 'English Final Exam',
     theory: [
       'Final exam: greetings, numbers, articles, shopping, travel, work, questions, describing and comparing, health, and past stories — the whole comprehensive course.',
+      'The exam pulls from every unit at once, so greetings, numbers, articles, shopping, travel, work, questions, comparison, health and past stories arrive without a heading to lean on. Reread the unit behind every guess rather than retaking the exam.',
     ],
     questions: [
       MCQ(

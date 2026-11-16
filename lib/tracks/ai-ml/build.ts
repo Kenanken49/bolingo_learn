@@ -69,6 +69,12 @@ const assert = (condition: unknown, message: string): void => {
   if (!condition) throw new Error(`AI/ML module: ${message}`);
 };
 
+/** Feedback shown when a lab's first test carries no hint of its own. */
+const LAB_FEEDBACK = 'Read the failing test label, fix only that gap, then run the tests again.';
+
+const labFeedback = (hint?: string): string =>
+  hint && hint.trim().length >= 20 ? `${hint.trim()} ${LAB_FEEDBACK}` : LAB_FEEDBACK;
+
 /** Compile one authored module into its four lesson banks. */
 export function buildModule(mod: AiModule): Record<string, CourseLesson> {
   assert(mod.notes.length === 10, `${mod.id} needs exactly 10 submodule notes, has ${mod.notes.length}`);
@@ -102,6 +108,7 @@ export function buildModule(mod: AiModule): Record<string, CourseLesson> {
     title: `${mod.workshop.title} — workshop`,
     theory: [
       `Workshop: ${mod.workshop.title}. Build the steps in order — each one is a decision a real pipeline makes.`,
+      `${mod.title}: ${mod.goal} When the steps are done, the module project is ${mod.project}`,
     ],
     questions: mod.workshop.steps.map((step) => BUILD(step.prompt, step.chain, step.bank, step.why)),
   };
@@ -114,7 +121,7 @@ export function buildModule(mod: AiModule): Record<string, CourseLesson> {
       'The editor runs real JavaScript and grades your function against the assertions on the right. A starter that already passes would teach nothing, so every lab begins unsolved.',
     ],
     questions: [
-      CODE(mod.lab.prompt, { language: 'js', starter: mod.lab.starter, tests: mod.lab.tests }, mod.lab.solution, mod.lab.tests[0]?.hint ?? 'Run the tests and read the failing label — it names the exact gap.'),
+      CODE(mod.lab.prompt, { language: 'js', starter: mod.lab.starter, tests: mod.lab.tests }, mod.lab.solution, labFeedback(mod.lab.tests[0]?.hint)),
       MCQ(q3.q, q3.a, q3.options, q3.why),
       MCQ(q4.q, q4.a, q4.options, q4.why),
     ],
@@ -125,12 +132,18 @@ export function buildModule(mod: AiModule): Record<string, CourseLesson> {
     title: `${mod.title} — quiz`,
     theory: [
       `Checkpoint for ${mod.title}. The first four items resurface this module's core decisions — retrieval now, not rereading — and the last one asks you to produce the rule in your own words.`,
+      `Then the recall drill pairs the module's own terms before you close it out. ${mod.goal}`,
     ],
     questions: [
       MCQ(q1.q, q1.a, q1.options, q1.why),
       MCQ(q2.q, q2.a, q2.options, q2.why),
       MCQ(q3.q, q3.a, q3.options, q3.why),
       MCQ(q4.q, q4.a, q4.options, q4.why),
+      MATCH(
+        `${mod.title}: pair each term with what it does`,
+        mod.terms.map(([left, right]) => ({ left, right })),
+        mod.notes[1] ?? mod.notes[0]
+      ),
       TEXT(mod.text.prompt, mod.text.answers, mod.text.why, { placeholder: mod.text.hint }),
     ],
   };
@@ -143,8 +156,40 @@ export function buildModule(mod: AiModule): Record<string, CourseLesson> {
   };
 }
 
+/** Compile a tier's final exam. Every item resurfaces authored module content;
+ * nothing here is new material — the exam is retrieval practice over the tier. */
+export function buildFinal(modules: AiModule[], tierId: string): CourseLesson {
+  const prefix = modules[0].id.split('-')[0];
+  const tierName = tierId.split('-').pop() ?? tierId;
+  const first = modules[0];
+  const last = modules[modules.length - 1];
+  /* One MCQ every third module, plus two typed production tasks and the
+   * closing module's recall drill. */
+  const picked = modules.filter((_, index) => index % 3 === 0);
+  const textMods = [modules[Math.floor(modules.length / 2)], last];
+
+  const lesson: CourseLesson = {
+    id: `${prefix}-final`,
+    title: `${tierName[0].toUpperCase()}${tierName.slice(1)} · tier final`,
+    theory: [
+      `Final exam over ${modules.length} modules. Every question resurfaces an item you already met in a module quiz or a production task you typed in a module workshop, so this is retrieval, not new material.`,
+      `If an item feels foggy, the notes bank for that module still holds its ten submodules in order — the tier runs from ${first.title} through to ${last.title}.`,
+    ],
+    questions: [
+      ...picked.map((mod) => MCQ(mod.quiz[0].q, mod.quiz[0].a, mod.quiz[0].options, mod.quiz[0].why)),
+      MATCH(
+        `${last.title}: pair each term with what it does`,
+        last.terms.map(([left, right]) => ({ left, right })),
+        last.notes[0]
+      ),
+      ...textMods.map((mod) => TEXT(mod.text.prompt, mod.text.answers, mod.text.why, { placeholder: mod.text.hint })),
+    ],
+  };
+  return lesson;
+}
+
 /** Merge every module of a tier, failing loudly on a duplicate id. */
-export function buildTier(modules: AiModule[]): Record<string, CourseLesson> {
+export function buildTier(modules: AiModule[], tierId: string): Record<string, CourseLesson> {
   const out: Record<string, CourseLesson> = {};
   for (const mod of modules) {
     for (const [id, lesson] of Object.entries(buildModule(mod))) {
@@ -152,5 +197,8 @@ export function buildTier(modules: AiModule[]): Record<string, CourseLesson> {
       out[id] = lesson;
     }
   }
+  const final = buildFinal(modules, tierId);
+  if (out[final.id]) throw new Error(`AI/ML duplicate lesson id: ${final.id}`);
+  out[final.id] = final;
   return out;
 }

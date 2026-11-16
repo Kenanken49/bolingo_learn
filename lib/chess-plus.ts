@@ -271,7 +271,8 @@ export const CHESS_PLUS: Record<string, CourseLesson> = {
   'chess-final': {
     id: 'chess-final',
     title: 'Chess Final Exam',
-    theory: ['Final exam: moves, notation, openings, mating patterns, endgames, tactics, and strategy — the whole comprehensive course.'],
+    theory: ['Final exam: moves, notation, openings, mating patterns, endgames, tactics, and strategy — the whole comprehensive course.',
+    'Work the exam in one sitting: notation, mate patterns and endgames arrive out of order, so a slip names the unit to reopen rather than a card to requeue. Anything you guessed is fair game for the next review pass.'],
     questions: [
       MCQ(
         'How does a knight move?',

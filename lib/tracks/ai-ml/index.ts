@@ -31,7 +31,7 @@ export const AI_ML_MODULES: Record<AiTierId, AiModule[]> = {
 
 export const AI_ML_COURSES = Object.fromEntries(
   Object.entries(AI_ML_MODULES).flatMap(([tier, modules]) =>
-    Object.entries(buildTier(modules)).map(([id, lesson]) => [id, lesson])
+    Object.entries(buildTier(modules, tier)).map(([id, lesson]) => [id, lesson])
   )
 );
 
