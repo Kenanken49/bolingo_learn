@@ -4,6 +4,7 @@ import Text from './ui/Text';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import type { AudioChapter, AudioSegment } from '../lib/audiobook';
 import { speakFree, stopFree } from '../lib/voice';
+import { clampMediaVolume, getMediaVolume, MEDIA_VOLUME_STEP, setMediaVolume } from '../lib/preferences';
 import AppIcon from './AppIcon';
 
 interface Props {
@@ -40,24 +41,81 @@ export default function AudiobookPlayer(props: Props) {
   return <PlayerInner {...props} />;
 }
 
+/** Volume stepper row shared by both player modes: −, the level (tap to mute), +. */
+function VolumeRow({
+  volume,
+  onStep,
+  onToggleMute,
+}: {
+  volume: number;
+  onStep: (delta: number) => void;
+  onToggleMute: () => void;
+}) {
+  const chip = 'rounded-full bg-slate-100 dark:bg-slate-800 px-4 py-2';
+  const label = 'text-slate-700 dark:text-slate-200';
+  return (
+    <View className="mt-3 flex-row items-center justify-center gap-2">
+      <Pressable onPress={() => onStep(-MEDIA_VOLUME_STEP)} accessibilityLabel="Lower volume" className={chip}>
+        <Text className={`text-base font-extrabold ${label}`}>−</Text>
+      </Pressable>
+      <Pressable
+        onPress={onToggleMute}
+        accessibilityLabel={volume === 0 ? 'Unmute narration' : 'Mute narration'}
+        className={`flex-row items-center gap-2 ${chip}`}
+      >
+        <AppIcon name={volume === 0 ? 'volumeOff' : 'volume'} size={16} color="#334155" />
+        <Text className={`text-sm font-extrabold ${label}`}>{Math.round(volume * 100)}%</Text>
+      </Pressable>
+      <Pressable onPress={() => onStep(MEDIA_VOLUME_STEP)} accessibilityLabel="Raise volume" className={chip}>
+        <Text className={`text-base font-extrabold ${label}`}>+</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 /** Free tier: device-native speech, $0 cost, same block highlighting. */
 function FreePlayer({ title, segments, onClose }: Props) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
+  const [volume, setVolume] = useState(1);
+  const lastAudibleRef = useRef(1);
   const prompts = segments.map((s) => s.prompt);
 
   useEffect(() => {
-    speakFree(prompts, setIndex);
-    return () => stopFree();
+    let alive = true;
+    void getMediaVolume().then((v) => {
+      if (!alive) return;
+      if (v > 0) lastAudibleRef.current = v;
+      setVolume(v);
+      speakFree(prompts, setIndex, undefined, v);
+    });
+    return () => {
+      alive = false;
+      stopFree();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Device speech has no live gain control, so a change re-voices the current
+  // block from its start — the learner hears the new level immediately.
+  const applyVolume = (next: number) => {
+    if (next > 0) lastAudibleRef.current = next;
+    setVolume(next);
+    void setMediaVolume(next);
+    if (playing) {
+      stopFree();
+      speakFree(prompts.slice(index), (k) => setIndex(index + k), undefined, next);
+    }
+  };
+  const stepVolume = (delta: number) => applyVolume(clampMediaVolume(volume + delta));
+  const toggleMute = () => applyVolume(volume > 0 ? 0 : lastAudibleRef.current);
 
   const go = (i: number) => {
     const n = (i + prompts.length) % Math.max(1, prompts.length);
     setIndex(n);
     setPlaying(true);
     stopFree();
-    speakFree(prompts.slice(n), (k) => setIndex(n + k));
+    speakFree(prompts.slice(n), (k) => setIndex(n + k), undefined, volume);
   };
 
   return (
@@ -97,7 +155,7 @@ function FreePlayer({ title, segments, onClose }: Props) {
               setPlaying(false);
             } else {
               setPlaying(true);
-              speakFree(prompts.slice(index), (k) => setIndex(index + k));
+              speakFree(prompts.slice(index), (k) => setIndex(index + k), undefined, volume);
             }
           }}
           className="items-center rounded-full bg-slate-700 px-8 py-3"
@@ -111,6 +169,7 @@ function FreePlayer({ title, segments, onClose }: Props) {
           <AppIcon name="next" size={20} color="#334155" />
         </Pressable>
       </View>
+      <VolumeRow volume={volume} onStep={stepVolume} onToggleMute={toggleMute} />
     </View>
   );
 }
@@ -140,12 +199,20 @@ function PlayerInner({ title, author, segments, chapters = [], fullUrl, onClose 
 
   const [index, setIndex] = useState(0);
   const [rate, setRate] = useState(1);
+  const [volume, setVolume] = useState(1);
   const [sleepMin, setSleepMin] = useState(0);
   const [barWidth, setBarWidth] = useState(0);
   const rateRef = useRef(1);
+  const volumeRef = useRef(1);
+  const lastAudibleRef = useRef(1);
   const sleepTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const player = useAudioPlayer({ uri: queue[0].url });
   const status = useAudioPlayerStatus(player);
+  // Gain is a property on the player object that expo-audio hands back, and the
+  // react-hooks lint rules reject writes to anything a hook returned. This ref is
+  // the way out. The route keys the player by book (src/app/audiobooks.tsx), so
+  // the instance never changes while this modal is mounted and the ref stays true.
+  const playerRef = useRef(player);
   const offlineCount = useMemo(() => queue.filter((q) => q.offline).length, [queue]);
 
   const clearSleep = useCallback(() => {
@@ -160,6 +227,21 @@ function PlayerInner({ title, author, segments, chapters = [], fullUrl, onClose 
     player.play();
     return () => clearSleep();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player]);
+
+  // Restore the learner's saved narration level onto the native player.
+  useEffect(() => {
+    let alive = true;
+    void getMediaVolume().then((v) => {
+      if (!alive) return;
+      volumeRef.current = v;
+      if (v > 0) lastAudibleRef.current = v;
+      setVolume(v);
+      playerRef.current.volume = v;
+    });
+    return () => {
+      alive = false;
+    };
   }, [player]);
 
   const applyRate = useCallback(
@@ -177,6 +259,8 @@ function PlayerInner({ title, author, segments, chapters = [], fullUrl, onClose 
       setIndex(n);
       player.replace({ uri: queue[n].url });
       player.setPlaybackRate(rateRef.current);
+      // replace() rebuilds the media element, which starts at full gain again.
+      playerRef.current.volume = volumeRef.current;
       player.play();
     },
     [player, queue]
@@ -220,6 +304,15 @@ function PlayerInner({ title, author, segments, chapters = [], fullUrl, onClose 
     const at = SPEEDS.indexOf(rate);
     applyRate(SPEEDS[(at + 1) % SPEEDS.length]);
   };
+  const applyVolume = (next: number) => {
+    volumeRef.current = next;
+    if (next > 0) lastAudibleRef.current = next;
+    setVolume(next);
+    playerRef.current.volume = next;
+    void setMediaVolume(next);
+  };
+  const stepVolume = (delta: number) => applyVolume(clampMediaVolume(volumeRef.current + delta));
+  const toggleMute = () => applyVolume(volumeRef.current > 0 ? 0 : lastAudibleRef.current);
   const cycleSleep = () => {
     clearSleep();
     const at = SLEEP_STEPS.indexOf(sleepMin);
@@ -309,6 +402,8 @@ function PlayerInner({ title, author, segments, chapters = [], fullUrl, onClose 
           <AppIcon name="next" size={20} color="#334155" />
         </Pressable>
       </View>
+
+      <VolumeRow volume={volume} onStep={stepVolume} onToggleMute={toggleMute} />
 
       <View className="mt-3 flex-row items-center justify-center gap-2">
         <Pressable onPress={cycleSpeed} accessibilityLabel="Playback speed" className="rounded-full bg-slate-100 dark:bg-slate-800 px-4 py-2">
