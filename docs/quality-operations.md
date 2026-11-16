@@ -187,11 +187,12 @@ block the workflow. Each run writes:
 
 The runner is deliberately boring: sequential child processes, no hidden
 retries, no `continue-on-error`. Adding a gate is a JSON edit plus the script.
-One category is different: an `advisory` gate carries `required: false`, so the
-runner records its failure as a `warn` run instead of blocking the release — it
-describes the machine, not the code. Every other gate must block, and
-`check:quality-ops` enforces both halves of that rule. The workflow publishes to
-`quality_runs`; the console reads the newest row and sorts failed gates first.
+Every gate in the catalog is blocking, and `check:quality-ops` enforces it: a check
+that cannot fail a release is decoration, so `required: false` has no place in
+`content/quality/gates.json`. A machine-level diagnosis is not a gate — it is
+a documented command, `npm run check:env`, described below with the render gate it
+explains. The workflow publishes to `quality_runs`; the console reads the newest row
+and sorts failed gates first.
 
 **Branch protection:** mark the `Required checks` job as a required status check
 for `main`. The workflow alone is advice until branch protection enforces it.
@@ -205,6 +206,45 @@ regression in an exercise is caught before a learner meets it:
 | `sandbox-labs` | `npm run check:sandbox` | Each generated JS exercise executes in `node:vm` with harness-identical semantics: the reference passes every test, the starter fails at least one, assertions are non-trivial and offline. CSS/HTML fixtures stay script- and network-free and every DOM/CSSOM test has a pattern that matches the reference and not the starter. |
 | `vm-labs` | `npm run check:vm` | The offline Git shell resolves every task and reference solution for each terminal lab. |
 | `guided-labs` | `npm run check:guided` | Labs with no on-device runtime still ship a complete step-by-step walkthrough. |
+
+**The render smoke.** `web-render` (`npm run check:web-render`) is the gate that proves
+a screen exists in what actually gets published. It runs the deploy's own
+`expo export --platform web` into a temporary directory and reads what came out, in two
+steps. The shell: `index.html` keeps the `<div id="root">` the app mounts into, and every
+script it references is a file the export wrote bytes to. The screens: every route file
+in `src/app` appears in the emitted JavaScript as an Expo Router context key
+(`"./quiz/[lessonId].tsx"`). Metro builds that map by quoting `"./" +
+path.relative(src/app, file)`, so a key is in the bundle exactly when `require.context`
+found the file, and the `./` prefix stops a nested route standing in for a shallow one —
+which is why no module-count heuristic is needed. Nothing else caught the failure it was
+written for: a
+`node_modules` junction to another volume makes Metro canonicalise module paths through
+`D:\` while the router compares keys against a `C:\` root, so zero routes mount, the
+export still produces valid JavaScript, and the site serves Expo's "Welcome to Expo /
+touch src/app/index.tsx" starter screen — while `check:web`, which only reads the
+Dockerfile and the server, stayed green. It is the one required gate that runs Metro,
+so it costs minutes (measured 112 s), not seconds; the export aborts at 9 minutes and
+`content/quality/gates.json` caps the gate at 600 s, which leaves the 30-minute CI jobs
+room for the other 36 gates. The child pins the web container's own limits
+(`--max-workers 1`, `NODE_OPTIONS=--max-old-space-size=1536`), so a bundle that would not
+fit the deployed image cannot pass here. And it needs no secrets, deliberately: the web
+target is single-page, so `expo export` only inlines `EXPO_PUBLIC_*` values and never runs
+app code, and every hard failure in `app.config.js` is gated on
+`EAS_BUILD_PROFILE=production`. Neither workflow sets a build-time secret, and a required
+check that needed one would be red on every fork pull request. The scratch export is kept
+on failure so its `index.html` can be opened.
+
+**The environment diagnostic.** `npm run check:env`
+(`node scripts/check-environment.cjs`) resolves `node_modules` and the project root,
+compares their volumes, and checks that the path the tooling started from matches the
+on-disk casing — the two string comparisons a route map silently fails on.
+It is a command rather than a gate on purpose: it describes the machine, and only
+code may block a release. It still belongs to the render gate's story, because
+`check-web-render-smoke.cjs` prints `npm run check:env` in its own failure output, so
+a red `web-render` arrives with its explanation. That pairing is the whole design: a
+red `web-render` where `check:env` warns is a machine that cannot mount its routes
+(relocate `node_modules` onto the project volume, or export from a copy on it); a red
+`web-render` on a machine `check:env` pronounces clean is a real bundle bug.
 
 **The live gate.** `release-artifact` (`npm run check:release-artifact`) is the one
 required gate that reaches outside the repository: it verifies that the APK the
@@ -259,6 +299,7 @@ script's own header, not inferred from its name. Reproduce a single failure with
 | `materials` | content | `npm run check:materials` | Classification decides the spend — a book is narrated end to end, notes become revision material — and a pack that invents facts fails, because a wrong pack is worse than none. |
 | `classics-audiobooks` | content | `npm run check:audiobooks` | The premium Philosophy classics shelf: 100+ public-domain LibriVox recordings with their Gutenberg text, unique slugs, and the LoyalBooks genre taxonomy intact. |
 | `web-publish` | platform | `npm run check:web` | The Dockerfile runs the Expo export and the server keeps the SPA fallback, so deep links, store-review clicks and `app-ads.txt` answer instead of 404. |
+| `web-render` | platform | `npm run check:web-render` | The real web export: `index.html` mounts a chunk the export actually wrote, and every file in `src/app` is present in the bundle as an Expo Router context key, so the published bundle contains its screens instead of Expo's starter screen. |
 | `release-artifact` | platform | `npm run check:release-artifact` | The APK the production container serves still matches the release record committed in git — the one gate that reaches outside the repository. |
 | `adaptive-ai` | platform | `npm run check:adaptive-ai` | The adaptive UI engine, the free/premium feature list and the offline-first stack as pure modules under Node: age → stage mapping, hub honesty, the daily AI allowance, the tutor router and the sync queue. |
 | `abi-clean` | platform | `npm run check:abi-clean` | `scripts/clean-abi.sh` clears only generated `<abi>` trees, refuses the ABI the build is pinned to unless `--force`, skips any folder that resolves outside the project and never touches `src/main/jniLibs` — proved on a throwaway fixture tree, so it runs on a fresh clone and on Linux CI as well as on a machine with a 13 GB pile to reclaim. The same gate holds the two Android entry points apart: `scripts/android-env.sh --check` points at the cleaner for disk instead of re-implementing the size walk, because report mode takes ~71 s and a preflight people source before every build must not. |

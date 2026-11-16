@@ -244,7 +244,7 @@
     },
     {
       "id": "classics-audiobooks",
-      "label": "Philosophy classics offline shelf",
+      "label": "Classics audiobook + ebook shelves",
       "category": "content",
       "command": "node scripts/check-classics-audiobooks.cjs",
       "timeoutSeconds": 120,
@@ -256,6 +256,14 @@
       "category": "platform",
       "command": "node scripts/check-web-publish.cjs",
       "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "web-render",
+      "label": "Exported web bundle mounts every route",
+      "category": "platform",
+      "command": "node scripts/check-web-render-smoke.cjs",
+      "timeoutSeconds": 600,
       "required": true
     },
     {
