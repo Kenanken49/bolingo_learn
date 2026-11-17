@@ -74,7 +74,7 @@ export const LIFE_STAGES: Record<LifeStageId, StageProfile> = {
     hub: [
       { id: 'questline', title: 'Story questline', blurb: 'Follow the Path. Every unit is a chapter with a boss quiz at the end.', icon: 'map', href: '/', status: 'live' },
       { id: 'league', title: 'Weekly league', blurb: 'Climb the XP league against learners like you.', icon: 'trophy', href: '/leaderboard', status: 'live' },
-      { id: 'labs', title: 'STEM labs', blurb: 'Hands-on coding and Linux labs that run on your device.', icon: 'flask', href: '/labs', status: 'live' },
+      { id: 'labs', title: 'STEM labs', blurb: 'Programming and data labs. Every answer checked as you go.', icon: 'flask', href: '/labs', status: 'live' },
       { id: 'tournaments', title: 'Squad Cup', blurb: 'Live team quiz battles with a private squad code.', icon: 'zap', href: '/squad-cup', status: 'live' },
       { id: 'avatars', title: 'Avatar studio', blurb: 'Dress a 3D-tilt avatar with items you earn by learning.', icon: 'user', href: '/avatar', status: 'live' },
     ],
@@ -97,7 +97,7 @@ export const LIFE_STAGES: Record<LifeStageId, StageProfile> = {
     },
     hub: [
       { id: 'certs', title: 'Certifications', blurb: 'Structured tracks that end in a certificate.', icon: 'medal', href: '/certifications', status: 'live' },
-      { id: 'portfolio', title: 'Portfolio projects', blurb: 'Build real projects in the labs to show employers.', icon: 'briefcase', href: '/labs', status: 'live' },
+      { id: 'portfolio', title: 'Portfolio projects', blurb: 'Graded labs in the tools a developer job asks for.', icon: 'briefcase', href: '/labs', status: 'live' },
       { id: 'uploads', title: 'Study from your notes', blurb: 'Turn lecture notes into lessons and revision packs.', icon: 'upload', href: '/uploads', status: 'live' },
       { id: 'rooms', title: 'Live study rooms', blurb: 'Drop into a room and focus with peers on one shared timer.', icon: 'users', href: '/study-rooms', status: 'live' },
       { id: 'jobs', title: 'Job marketplace', blurb: 'Roles matched to the certifications you have earned.', icon: 'briefcase', href: '/jobs', status: 'live' },
