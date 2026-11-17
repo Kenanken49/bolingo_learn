@@ -23,6 +23,12 @@ import { useNatural } from '../../lib/natural';
 type Filter = LabexCategoryId | 'all';
 const PAGE = 60;
 
+/** Duration spread over the whole corpus, derived from the registry so the
+ * header cannot promise a range the labs no longer keep. */
+const LABEX_MINUTES = Object.values(LABEX_META).map((lab) => lab.minutes);
+const LABEX_MIN_MINUTES = Math.min(...LABEX_MINUTES);
+const LABEX_MAX_MINUTES = Math.max(...LABEX_MINUTES);
+
 const CATEGORY_TITLE: Record<string, string> = Object.fromEntries(
   LABEX_CATEGORIES.map((category) => [category.id, category.title])
 );
@@ -69,7 +75,7 @@ export default function LabLibrary() {
         <Text className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-300">Open source · licensed</Text>
         <Text className="mt-2 text-center font-duo text-2xl font-extrabold text-white">Open Labs</Text>
         <Text className="mt-1 text-center text-sm font-semibold leading-5 text-slate-300 dark:text-slate-200">
-          {LABEX_COUNT.toLocaleString()} hands-on labs distilled into short, graded sessions — CSS, JavaScript, Python, Rust,
+          {LABEX_COUNT.toLocaleString()} hands-on labs from {LABEX_MIN_MINUTES} to {LABEX_MAX_MINUTES} minutes, every answer graded — CSS, JavaScript, Python, Rust,
           Go, React, data science and more.
         </Text>
         <View className="mt-3 rounded-full bg-amber-400 px-4 py-1.5">
@@ -147,7 +153,7 @@ export default function LabLibrary() {
         <Text onPhoto className="text-[10px] font-extrabold uppercase tracking-widest text-slate-600 dark:text-slate-200">
           {results.length.toLocaleString()} {results.length === 1 ? 'lab' : 'labs'}
         </Text>
-        <Text onPhoto className="text-[10px] font-bold text-slate-600 dark:text-slate-300">short sessions · first try counts</Text>
+        <Text onPhoto className="text-[10px] font-bold text-slate-600 dark:text-slate-300">{LABEX_MIN_MINUTES}–{LABEX_MAX_MINUTES} min · first try counts</Text>
       </View>
     </View>
   );
