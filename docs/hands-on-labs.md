@@ -141,21 +141,24 @@ Every build block has to pass one of two tests, with nothing in between: an
 engine runs what the learner writes, or the block's own title and blurb say
 plainly that it is paper. There used to be a third answer — a ledger of
 per-course counts of blocks allowed to do neither, which kept those blocks out of
-the floor's total. Every block it forgave — the AI/ML and
+the floor's total. Every block it forgave — 118 of them: the AI/ML and
 certification workshops and capstones, the html/rwd/design workshops and
-capstones, and four chess labs — has now been relabelled instead, and the file is
-deleted. Scoring it against the engines that really exist left 118 blocks running
-nothing, which are the 118 that were relabelled, and the floor now measures all
-278 build blocks in all 13 courses. A block that runs nothing and does not say so
-is new debt the day it is written, and no number anywhere makes that legal again.
+capstones, and four chess labs — has since been relabelled, and the file is
+deleted. The floor now measures all 278 build blocks in all 13 courses, none
+withheld. A block that runs nothing and does not say so is new debt the day it
+is written, and no number makes that legal again.
 
-The wording the relabel settled on, which is the wording the gate searches for,
-by the kind of block: `Paper workshop: <task>` for a workshop, `Paper lab:
-<task>` for a lab, and `On paper: <name>` for a capstone or project.
+The wording the relabel settled on, by kind of block: `Paper workshop: <task>`,
+`Paper lab: <task>`, and `On paper: <name>` for a capstone or project — often
+behind a level marker, as in `L2 · Paper workshop: wire pads and keys`. What
+`saysPaper` requires is a phrase from `PAPER_PHRASE` in the title **and** in the
+blurb: either field alone leaves the block badged.
 
-The blurb is the same sentence every time:
-`Paper exercise, nothing runs here: <what you actually do>; nothing executes —
-your text is matched.` That last clause is what it is scored against.
+The blurb is steadier than the title: all 127 open `Paper exercise,`, 125 of
+them with `nothing runs here: <what you actually do>` and the two TypeScript
+workshops with `nothing compiles here`. Most go on with `; nothing executes —
+your text is matched.`, but that tail is convention; what the floor and the
+badge read is the `PAPER_PHRASE` wording above.
 
 The two Git workshops took the other road and must not be relabelled. Every step the VM can grade
 now binds a shipped scenario and is graded from repository state: `git-workshop-history` runs
@@ -183,17 +186,16 @@ floor grades, not a summary of it.
 | The project header, `src/app/project/[lessonId].tsx` | the chip beside `Certification project`, for a capstone with no live check |
 
 No block carries it today: of the 278 build blocks, 151 run in an engine and 127
-say plainly in their own title and blurb that they are paper, so for every one of
-them the badge would be either a lie or an echo. It is the label, not the debt,
-that has gone — a workshop whose copy says nothing runs here still grades matched
-text, and the sentence in the blurb is what the learner was owed either way.
-`scripts/check-curriculum-quality.cjs` keeps the two readers joined: it fails if
-the scorer stops requiring `lib/execution.ts` or keeps a copy of the test of its
-own, if any of the three screens stops rendering the badge, if the app badges a
-block the floor does not count or the floor counts one the app stays quiet about,
-and if the copy and the engine drift in either direction — a block whose own title
-or blurb promises "runs in the …" has to clear `executionEngine`, and a block an
-engine does run may not keep calling itself paper.
+say plainly in their title and blurb that they are paper, so the badge would be
+either a lie or an echo for every one of them. The label went, not the debt: a
+workshop that says nothing runs here still grades matched text.
+`scripts/check-curriculum-quality.cjs` keeps the two readers joined: it fails
+if `lib/execution.ts` stops exporting the three helpers, if the scorer stops
+requiring that helper or keeps its own copy of the test, if any of the three
+screens above stops rendering `<NoExecutionBadge`, if no build block runs
+anything or none admits being paper, and on drift in either direction — copy in
+the "Runs in the …" form must clear `executionEngine`, and a block an engine
+runs may not call itself paper.
 
 ## Telemetry
 

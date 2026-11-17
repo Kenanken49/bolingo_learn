@@ -144,17 +144,17 @@ it too: the same function drives the **NO EXECUTION** badge on the path card and
 on the lesson and project headers, so a block this floor counts is a block the
 app labels out loud rather than a number in a file.
 
-Nothing is exempt from it. There is no ledger of deferred blocks and no per-course
-cap; the older blocks it used to forgive now say plainly in their own title and
-blurb that they are a paper exercise instead. The floor measures all 278 build
-blocks in every course, and a block that runs nothing without saying so fails the
-day it is written. The `runs` cell in the table is
-therefore the whole course, and `--why` prints each block that runs nothing while
-its copy still sounds like something runs.
+Nothing is exempt from it: no ledger of deferred blocks and no per-course cap.
+The blocks the ledger used to forgive either run in an engine now or say plainly,
+in both title and blurb, that they are a paper exercise. The floor measures all
+278 build blocks across the 13 courses, so a block that runs nothing without
+saying so fails the day it is written, and `--why <course>` prints a line per
+shortfall naming the block and quoting its title and blurb. Copy that promises a
+run the block does not have is caught by `scripts/check-curriculum-quality.cjs`.
 
 There is no weighted score any more. The gate always required every dimension to
 be complete, so 30/25/20/25 arithmetic only dressed up a pass/fail verdict; the
-table prints `met/total` per floor and `--why <course>` lists the shortfalls.
+table prints `met/total` per floor.
 
 What the floors still cannot see, so it is reviewed by hand instead: a question
 repeated from an earlier lesson counts as new material (the AI/ML tier finals are
