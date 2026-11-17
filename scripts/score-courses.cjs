@@ -27,18 +27,21 @@
  * verdict; the counts below say which floor is short instead.
  *
  * `produce` credits a lesson for asking the learner to assemble tokens; `runs`
- * is the floor that keeps a *build* block honest about what the app actually
- * executes, so that a workshop whose tokens happen to spell `git status` is not
- * counted as having run git. Pre-existing blocks that neither run nor say so are
- * listed by id in content/quality/paper-debt.json and excluded from the floor's
- * total; that ledger is a ratchet — it may only shrink, and a new build block
- * that is not on it must run or be labelled.
+ * is the floor that keeps a *build* block honest about what this app executes, so
+ * that a workshop whose tokens happen to spell `git status` is not counted as
+ * having run git. A build block is honest in exactly two ways: an engine named by
+ * lib/execution.ts grades what the learner did, or the block's own title and blurb
+ * say plainly that nothing runs. No ledger of deferred blocks and no per-course
+ * cap: a block that is neither is debt the day it is written.
  *
- * What these floors still cannot see, and should not be trusted to: a question
- * repeated from an earlier lesson counts as new material (the AI/ML tier finals
- * are built that way on purpose), `match` is closer to recognition than
- * production, and a 20-character explanation can be one appended sentence. Those
- * are content reviews, not rubric edits.
+ * What these floors still cannot see, and should not be trusted to: the engine
+ * half of `runs` is not a string test — executionEngine reads live project
+ * checks, VM scenario ids, sandbox `run`s and `speak` items — but the paper half
+ * can only match words, so it proves the copy admits nothing runs, never that the
+ * copy is good. A question repeated from an earlier lesson counts as new material
+ * (the AI/ML tier finals are built that way on purpose), `match` is closer to
+ * recognition than production, and a 20-character explanation can be one appended
+ * sentence. Those are content reviews, not rubric edits.
  *
  * Usage:
  *   node scripts/score-courses.cjs            table + verdict
@@ -55,6 +58,14 @@ const path = require('node:path');
 const ts = require('typescript');
 
 require.extensions['.ts'] = (module, filename) => {
+  // lib/execution.ts reads the certification capstone registry, and that module
+  // reaches for Supabase, which pulls the React Native fetch polyfill. The
+  // registries are static data; nothing here needs a client. (Same stub as
+  // scripts/check-exercise-solutions.cjs.)
+  if (filename.split(/[\\/]/).join('/').endsWith('lib/supabase.ts')) {
+    module.exports = { supabase: {} };
+    return;
+  }
   const source = fs.readFileSync(filename, 'utf8');
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: {
@@ -73,10 +84,7 @@ const { PUBLISHED_TRANSCRIPT_LESSONS } = require('../lib/publishedTranscriptLess
 const { CURRICULUM, COURSES_META } = require('../lib/curriculum.ts');
 const { PRODUCTION_KINDS } = require('../lib/quizBank.ts');
 const { SESSION_MAX } = require('../lib/quizSession.ts');
-const { GIT_SCENARIOS } = require('../lib/labex/gitScenarios.ts');
-
-const DEBT_FILE = 'content/quality/paper-debt.json';
-const PAPER_DEBT = JSON.parse(fs.readFileSync(path.join(__dirname, '..', DEBT_FILE), 'utf8')).blocks;
+const { isBuildBlock, defersExecution } = require('../lib/execution.ts');
 
 const ALL_LESSONS = { ...COURSES, ...PUBLISHED_TRANSCRIPT_LESSONS };
 
@@ -86,7 +94,6 @@ const MIN_EXPLAIN_CHARS = 20;
 const MIN_CHAIN_TOKENS = 2;
 const MIN_PRODUCTION_PER_ASSESSMENT = 2;
 
-const BUILD_KINDS = ['workshop', 'lab', 'project'];
 
 const words = (text) => String(text).trim().split(/\s+/).filter(Boolean).length;
 /* Production = the learner assembles tokens or performs a gradeable skill, not
@@ -104,93 +111,30 @@ const isFinisher = (block) =>
   block.kind === 'project' || (isGraded(block) && /-(final|checkpoint|capstone)$/.test(block.lessonId));
 const isReview = (block) => block.kind === 'review' || block.lessonId.startsWith('srs-review:');
 
-/* "Runs" means the app executes what the learner did and grades the resulting
- * state — the same line the quiz screen draws when it decides whether a lesson
- * needs a guided walkthrough (src/app/quiz/[lessonId].tsx: `runsHere`). The four
- * engines: the offline Git VM (`terminal` items and the labex lessons built on
- * it), the code sandbox (`code` items whose tests carry a `run`), on-device
- * speech recognition (`speak`), and a capstone story with a live `check` that
- * runs inside the preview frame. `match`, `tokens`, `text` and `listen` grade
- * strings the learner typed or tapped, so they do not count however hands-on the
- * copy sounds, and a `guided` walkthrough is labelled NO EXECUTION by design. */
-const VM_LESSON_IDS = new Set(Object.keys(GIT_SCENARIOS));
-const hasText = (text) => typeof text === 'string' && text.trim().length > 0;
-
-function executionEngine(block) {
-  const project = PROJECTS[block.lessonId];
-  if (project) {
-    const live = (project.stories || []).filter((story) => hasText(story.check));
-    return live.length > 0 ? `${live.length} live project check(s)` : null;
-  }
-  const lesson = ALL_LESSONS[block.lessonId];
-  if (!lesson) return null;
-  if (VM_LESSON_IDS.has(lesson.id)) return 'the Git VM';
-  for (const question of lesson.questions || []) {
-    if (question.kind === 'code' && (question.code?.tests || []).some((test) => hasText(test.run))) return 'the code sandbox';
-    if (question.kind === 'terminal' && VM_LESSON_IDS.has(question.terminal?.scenarioId)) return 'the Git VM';
-    if (question.kind === 'speak') return 'on-device speech recognition';
-  }
-  return null;
-}
-
-/* The other half of the standard: if nothing runs, the block has to say so in
- * the words a learner reads — in its title *and* its blurb, not one of them. */
-const PAPER_PHRASE = /(paper exercise|paper workshop|paper lab|paper drill|on paper|nothing runs|does not run|no execution|unplugged|worksheet|by hand)/i;
-const saysPaper = (block) => PAPER_PHRASE.test(block.title) && PAPER_PHRASE.test(block.blurb);
-
-function runsFloor(course, buildBlocks) {
-  const ledger = PAPER_DEBT[course.id] || [];
-  const owed = new Set(ledger);
-  const shortfalls = [];
-  const notes = [];
-  let met = 0;
-  let deferred = 0;
-  let complying = 0;
-
-  for (const block of buildBlocks) {
-    const engine = executionEngine(block);
-    const honest = !!engine || saysPaper(block);
-    if (owed.has(block.lessonId)) {
-      if (honest) complying += 1;
-      else deferred += 1;
-    }
-    if (honest) met += 1;
-    else if (!owed.has(block.lessonId)) {
-      shortfalls.push(
-        `${course.id}: ${block.lessonId} is a ${block.kind} block that runs nothing and its copy does not say it is paper — make one item execute or say plainly that it is a paper exercise. "${block.title}" / "${block.blurb}"`
-      );
-    }
-  }
-  const listed = new Set(buildBlocks.map((block) => block.lessonId));
-  let stale = 0;
-  for (const id of ledger) {
-    if (!listed.has(id)) {
-      stale += 1;
-      shortfalls.push(`${course.id}: ${id} is on the paper-debt ledger but is no longer a build block of this course — delete the entry from ${DEBT_FILE}.`);
-    }
-  }
-  if (deferred > 0) {
-    notes.push(`${course.id}: ${deferred} build block(s) grade matched text without saying so and sit on the ledger (${DEBT_FILE}). The number may only fall.`);
-  }
-  if (complying > 0) {
-    notes.push(`${course.id}: ${complying} ledger block(s) now run or say they are paper — remove them from ${DEBT_FILE}.`);
-  }
-  /* Ledger blocks count towards neither side of the ratio: the cell shows what
-   * the floor actually enforces today, the notes above show what is deferred. A
-   * ledger entry that matches no build block is the ledger lying, so it lands on
-   * the wrong side of the ratio instead. */
-  return { id: 'runs', met, total: buildBlocks.length - deferred + stale, shortfalls, notes };
-}
-
+/* The shortfall list is a floor's whole account: `met` is simply the items that
+ * raised none. Deriving it in the same pass keeps the table cell and the lines
+ * printed under it from ever disagreeing, and `cleared` needs only one test. */
 function floor(id, items, test, note) {
-  const shortfalls = [];
-  let met = 0;
-  for (const item of items) {
-    if (test(item)) met += 1;
-    else shortfalls.push(note(item));
-  }
-  return { id, met, total: items.length, shortfalls };
+  const shortfalls = items.filter((item) => !test(item)).map(note);
+  return { id, met: items.length - shortfalls.length, total: items.length, shortfalls };
 }
+
+const cleared = (check) => check.shortfalls.length === 0;
+
+/* Whether a block executes anything, and whether its own copy admits that it
+ * does not, are judged by lib/execution.ts — the same helper the path card and
+ * the lesson and project headers call to decide the NO EXECUTION badge. One
+ * implementation on purpose: every block this floor counts is a block the app
+ * labels out loud, and every block the app badges is a block this floor counts. */
+const runsFloor = (course, buildBlocks) =>
+  floor(
+    'runs',
+    buildBlocks,
+    (block) => !defersExecution(block),
+    (block) =>
+      `${course.id}: ${block.lessonId} is a ${block.kind} block that runs nothing and its copy does not say it is paper — ` +
+      `make one item execute or say plainly that it is a paper exercise. "${block.title}" / "${block.blurb}"`
+  );
 
 function scoreCourse(course) {
   const units = CURRICULUM.filter((unit) => unit.course === course.id);
@@ -234,8 +178,7 @@ function scoreCourse(course) {
 
   const questions = lessons.flatMap((lesson) => lesson.questions);
   const gradedBlocks = blocks.filter(isGraded);
-  const buildBlocks = blocks.filter((block) => BUILD_KINDS.includes(block.kind) && !isReview(block));
-  const runsCheck = runsFloor(course, buildBlocks);
+  const buildBlocks = blocks.filter(isBuildBlock);
   const tailBlock = units[units.length - 1].blocks.filter((block) => !isReview(block)).pop();
 
   const checks = [
@@ -256,7 +199,7 @@ function scoreCourse(course) {
       (lesson) => lesson.questions.some(isProduction),
       (lesson) => `${course.id}: ${lesson.id} is recall-only — no build or production item.`
     ),
-    runsCheck,
+    runsFloor(course, buildBlocks),
     floor(
       'explain',
       questions,
@@ -270,11 +213,11 @@ function scoreCourse(course) {
       'units',
       units,
       (unit) =>
-        unit.blocks.some((block) => BUILD_KINDS.includes(block.kind)) &&
+        unit.blocks.some((block) => isBuildBlock(block)) &&
         unit.blocks.some(isGraded),
       (unit) =>
         `${course.id}: unit ${unit.id} needs a build block and a graded quiz block (found build=${unit.blocks.some(
-          (block) => BUILD_KINDS.includes(block.kind)
+          (block) => isBuildBlock(block)
         ) ? 'y' : 'n'}, graded=${unit.blocks.filter(isGraded).length}).`
     ),
     floor(
@@ -303,10 +246,9 @@ function scoreCourse(course) {
   ];
 
   for (const check of checks) notes.push(...check.shortfalls);
-  notes.push(...runsCheck.notes);
 
   return {
-    passed: unresolved === 0 && checks.every((check) => check.met === check.total),
+    passed: unresolved === 0 && checks.every(cleared),
     checks,
     notes: notes.slice().sort((a, b) => a.localeCompare(b)),
     lessons: lessons.length,
@@ -318,6 +260,8 @@ function scoreCourse(course) {
 
 const reports = COURSES_META.map((course) => ({ course, report: scoreCourse(course) }));
 const FLOOR_IDS = ['teach', 'produce', 'runs', 'explain', 'units', 'session', 'finisher'];
+/* A course with no curriculum units has no floors to read; it fails on its note. */
+const NO_CHECK = { met: 0, total: 0, shortfalls: [] };
 
 const only = (() => {
   const index = process.argv.indexOf('--why');
@@ -333,8 +277,8 @@ if (only) {
   const { report } = match;
   console.log(`${only}: ${report.passed ? 'clears every floor' : 'BELOW STANDARD'}\n`);
   for (const id of FLOOR_IDS) {
-    const check = report.checks.find((c) => c.id === id) || { met: 0, total: 0 };
-    console.log(`  ${id.padEnd(9)} ${String(check.met).padStart(3)}/${String(check.total).padEnd(3)} ${check.met === check.total ? 'ok' : '✗'}`);
+    const check = report.checks.find((c) => c.id === id) || NO_CHECK;
+    console.log(`  ${id.padEnd(9)} ${String(check.met).padStart(3)}/${String(check.total).padEnd(3)} ${cleared(check) ? 'ok' : '✗'}`);
   }
   for (const note of report.notes) console.log(`  · ${note}`);
   process.exit(report.passed ? 0 : 1);
@@ -356,8 +300,9 @@ if (process.argv.includes('--json')) {
   console.log('-'.repeat(header.length));
   for (const { course, report } of reports) {
     const cells = FLOOR_IDS.map((id) => {
-      const check = report.checks.find((c) => c.id === id) || { met: 0, total: 0 };
-      return `${check.met}/${check.total}`.padStart(8);
+      const check = report.checks.find((c) => c.id === id) || NO_CHECK;
+      const cell = `${check.met}/${check.total}`;
+      return (cleared(check) ? cell : `✗ ${cell}`).padStart(8);
     }).join('');
     const row =
       course.id.padEnd(15) +
@@ -374,7 +319,7 @@ const failing = reports.filter(({ report }) => !report.passed);
 if (failing.length > 0) {
   console.error(`\n${failing.length} course(s) below the standard:`);
   for (const { course, report } of failing) {
-    const short = report.checks.filter((c) => c.met !== c.total).map((c) => `${c.id} ${c.met}/${c.total}`);
+    const short = report.checks.filter((check) => !cleared(check)).map((check) => `${check.id} ${check.met}/${check.total}`);
     console.error(
       `  ✗ ${course.id}: ${short.join(', ') || 'missing content'} — ${report.notes.length} shortfall(s); run \`node scripts/score-courses.cjs --why ${course.id}\``
     );
@@ -390,14 +335,10 @@ const totals = reports.reduce(
   },
   { lessons: 0, questions: 0 }
 );
-const ledgerSize = Object.values(PAPER_DEBT).reduce((sum, ids) => sum + ids.length, 0);
 console.log(
   `\nAll ${reports.length} courses clear all ${FLOOR_IDS.length} floors — ${totals.lessons} path lessons, ` +
     `${totals.questions} questions, standard: ${MIN_THEORY_LINES}+ lines/${MIN_THEORY_WORDS}+ words of theory, ` +
     `production in every lesson, every build block running or saying plainly that it is paper, ` +
     `an explanation on every answer, a build and a graded quiz in every unit, ` +
     `${SESSION_MAX}+ items with ${MIN_PRODUCTION_PER_ASSESSMENT}+ production in each of them, and a finisher closing the course.`
-);
-console.log(
-  `  ${ledgerSize} pre-existing build block(s) are on the paper-debt ledger (${DEBT_FILE}) and are excluded from the runs floor above; that list shrinks, never grows.`
 );
