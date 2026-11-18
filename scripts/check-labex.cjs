@@ -11,7 +11,9 @@
  *   - every lesson keeps its attribution line and at least three questions;
  *   - prompts are unique inside a lesson and options stay readable;
  *   - the eager metadata registry and the lazy category banks agree exactly;
- *   - nothing from the LabEx VM leaks into learner-facing copy.
+ *   - nothing from the LabEx VM leaks into learner-facing copy;
+ *   - the /labs header and count row take their duration range from the
+ *     registry, so no screen copy can quote a range the corpus left behind.
  *
  * Runs inside `npm test`.
  */
@@ -49,6 +51,72 @@ const MAX_OPTION = 95;
 /* ---- metadata registry ---- */
 if (LABEX_COUNT !== Object.keys(LABEX_META).length) fail('LABEX_COUNT disagrees with the registry.');
 if (LABEX_COUNT < 1500) fail(`The lab library looks truncated: only ${LABEX_COUNT} labs.`);
+
+/* ---- library screen copy ---- */
+// The /labs header and count row quote the corpus duration spread. Typed into
+// the copy, that range rots the day a longer lab lands, so the screen has to
+// derive it from LABEX_META; a digit literal here is a regression.
+const SCREEN = path.join(ROOT, 'src', 'app', 'labs.tsx');
+const screenSource = fs.readFileSync(SCREEN, 'utf8');
+const flatScreen = screenSource.replace(/\s+/g, '');
+const spreadNames = [...screenSource.matchAll(/const\s+([A-Za-z_$][\w$]*)\s*=\s*Math\.(?:min|max)\(/g)].map(
+  (m) => m[1]
+);
+const MINUTES = Object.values(LABEX_META).map((lab) => lab.minutes);
+const span = `${Math.min(...MINUTES)}–${Math.max(...MINUTES)}`;
+
+if (!/Object\.values\(LABEX_META\)\.map\(\([A-Za-z_$][\w$]*\)=>[A-Za-z_$][\w$]*\.minutes\)/.test(flatScreen)) {
+  fail('labs.tsx must derive its minute spread from LABEX_META: Object.values(LABEX_META).map((lab) => lab.minutes).');
+}
+if (
+  !/Math\.min\(\.\.\.[A-Za-z_$][\w$]*\)/.test(flatScreen) ||
+  !/Math\.max\(\.\.\.[A-Za-z_$][\w$]*\)/.test(flatScreen)
+) {
+  fail('labs.tsx must take Math.min(...) and Math.max(...) over the registry minutes.');
+}
+
+// Judge a range where learners read it: the <Text> body carrying the phrase.
+const copyAt = (marker) => {
+  const at = screenSource.indexOf(marker);
+  if (at === -1) return null;
+  const open = screenSource.lastIndexOf('<Text', at);
+  const close = screenSource.indexOf('</Text>', at);
+  if (open === -1 || close === -1) return null;
+  return screenSource.slice(screenSource.indexOf('>', open) + 1, close);
+};
+
+for (const [marker, where] of [
+  ['hands-on labs', 'The /labs header'],
+  ['first try counts', 'The /labs count row'],
+]) {
+  const copy = copyAt(marker);
+  if (!copy) {
+    fail(`${where} no longer says "${marker}"; update this gate with the new copy.`);
+    continue;
+  }
+  const typed = copy.replace(/\{[^{}]*\}/g, '').match(/\d+(?:\s*(?:to|[–-])\s*\d+)?\s*min/i);
+  if (typed) {
+    fail(
+      `${where} types its duration range ("${typed[0].replace(/\s+/g, ' ').trim()}"); it must interpolate the registry spread (${span} minutes).`
+    );
+  }
+  for (const [, expr] of copy.matchAll(/\{([^{}]*)\}/g)) {
+    if (/\d/.test(expr)) {
+      fail(`${where} interpolates the numeric literal {${expr.trim()}}; the range must come from LABEX_META.`);
+    }
+  }
+  const bare = [...copy.matchAll(/\{([A-Za-z_$][\w$]*)\}/g)].map((m) => m[1]);
+  if (new Set(bare).size < 2) {
+    fail(
+      `${where} must interpolate both ends of the range, got ${bare.length === 0 ? 'nothing' : bare.map((n) => `{${n}}`).join(' and ')}.`
+    );
+  }
+  for (const name of bare) {
+    if (!spreadNames.includes(name)) {
+      fail(`${where} interpolates {${name}}, which is not one of the Math.min/Math.max spread constants.`);
+    }
+  }
+}
 
 const categoryIds = LABEX_CATEGORIES.map((c) => c.id);
 if (new Set(categoryIds).size !== categoryIds.length) fail('duplicate LabEx category id.');

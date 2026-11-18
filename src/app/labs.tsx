@@ -15,7 +15,7 @@ import {
 import { useNatural } from '../../lib/natural';
 
 /**
- * Open Labs — the full licensed LabEx corpus, distilled into graded sessions.
+ * Open Labs — the full licensed LabEx corpus, every answer graded as you go.
  * Metadata stays eager for search; the question banks load per category in the
  * quiz route, so this screen never parses thousands of lessons.
  */
