@@ -59,20 +59,33 @@ if (LABEX_COUNT < 1500) fail(`The lab library looks truncated: only ${LABEX_COUN
 const SCREEN = path.join(ROOT, 'src', 'app', 'labs.tsx');
 const screenSource = fs.readFileSync(SCREEN, 'utf8');
 const flatScreen = screenSource.replace(/\s+/g, '');
-const spreadNames = [...screenSource.matchAll(/const\s+([A-Za-z_$][\w$]*)\s*=\s*Math\.(?:min|max)\(/g)].map(
-  (m) => m[1]
-);
 const MINUTES = Object.values(LABEX_META).map((lab) => lab.minutes);
 const span = `${Math.min(...MINUTES)}–${Math.max(...MINUTES)}`;
 
-if (!/Object\.values\(LABEX_META\)\.map\(\([A-Za-z_$][\w$]*\)=>[A-Za-z_$][\w$]*\.minutes\)/.test(flatScreen)) {
-  fail('labs.tsx must derive its minute spread from LABEX_META: Object.values(LABEX_META).map((lab) => lab.minutes).');
-}
-if (
-  !/Math\.min\(\.\.\.[A-Za-z_$][\w$]*\)/.test(flatScreen) ||
-  !/Math\.max\(\.\.\.[A-Za-z_$][\w$]*\)/.test(flatScreen)
-) {
-  fail('labs.tsx must take Math.min(...) and Math.max(...) over the registry minutes.');
+// The fold has to reach the registry. Two separate checks used to pass a file
+// where the registry map line was dead and Math.min/Math.max ran over some
+// other array, so the array is captured and both folds must name it.
+const derivation = flatScreen.match(
+  /const([A-Za-z_$][\w$]*)=Object\.values\(LABEX_META\)(?:\.map|\.flatMap)\(([^;]*?)\);/
+);
+const minutesArray = derivation && /\bminutes\b/.test(derivation[2]) ? derivation[1] : null;
+const spreadNames = [];
+if (!minutesArray) {
+  fail(
+    'labs.tsx must derive its minute spread from LABEX_META: Object.values(LABEX_META).map((lab) => lab.minutes).'
+  );
+} else {
+  for (const fold of ['min', 'max']) {
+    const call = '=Math.' + fold + '(...' + minutesArray + ')';
+    const at = flatScreen.indexOf(call);
+    const decl = at === -1 ? -1 : flatScreen.lastIndexOf('const', at);
+    const name = at !== -1 && decl !== -1 ? flatScreen.slice(decl + 5, at) : '';
+    if (!/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) {
+      fail('labs.tsx must take Math.' + fold + '(...' + minutesArray + '), the minutes derived from LABEX_META.');
+    } else {
+      spreadNames.push(name);
+    }
+  }
 }
 
 // Judge a range where learners read it: the <Text> body carrying the phrase.
@@ -94,7 +107,7 @@ for (const [marker, where] of [
     fail(`${where} no longer says "${marker}"; update this gate with the new copy.`);
     continue;
   }
-  const typed = copy.replace(/\{[^{}]*\}/g, '').match(/\d+(?:\s*(?:to|[–-])\s*\d+)?\s*min/i);
+  const typed = copy.replace(/\{[^{}]*\}/g, '').match(/\d+(?:\s*(?:to|[–-])\s*\d+)?/);
   if (typed) {
     fail(
       `${where} types its duration range ("${typed[0].replace(/\s+/g, ' ').trim()}"); it must interpolate the registry spread (${span} minutes).`
