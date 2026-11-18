@@ -69,21 +69,25 @@ const derivation = flatScreen.match(
   /const([A-Za-z_$][\w$]*)=Object\.values\(LABEX_META\)(?:\.map|\.flatMap)\(([^;]*?)\);/
 );
 const minutesArray = derivation && /\bminutes\b/.test(derivation[2]) ? derivation[1] : null;
-const spreadNames = [];
+const spreads = new Map();
 if (!minutesArray) {
   fail(
     'labs.tsx must derive its minute spread from LABEX_META: Object.values(LABEX_META).map((lab) => lab.minutes).'
   );
 } else {
   for (const fold of ['min', 'max']) {
-    const call = '=Math.' + fold + '(...' + minutesArray + ')';
+    const call = 'Math.' + fold + '(...' + minutesArray + ')';
     const at = flatScreen.indexOf(call);
-    const decl = at === -1 ? -1 : flatScreen.lastIndexOf('const', at);
-    const name = at !== -1 && decl !== -1 ? flatScreen.slice(decl + 5, at) : '';
-    if (!/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) {
+    if (at === -1) {
       fail('labs.tsx must take Math.' + fold + '(...' + minutesArray + '), the minutes derived from LABEX_META.');
-    } else {
-      spreadNames.push(name);
+      continue;
+    }
+    // A const binding (const X = <call>) is remembered so the copy may interpolate {X};
+    // <call> written straight into the copy is judged where the copy is read.
+    if (at > 0 && flatScreen[at - 1] === '=') {
+      const decl = flatScreen.lastIndexOf('const', at);
+      const name = decl === -1 ? '' : flatScreen.slice(decl + 5, at - 1);
+      if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) spreads.set(name, fold);
     }
   }
 }
@@ -113,21 +117,33 @@ for (const [marker, where] of [
       `${where} types its duration range ("${typed[0].replace(/\s+/g, ' ').trim()}"); it must interpolate the registry spread (${span} minutes).`
     );
   }
+  const shown = new Set();
+  const foreign = [];
   for (const [, expr] of copy.matchAll(/\{([^{}]*)\}/g)) {
     if (/\d/.test(expr)) {
       fail(`${where} interpolates the numeric literal {${expr.trim()}}; the range must come from LABEX_META.`);
+      continue;
     }
-  }
-  const bare = [...copy.matchAll(/\{([A-Za-z_$][\w$]*)\}/g)].map((m) => m[1]);
-  if (new Set(bare).size < 2) {
-    fail(
-      `${where} must interpolate both ends of the range, got ${bare.length === 0 ? 'nothing' : bare.map((n) => `{${n}}`).join(' and ')}.`
-    );
-  }
-  for (const name of bare) {
-    if (!spreadNames.includes(name)) {
-      fail(`${where} interpolates {${name}}, which is not one of the Math.min/Math.max spread constants.`);
+    const trimmed = expr.trim();
+    const flat = expr.replace(/\s+/g, '');
+    if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(trimmed)) {
+      const fold = spreads.get(trimmed);
+      if (fold) shown.add(fold);
+      else foreign.push('{' + trimmed + '}');
+      continue;
     }
+    // Math.min(...X) / Math.max(...X) written straight into the copy. Anything
+    // else (LABEX_COUNT.toLocaleString()) is not a range and is not judged here.
+    const inline = flat.match(/^Math\.(min|max)\(\.\.\.([A-Za-z_$][A-Za-z0-9_$]*)\)$/);
+    if (!inline) continue;
+    if (inline[2] === minutesArray) shown.add(inline[1]);
+    else foreign.push('{' + flat + '}');
+  }
+  if (foreign.length > 0) {
+    fail(`${where} interpolates ${foreign.join(' and ')}, which is not the Math.min/Math.max fold over ${minutesArray} that LABEX_META supplies.`);
+  } else if (!shown.has('min') || !shown.has('max')) {
+    const got = shown.size === 0 ? 'nothing' : `only the ${shown.has('min') ? 'minimum' : 'maximum'}`;
+    fail(`${where} must interpolate both ends of the range, got ${got}.`);
   }
 }
 
