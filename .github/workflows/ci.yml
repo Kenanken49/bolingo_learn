@@ -32,6 +32,9 @@ jobs:
         with:
           name: quality-report
           path: .quality/
+          # upload-artifact v4 skips dot-directories unless asked: without this
+          # the step warns "No files were found with the provided path".
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 30
 

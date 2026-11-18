@@ -28,7 +28,10 @@ jobs:
           cache: npm
 
       - name: Install
-        run: npm ci
+        # Same flags as ci.yml and the Dockerfile. Plain `npm ci` fails on the optional
+        # esbuild platform packages before a single gate can run, and llama.rn's
+        # postinstall downloads native binaries that no gate uses.
+        run: npm ci --ignore-scripts --legacy-peer-deps
 
       - name: Run every required gate
         env:
@@ -48,5 +51,8 @@ jobs:
         with:
           name: quality-report
           path: .quality/
+          # upload-artifact v4 skips dot-directories unless asked: without this
+          # the step warns "No files were found with the provided path".
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 30
