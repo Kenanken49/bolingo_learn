@@ -8,6 +8,9 @@ on:
 jobs:
   gate:
     runs-on: ubuntu-latest
+    # `web-render` spawns Metro, so this set now contains a multi-minute step; an explicit
+    # ceiling beats the 360-minute default. 30 matches the Required checks job.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,6 +23,17 @@ jobs:
       # packages before a single gate can run.
       - run: npm ci --ignore-scripts --legacy-peer-deps
       - run: npm run gate
+      # The runner annotates each failed gate and appends the table to the job
+      # summary; this keeps its full report beside the run as well, so a red
+      # run does not need the raw log.
+      - name: Upload quality report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-report
+          path: .quality/
+          if-no-files-found: warn
+          retention-days: 30
 
   # The Flask lab course ships as app content, so it gets its own release bar
   # here too: build the real lab image, then sweep the course inside it. The

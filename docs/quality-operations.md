@@ -183,7 +183,16 @@ A gate is a real command with a timeout. Required failures exit non-zero and
 block the workflow. Each run writes:
 
 - `.quality/last-run.json` — machine-readable, includes command output tails;
-- `.quality/last-run.md` — reviewable summary.
+- `.quality/last-run.md` — reviewable summary, with each failing gate's command
+  and output tail under the table.
+
+On GitHub Actions the runner also prints one `::error` annotation per failed
+gate (id in the title; label, command, exit code and output tail in the body)
+and appends the same table to the job summary, so the red run page names the
+culprit without the raw log. GitHub displays ten error annotations per step, so
+past nine failures the last one lists the remaining gate ids and points at the
+summary. Both CI workflows upload `.quality/` as the `quality-report` artifact
+for the full record.
 
 The runner is deliberately boring: sequential child processes, no hidden
 retries, no `continue-on-error`. Adding a gate is a JSON edit plus the script.
