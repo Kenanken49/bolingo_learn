@@ -68,29 +68,33 @@ const span = `${Math.min(...MINUTES)}–${Math.max(...MINUTES)}`;
 const derivation = flatScreen.match(
   /const([A-Za-z_$][\w$]*)=Object\.values\(LABEX_META\)(?:\.map|\.flatMap)\(([^;]*?)\);/
 );
-const minutesArray = derivation && /\bminutes\b/.test(derivation[2]) ? derivation[1] : null;
-const spreads = new Map();
+// The mapper has to hand back the minutes field, not merely mention it: a map
+// like (lab) => (lab.minutes ? 5 : 30) keeps the name and hard-codes the range.
+const mappedBody = derivation ? derivation[2].split('=>').pop().replace(/[()]/g, '') : '';
+const minutesArray = /^(?:[A-Za-z_$][\w$]*\.)?minutes$/.test(mappedBody) ? derivation[1] : null;
 if (!minutesArray) {
   fail(
     'labs.tsx must derive its minute spread from LABEX_META: Object.values(LABEX_META).map((lab) => lab.minutes).'
   );
 } else {
   for (const fold of ['min', 'max']) {
-    const call = 'Math.' + fold + '(...' + minutesArray + ')';
-    const at = flatScreen.indexOf(call);
-    if (at === -1) {
+    if (!flatScreen.includes('Math.' + fold + '(...' + minutesArray + ')')) {
       fail('labs.tsx must take Math.' + fold + '(...' + minutesArray + '), the minutes derived from LABEX_META.');
-      continue;
-    }
-    // A const binding (const X = <call>) is remembered so the copy may interpolate {X};
-    // <call> written straight into the copy is judged where the copy is read.
-    if (at > 0 && flatScreen[at - 1] === '=') {
-      const decl = flatScreen.lastIndexOf('const', at);
-      const name = decl === -1 ? '' : flatScreen.slice(decl + 5, at - 1);
-      if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) spreads.set(name, fold);
     }
   }
 }
+
+// Which fold a name is bound to, if any: written inline, or a const whose value
+// is that fold. Looked up by the name the copy uses rather than parsed back from
+// the fold call, so a second declarator on one line (const MIN = …, MAX = …) resolves.
+const foldOf = (name) =>
+  minutesArray
+    ? ['min', 'max'].find((fold) =>
+        new RegExp(
+          '(?:const|,)' + name + '(?::[^=]*)?=Math\\.' + fold + '\\(\\.\\.\\.' + minutesArray + '\\)'
+        ).test(flatScreen)
+      )
+    : undefined;
 
 // Judge a range where learners read it: the <Text> body carrying the phrase.
 const copyAt = (marker) => {
@@ -106,6 +110,9 @@ for (const [marker, where] of [
   ['hands-on labs', 'The /labs header'],
   ['first try counts', 'The /labs count row'],
 ]) {
+  // Without a derived array there is nothing to compare the copy against, and the
+  // derivation failure above already names the shape the screen has to have.
+  if (!minutesArray) continue;
   const copy = copyAt(marker);
   if (!copy) {
     fail(`${where} no longer says "${marker}"; update this gate with the new copy.`);
@@ -127,7 +134,7 @@ for (const [marker, where] of [
     const trimmed = expr.trim();
     const flat = expr.replace(/\s+/g, '');
     if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(trimmed)) {
-      const fold = spreads.get(trimmed);
+      const fold = foldOf(trimmed);
       if (fold) shown.add(fold);
       else foreign.push('{' + trimmed + '}');
       continue;
