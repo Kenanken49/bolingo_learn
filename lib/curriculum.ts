@@ -8,6 +8,8 @@
 import { LINUX_UNITS } from './linuxCurriculum';
 import { LINUX_ASSESSMENT_BLOCKS } from './linuxAssessments';
 import { TRACK_UNITS } from './trackUnits';
+import { AI_ML_UNITS } from './aiMlUnits';
+import { FUNDAMENTALS_UNITS } from './fundamentalsUnits';
 
 export type BlockKind = 'lesson' | 'workshop' | 'lab' | 'review' | 'quiz' | 'project';
 
@@ -52,6 +54,13 @@ export const COURSES_META: {
   { id: 'lang', name: 'Course 4 · World Languages & Chess', icon: '\u{1F30D}', blurb: 'Duolingo style — basics, phrases, tenses, review, checkpoints.', difficulty: 'Beginner', hours: 'ongoing' },
   { id: 'certs', name: 'Course 5 · Leveled Certifications', icon: '\u{1F393}', blurb: '7 tracks · 5 unlockable levels each — bite-sized lessons into real capstone projects.', difficulty: 'Intermediate', hours: '~300h' },
   { id: 'linux', name: 'Course 6 · Linux Journey', icon: '\u{1F427}', blurb: '22 courses · 185 bite-sized lessons — the full Linux Journey, no daily limit.', difficulty: 'Intermediate', hours: '~25h' },
+  { id: 'aiml-explorer', name: 'Course 7 · AI & ML Academy · Explorer', icon: '\u{1F9EA}', blurb: 'Ages 10–18 · 20 modules × 10 submodules — data, regression, vision, language, ethics, each with a runnable lab.', difficulty: 'Beginner', hours: '~40h' },
+  { id: 'aiml-launcher', name: 'Course 8 · AI & ML Academy · Launcher', icon: '\u{1F4C8}', blurb: 'Ages 19–25 · maths to MLOps — 20 modules with portfolio labs and interview preparation.', difficulty: 'Intermediate', hours: '~80h' },
+  { id: 'aiml-leader', name: 'Course 9 · AI & ML Academy · Leader', icon: '\u{1F3DB}\uFE0F', blurb: 'Ages 26–40 · 20 modules of enterprise strategy, governance, cost and vertical case studies.', difficulty: 'Advanced', hours: '~50h' },
+  { id: 'git', name: 'Course 10 · Git & Version Control', icon: '\u{1F500}', blurb: 'Snapshots, branches, remotes and recovery — every reversible undo before the destructive one.', difficulty: 'Beginner', hours: '~10h' },
+  { id: 'testing', name: 'Course 11 · Testing & Debugging', icon: '\u{1F41E}', blurb: 'Unit to end-to-end, doubles with limits, and a search method that explains the fix.', difficulty: 'Intermediate', hours: '~12h' },
+  { id: 'typescript', name: 'Course 12 · TypeScript & Type Systems', icon: '\u{1F537}', blurb: 'Types as specification: boundaries, narrowing, generics, and what strict mode enforces.', difficulty: 'Intermediate', hours: '~14h' },
+  { id: 'crypto', name: 'Course 13 · Applied Cryptography', icon: '\u{1F510}', blurb: 'Which primitive for which job: ciphers, hashes, MACs, signatures, password storage, and TLS trust.', difficulty: 'Advanced', hours: '~12h' },
 ];
 
 export const KIND_META: Record<BlockKind, { label: string; icon: string; color: string }> = {
@@ -77,7 +86,7 @@ export const CURRICULUM: CurriculumUnit[] = [
         id: 'hf-lesson-tags',
         kind: 'lesson',
         title: 'Basic HTML tags',
-        blurb: 'Theory first: paragraphs, headings, and nesting — with live examples.',
+        blurb: 'Theory first: paragraphs, headings, and nesting — then assemble each tag from tokens.',
         minutes: 3,
         xp: 10,
         lessonId: 'html-tags',
@@ -86,8 +95,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'hf-workshop-page',
         kind: 'workshop',
-        title: 'Build a paragraph step by step',
-        blurb: 'Guided build: assemble a real paragraph element token by token.',
+        title: 'Paper workshop: build a paragraph',
+        blurb: 'Paper exercise, nothing runs here: assemble a real paragraph element token by token; nothing executes — your text is matched.',
         minutes: 4,
         xp: 20,
         lessonId: 'html-workshop-1',
@@ -136,8 +145,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'he-workshop-attrs',
         kind: 'workshop',
-        title: 'Attributes workshop',
-        blurb: 'Guided build: src, ids, and labels step by step.',
+        title: 'Paper workshop: attributes and links',
+        blurb: 'Paper exercise, nothing runs here: write the src attributes, the ids and the labels; nothing executes — your text is matched.',
         minutes: 4,
         xp: 20,
         lessonId: 'html-workshop-2',
@@ -186,8 +195,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'hf-project',
         kind: 'project',
-        title: 'Capstone: recipe card',
-        blurb: 'Build a real recipe page with a title, image, ingredients, steps, and a source link.',
+        title: 'On paper: the recipe card',
+        blurb: 'Paper exercise, nothing runs here: write the recipe page — title, image, ingredients, steps, source link; nothing executes — your text is matched.',
         minutes: 10,
         xp: 50,
         lessonId: 'html-project',
@@ -217,8 +226,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'cf-workshop-box',
         kind: 'workshop',
-        title: 'Box model workshop',
-        blurb: 'Guided build: content, padding, border, margin.',
+        title: 'Paper workshop: the box model',
+        blurb: 'Paper exercise, nothing runs here: write content, padding, border and margin in order; nothing executes — your text is matched.',
         minutes: 4,
         xp: 20,
         lessonId: 'css-workshop-1',
@@ -288,8 +297,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'rl-workshop-phone',
         kind: 'workshop',
-        title: 'Build a phone layout step by step',
-        blurb: 'Guided build: style block, grid cards, and mobile-first rules.',
+        title: 'Paper workshop: build a phone layout',
+        blurb: 'Paper exercise, nothing runs here: write the style block, the grid cards and the mobile-first rules; nothing executes — your text is matched.',
         minutes: 4,
         xp: 20,
         lessonId: 'rwd-responsive-workshop',
@@ -318,8 +327,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'rl-project',
         kind: 'project',
-        title: 'Certification project: tribute page',
-        blurb: 'Capstone: heading, image list, and centered style from scratch.',
+        title: 'On paper: the tribute page',
+        blurb: 'Paper exercise, nothing runs here: write the heading, the image list and the centered style from scratch; nothing executes — your text is matched.',
         minutes: 5,
         xp: 50,
         lessonId: 'rwd-project',
@@ -349,8 +358,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'df-workshop-scaling',
         kind: 'workshop',
-        title: 'Scaling & alignment workshop',
-        blurb: 'Guided build: grid rules, spacing scale, shared edges.',
+        title: 'Paper workshop: scaling and alignment',
+        blurb: 'Paper exercise, nothing runs here: write the grid rules, the spacing scale and the shared edges; nothing executes — your text is matched.',
         minutes: 4,
         xp: 20,
         lessonId: 'ux-scaling',
@@ -389,8 +398,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'df-project',
         kind: 'project',
-        title: 'Capstone: accessible redesign',
-        blurb: 'Rebuild a flat page with hierarchy, contrast, and 44px targets.',
+        title: 'On paper: the accessible redesign',
+        blurb: 'Paper exercise, nothing runs here: rewrite a flat page with hierarchy, contrast and 44px targets; nothing executes — your text is matched.',
         minutes: 5,
         xp: 50,
         lessonId: 'ux-redesign',
@@ -1082,7 +1091,7 @@ export const CURRICULUM: CurriculumUnit[] = [
       },
       {
         id: 'sw-fsi-morning',
-        kind: 'workshop',
+        kind: 'lesson',
         title: 'FSI morning greetings',
         blurb: 'Read a real FSI dialogue: Jambo, bwana → Habari za asubuhi? → Njema.',
         minutes: 4,
@@ -1284,8 +1293,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'ch-tactics',
         kind: 'workshop',
-        title: 'Tactics workshop',
-        blurb: 'Forks, pins, discovered attacks.',
+        title: 'Paper workshop: chess tactics',
+        blurb: 'Paper exercise, nothing runs here: name the fork, the pin or the discovered attack on the board; nothing executes — your text is matched.',
         minutes: 5,
         xp: 20,
         lessonId: 'chess-tactics',
@@ -1304,8 +1313,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'ch-mate-patterns',
         kind: 'workshop',
-        title: 'Checkmate patterns',
-        blurb: 'Back rank, scholar’s, smothered, ladder.',
+        title: 'Paper workshop: checkmate patterns',
+        blurb: 'Paper exercise, nothing runs here: name the back rank, smothered and ladder mate from the position; nothing executes — your text is matched.',
         minutes: 5,
         xp: 20,
         lessonId: 'chess-mate-patterns',
@@ -1314,8 +1323,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'ch-endgames',
         kind: 'lab',
-        title: 'Essential endgames',
-        blurb: 'Queen vs king, opposition, stalemate.',
+        title: 'Paper lab: essential endgames',
+        blurb: 'Paper exercise, nothing runs here: write how to win king and queen versus king, and when stalemate saves; nothing executes — your text is matched.',
         minutes: 5,
         xp: 20,
         lessonId: 'chess-endgames',
@@ -1324,8 +1333,8 @@ export const CURRICULUM: CurriculumUnit[] = [
       {
         id: 'ch-tactics-2',
         kind: 'workshop',
-        title: 'Advanced tactics',
-        blurb: 'Discovered, double check, deflection.',
+        title: 'Paper workshop: advanced tactics',
+        blurb: 'Paper exercise, nothing runs here: name the discovered check, the double check and the deflection; nothing executes — your text is matched.',
         minutes: 5,
         xp: 20,
         lessonId: 'chess-tactics-2',
@@ -1580,6 +1589,8 @@ export const CURRICULUM: CurriculumUnit[] = [
 /* Course 5 (leveled certification tracks) lives in lib/trackUnits.ts — appended
    here so the Path renders all 7 tracks with the same sequential unlock. */
 CURRICULUM.push(...TRACK_UNITS);
+CURRICULUM.push(...AI_ML_UNITS);
+CURRICULUM.push(...FUNDAMENTALS_UNITS);
 
 /* Course 6 (Linux Journey) lives in lib/linuxCurriculum.ts — generated from
    the imported banks so ids/titles can never drift from the lessons. */

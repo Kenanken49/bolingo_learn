@@ -35,7 +35,7 @@ module.exports = ({ config }) => ({
   ...config,
   name: 'Bolingo Learn',
   slug: 'bolingo_learn',
-  version: '1.0.0',
+  version: '1.0.1',
   orientation: 'portrait',
   scheme: 'bolingo-learn',
   icon: './assets/icon.png',
@@ -69,6 +69,9 @@ module.exports = ({ config }) => ({
   },
   android: {
     package: 'com.bolingo.learn',
+    // Ships 2 so an installed 1.0.0 build (versionCode 1) is a clean upgrade
+    // rather than a same-code reinstall. Bump by one with every release.
+    versionCode: 2,
     adaptiveIcon: {
       backgroundColor: '#E6F4FE',
       foregroundImage: './assets/android-icon-foreground.png',

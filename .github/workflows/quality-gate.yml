@@ -28,12 +28,18 @@ jobs:
           cache: npm
 
       - name: Install
-        run: npm ci
+        # Same flags as ci.yml and the Dockerfile. Plain `npm ci` fails on the optional
+        # esbuild platform packages before a single gate can run, and llama.rn's
+        # postinstall downloads native binaries that no gate uses.
+        run: npm ci --ignore-scripts --legacy-peer-deps
 
       - name: Run every required gate
         env:
           QUALITY_SUPABASE_URL: ${{ secrets.QUALITY_SUPABASE_URL }}
           QUALITY_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.QUALITY_SUPABASE_SERVICE_ROLE_KEY }}
+          # Lets scripts/check-release-artifact.cjs ask the container to hash its own
+          # release volume. Empty means CI hashes the download itself: slower, same proof.
+          BOLINGO_INTEGRITY_TOKEN: ${{ secrets.BOLINGO_INTEGRITY_TOKEN }}
           QUALITY_ENV: ci
         # Direct node keeps the gate independent of the local npm wrapper;
         # `npm run gate` is the same runner for developers.
@@ -45,5 +51,8 @@ jobs:
         with:
           name: quality-report
           path: .quality/
+          # upload-artifact v4 skips dot-directories unless asked: without this
+          # the step warns "No files were found with the provided path".
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 30

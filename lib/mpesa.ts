@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { supabase } from './supabase';
+import { edgeFunctionReason } from './edgeFunctionError';
 import { isFlagOn } from './featureFlags';
 
 /**
@@ -16,6 +17,14 @@ import { isFlagOn } from './featureFlags';
  * is on.
  */
 export const MPESA_PLAN = 'premium_monthly' as const;
+
+/**
+ * The figure shown on the paywall card. It must equal `ADVERTISED_AMOUNT_KES`
+ * in `supabase/functions/_shared/mpesa.ts`, which is what the server charges by
+ * default — `npm run check:mpesa` compares the two, because at go live the
+ * easiest way to mislead a learner is to localize the price on one side of the
+ * network only and show a KSh 770 card while charging another amount.
+ */
 export const MPESA_PRICE_LABEL = 'KSh 770/mo';
 
 const POLL_INTERVAL_MS = 5_000;
@@ -36,21 +45,6 @@ export interface MpesaState {
   } | null;
 }
 
-interface InvokeError {
-  message: string;
-}
-
-function messageFrom(error: unknown, fallback: string): string {
-  const raw = (error as InvokeError | null)?.message ?? '';
-  if (!raw) return fallback;
-  try {
-    const parsed = JSON.parse(raw.replace(/^Invalid response \(.*?\):/, '')) as { error?: string };
-    return parsed.error ?? raw;
-  } catch {
-    return raw;
-  }
-}
-
 /** 07XX XXX XXX, +2547XXXXXXXX or 2547XXXXXXXX; Daraja only serves Kenya. */
 export function normalizeMpesaPhone(raw: string): string | null {
   const digits = (raw ?? '').replace(/[^0-9]/g, '');
@@ -62,7 +56,10 @@ export function normalizeMpesaPhone(raw: string): string | null {
 
 async function invoke(body: Record<string, unknown>): Promise<Record<string, unknown>> {
   const { data, error } = await supabase.functions.invoke('mpesa-push', { body });
-  if (error) throw new Error(messageFrom(error, 'M-Pesa is unavailable right now.'));
+  // What mpesa-push chose to say is the useful part: "Enter a Kenyan number, e.g.
+  // 0712 345 678.", "Too many prompts. Try again in 10 minutes.", or the 503 its
+  // config audit returns before Safaricom is asked for anything.
+  if (error) throw new Error(await edgeFunctionReason(error, 'M-Pesa is unavailable right now.'));
   const payload = data as { error?: string } & Record<string, unknown>;
   if (payload?.error) throw new Error(payload.error);
   return payload;

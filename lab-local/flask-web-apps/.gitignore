@@ -1,0 +1,15 @@
+# The student workspace is rebuilt by `./lab reset` from starter/.
+# Only the directory markers are tracked; solved or edited files are not.
+workspace/**
+!workspace/*/
+!workspace/**/.gitkeep
+
+# Python, pytest and Flask runtime noise
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+*.db
+*.sqlite3
+*.log
+.lab-autostart.log

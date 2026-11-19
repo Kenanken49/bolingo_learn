@@ -1,10 +1,10 @@
 /**
- * LabEx Open Labs · Python — 139 labs.
+ * LabEx Open Labs · Python — 190 labs.
  *
  * Adapted from the LabEx open-source lab corpus
  * (https://github.com/labex-labs/open-source-labs), which delegates each
- * lab's terms to its index.json. Included licenses: CC-BY-4.0.
- * Sources: 30-seconds/30-seconds-of-python.
+ * lab's terms to its index.json. Included licenses: Apache-2.0, CC-BY-4.0.
+ * Sources: 30-seconds/30-seconds-of-python, donnemartin/interactive-coding-challenges.
  * Every lesson credits its source in the theory; questions are original,
  * derived from each lab's own text and code.
  *
@@ -3906,6 +3906,1287 @@ export const LABEX_PYTHON: Record<string, CourseLesson> = {
         're.findall()',
         ['re.findall()', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
         'The brief works with `re.findall()` — it is part of this lab\'s approach.'
+      ),
+    ],
+  },
+  'labex-python-compress-string-using-python': {
+    id: 'labex-python-compress-string-using-python',
+    title: 'Compress String Using Python',
+    theory: ['In this Python challenge, we will be compressing a string by replacing repeated characters with a count of the repetition. The compressed string will only be returned if it saves space. In this Python challenge, we have learned how to compress a string by replacing repeated characters with a count of the repetition. We have also learned that the compressed string should only be returned if it saves space and that the string is case sensitive, ASCII, and fits in memory. Given a string, compress it such that \'AAABCCDDDD\' becomes \'A3BC2D4\'. The compressed string should only be returned if it saves space. If the compressed string is longer than the original string, return the original string. The string is case sensitive and can be assumed to be ASCII. Additional data structures can be used and it can be assumed that the string fits in memory. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Compress String Using Python” lab?',
+        'Additional data structures can be used.',
+        ['Additional data structures can be used.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Additional data structures can be used.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In this Python challenge, we will be compressing a string by replacing repeated characters with a count of the repetition. The compressed string will…” — which lab is this?',
+        'Compress String Using Python',
+        ['Compress String Using Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Compress String Using Python”.'
+      ),
+      MCQ(
+        'The lab shows `\'AAABCCDDDD\'` — what is the result?',
+        '\'A3BC2D4\'',
+        ['\'A3BC2D4\'', '\'A4BC2D4\'', '\'A2BC2D4\'', '\'A5BC2D4\''],
+        '`\'AAABCCDDDD\'` produces \'A3BC2D4\', exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-string-compression-challenge': {
+    id: 'labex-python-string-compression-challenge',
+    title: 'String Compression Challenge',
+    theory: ['In this challenge, we will be compressing a string in a specific way to save space. The compressed string will have a shorter length than the original string, only if it saves space. In summary, this challenge requires us to compress a string in a specific way to save space. We must ensure that the compressed string is shorter than the original string, otherwise we return the original string. The requirements for this challenge include using ASCII strings, being case sensitive, allowing additional data structures, and assuming the string fits in memory. Given a string, compress it such that consecutive occurrences of the same character are replaced with that character followed by the number of occurrences. For example, the string \'AAABCCDDDD\' would become \'A3BCCD4\'. However, if the compressed string is not shorter than the original string, return the original string. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “String Compression Challenge” lab?',
+        'The string is assumed to be ASCII.',
+        ['The string is assumed to be ASCII.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The string is assumed to be ASCII.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “String Compression Challenge” brief introduce?',
+        'compress(None)',
+        ['compress(None)', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `compress(None)` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “In this challenge, we will be compressing a string in a specific way to save space. The compressed string will have a shorter length than the origina…” — which lab is this?',
+        'String Compression Challenge',
+        ['String Compression Challenge', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “String Compression Challenge”.'
+      ),
+    ],
+  },
+  'labex-python-implement-hash-table-with-key-value-operatio': {
+    id: 'labex-python-implement-hash-table-with-key-value-operatio',
+    title: 'Implement Hash Table with Key-Value Operations',
+    theory: ['A hash table is a data structure that maps keys to values for efficient lookup. It uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found. In this challenge, we will implement a hash table with set, get, and remove methods. In this challenge, we implemented a hash table with set, get, and remove methods. We used chaining for collision resolution and assumed that the keys are integers only. We did not need to consider load factors or validate inputs. The hash table fits in memory. Implement a hash table with set, get, and remove methods. The hash table should use chaining for collision resolution. The keys are integers only. We do not have to worry about load factors or validate inputs. We can assume that the hash table fits in memory. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Implement Hash Table with Key-Value Operations” lab?',
+        'Chaining is used for collision resolution.',
+        ['Chaining is used for collision resolution.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Chaining is used for collision resolution.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Implement Hash Table with Key-Value Operations” brief introduce?',
+        'get',
+        ['get', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `get` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “A hash table is a data structure that maps keys to values for efficient lookup. It uses a hash function to compute an index into an array of buckets…” — which lab is this?',
+        'Implement Hash Table with Key-Value Operations',
+        ['Implement Hash Table with Key-Value Operations', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Implement Hash Table with Key-Value Operations”.'
+      ),
+    ],
+  },
+  'labex-python-permutation-check-of-string-pairs': {
+    id: 'labex-python-permutation-check-of-string-pairs',
+    title: 'Permutation Check of String Pairs',
+    theory: ['In computer science, a permutation is an arrangement of objects in a specific order. In this challenge, we will determine if a given string is a permutation of another string. In this challenge, we learned how to determine if a given string is a permutation of another string. We considered the requirements and examples to solve this problem. By following the requirements, we can write an efficient algorithm to solve this problem. Given two strings, we need to determine if one string is a permutation of the other. A permutation is defined as a rearrangement of the characters in a string. For example, "act" is a permutation of "cat". Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Permutation Check of String Pairs” lab?',
+        'The comparison is case-sensitive. For example, "Nib" and "bin" are not a match.',
+        ['The comparison is case-sensitive. For example, "Nib" and "bin" are not a match.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The comparison is case-sensitive. For example, "Nib" and "bin" are not a match.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a permutation is an arrangement of objects in a specific order. In this challenge, we will determine if a given string is a perm…” — which lab is this?',
+        'Permutation Check of String Pairs',
+        ['Permutation Check of String Pairs', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Permutation Check of String Pairs”.'
+      ),
+      MCQ(
+        'The lab shows `One or more None inputs` — what is the result?',
+        'False',
+        ['False', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`One or more None inputs` produces False, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-efficient-array-backed-priority-queue-implem': {
+    id: 'labex-python-efficient-array-backed-priority-queue-implem',
+    title: 'Efficient Array-Backed Priority Queue Implementation',
+    theory: ['A priority queue is a data structure that allows for efficient access to the minimum (or maximum) element in a collection. It is commonly used in algorithms such as Dijkstra\'s shortest path algorithm and Huffman coding. In this challenge, we will implement a priority queue backed by an array. In this challenge, we implemented a priority queue backed by an array. The priority queue supports insert, extract_min, and decrease_key methods. We ensured that there are no duplicate keys in the priority queue, and the inputs don\'t need to be validated. The priority queue fits into memory. Implement a priority queue backed by an array. The priority queue should support the following methods: Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Efficient Array-Backed Priority Queue Implementation” lab?',
+        'insert: insert a new element into the priority queue',
+        ['insert: insert a new element into the priority queue', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“insert: insert a new element into the priority queue” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Efficient Array-Backed Priority Queue Implementation” brief introduce?',
+        'insert',
+        ['insert', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `insert` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “A priority queue is a data structure that allows for efficient access to the minimum (or maximum) element in a collection. It is commonly used in alg…” — which lab is this?',
+        'Efficient Array-Backed Priority Queue Implementation',
+        ['Efficient Array-Backed Priority Queue Implementation', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Efficient Array-Backed Priority Queue Implementation”.'
+      ),
+    ],
+  },
+  'labex-python-reverse-string-in-place-programming': {
+    id: 'labex-python-reverse-string-in-place-programming',
+    title: 'Reverse String In-Place Programming',
+    theory: ['In programming, it is often necessary to manipulate strings. One common task is to reverse a string. This means that the order of the characters in the string is reversed. For example, the string \'hello\' would become \'olleh\' when reversed. In this challenge, we will implement a function to reverse a string in-place. In this challenge, we implemented a function to reverse a string in-place. We used a list of characters to represent the string and modified it directly. By considering the requirements, we were able to solve the problem efficiently and effectively. Implement a function to reverse a string (a list of characters), in-place. This means that the function should modify the original string rather than creating a new one. The function should take a list of characters as input and return the same list with the characters reversed. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Reverse String In-Place Programming” lab?',
+        'The string can be assumed to be ASCII.',
+        ['The string can be assumed to be ASCII.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The string can be assumed to be ASCII.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In programming, it is often necessary to manipulate strings. One common task is to reverse a string. This means that the order of the characters in t…” — which lab is this?',
+        'Reverse String In-Place Programming',
+        ['Reverse String In-Place Programming', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Reverse String In-Place Programming”.'
+      ),
+      MCQ(
+        'The lab shows `[\'f\', \'o\', \'o\', \' \', \'b\', \'a\', \'r\']` — what is the result?',
+        '[\'r\', \'a\', \'b\', \' \', \'o\', \'o\', \'f\']',
+        ['[\'r\', \'a\', \'b\', \' \', \'o\', \'o\', \'f\']', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`[\'f\', \'o\', \'o\', \' \', \'b\', \'a\', \'r\']` produces [\'r\', \'a\', \'b\', \' \', \'o\', \'o\', \'f\'], exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-find-differing-character-in-strings': {
+    id: 'labex-python-find-differing-character-in-strings',
+    title: 'Find Differing Character in Strings',
+    theory: ['In this Python challenge, we are required to find the single different character between two strings. In this Python challenge, we have learned how to find the single different character between two strings. We have considered the requirements and provided examples of how to use the function. Given two strings, we need to find the single different character between them. The strings are assumed to be ASCII and are in lowercase. We cannot assume that the inputs are valid, so we need to check for None. If the inputs are valid, we can assume that there is only a single different character between the two strings. We also need to ensure that the solution fits in memory. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Find Differing Character in Strings” lab?',
+        'We need to check for None input.',
+        ['We need to check for None input.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“We need to check for None input.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In this Python challenge, we are required to find the single different character between two strings.” — which lab is this?',
+        'Find Differing Character in Strings',
+        ['Find Differing Character in Strings', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Find Differing Character in Strings”.'
+      ),
+      MCQ(
+        'The lab shows `None input` — what is the result?',
+        'TypeError',
+        ['TypeError', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`None input` produces TypeError, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-solving-the-two-sum-problem': {
+    id: 'labex-python-solving-the-two-sum-problem',
+    title: 'Solving the Two Sum Problem',
+    theory: ['The Two Sum problem is a classic algorithmic problem in computer science. It requires finding two indices in an array that sum up to a specific value. This problem has a wide range of applications, including in data science, machine learning, and finance. The Two Sum problem is a fundamental problem in computer science that requires finding two indices in an array that sum up to a specific value. By meeting the requirements and using the example usage, this problem can be solved using Python. Given an array of integers, find the two indices that sum to a specific value. The function should return the indices as a list. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Solving the Two Sum Problem” lab?',
+        'There is exactly one solution.',
+        ['There is exactly one solution.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“There is exactly one solution.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “The Two Sum problem is a classic algorithmic problem in computer science. It requires finding two indices in an array that sum up to a specific value…” — which lab is this?',
+        'Solving the Two Sum Problem',
+        ['Solving the Two Sum Problem', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Solving the Two Sum Problem”.'
+      ),
+      MCQ(
+        'The lab shows `None input` — what is the result?',
+        'TypeError',
+        ['TypeError', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`None input` produces TypeError, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-unique-character-string-validation': {
+    id: 'labex-python-unique-character-string-validation',
+    title: 'Unique Character String Validation',
+    theory: ['This Python challenge aims to implement an algorithm to determine if a string has all unique characters. In summary, this Python challenge requires the implementation of an algorithm to determine if a string has all unique characters. The solution must meet the requirements outlined above, and the examples provided should be used to verify the correctness of the implementation. Given a string, the task is to determine if it contains all unique characters. In other words, there should be no repeated characters in the string. For example, the string "hello" does not have all unique characters because the letter "l" appears twice. On the other hand, the string "world" has all unique characters because each letter appears only once. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Unique Character String Validation” lab?',
+        'The string is assumed to be ASCII.',
+        ['The string is assumed to be ASCII.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The string is assumed to be ASCII.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “This Python challenge aims to implement an algorithm to determine if a string has all unique characters.” — which lab is this?',
+        'Unique Character String Validation',
+        ['Unique Character String Validation', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Unique Character String Validation”.'
+      ),
+      MCQ(
+        'The lab shows `None` — what is the result?',
+        'False',
+        ['False', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`None` produces False, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-bit-manipulation-operations-in-python': {
+    id: 'labex-python-bit-manipulation-operations-in-python',
+    title: 'Bit Manipulation Operations in Python',
+    theory: ['Bit manipulation is a fundamental concept in computer science and is widely used in various fields. It involves manipulating individual bits that make up a binary number. In Python, we can perform common bit manipulation operations such as getting a bit, setting a bit, clearing a bit, and updating a bit. In this challenge, we will implement these operations. In this challenge, we implemented common bit manipulation operations in Python. These operations are essential in various fields, including computer science, cryptography, and networking. By mastering these operations, we can efficiently manipulate binary data and perform complex computations. Implement the following common bit manipulation operations in Python: Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Bit Manipulation Operations in Python” lab?',
+        'get_bit: Given a number and an index, return the value of the bit at the given index.',
+        ['get_bit: Given a number and an index, return the value of the bit at the given index.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“get_bit: Given a number and an index, return the value of the bit at the given index.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Bit Manipulation Operations in Python” brief introduce?',
+        'get_bit',
+        ['get_bit', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `get_bit` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “Bit manipulation is a fundamental concept in computer science and is widely used in various fields. It involves manipulating individual bits that mak…” — which lab is this?',
+        'Bit Manipulation Operations in Python',
+        ['Bit Manipulation Operations in Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Bit Manipulation Operations in Python”.'
+      ),
+    ],
+  },
+  'labex-python-implementing-line-drawing-algorithm': {
+    id: 'labex-python-implementing-line-drawing-algorithm',
+    title: 'Implementing Line Drawing Algorithm',
+    theory: ['In computer graphics, a line is a basic element that can be drawn on a screen. Drawing a line on a screen involves setting the corresponding bits in the screen\'s memory. In this challenge, we will implement a method that draws a line on a screen given its width and two absolute pixel positions. In this challenge, we implemented a method that draws a line on a screen given its width and two absolute pixel positions. The implementation met the requirements of handling invalid inputs, setting the corresponding bits in screen, and fitting memory. Implement the method draw_line(screen, width, x1, x2) where screen is a list of bytes, width is divisible by 8, and x1, x2 are absolute pixel positions. The method should set the corresponding bits in screen to draw a line from x1 to x2. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Implementing Line Drawing Algorithm” lab?',
+        'The inputs may not be assumed to be valid.',
+        ['The inputs may not be assumed to be valid.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The inputs may not be assumed to be valid.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Implementing Line Drawing Algorithm” brief introduce?',
+        'draw_line(screen, width, x1, x2)',
+        ['draw_line(screen, width, x1, x2)', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `draw_line(screen, width, x1, x2)` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “In computer graphics, a line is a basic element that can be drawn on a screen. Drawing a line on a screen involves setting the corresponding bits in…” — which lab is this?',
+        'Implementing Line Drawing Algorithm',
+        ['Implementing Line Drawing Algorithm', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Implementing Line Drawing Algorithm”.'
+      ),
+    ],
+  },
+  'labex-python-maximizing-longest-sequence-of-ones': {
+    id: 'labex-python-maximizing-longest-sequence-of-ones',
+    title: 'Maximizing Longest Sequence of Ones',
+    theory: ['In computer science, bit flipping is a technique used to manipulate individual bits of data. In this challenge, we will be flipping one bit from 0 to 1 to maximize the longest sequence of 1s. In this challenge, we learned how to flip one bit from 0 to 1 to maximize the longest sequence of 1s in a binary number. We also wrote a Python function that takes in a binary number and returns the length of the longest sequence of 1s after flipping one bit. Given a binary number, we need to flip one of its bits from 0 to 1 to maximize the longest sequence of 1s. For example, if we have the binary number 000011110000, we can flip the fourth bit from 0 to 1 to get 000111110000, which has a sequence of five 1s. Our goal is to write a Python function that takes in a binary number and returns the length of the longest sequence of 1s after flipping one bit. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Maximizing Longest Sequence of Ones” lab?',
+        'The input must be an integer in base 2.',
+        ['The input must be an integer in base 2.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The input must be an integer in base 2.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Maximizing Longest Sequence of Ones” brief introduce?',
+        'None',
+        ['None', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `None` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, bit flipping is a technique used to manipulate individual bits of data. In this challenge, we will be flipping one bit from 0 to…” — which lab is this?',
+        'Maximizing Longest Sequence of Ones',
+        ['Maximizing Longest Sequence of Ones', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Maximizing Longest Sequence of Ones”.'
+      ),
+    ],
+  },
+  'labex-python-insert-m-into-n': {
+    id: 'labex-python-insert-m-into-n',
+    title: 'Insert M Into N',
+    theory: ['This Python challenge is about inserting a 16-bit number m into another 16-bit number n such that m starts at bit j and ends at bit i. This Python challenge requires the program to insert a 16-bit number m into another 16-bit number n such that m starts at bit j and ends at bit i. The program should handle various cases and meet the given requirements. Given two 16-bit numbers, n and m, and two indices i and j, insert m into n such that m starts at bit j and ends at bit i. The program should handle the following cases: Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Insert M Into N” lab?',
+        'If none is given as an input, an exception should be raised.',
+        ['If none is given as an input, an exception should be raised.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“If none is given as an input, an exception should be raised.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Insert M Into N” brief introduce?',
+        'into another 16-bit number',
+        ['into another 16-bit number', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `into another 16-bit number` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “This Python challenge is about inserting a 16-bit number m into another 16-bit number n such that m starts at bit j and ends at bit i.” — which lab is this?',
+        'Insert M Into N',
+        ['Insert M Into N', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Insert M Into N”.'
+      ),
+    ],
+  },
+  'labex-python-binary-representation-of-real-numbers': {
+    id: 'labex-python-binary-representation-of-real-numbers',
+    title: 'Binary Representation of Real Numbers',
+    theory: ['In computer science, binary is a numbering system that uses only two digits, 0 and 1. It is widely used in digital electronics and computer systems. In this challenge, we will write a Python program to print the binary representation of a given real number between 0 and 1. In this challenge, we learned how to write a Python program to print the binary representation of a given real number between 0 and 1. We also defined the requirements for the program and provided some examples of how it should behave. Write a Python function that takes a real number between 0 and 1 as input and returns its binary representation as a string. If the length of the representation is greater than 32, return \'ERROR\'. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Binary Representation of Real Numbers” lab?',
+        'The range of the input is between 0 and 1, but the values 0 and 1 are not inclusive.',
+        ['The range of the input is between 0 and 1, but the values 0 and 1 are not inclusive.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The range of the input is between 0 and 1, but the values 0 and 1 are not inclusive.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, binary is a numbering system that uses only two digits, 0 and 1. It is widely used in digital electronics and computer systems.…” — which lab is this?',
+        'Binary Representation of Real Numbers',
+        ['Binary Representation of Real Numbers', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Binary Representation of Real Numbers”.'
+      ),
+      MCQ(
+        'The lab shows `None` — what is the result?',
+        '\'ERROR\'',
+        ['\'ERROR\'', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`None` produces \'ERROR\', exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-binary-search-tree-implementation-in-python': {
+    id: 'labex-python-binary-search-tree-implementation-in-python',
+    title: 'Binary Search Tree Implementation in Python',
+    theory: ['This challenge is about implementing a binary search tree with an insert method in Python. In this challenge, you learned how to implement a binary search tree with an insert method in Python. You also learned the requirements and constraints of the challenge and saw an example usage of the insert method. A binary search tree is a data structure that allows fast search, insert, and delete operations. It is a tree where each node has at most two children, and the left child is less than the parent, and the right child is greater than the parent. The insert method adds a new node to the tree in the appropriate position based on its value. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Binary Search Tree Implementation in Python” lab?',
+        'You cannot insert None values.',
+        ['You cannot insert None values.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“You cannot insert None values.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “This challenge is about implementing a binary search tree with an insert method in Python.” — which lab is this?',
+        'Binary Search Tree Implementation in Python',
+        ['Binary Search Tree Implementation in Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Binary Search Tree Implementation in Python”.'
+      ),
+      MCQ(
+        'The lab shows `5, 2, 8, 1, 3` — what is the result?',
+        '1, 2, 3, 5, 8',
+        ['1, 2, 3, 5, 8', '2, 2, 3, 5, 8', '0, 2, 3, 5, 8', '3, 2, 3, 5, 8'],
+        '`5, 2, 8, 1, 3` produces 1, 2, 3, 5, 8, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-balanced-binary-tree-in-python': {
+    id: 'labex-python-balanced-binary-tree-in-python',
+    title: 'Balanced Binary Tree in Python',
+    theory: ['In computer science, a binary tree is a tree data structure in which each node has at most two children, which are referred to as the left child and the right child. A balanced binary tree is a tree in which the heights of the two subtrees of any node differ by at most one. In this challenge, we will write a Python program to check if a binary tree is balanced. In this challenge, we have learned how to check if a binary tree is balanced. We have defined the requirements and provided some examples of how the function should behave. By meeting the requirements and following the examples, we can write a Python program to solve this problem. Given a binary tree, write a Python function to determine if it is balanced. A binary tree is considered balanced if the heights of the two subtrees of any node differ by at most one. The function should take the root node of the binary tree as input… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Balanced Binary Tree in Python” lab?',
+        'If the input is None, the function should raise an exception.',
+        ['If the input is None, the function should raise an exception.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“If the input is None, the function should raise an exception.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a binary tree is a tree data structure in which each node has at most two children, which are referred to as the left child and…” — which lab is this?',
+        'Balanced Binary Tree in Python',
+        ['Balanced Binary Tree in Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Balanced Binary Tree in Python”.'
+      ),
+      MCQ(
+        'The lab shows `5, 3, 8, 1, 4` — what is the result?',
+        'True',
+        ['True', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`5, 3, 8, 1, 4` produces True, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-graph-data-structure-fundamentals': {
+    id: 'labex-python-graph-data-structure-fundamentals',
+    title: 'Graph Data Structure Fundamentals',
+    theory: ['A graph is a non-linear data structure consisting of nodes and edges. It is used to represent connections or relationships between objects. Graphs are widely used in computer science, engineering, and social sciences. In this challenge, we implemented a graph that can be directed or undirected, have weighted edges, and cycles. We also ensured that adding or deleting nodes that already exist or do not exist respectively, does not affect the graph. The Graph class can be used as a building block for more complex graph challenges. Implement a graph that satisfies the following requirements: Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which API does the “Graph Data Structure Fundamentals” lab use?',
+        'add_edge',
+        ['add_edge', 'date', 'addEventListener', 'getElementById'],
+        'The lab\'s code uses `add_edge`.'
+      ),
+      MCQ(
+        'Which step belongs to the “Graph Data Structure Fundamentals” lab?',
+        'The graph can be directed or undirected.',
+        ['The graph can be directed or undirected.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The graph can be directed or undirected.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “A graph is a non-linear data structure consisting of nodes and edges. It is used to represent connections or relationships between objects. Graphs ar…” — which lab is this?',
+        'Graph Data Structure Fundamentals',
+        ['Graph Data Structure Fundamentals', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Graph Data Structure Fundamentals”.'
+      ),
+    ],
+  },
+  'labex-python-breadth-first-search-graph-traversal-algorit': {
+    id: 'labex-python-breadth-first-search-graph-traversal-algorit',
+    title: 'Breadth-First Search Graph Traversal Algorithm',
+    theory: ['Breadth-first search (BFS) is a graph traversal algorithm that visits all the vertices of a graph in breadth-first order, i.e., it visits all the vertices at the same level before moving on to the next level. In summary, BFS is a graph traversal algorithm that visits all the vertices of a graph in breadth-first order. To implement BFS on a graph, the graph must be directed, connected, and the inputs must be valid. The order in which the vertices are visited is important, as it determines the shortest path from the source vertex to all other vertices in the graph. Implementing BFS on a graph involves visiting all the vertices of the graph in breadth-first order, starting from a given source vertex. The algorithm works by visiting the source vertex, then visiting all its neighbors, then visiting all the neighbors of its neighbors, and so on. The order in which the vertices are visited is… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which API does the “Breadth-First Search Graph Traversal Algorithm” lab use?',
+        'add_edge',
+        ['add_edge', 'date', 'addEventListener', 'getElementById'],
+        'The lab\'s code uses `add_edge`.'
+      ),
+      MCQ(
+        'Which step belongs to the “Breadth-First Search Graph Traversal Algorithm” lab?',
+        'Graph and Node classes are already available.',
+        ['Graph and Node classes are already available.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Graph and Node classes are already available.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “Breadth-first search (BFS) is a graph traversal algorithm that visits all the vertices of a graph in breadth-first order, i.e., it visits all the ver…” — which lab is this?',
+        'Breadth-First Search Graph Traversal Algorithm',
+        ['Breadth-First Search Graph Traversal Algorithm', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Breadth-First Search Graph Traversal Algorithm”.'
+      ),
+    ],
+  },
+  'labex-python-depth-first-search-on-directed-graphs': {
+    id: 'labex-python-depth-first-search-on-directed-graphs',
+    title: 'Depth-First Search on Directed Graphs',
+    theory: ['Graph is a non-linear data structure that consists of nodes and edges. Depth-first search (DFS) is a graph traversal algorithm that explores as far as possible along each branch before backtracking. In this challenge, we will implement DFS on a directed graph. In this challenge, we implemented depth-first search on a directed graph. The algorithm starts at a given node and visits all reachable nodes in the graph. The order in which the nodes are visited is recorded and returned as a list. By meeting the requirements, we can ensure the correctness and efficiency of the algorithm. Implement depth-first search on a directed graph. The algorithm should start at a given node and visit all reachable nodes in the graph. The order in which the nodes are visited should be recorded and returned as a list. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which API does the “Depth-First Search on Directed Graphs” lab use?',
+        'add_edge',
+        ['add_edge', 'date', 'addEventListener', 'getElementById'],
+        'The lab\'s code uses `add_edge`.'
+      ),
+      MCQ(
+        'Which step belongs to the “Depth-First Search on Directed Graphs” lab?',
+        'Graph and Node classes are already implemented.',
+        ['Graph and Node classes are already implemented.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Graph and Node classes are already implemented.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “Graph is a non-linear data structure that consists of nodes and edges. Depth-first search (DFS) is a graph traversal algorithm that explores as far a…” — which lab is this?',
+        'Depth-First Search on Directed Graphs',
+        ['Depth-First Search on Directed Graphs', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Depth-First Search on Directed Graphs”.'
+      ),
+    ],
+  },
+  'labex-python-graph-path-exists': {
+    id: 'labex-python-graph-path-exists',
+    title: 'Graph Path Exists',
+    theory: ['In computer science, a graph is a collection of nodes that are connected to each other through edges. Graphs are widely used to model real-world scenarios such as social networks, transportation systems, and computer networks. One of the fundamental problems in graph theory is to determine whether there is a path between two nodes in a graph. In this challenge, we will write a Python function to solve this problem. In this challenge, we wrote a Python function to determine whether there is a path between two nodes in a directed graph. We made several assumptions about the graph and the inputs to simplify the problem. The function can be used to solve a wide range of real-world problems that involve graph traversal. Given a directed graph and two nodes, write a Python function to determine whether there is a path between the two nodes. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which API does the “Graph Path Exists” lab use?',
+        'add_edge',
+        ['add_edge', 'date', 'addEventListener', 'getElementById'],
+        'The lab\'s code uses `add_edge`.'
+      ),
+      MCQ(
+        'Which step belongs to the “Graph Path Exists” lab?',
+        'We already have Graph and Node classes.',
+        ['We already have Graph and Node classes.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“We already have Graph and Node classes.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a graph is a collection of nodes that are connected to each other through edges. Graphs are widely used to model real-world scen…” — which lab is this?',
+        'Graph Path Exists',
+        ['Graph Path Exists', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Graph Path Exists”.'
+      ),
+    ],
+  },
+  'labex-python-graph-shortest-path': {
+    id: 'labex-python-graph-shortest-path',
+    title: 'Graph Shortest Path',
+    theory: ['In graph theory, the shortest path problem is the problem of finding a path between two vertices (or nodes) in a graph such that the sum of the weights of its constituent edges is minimized. It is a fundamental problem in network optimization and has applications in transportation, communication, and computer networking. The shortest path problem is a fundamental problem in network optimization. To solve this problem, we need to consider the requirements of the graph, such as whether it is directional, whether it has cycles, and whether the edges are weighted. We can use the ShortestPath class to find the shortest path between two nodes in a graph. Given a directed graph with weighted edges, find the shortest path between two nodes. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which API does the “Graph Shortest Path” lab use?',
+        'find_shortest_path',
+        ['find_shortest_path', 'date', 'addEventListener', 'getElementById'],
+        'The lab\'s code uses `find_shortest_path`.'
+      ),
+      MCQ(
+        'Which step belongs to the “Graph Shortest Path” lab?',
+        'Is this a directional graph? - Yes',
+        ['Is this a directional graph? - Yes', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Is this a directional graph? - Yes” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In graph theory, the shortest path problem is the problem of finding a path between two vertices (or nodes) in a graph such that the sum of the weigh…” — which lab is this?',
+        'Graph Shortest Path',
+        ['Graph Shortest Path', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Graph Shortest Path”.'
+      ),
+    ],
+  },
+  'labex-python-graph-shortest-path-unweighted': {
+    id: 'labex-python-graph-shortest-path-unweighted',
+    title: 'Graph Shortest Path Unweighted',
+    theory: ['In graph theory, the shortest path problem is the problem of finding a path between two vertices (or nodes) in a graph such that the sum of the weights of its constituent edges is minimized. The problem of finding the shortest path between two nodes in an unweighted graph can be solved using a breadth-first search algorithm. In summary, the problem of finding the shortest path between two nodes in an unweighted graph can be solved using a breadth-first search algorithm. The algorithm must meet the requirements mentioned above to ensure its correctness and efficiency. Given a directed graph with no edge weights, find the shortest path between two nodes. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which API does the “Graph Shortest Path Unweighted” lab use?',
+        'add_edge',
+        ['add_edge', 'date', 'addEventListener', 'getElementById'],
+        'The lab\'s code uses `add_edge`.'
+      ),
+      MCQ(
+        'Which step belongs to the “Graph Shortest Path Unweighted” lab?',
+        'Graph and Node classes are already available.',
+        ['Graph and Node classes are already available.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Graph and Node classes are already available.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Graph Shortest Path Unweighted” brief introduce?',
+        'search_path(start=0, end=0) -> [0]',
+        ['search_path(start=0, end=0) -> [0]', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `search_path(start=0, end=0) -> [0]` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “In graph theory, the shortest path problem is the problem of finding a path between two vertices (or nodes) in a graph such that the sum of the weigh…” — which lab is this?',
+        'Graph Shortest Path Unweighted',
+        ['Graph Shortest Path Unweighted', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Graph Shortest Path Unweighted”.'
+      ),
+    ],
+  },
+  'labex-python-min-heap-binary-tree-introduction': {
+    id: 'labex-python-min-heap-binary-tree-introduction',
+    title: 'Min Heap Binary Tree Introduction',
+    theory: ['A min heap is a binary tree data structure that satisfies the heap property, where the parent node is always less than or equal to its children. In a min heap, the root node is always the minimum value in the tree. In summary, a min heap is a binary tree data structure that maintains the heap property, where the parent node is always less than or equal to its children. The implementation of a min heap should include the extract_min() and insert(value) methods, and meet the requirements of integer inputs and fitting in memory. Implement a min heap with the following methods: Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Min Heap Binary Tree Introduction” lab?',
+        'extract_min(): removes and returns the minimum value in the heap',
+        ['extract_min(): removes and returns the minimum value in the heap', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“extract_min(): removes and returns the minimum value in the heap” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Min Heap Binary Tree Introduction” brief introduce?',
+        'extract_min()',
+        ['extract_min()', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `extract_min()` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “A min heap is a binary tree data structure that satisfies the heap property, where the parent node is always less than or equal to its children. In a…” — which lab is this?',
+        'Min Heap Binary Tree Introduction',
+        ['Min Heap Binary Tree Introduction', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Min Heap Binary Tree Introduction”.'
+      ),
+    ],
+  },
+  'labex-python-breadth-first-traversal-binary-tree': {
+    id: 'labex-python-breadth-first-traversal-binary-tree',
+    title: 'Breadth-First Traversal Binary Tree',
+    theory: ['This Python challenge is about implementing breadth-first traversal on a binary tree. In this Python challenge, we implemented breadth-first traversal on a binary tree. The solution required a Node class with an insert method, and the visit_func method was called on each node when it was processed. The solution was able to fit in memory and produced the correct sequence of nodes when performing a breadth-first traversal on a binary tree. Given a binary tree, implement a function that performs a breadth-first traversal on the tree. The function should call an input method visit_func on each node when it is processed. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Breadth-First Traversal Binary Tree” lab?',
+        'A Node class with an insert method is already available.',
+        ['A Node class with an insert method is already available.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“A Node class with an insert method is already available.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Breadth-First Traversal Binary Tree” brief introduce?',
+        'visit_func',
+        ['visit_func', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `visit_func` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “This Python challenge is about implementing breadth-first traversal on a binary tree.” — which lab is this?',
+        'Breadth-First Traversal Binary Tree',
+        ['Breadth-First Traversal Binary Tree', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Breadth-First Traversal Binary Tree”.'
+      ),
+    ],
+  },
+  'labex-python-depth-first-traversal-of-binary-trees': {
+    id: 'labex-python-depth-first-traversal-of-binary-trees',
+    title: 'Depth-First Traversal of Binary Trees',
+    theory: ['Tree traversal is a common operation in computer science and is used to visit each node in a tree exactly once. Depth-first search (DFS) is a popular algorithm for traversing trees and graphs. In this challenge, we will implement DFS on a binary tree. In this challenge, we learned how to implement depth-first traversals (in-order, pre-order, post-order) on a binary tree. We also learned that DFS is a popular algorithm for traversing trees and graphs. Implement depth-first traversals (in-order, pre-order, post-order) on a binary tree. For in-order traversal, we visit the left subtree, then the current node, and then the right subtree. For pre-order traversal, we visit the current node, then the left subtree, and then the right subtree. For post-order traversal, we visit the left subtree, then the right subtree, and then the current node. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Depth-First Traversal of Binary Trees” lab?',
+        'We can assume we already have a Node class with an insert method.',
+        ['We can assume we already have a Node class with an insert method.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“We can assume we already have a Node class with an insert method.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Depth-First Traversal of Binary Trees” brief introduce?',
+        'visit_func',
+        ['visit_func', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `visit_func` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “Tree traversal is a common operation in computer science and is used to visit each node in a tree exactly once. Depth-first search (DFS) is a popular…” — which lab is this?',
+        'Depth-First Traversal of Binary Trees',
+        ['Depth-First Traversal of Binary Trees', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Depth-First Traversal of Binary Trees”.'
+      ),
+    ],
+  },
+  'labex-python-binary-tree-lowest-common-ancestor': {
+    id: 'labex-python-binary-tree-lowest-common-ancestor',
+    title: 'Binary Tree Lowest Common Ancestor',
+    theory: ['In computer science, a binary tree is a tree data structure in which each node has at most two children, which are referred to as the left child and the right child. The lowest common ancestor (LCA) of two nodes v and w in a tree or directed acyclic graph (DAG) is the lowest (i.e. deepest) node that has both v and w as descendants, where we define each node to be a descendant of itself (so if v has a direct connection from w, w is the lowest common ancestor). In this challenge, we will find the lowest common ancestor in a binary tree. In this challenge, we have learned how to find the lowest common ancestor in a binary tree. We have considered the requirements and tested our function with different inputs and expected outputs. Given a binary tree and two nodes, find their lowest common ancestor. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Binary Tree Lowest Common Ancestor” lab?',
+        'The given tree is a binary tree, not a binary search tree.',
+        ['The given tree is a binary tree, not a binary search tree.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The given tree is a binary tree, not a binary search tree.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a binary tree is a tree data structure in which each node has at most two children, which are referred to as the left child and…” — which lab is this?',
+        'Binary Tree Lowest Common Ancestor',
+        ['Binary Tree Lowest Common Ancestor', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Binary Tree Lowest Common Ancestor”.'
+      ),
+      MCQ(
+        'The lab shows `0, 5` — what is the result?',
+        'None (both nodes are not in the tree)',
+        ['None (both nodes are not in the tree)', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`0, 5` produces None (both nodes are not in the tree), exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-trie-data-structure-for-string-storage': {
+    id: 'labex-python-trie-data-structure-for-string-storage',
+    title: 'Trie Data Structure for String Storage',
+    theory: ['A trie, also known as a prefix tree, is a tree-like data structure used to store and retrieve a set of strings. It is commonly used in search engines, spell checkers, and IP routers. In a trie, each node represents a character in a string, and the path from the root to a leaf node represents a complete string. In this challenge, you have implemented a trie data structure with find, insert, remove, and list_words methods. The trie is a useful data structure for storing and retrieving a set of strings efficiently. Your task is to implement a trie with the following methods: Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Trie Data Structure for String Storage” lab?',
+        'find(word) - returns True if the given word is in the trie, False otherwise.',
+        ['find(word) - returns True if the given word is in the trie, False otherwise.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“find(word) - returns True if the given word is in the trie, False otherwise.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Trie Data Structure for String Storage” brief introduce?',
+        'find(word)',
+        ['find(word)', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `find(word)` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “A trie, also known as a prefix tree, is a tree-like data structure used to store and retrieve a set of strings. It is commonly used in search engines…” — which lab is this?',
+        'Trie Data Structure for String Storage',
+        ['Trie Data Structure for String Storage', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Trie Data Structure for String Storage”.'
+      ),
+    ],
+  },
+  'labex-python-reverse-order-number-addition-in-python': {
+    id: 'labex-python-reverse-order-number-addition-in-python',
+    title: 'Reverse Order Number Addition in Python',
+    theory: ['This Python challenge requires adding two numbers whose digits are stored in a linked list in reverse order. The linked list is non-circular and singly linked. The return value must be in reverse order. If one of the inputs is None, return None for an invalid operation. The numbers can fit in memory and we can assume we already have a linked list class that can be used for this problem. Given two non-circular, singly linked lists, add the values of each node in reverse order and return the result in a linked list in reverse order too. If one of the inputs is None, return None for an invalid operation. The numbers can fit in memory and we can assume we already have a linked list class that can be used for this problem. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Reverse Order Number Addition in Python” lab?',
+        'The linked list is non-circular and singly linked.',
+        ['The linked list is non-circular and singly linked.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The linked list is non-circular and singly linked.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “This Python challenge requires adding two numbers whose digits are stored in a linked list in reverse order.” — which lab is this?',
+        'Reverse Order Number Addition in Python',
+        ['Reverse Order Number Addition in Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Reverse Order Number Addition in Python”.'
+      ),
+      MCQ(
+        'The lab shows `Empty list(s)` — what is the result?',
+        'None',
+        ['None', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`Empty list(s)` produces None, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-find-loop-start': {
+    id: 'labex-python-find-loop-start',
+    title: 'Find Loop Start',
+    theory: ['In computer science, a linked list is a linear collection of data elements, in which linear order is not given by their physical placement in memory. Instead, each element points to the next. A linked list is a dynamic data structure, which means that we can add or remove elements from it at any time. In this challenge, we will be looking at how to find the start of a linked list loop. In this challenge, we learned how to find the start of a linked list loop. We looked at the requirements for solving this problem and saw some examples of how this function can be used. By understanding the concept of linked lists and loops, we can create more efficient and dynamic data structures in our programs. Given a singly linked list, we need to find the start of a loop if it exists. A loop is defined as a node in the list that points to a previous node, creating a cycle. If there is no loop, we… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Find Loop Start” lab?',
+        'The linked list is a singly linked list.',
+        ['The linked list is a singly linked list.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The linked list is a singly linked list.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a linked list is a linear collection of data elements, in which linear order is not given by their physical placement in memory.…” — which lab is this?',
+        'Find Loop Start',
+        ['Find Loop Start', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Find Loop Start”.'
+      ),
+      MCQ(
+        'The lab shows `Empty list` — what is the result?',
+        'None',
+        ['None', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`Empty list` produces None, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-partition-linked-list-around-value': {
+    id: 'labex-python-partition-linked-list-around-value',
+    title: 'Partition Linked List Around Value',
+    theory: ['In computer science, partitioning is the act of dividing a data set into multiple parts. In this challenge, we will partition a linked list around a given value x. In this challenge, we learned how to partition a linked list around a given value x. We saw that it is possible to create a new linked list and that we can use additional data structures to solve this problem. Given a singly linked list, partition it around a value x, such that all nodes less than x come before all nodes greater than or equal to x. The function should return a new linked list. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Partition Linked List Around Value” lab?',
+        'The linked list is non-circular and singly linked.',
+        ['The linked list is non-circular and singly linked.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The linked list is non-circular and singly linked.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, partitioning is the act of dividing a data set into multiple parts. In this challenge, we will partition a linked list around a…” — which lab is this?',
+        'Partition Linked List Around Value',
+        ['Partition Linked List Around Value', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Partition Linked List Around Value”.'
+      ),
+      MCQ(
+        'The lab shows `Empty list` — what is the result?',
+        '[]',
+        ['[]', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`Empty list` produces [], exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-removing-duplicates-in-linked-lists': {
+    id: 'labex-python-removing-duplicates-in-linked-lists',
+    title: 'Removing Duplicates in Linked Lists',
+    theory: ['In computer science, a linked list is a linear collection of data elements, in which linear order is not given by their physical placement in memory. Instead, each element points to the next. It is a data structure consisting of a collection of nodes which together represent a sequence. In this challenge, we will focus on removing duplicates from a linked list. In this Python challenge, we learned how to remove duplicates from a linked list. We explored the requirements and constraints of the problem and provided examples of how the program should behave. By solving this challenge, you can improve your understanding of linked lists and the associated algorithms. Given a non-circular, singly linked list, remove duplicates from it. The goal is to modify the original list in place and return the head of the modified list. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Removing Duplicates in Linked Lists” lab?',
+        'The linked list is non-circular and singly linked.',
+        ['The linked list is non-circular and singly linked.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The linked list is non-circular and singly linked.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a linked list is a linear collection of data elements, in which linear order is not given by their physical placement in memory.…” — which lab is this?',
+        'Removing Duplicates in Linked Lists',
+        ['Removing Duplicates in Linked Lists', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Removing Duplicates in Linked Lists”.'
+      ),
+      MCQ(
+        'The lab shows `Empty linked list` — what is the result?',
+        '[]',
+        ['[]', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`Empty linked list` produces [], exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-primality-test-in-python': {
+    id: 'labex-python-primality-test-in-python',
+    title: 'Primality Test in Python',
+    theory: ['In mathematics, a prime number is a natural number greater than 1 that is not a product of two smaller natural numbers. In other words, a prime number is a positive integer that has no positive integer divisors other than 1 and itself. In this Python challenge, we will write a program to check if a given number is prime or not. In this Python challenge, we have learned how to check if a given number is prime or not. We have written a Python function that takes an integer as input and returns True if the number is prime, and False otherwise. We have also discussed the requirements of the program and provided some example usages. Write a Python function that takes an integer as input and returns True if the number is prime, and False otherwise. If the input is not an integer or less than 2, the function should raise an exception. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Primality Test in Python” lab?',
+        'The function should take an integer as input.',
+        ['The function should take an integer as input.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The function should take an integer as input.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Primality Test in Python” brief introduce?',
+        'check_prime(None)',
+        ['check_prime(None)', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `check_prime(None)` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “In mathematics, a prime number is a natural number greater than 1 that is not a product of two smaller natural numbers. In other words, a prime numbe…” — which lab is this?',
+        'Primality Test in Python',
+        ['Primality Test in Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Primality Test in Python”.'
+      ),
+    ],
+  },
+  'labex-python-efficient-list-operations-in-python': {
+    id: 'labex-python-efficient-list-operations-in-python',
+    title: 'Efficient List Operations in Python',
+    theory: ['In this Python challenge, we will create a class that can insert an integer to a list and calculate the maximum, minimum, mean, and mode of the list in O(1) time complexity. In this Python challenge, we have learned how to create a class that can insert an integer to a list and calculate the maximum, minimum, mean, and mode of the list in O(1) time complexity. We have also learned how to handle different scenarios such as invalid inputs and empty lists. Create a Python class with an insert method that can insert an integer to a list. The class should also support calculating the maximum, minimum, mean, and mode of the list in O(1) time complexity. The class should handle the following scenarios: Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Efficient List Operations in Python” lab?',
+        'If the input is not valid, it should raise a TypeError.',
+        ['If the input is not valid, it should raise a TypeError.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“If the input is not valid, it should raise a TypeError.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In this Python challenge, we will create a class that can insert an integer to a list and calculate the maximum, minimum, mean, and mode of the list…” — which lab is this?',
+        'Efficient List Operations in Python',
+        ['Efficient List Operations in Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Efficient List Operations in Python”.'
+      ),
+      MCQ(
+        'The lab shows `None` — what is the result?',
+        'TypeError',
+        ['TypeError', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`None` produces TypeError, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-determine-power-of-two-in-python': {
+    id: 'labex-python-determine-power-of-two-in-python',
+    title: 'Determine Power of Two in Python',
+    theory: ['In computer science, it is often necessary to determine if a given number is a power of two. This can be useful in a variety of applications, such as optimizing algorithms or checking for errors in data transmission. In this challenge, we will write a Python function to determine if a number is a power of two. In this challenge, we wrote a Python function to determine if a given number is a power of two. We learned that a power of two is any number that can be expressed as 2^n, where n is an integer. We also learned how to handle invalid inputs and ensure that our function meets memory constraints. Write a Python function called is_power_of_two that takes in an integer as its parameter and returns True if the input is a power of two, and False otherwise. A power of two is any number that can be expressed as 2^n, where n is an integer. For example, 2, 4, 8, and 16 are all powers of two. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Determine Power of Two in Python” lab?',
+        'The input number must be an integer.',
+        ['The input number must be an integer.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The input number must be an integer.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Determine Power of Two in Python” brief introduce?',
+        'is_power_of_two(None)',
+        ['is_power_of_two(None)', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `is_power_of_two(None)` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, it is often necessary to determine if a given number is a power of two. This can be useful in a variety of applications, such as…” — which lab is this?',
+        'Determine Power of Two in Python',
+        ['Determine Power of Two in Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Determine Power of Two in Python”.'
+      ),
+    ],
+  },
+  'labex-python-optimal-coin-change-solution': {
+    id: 'labex-python-optimal-coin-change-solution',
+    title: 'Optimal Coin Change Solution',
+    theory: ['The coin change problem is a classic algorithmic problem that involves determining the number of unique ways to make change for a given amount of money. This problem has a wide range of applications, from vending machines to financial systems. The coin change problem is a fundamental algorithmic problem that involves determining the total number of unique ways to make change for a given amount of money. By meeting the requirements outlined above, a solution can be developed to solve this problem. Given a set of coins of different denominations and a total amount of money n, determine the total number of unique ways to make change for n cents. The coins provided have denominations less than n cents. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Optimal Coin Change Solution” lab?',
+        'The coins must reach exactly n cents.',
+        ['The coins must reach exactly n cents.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The coins must reach exactly n cents.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “The coin change problem is a classic algorithmic problem that involves determining the number of unique ways to make change for a given amount of mon…” — which lab is this?',
+        'Optimal Coin Change Solution',
+        ['Optimal Coin Change Solution', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Optimal Coin Change Solution”.'
+      ),
+      MCQ(
+        'The lab shows `coins: [] or n: 0` — what is the result?',
+        '0',
+        ['0', '1', '-1', '2'],
+        '`coins: [] or n: 0` produces 0, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-coin-change-min': {
+    id: 'labex-python-coin-change-min',
+    title: 'Coin Change Min',
+    theory: ['In this Python challenge, we will be solving the problem of determining the minimum number of ways to make n cents, given coins of denominations less than n cents. In this Python challenge, we have learned how to determine the minimum number of ways to make n cents using a set of coins with denominations less than n cents. We have also identified the requirements for solving this problem and provided some examples of how this function can be used. Given a set of coins with denominations less than n cents, we need to determine the minimum number of ways to make n cents using these coins. The coins can be used in any combination and we have an infinite number of coins of each denomination. We do not need to report the combination(s) of coins that represent the minimum. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Coin Change Min” lab?',
+        'The coins have to reach exactly n cents.',
+        ['The coins have to reach exactly n cents.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The coins have to reach exactly n cents.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In this Python challenge, we will be solving the problem of determining the minimum number of ways to make n cents, given coins of denominations less…” — which lab is this?',
+        'Coin Change Min',
+        ['Coin Change Min', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Coin Change Min”.'
+      ),
+      MCQ(
+        'The lab shows `coins: [] or n: 0` — what is the result?',
+        '0',
+        ['0', '1', '-1', '2'],
+        '`coins: [] or n: 0` produces 0, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-fibonacci-sequence-programming-tutorial': {
+    id: 'labex-python-fibonacci-sequence-programming-tutorial',
+    title: 'Fibonacci Sequence Programming Tutorial',
+    theory: ['Fibonacci is a sequence of numbers in which each number is the sum of the two preceding ones, usually starting with 0 and 1. It is a popular problem in computer science and mathematics. In summary, the Fibonacci sequence is a popular problem in computer science and mathematics. The problem is to implement the sequence in three different ways: recursively, dynamically, and iteratively. The program should start at 0 and 1, and the inputs should be valid non-negative integers. Both recursive and iterative solutions should be implemented, and the program should fit in memory. The problem is to implement the Fibonacci sequence in three different ways: recursively, dynamically, and iteratively. The sequence should start at 0 and 1, and the inputs are valid non-negative integers. Both recursive and iterative solutions should be implemented. The program should fit in memory. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Fibonacci Sequence Programming Tutorial” lab?',
+        'The sequence should start at 0 and 1.',
+        ['The sequence should start at 0 and 1.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The sequence should start at 0 and 1.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “Fibonacci is a sequence of numbers in which each number is the sum of the two preceding ones, usually starting with 0 and 1. It is a popular problem…” — which lab is this?',
+        'Fibonacci Sequence Programming Tutorial',
+        ['Fibonacci Sequence Programming Tutorial', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Fibonacci Sequence Programming Tutorial”.'
+      ),
+      MCQ(
+        'The lab shows `n = 0` — what is the result?',
+        '0',
+        ['0', '1', '-1', '2'],
+        '`n = 0` produces 0, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-robot-grid-path-planning': {
+    id: 'labex-python-robot-grid-path-planning',
+    title: 'Robot Grid Path Planning',
+    theory: ['In this challenge, we will implement an algorithm to move a robot from the upper left corner to the bottom right corner of a rectangular grid. The robot can only move right and down, and some cells may be off-limits. In this challenge, we implemented an algorithm to move a robot from the upper left corner to the bottom right corner of a rectangular grid. The robot can only move right and down, and some cells may be off-limits. We also defined the requirements for the algorithm and provided example usage scenarios. Given a rectangular grid with valid and invalid cells, implement a function to find a valid path for the robot to move from the upper left corner to the bottom right corner. If there is no valid path, return None. If the input is invalid or the matrix is empty, return None. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Robot Grid Path Planning” lab?',
+        'The robot can only move right and down.',
+        ['The robot can only move right and down.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The robot can only move right and down.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In this challenge, we will implement an algorithm to move a robot from the upper left corner to the bottom right corner of a rectangular grid. The ro…” — which lab is this?',
+        'Robot Grid Path Planning',
+        ['Robot Grid Path Planning', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Robot Grid Path Planning”.'
+      ),
+      MCQ(
+        'The lab shows `None input` — what is the result?',
+        'None',
+        ['None', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`None input` produces None, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-longest-inc-subseq': {
+    id: 'labex-python-longest-inc-subseq',
+    title: 'Longest Inc Subseq',
+    theory: ['In computer science, the Longest Increasing Subsequence (LIS) problem is to find the length of the longest subsequence of a given sequence such that all elements of the subsequence are sorted in increasing order. This subsequence is not necessarily contiguous, or unique. In summary, the Longest Increasing Subsequence problem is to find the length of the longest subsequence of a given sequence such that all elements of the subsequence are sorted in increasing order. We can solve this problem by considering the requirements mentioned above. Given a sequence of integers, find the longest increasing subsequence. The subsequence can be non-contiguous and may contain duplicates. If there are multiple solutions, return any one. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Longest Inc Subseq” lab?',
+        'Can we assume the inputs are integers?',
+        ['Can we assume the inputs are integers?', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Can we assume the inputs are integers?” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, the Longest Increasing Subsequence (LIS) problem is to find the length of the longest subsequence of a given sequence such that…” — which lab is this?',
+        'Longest Inc Subseq',
+        ['Longest Inc Subseq', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Longest Inc Subseq”.'
+      ),
+      MCQ(
+        'The lab shows `[3, 4, -1, 0, 6, 2, 3]` — what is the result?',
+        '[-1, 0, 2, 3]',
+        ['[-1, 0, 2, 3]', '[0, 0, 2, 3]', '[-2, 0, 2, 3]', '[1, 0, 2, 3]'],
+        '`[3, 4, -1, 0, 6, 2, 3]` produces [-1, 0, 2, 3], exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-longest-substr-k-distinct': {
+    id: 'labex-python-longest-substr-k-distinct',
+    title: 'Longest Substr K Distinct',
+    theory: ['This challenge requires finding the length of the longest substring with at most k distinct characters in a given string. The code should handle invalid inputs gracefully, search case sensitively, and return an integer as the result. The code should be able to handle the input within memory limits. Given a string and an integer k, find the length of the longest substring that contains at most k distinct characters. A substring is a contiguous block of characters. For example, in the string "abcabcdefgghiij", the longest substring with at most 3 distinct characters is "abcabc". If there are multiple substrings with the same length, return any of them. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Longest Substr K Distinct” lab?',
+        'The inputs may not be valid, so the code should handle invalid inputs gracefully.',
+        ['The inputs may not be valid, so the code should handle invalid inputs gracefully.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The inputs may not be valid, so the code should handle invalid inputs gracefully.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “This challenge requires finding the length of the longest substring with at most k distinct characters in a given string.” — which lab is this?',
+        'Longest Substr K Distinct',
+        ['Longest Substr K Distinct', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Longest Substr K Distinct”.'
+      ),
+      MCQ(
+        'The lab shows `None` — what is the result?',
+        'TypeError',
+        ['TypeError', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`None` produces TypeError, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-identifying-magic-indexes-in-arrays': {
+    id: 'labex-python-identifying-magic-indexes-in-arrays',
+    title: 'Identifying Magic Indexes in Arrays',
+    theory: ['In computer science, a magic index (also known as a fixed point) of an array is an index i in the array such that its value is equal to i. In other words, the task is to find an element in the array such that its value is equal to its index. In summary, the magic index problem involves finding an element in a sorted array such that its value is equal to its index. The function must return the left-most magic index if there are multiple ones, and -1 if there is no magic index. The requirements for the function include a sorted array, the possibility of duplicate elements, and the allowance of negative values. Given a sorted array of integers with possible duplicates, write a Python function to find the magic index, if one exists, in the array. If there are multiple magic values, return the left-most one. If there is no magic index, return -1. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Identifying Magic Indexes in Arrays” lab?',
+        'The elements in the array may not be distinct.',
+        ['The elements in the array may not be distinct.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The elements in the array may not be distinct.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a magic index (also known as a fixed point) of an array is an index i in the array such that its value is equal to i. In other w…” — which lab is this?',
+        'Identifying Magic Indexes in Arrays',
+        ['Identifying Magic Indexes in Arrays', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Identifying Magic Indexes in Arrays”.'
+      ),
+      MCQ(
+        'The lab shows `None input` — what is the result?',
+        '-1',
+        ['-1', '0', '-2', '1'],
+        '`None input` produces -1, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-optimizing-2x2-matrix-multiplication': {
+    id: 'labex-python-optimizing-2x2-matrix-multiplication',
+    title: 'Optimizing 2x2 Matrix Multiplication',
+    theory: ['Matrix multiplication is a fundamental operation in linear algebra and has numerous applications in various fields such as physics, engineering, and computer science. In this challenge, we will focus on minimizing the cost of matrix multiplication given a list of 2x2 matrices. In this challenge, we learned how to minimize the cost of matrix multiplication given a list of 2x2 matrices. We need to find the optimal order of multiplying the matrices to minimize the cost. To solve this problem, we need to consider the requirements and handle invalid inputs. Given a list of 2x2 matrices, we need to find the minimum cost of multiplying them together. The cost of multiplying two matrices is the number of scalar multiplications required. For example, if we have matrices A, B, and C, and we want to calculate the product ABC, the cost would be the number of scalar multiplications required to… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Optimizing 2x2 Matrix Multiplication” lab?',
+        'We cannot assume that the inputs are valid and need to handle invalid inputs.',
+        ['We cannot assume that the inputs are valid and need to handle invalid inputs.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“We cannot assume that the inputs are valid and need to handle invalid inputs.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Optimizing 2x2 Matrix Multiplication” brief introduce?',
+        'None',
+        ['None', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `None` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “Matrix multiplication is a fundamental operation in linear algebra and has numerous applications in various fields such as physics, engineering, and…” — which lab is this?',
+        'Optimizing 2x2 Matrix Multiplication',
+        ['Optimizing 2x2 Matrix Multiplication', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Optimizing 2x2 Matrix Multiplication”.'
+      ),
+    ],
+  },
+  'labex-python-max-profit-k': {
+    id: 'labex-python-max-profit-k',
+    title: 'Max Profit K',
+    theory: ['This challenge aims to determine the maximum profit that can be obtained from a list of stock prices on consecutive days, considering k transactions. The challenge requires the determination of the maximum profit that can be obtained from a list of stock prices on consecutive days, considering k transactions. The solution should return the maximum profit and the days to buy and sell. The requirements for the solution include the number of transactions, the input format, the validity of the inputs, the output format, and the memory usage. Given a list of stock prices on each consecutive day, determine the max profits with k transactions. The problem requires the determination of the maximum profit that can be obtained from a list of stock prices on consecutive days, considering k transactions. The transactions consist of buying and selling stocks, and the maximum number of transactions… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Max Profit K” lab?',
+        'k represents the number of sell transactions.',
+        ['k represents the number of sell transactions.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“k represents the number of sell transactions.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “This challenge aims to determine the maximum profit that can be obtained from a list of stock prices on consecutive days, considering k transactions.” — which lab is this?',
+        'Max Profit K',
+        ['Max Profit K', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Max Profit K”.'
+      ),
+      MCQ(
+        'The lab shows `Prices: None or k: None` — what is the result?',
+        'None',
+        ['None', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`Prices: None or k: None` produces None, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-n-pairs-parentheses': {
+    id: 'labex-python-n-pairs-parentheses',
+    title: 'N Pairs Parentheses',
+    theory: ['In computer science, the problem of generating all valid combinations of n-pairs of parentheses is a classic problem. It is often used as an example problem in computer science courses and coding interviews. In summary, the problem of generating all valid combinations of n-pairs of parentheses is a classic problem in computer science. To solve this problem, we need to find all valid combinations of n-pairs of parentheses, where each opening parenthesis has a corresponding closing parenthesis and the pairs of parentheses are properly nested. The output should be a list of valid combinations without duplicates. The problem is to find all valid combinations of n-pairs of parentheses. A valid combination is one in which each opening parenthesis has a corresponding closing parenthesis and the pairs of parentheses are properly nested. For example, the following are valid combinations of… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “N Pairs Parentheses” lab?',
+        'Is the input an integer representing the number of pairs?',
+        ['Is the input an integer representing the number of pairs?', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Is the input an integer representing the number of pairs?” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, the problem of generating all valid combinations of n-pairs of parentheses is a classic problem. It is often used as an example…” — which lab is this?',
+        'N Pairs Parentheses',
+        ['N Pairs Parentheses', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “N Pairs Parentheses”.'
+      ),
+      MCQ(
+        'The lab shows `0` — what is the result?',
+        '[]',
+        ['[]', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`0` produces [], exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-generating-power-sets-in-python': {
+    id: 'labex-python-generating-power-sets-in-python',
+    title: 'Generating Power Sets in Python',
+    theory: ['In mathematics, a power set of a set S is the set of all subsets of S, including the empty set and S itself. In Python, we can use a combination of loops and recursion to generate the power set of a given set. In this Python challenge, we learned how to generate the power set of a given set using loops and recursion. We also discussed the requirements for generating the power set, including the uniqueness of subsets and the inclusion of the empty set. By following these requirements, we can generate all possible subsets of a set in Python. Given a set, return all possible subsets of the set. The subsets should be unique, meaning that if two subsets have the same elements, they should be treated as the same subset. The empty set should also be included as a subset. The inputs are not necessarily unique, and we cannot assume that the inputs are valid. However, we can assume that the… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Generating Power Sets in Python” lab?',
+        'The empty set should be included as a subset.',
+        ['The empty set should be included as a subset.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The empty set should be included as a subset.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In mathematics, a power set of a set S is the set of all subsets of S, including the empty set and S itself. In Python, we can use a combination of l…” — which lab is this?',
+        'Generating Power Sets in Python',
+        ['Generating Power Sets in Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Generating Power Sets in Python”.'
+      ),
+      MCQ(
+        'The lab shows `[]` — what is the result?',
+        '[[]]',
+        ['[[]]', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`[]` produces [[]], exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-exploring-step-climbing-with-python': {
+    id: 'labex-python-exploring-step-climbing-with-python',
+    title: 'Exploring Step Climbing with Python',
+    theory: ['In this challenge, we will be exploring a problem related to running up steps. We will be using Python to find out how many possible ways there are to run up to the nth step, given that we can take a single, double, or triple step. In this Python challenge, we explored a problem related to running up steps and found out how many possible ways there are to run up to the nth step. We discussed the requirements and provided some examples of how this problem can be solved using Python. Imagine you are standing at the bottom of a staircase with n steps. You can take a single, double, or triple step at a time. The problem is to find out how many possible ways there are to run up to the nth step. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Exploring Step Climbing with Python” lab?',
+        'We cannot assume that the inputs are valid.',
+        ['We cannot assume that the inputs are valid.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“We cannot assume that the inputs are valid.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In this challenge, we will be exploring a problem related to running up steps. We will be using Python to find out how many possible ways there are t…” — which lab is this?',
+        'Exploring Step Climbing with Python',
+        ['Exploring Step Climbing with Python', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Exploring Step Climbing with Python”.'
+      ),
+      MCQ(
+        'The lab shows `n == 0` — what is the result?',
+        '1',
+        ['1', '2', '0', '3'],
+        '`n == 0` produces 1, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-efficient-quick-sort-algorithm': {
+    id: 'labex-python-efficient-quick-sort-algorithm',
+    title: 'Efficient Quick Sort Algorithm',
+    theory: ['Quick Sort is a popular sorting algorithm that uses a divide-and-conquer approach to sort an array or a list. It is a comparison-based algorithm that works by partitioning an array into two sub-arrays, then recursively sorting the sub-arrays. Quick Sort is widely used because of its efficiency and simplicity. Implement Quick Sort algorithm in Python. The algorithm should take an unsorted list as input and return a sorted list. The algorithm should work for lists of any size, including empty lists and lists with duplicate elements. The algorithm should also handle invalid input gracefully. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Efficient Quick Sort Algorithm” lab?',
+        'Choose a pivot element from the list.',
+        ['Choose a pivot element from the list.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Choose a pivot element from the list.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “Quick Sort is a popular sorting algorithm that uses a divide-and-conquer approach to sort an array or a list. It is a comparison-based algorithm that…” — which lab is this?',
+        'Efficient Quick Sort Algorithm',
+        ['Efficient Quick Sort Algorithm', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Efficient Quick Sort Algorithm”.'
+      ),
+      MCQ(
+        'The lab shows `Empty input` — what is the result?',
+        '[]',
+        ['[]', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`Empty input` produces [], exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-radix-sort-efficient-integer-sorting-algorit': {
+    id: 'labex-python-radix-sort-efficient-integer-sorting-algorit',
+    title: 'Radix Sort: Efficient Integer Sorting Algorithm',
+    theory: ['Radix sort is a non-comparative integer sorting algorithm that sorts data with integer keys by grouping keys by the individual digits which share the same significant position and value. It is a linear time sorting algorithm that is often used as a subroutine in other sorting algorithms. Radix sort is an efficient algorithm for sorting integers. It sorts the integers by comparing their digits starting from the least significant digit to the most significant digit. The algorithm has a linear time complexity and is often used as a subroutine in other sorting algorithms. Implement radix sort algorithm to sort a list of integers. The algorithm sorts the integers by comparing their digits starting from the least significant digit to the most significant digit. The algorithm first sorts the integers based on the least significant digit, then the second least significant digit, and so on… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Radix Sort: Efficient Integer Sorting Algorithm” lab?',
+        'The input must be a list of integers.',
+        ['The input must be a list of integers.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The input must be a list of integers.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “Radix sort is a non-comparative integer sorting algorithm that sorts data with integer keys by grouping keys by the individual digits which share the…” — which lab is this?',
+        'Radix Sort: Efficient Integer Sorting Algorithm',
+        ['Radix Sort: Efficient Integer Sorting Algorithm', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Radix Sort: Efficient Integer Sorting Algorithm”.'
+      ),
+      MCQ(
+        'The lab shows `[128, 256, 164, 8, 2, 148, 212, 242, 244]` — what is the result?',
+        '[2, 8, 128, 148, 164, 212, 242, 244, 256]',
+        ['[2, 8, 128, 148, 164, 212, 242, 244, 256]', '[3, 8, 128, 148, 164, 212, 242, 244, 256]', '[1, 8, 128, 148, 164, 212, 242, 244, 256]', '[4, 8, 128, 148, 164, 212, 242, 244, 256]'],
+        '`[128, 256, 164, 8, 2, 148, 212, 242, 244]` produces [2, 8, 128, 148, 164, 212, 242, 244, 256], exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-sorting-with-selection-algorithm': {
+    id: 'labex-python-sorting-with-selection-algorithm',
+    title: 'Sorting with Selection Algorithm',
+    theory: ['Sorting is a fundamental operation in computer science. It is the process of arranging data in a specific order. Selection sort is one of the simplest sorting algorithms. It works by repeatedly finding the minimum element from the unsorted part of the list and putting it at the beginning. This process is repeated until the entire list is sorted. Selection sort is a simple sorting algorithm that works by repeatedly finding the minimum element from the unsorted part of the list and putting it at the beginning. It is not the most efficient sorting algorithm, but it is easy to understand and implement. The algorithm can handle duplicate elements and invalid input. By meeting the requirements, we can implement selection sort in Python and use it to sort lists of integers. Implement selection sort in Python. The algorithm should take a list of integers as input and return the sorted list.… Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Sorting with Selection Algorithm” lab?',
+        'Find the minimum element in the unsorted part of the list.',
+        ['Find the minimum element in the unsorted part of the list.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“Find the minimum element in the unsorted part of the list.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'Which term does the “Sorting with Selection Algorithm” brief introduce?',
+        'selection_sort([])',
+        ['selection_sort([])', 'add_days(n, d)', 'datetime', 'all_equal(lst)'],
+        'The brief works with `selection_sort([])` — it is part of this lab\'s approach.'
+      ),
+      MCQ(
+        'The lab says: “Sorting is a fundamental operation in computer science. It is the process of arranging data in a specific order. Selection sort is one of the simples…” — which lab is this?',
+        'Sorting with Selection Algorithm',
+        ['Sorting with Selection Algorithm', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Sorting with Selection Algorithm”.'
+      ),
+    ],
+  },
+  'labex-python-sorting-stack-using-additional-stack': {
+    id: 'labex-python-sorting-stack-using-additional-stack',
+    title: 'Sorting Stack Using Additional Stack',
+    theory: ['In computer science, a stack is a data structure that follows the Last In First Out (LIFO) principle. Sorting a stack means arranging its elements in a specific order. In this challenge, we will sort a stack using another stack as a buffer. In this challenge, we learned how to sort a stack using another stack as a buffer. We also saw the requirements and examples of how the function should behave. By following these guidelines, we can write a function that sorts a stack in ascending order. Given a stack, write a function to sort it in ascending order. You can use another stack as a buffer. The sorted stack should have the largest element at the top. Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Sorting Stack Using Additional Stack” lab?',
+        'The largest element should be at the top of the sorted stack.',
+        ['The largest element should be at the top of the sorted stack.', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“The largest element should be at the top of the sorted stack.” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a stack is a data structure that follows the Last In First Out (LIFO) principle. Sorting a stack means arranging its elements in…” — which lab is this?',
+        'Sorting Stack Using Additional Stack',
+        ['Sorting Stack Using Additional Stack', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Sorting Stack Using Additional Stack”.'
+      ),
+      MCQ(
+        'The lab shows `Empty stack` — what is the result?',
+        'None',
+        ['None', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`Empty stack` produces None, exactly as the lab\'s example usage states.'
+      ),
+    ],
+  },
+  'labex-python-concise-introduction-to-stacks': {
+    id: 'labex-python-concise-introduction-to-stacks',
+    title: 'Concise Introduction to Stacks',
+    theory: ['In computer science, a stack is an abstract data type that serves as a collection of elements, with two main operations: push, which adds an element to the collection, and pop, which removes the most recently added element that was not yet removed. Other operations include peek, which returns the most recently added element without removing it, and is_empty, which checks if the stack is empty. In this Python challenge, we implemented a stack using a linked list and four methods: push, pop, peek, and is_empty. We also provided example usage and requirements for the implementation. Implement a stack using a linked list in Python, with the following methods: Source: donnemartin/interactive-coding-challenges · by huduo0812 · Apache-2.0.'],
+    questions: [
+      MCQ(
+        'Which step belongs to the “Concise Introduction to Stacks” lab?',
+        'push: adds an element to the top of the stack',
+        ['push: adds an element to the top of the stack', 'The function should return a float.', 'Get the length of the encoded string.', 'Now open the style.css file in the editor.'],
+        '“push: adds an element to the top of the stack” is one of this lab\'s steps.'
+      ),
+      MCQ(
+        'The lab says: “In computer science, a stack is an abstract data type that serves as a collection of elements, with two main operations: push, which adds an element…” — which lab is this?',
+        'Concise Introduction to Stacks',
+        ['Concise Introduction to Stacks', 'Add Days to Date', 'Check if List Elements are Identical', 'Check for Duplicates in List Function'],
+        'Those lines introduce “Concise Introduction to Stacks”.'
+      ),
+      MCQ(
+        'The lab shows `Pop on empty stack: stack.pop()` — what is the result?',
+        'None',
+        ['None', 'datetime.date(2020, 10, 30)', 'datetime.date(2020, 10, 20)', '[ [\'beep\', \'boop\', \'bar\'], [\'foo\'] ]'],
+        '`Pop on empty stack: stack.pop()` produces None, exactly as the lab\'s example usage states.'
       ),
     ],
   },

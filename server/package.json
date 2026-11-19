@@ -1,0 +1,9 @@
+{
+  "name": "bolingo-web-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Runtime dependencies of the Coolify image. Everything in this folder imports Node built-ins except server/lib/db.mjs, which imports `pg` — so the image installs this manifest instead of the ~1.5 GB app toolchain. `check:web` requires this pin to equal the version the root package-lock.json resolves.",
+  "dependencies": {
+    "pg": "8.22.0"
+  }
+}

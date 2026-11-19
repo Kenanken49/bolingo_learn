@@ -194,7 +194,7 @@ export default function Paywall() {
           await supabase.from('profiles').update({ is_premium: true }).eq('id', user.id);
           setIsPremium(true);
           track('premium_activated', experimentProps);
-          Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited hearts are yours.');
+          Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited diamonds are yours.');
           router.replace('/');
         }
       } catch (e: unknown) {
@@ -223,7 +223,7 @@ export default function Paywall() {
       if (res.entitled) {
         await afterChange();
         track('premium_activated', experimentProps);
-        Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited hearts are yours.');
+        Alert.alert('Welcome to Premium', 'PDF & note-scan uploads, elite voices, and unlimited diamonds are yours.');
           router.replace('/');
       } else {
         track('premium_purchase_failed', { ...experimentProps, reason: 'not_entitled' });
@@ -296,7 +296,7 @@ export default function Paywall() {
         await afterChange();
         track('mpesa_checkout_confirmed', { plan: MPESA_PLAN });
         track('premium_activated', { ...experimentProps, rail: 'mpesa' });
-        Alert.alert('Premium active', 'M-Pesa confirmed. PDF uploads, elite voices and unlimited hearts are unlocked.');
+        Alert.alert('Premium active', 'M-Pesa confirmed. PDF uploads, elite voices and unlimited diamonds are unlocked.');
         router.replace('/');
         return;
       }
@@ -389,7 +389,7 @@ export default function Paywall() {
           <View className="flex-row items-start gap-2">
             <AppIcon name="sparkles" size={16} color="#B45309" />
             <Text className="flex-1 text-xs leading-5 text-amber-900 dark:text-amber-100">
-              One subscription: import any file, hear a human-like narrator you choose, unlock roleplay, and never wait for a heart.
+              One subscription: import any file, hear a human-like narrator you choose, unlock roleplay, and never wait for a diamond.
             </Text>
           </View>
         </View>
@@ -492,7 +492,7 @@ export default function Paywall() {
           <Text className="text-lg font-bold text-slate-800 dark:text-slate-200">Premium Monthly</Text>
           <Text className="mt-1 text-3xl font-extrabold text-slate-900 dark:text-slate-100">{price}</Text>
           <Text className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-            • PDF uploads{'\n'}• Note scans — Bingo curates revision nodes{'\n'}• Elite ElevenLabs/OpenAI voices{'\n'}• 100k AI words / 30 days{'\n'}• Unlimited hearts
+            • PDF uploads{'\n'}• Note scans — Bingo curates revision nodes{'\n'}• Elite ElevenLabs/OpenAI voices{'\n'}• 100k AI words / 30 days{'\n'}• Unlimited diamonds
           </Text>
           <Pressable
             onPress={buy}

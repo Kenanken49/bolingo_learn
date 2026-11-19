@@ -1452,6 +1452,15 @@ ${qsrc.join('\n')}
   };
   const guidedCats = new Set();
   for (const [cat, list] of emittedByCat.entries()) {
+    // Flask is special: its guided copy is built from the rebuilt local course
+    // (scripts/build-flask-course.cjs -> 17 modules, 84 steps, 138 graded checks),
+    // which is far richer than the scraped summary. A corpus re-import must not
+    // thin it back out, so that category is left exactly as the course built it.
+    if (cat === 'flask' && fs.existsSync(path.join(GUIDED_OUT, 'flask', 'chunk-01.ts'))) {
+      guidedCats.add('flask');
+      console.log('guided/flask: kept the full-course build from scripts/build-flask-course.cjs');
+      continue;
+    }
     const catDir = path.join(GUIDED_OUT, cat);
     fs.rmSync(catDir, { recursive: true, force: true });
     fs.mkdirSync(catDir, { recursive: true });

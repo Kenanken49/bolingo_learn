@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import Shell from '../../components/dashboard/Shell';
+import UpdateCard from '../../components/dashboard/UpdateCard';
 import {
   SectionHeader,
   HeroCard,
@@ -28,6 +29,8 @@ import {
   type ScheduleItem,
 } from '../../lib/dashboard';
 import { useLearningSpace } from '../../lib/learningSpace';
+import { checkAppUpdate, dismissAppUpdate, downloadRelease, installedVersion } from '../../lib/appUpdate';
+import type { UpdateDecision } from '../../lib/releaseManifest';
 
 /** Open a path block in its real player (project runner vs quiz engine). */
 export function openBlock(b: CurriculumBlock) {
@@ -50,6 +53,7 @@ export default function DashboardHome() {
     deltaPct: null,
   });
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [update, setUpdate] = useState<UpdateDecision | null>(null);
   const { width } = useWindowDimensions();
   const twoCol = width >= 1024;
 
@@ -78,6 +82,14 @@ export default function DashboardHome() {
     }, [refresh])
   );
 
+  // Sideloaded installs get no store notification, so the dashboard asks the
+  // website once per session whether a newer Android build is published: a
+  // newer version, or the same version at a higher build number. A failure to
+  // answer is silence — nothing renders until a real release beats this build.
+  useEffect(() => {
+    void checkAppUpdate().then(setUpdate);
+  }, []);
+
   const resume = resumeForSpace(completed, space);
   const resumeBlock = resume?.block ?? null;
   const resumeProject = resume?.project ?? null;
@@ -100,6 +112,17 @@ export default function DashboardHome() {
 
   const main = (
     <>
+      {update?.offer ? (
+        <UpdateCard
+          release={update.release}
+          installed={installedVersion()}
+          onDismiss={() => {
+            dismissAppUpdate(update.release);
+            setUpdate({ offer: false, reason: 'dismissed' });
+          }}
+          onDownload={() => void downloadRelease(update.release)}
+        />
+      ) : null}
       {resume && (resumeBlock || resumeProject) ? (
         <HeroCard
           eyebrow={resume.eyebrow}

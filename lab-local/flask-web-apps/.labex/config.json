@@ -1,0 +1,2150 @@
+{
+  "lab": "flask-web-apps",
+  "display_name": "Flask Web Applications — Local Lab Course",
+  "subtitle": "17 modules, 84 steps. Reverse-engineered from the LabEx Flask path into a self-contained Docker lab.",
+  "attribution": "Curriculum distilled from LabEx Flask labs, whose code follows the official Flask tutorial (pallets/flask, BSD-3-Clause). See LICENSE-notes.md.",
+  "language": "python",
+  "framework": "flask",
+  "image": "python:3.12-slim",
+  "time_limit_minutes": 0,
+  "workspace": "/workspace",
+  "ports": {
+    "web_app": 8080,
+    "code_server": 3000,
+    "private_check_server": 18080
+  },
+  "verify": {
+    "engine": ".labex/lib/verify.sh",
+    "checks": ".labex/lib/checks.py",
+    "probes": ".labex/probes",
+    "run_all": ".labex/run-all.sh",
+    "graders_total": 138
+  },
+  "honesty": {
+    "graded_by_filesystem_and_live_state": true,
+    "autostarts_servers_only_on_private_port": 18080,
+    "ungradeable_steps": [
+      16,
+      61,
+      79
+    ]
+  },
+  "steps": [
+    {
+      "name": "Setting up Flask",
+      "display_name": "Setting up Flask",
+      "instruction": "lab_content/step1.md",
+      "solution": "lab_content/step1.md",
+      "verify": ".labex/verify_step1.sh",
+      "step": 1,
+      "module": 1,
+      "module_title": "Getting Started with the Flask Web Framework",
+      "lab_dir": "quickstart",
+      "kind": "build",
+      "goal": "Install Flask and create the app module that the rest of the module builds on.",
+      "files": [
+        "quickstart/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "pkg:flask",
+        "ast:quickstart/app.py"
+      ]
+    },
+    {
+      "name": "Creating a Basic Route",
+      "display_name": "Creating a Basic Route",
+      "instruction": "lab_content/step2.md",
+      "solution": "lab_content/step2.md",
+      "verify": ".labex/verify_step2.sh",
+      "step": 2,
+      "module": 1,
+      "module_title": "Getting Started with the Flask Web Framework",
+      "lab_dir": "quickstart",
+      "kind": "build",
+      "goal": "Add the first route so the app answers '/' with a plain-text greeting.",
+      "files": [
+        "quickstart/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:quickstart/app.py",
+        "http:/"
+      ]
+    },
+    {
+      "name": "Running the Application",
+      "display_name": "Running the Application",
+      "instruction": "lab_content/step3.md",
+      "solution": "lab_content/step3.md",
+      "verify": ".labex/verify_step3.sh",
+      "step": 3,
+      "module": 1,
+      "module_title": "Getting Started with the Flask Web Framework",
+      "lab_dir": "quickstart",
+      "kind": "run",
+      "goal": "Start the built-in development server bound to all interfaces on the lab port.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "http:/"
+      ]
+    },
+    {
+      "name": "Adding HTML Templates",
+      "display_name": "Adding HTML Templates",
+      "instruction": "lab_content/step4.md",
+      "solution": "lab_content/step4.md",
+      "verify": ".labex/verify_step4.sh",
+      "step": 4,
+      "module": 1,
+      "module_title": "Getting Started with the Flask Web Framework",
+      "lab_dir": "quickstart",
+      "kind": "build",
+      "goal": "Move the response into a Jinja2 template rendered with render_template().",
+      "files": [
+        "quickstart/templates/index.html",
+        "quickstart/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 3,
+      "check_targets": [
+        "file:quickstart/templates/index.html",
+        "ast:quickstart/app.py",
+        "http:/"
+      ]
+    },
+    {
+      "name": "Running the Application Again",
+      "display_name": "Running the Application Again",
+      "instruction": "lab_content/step5.md",
+      "solution": "lab_content/step5.md",
+      "verify": ".labex/verify_step5.sh",
+      "step": 5,
+      "module": 1,
+      "module_title": "Getting Started with the Flask Web Framework",
+      "lab_dir": "quickstart",
+      "kind": "run",
+      "goal": "Restart the server and confirm the rendered template is what the browser receives.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "http:/"
+      ]
+    },
+    {
+      "name": "Adding Dynamic Content",
+      "display_name": "Adding Dynamic Content",
+      "instruction": "lab_content/step6.md",
+      "solution": "lab_content/step6.md",
+      "verify": ".labex/verify_step6.sh",
+      "step": 6,
+      "module": 1,
+      "module_title": "Getting Started with the Flask Web Framework",
+      "lab_dir": "quickstart",
+      "kind": "build",
+      "goal": "Accept a name in the URL and pass it to the template as dynamic context.",
+      "files": [
+        "quickstart/app.py",
+        "quickstart/templates/index.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:quickstart/app.py",
+        "http:/Amina"
+      ]
+    },
+    {
+      "name": "Running the Application Again",
+      "display_name": "Running the Application Again",
+      "instruction": "lab_content/step7.md",
+      "solution": "lab_content/step7.md",
+      "verify": ".labex/verify_step7.sh",
+      "step": 7,
+      "module": 1,
+      "module_title": "Getting Started with the Flask Web Framework",
+      "lab_dir": "quickstart",
+      "kind": "run",
+      "goal": "Verify dynamic routing end to end through a real HTTP request.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "http:/Nairobi",
+        "http:/Kimani"
+      ]
+    },
+    {
+      "name": "Install Flask and Jinja2",
+      "display_name": "Install Flask and Jinja2",
+      "instruction": "lab_content/step8.md",
+      "solution": "lab_content/step8.md",
+      "verify": ".labex/verify_step8.sh",
+      "step": 8,
+      "module": 2,
+      "module_title": "Flask + Jinja2 Templates",
+      "lab_dir": "templates-lab",
+      "kind": "build",
+      "goal": "Confirm the template engine and web framework are both installed in the runtime.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "pkg:flask",
+        "pkg:jinja2"
+      ]
+    },
+    {
+      "name": "Create a Flask Application",
+      "display_name": "Create a Flask Application",
+      "instruction": "lab_content/step9.md",
+      "solution": "lab_content/step9.md",
+      "verify": ".labex/verify_step9.sh",
+      "step": 9,
+      "module": 2,
+      "module_title": "Flask + Jinja2 Templates",
+      "lab_dir": "templates-lab",
+      "kind": "build",
+      "goal": "Create the templates-lab application that renders a template instead of a string.",
+      "files": [
+        "templates-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:templates-lab/app.py"
+      ]
+    },
+    {
+      "name": "Create a Jinja2 Template",
+      "display_name": "Create a Jinja2 Template",
+      "instruction": "lab_content/step10.md",
+      "solution": "lab_content/step10.md",
+      "verify": ".labex/verify_step10.sh",
+      "step": 10,
+      "module": 2,
+      "module_title": "Flask + Jinja2 Templates",
+      "lab_dir": "templates-lab",
+      "kind": "build",
+      "goal": "Author the Jinja2 template that the index view renders.",
+      "files": [
+        "templates-lab/templates/index.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "file:templates-lab/templates/index.html",
+        "ast:templates-lab/app.py"
+      ]
+    },
+    {
+      "name": "Run the Flask Application",
+      "display_name": "Run the Flask Application",
+      "instruction": "lab_content/step11.md",
+      "solution": "lab_content/step11.md",
+      "verify": ".labex/verify_step11.sh",
+      "step": 11,
+      "module": 2,
+      "module_title": "Flask + Jinja2 Templates",
+      "lab_dir": "templates-lab",
+      "kind": "run",
+      "goal": "Run the app and check the template is served at http://localhost:8080.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "http:/"
+      ]
+    },
+    {
+      "name": "Set up Flask Application",
+      "display_name": "Set up Flask Application",
+      "instruction": "lab_content/step12.md",
+      "solution": "lab_content/step12.md",
+      "verify": ".labex/verify_step12.sh",
+      "step": 12,
+      "module": 3,
+      "module_title": "Working with the Development Server",
+      "lab_dir": "devserver-lab",
+      "kind": "build",
+      "goal": "Create the devserver-lab application module used for the whole module.",
+      "files": [
+        "devserver-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:devserver-lab/app.py"
+      ]
+    },
+    {
+      "name": "Run Development Server with Flask CLI",
+      "display_name": "Run Development Server with Flask CLI",
+      "instruction": "lab_content/step13.md",
+      "solution": "lab_content/step13.md",
+      "verify": ".labex/verify_step13.sh",
+      "step": 13,
+      "module": 3,
+      "module_title": "Working with the Development Server",
+      "lab_dir": "devserver-lab",
+      "kind": "run",
+      "goal": "Start the development server through the Flask CLI rather than python app.py.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "http:/"
+      ]
+    },
+    {
+      "name": "Enable Debug Mode",
+      "display_name": "Enable Debug Mode",
+      "instruction": "lab_content/step14.md",
+      "solution": "lab_content/step14.md",
+      "verify": ".labex/verify_step14.sh",
+      "step": 14,
+      "module": 3,
+      "module_title": "Working with the Development Server",
+      "lab_dir": "devserver-lab",
+      "kind": "run",
+      "goal": "Turn on debug mode so the reloader and interactive debugger are active.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "running:devserver-lab"
+      ]
+    },
+    {
+      "name": "Specify Application File",
+      "display_name": "Specify Application File",
+      "instruction": "lab_content/step15.md",
+      "solution": "lab_content/step15.md",
+      "verify": ".labex/verify_step15.sh",
+      "step": 15,
+      "module": 3,
+      "module_title": "Working with the Development Server",
+      "lab_dir": "devserver-lab",
+      "kind": "build",
+      "goal": "Point the CLI at a differently named application file with --app.",
+      "files": [
+        "devserver-lab/myapp.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:devserver-lab/myapp.py",
+        "http:/"
+      ]
+    },
+    {
+      "name": "Address Already in Use",
+      "display_name": "Address Already in Use",
+      "instruction": "lab_content/step16.md",
+      "solution": "",
+      "verify": ".labex/verify_step16.sh",
+      "step": 16,
+      "module": 3,
+      "module_title": "Working with the Development Server",
+      "lab_dir": "devserver-lab",
+      "kind": "read",
+      "goal": "Diagnose a port conflict with lsof / ss / netstat before choosing a new port.",
+      "files": [],
+      "expected_state": null,
+      "note": "Diagnosis step: there is no file artefact. The commands are shown so you can run them yourself; step 17 proves you recovered by serving on a free port.",
+      "checks": 0,
+      "check_targets": []
+    },
+    {
+      "name": "Running the Development Server from Python",
+      "display_name": "Running the Development Server from Python",
+      "instruction": "lab_content/step17.md",
+      "solution": "lab_content/step17.md",
+      "verify": ".labex/verify_step17.sh",
+      "step": 17,
+      "module": 3,
+      "module_title": "Working with the Development Server",
+      "lab_dir": "devserver-lab",
+      "kind": "build",
+      "goal": "Start the server from Python code with the __main__ guard and app.run(debug=True).",
+      "files": [
+        "devserver-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:devserver-lab/app.py"
+      ]
+    },
+    {
+      "name": "Install Flask",
+      "display_name": "Install Flask",
+      "instruction": "lab_content/step18.md",
+      "solution": "lab_content/step18.md",
+      "verify": ".labex/verify_step18.sh",
+      "step": 18,
+      "module": 4,
+      "module_title": "The Flask Command Line Interface",
+      "lab_dir": "cli-lab",
+      "kind": "build",
+      "goal": "Have the Flask package importable for the CLI exercises.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "pkg:flask"
+      ]
+    },
+    {
+      "name": "Create a Flask Application",
+      "display_name": "Create a Flask Application",
+      "instruction": "lab_content/step19.md",
+      "solution": "lab_content/step19.md",
+      "verify": ".labex/verify_step19.sh",
+      "step": 19,
+      "module": 4,
+      "module_title": "The Flask Command Line Interface",
+      "lab_dir": "cli-lab",
+      "kind": "build",
+      "goal": "Write the cli-lab application that the CLI will discover.",
+      "files": [
+        "cli-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:cli-lab/app.py"
+      ]
+    },
+    {
+      "name": "Run the Development Server",
+      "display_name": "Run the Development Server",
+      "instruction": "lab_content/step20.md",
+      "solution": "lab_content/step20.md",
+      "verify": ".labex/verify_step20.sh",
+      "step": 20,
+      "module": 4,
+      "module_title": "The Flask Command Line Interface",
+      "lab_dir": "cli-lab",
+      "kind": "run",
+      "goal": "Serve the app with flask run instead of python app.py.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "http:/"
+      ]
+    },
+    {
+      "name": "Create a Custom Command",
+      "display_name": "Create a Custom Command",
+      "instruction": "lab_content/step21.md",
+      "solution": "lab_content/step21.md",
+      "verify": ".labex/verify_step21.sh",
+      "step": 21,
+      "module": 4,
+      "module_title": "The Flask Command Line Interface",
+      "lab_dir": "cli-lab",
+      "kind": "build",
+      "goal": "Build a standalone click command that prints a greeting.",
+      "files": [
+        "cli-lab/commands.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:cli-lab/commands.py",
+        "cli:cli-lab"
+      ]
+    },
+    {
+      "name": "Register Commands with the Flask Application",
+      "display_name": "Register Commands with the Flask Application",
+      "instruction": "lab_content/step22.md",
+      "solution": "lab_content/step22.md",
+      "verify": ".labex/verify_step22.sh",
+      "step": 22,
+      "module": 4,
+      "module_title": "The Flask Command Line Interface",
+      "lab_dir": "cli-lab",
+      "kind": "build",
+      "goal": "Expose the custom command through the Flask CLI.",
+      "files": [
+        "cli-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:cli-lab/app.py",
+        "cli:cli-lab"
+      ]
+    },
+    {
+      "name": "Creating the Application Directory",
+      "display_name": "Creating the Application Directory",
+      "instruction": "lab_content/step23.md",
+      "solution": "lab_content/step23.md",
+      "verify": ".labex/verify_step23.sh",
+      "step": 23,
+      "module": 5,
+      "module_title": "Building a Flask Application (Application Factory)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Create the flaskr package directory inside the flaskr-app project.",
+      "files": [
+        "flaskr-app/flaskr/"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "dir:flaskr-app/flaskr"
+      ]
+    },
+    {
+      "name": "Setting up the Application Factory",
+      "display_name": "Setting up the Application Factory",
+      "instruction": "lab_content/step24.md",
+      "solution": "lab_content/step24.md",
+      "verify": ".labex/verify_step24.sh",
+      "step": 24,
+      "module": 5,
+      "module_title": "Building a Flask Application (Application Factory)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Write the application factory that instantiates and configures the app.",
+      "files": [
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/__init__.py",
+        "app:flaskr-app"
+      ]
+    },
+    {
+      "name": "Configuring the Application",
+      "display_name": "Configuring the Application",
+      "instruction": "lab_content/step25.md",
+      "solution": "lab_content/step25.md",
+      "verify": ".labex/verify_step25.sh",
+      "step": 25,
+      "module": 5,
+      "module_title": "Building a Flask Application (Application Factory)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Load instance/test config, create the instance folder, and add the hello route.",
+      "files": [
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/__init__.py"
+      ]
+    },
+    {
+      "name": "Running the Application",
+      "display_name": "Running the Application",
+      "instruction": "lab_content/step26.md",
+      "solution": "lab_content/step26.md",
+      "verify": ".labex/verify_step26.sh",
+      "step": 26,
+      "module": 5,
+      "module_title": "Building a Flask Application (Application Factory)",
+      "lab_dir": "flaskr-app",
+      "kind": "run",
+      "goal": "Run flaskr from the project root and confirm it serves the hello page.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "http:/"
+      ]
+    },
+    {
+      "name": "Setting up the Database",
+      "display_name": "Setting up the Database",
+      "instruction": "lab_content/step27.md",
+      "solution": "lab_content/step27.md",
+      "verify": ".labex/verify_step27.sh",
+      "step": 27,
+      "module": 6,
+      "module_title": "SQLite Database Setup",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Add per-request SQLite connections stored on flask.g, closed on teardown.",
+      "files": [
+        "flaskr-app/flaskr/db.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/db.py"
+      ]
+    },
+    {
+      "name": "Creating Tables",
+      "display_name": "Creating Tables",
+      "instruction": "lab_content/step28.md",
+      "solution": "lab_content/step28.md",
+      "verify": ".labex/verify_step28.sh",
+      "step": 28,
+      "module": 6,
+      "module_title": "SQLite Database Setup",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Define the user and post tables in schema.sql.",
+      "files": [
+        "flaskr-app/flaskr/schema.sql"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "sql:flaskr-app/flaskr/schema.sql"
+      ]
+    },
+    {
+      "name": "Initializing the Database",
+      "display_name": "Initializing the Database",
+      "instruction": "lab_content/step29.md",
+      "solution": "lab_content/step29.md",
+      "verify": ".labex/verify_step29.sh",
+      "step": 29,
+      "module": 6,
+      "module_title": "SQLite Database Setup",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Write init_db() and the init-db CLI command that loads schema.sql.",
+      "files": [
+        "flaskr-app/flaskr/db.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/db.py"
+      ]
+    },
+    {
+      "name": "Registering with the Application",
+      "display_name": "Registering with the Application",
+      "instruction": "lab_content/step30.md",
+      "solution": "lab_content/step30.md",
+      "verify": ".labex/verify_step30.sh",
+      "step": 30,
+      "module": 6,
+      "module_title": "SQLite Database Setup",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Register teardown and CLI hooks from the factory via db.init_app(app).",
+      "files": [
+        "flaskr-app/flaskr/db.py",
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/db.py",
+        "ast:flaskr-app/flaskr/__init__.py"
+      ]
+    },
+    {
+      "name": "Initializing the Database File",
+      "display_name": "Initializing the Database File",
+      "instruction": "lab_content/step31.md",
+      "solution": "lab_content/step31.md",
+      "verify": ".labex/verify_step31.sh",
+      "step": 31,
+      "module": 6,
+      "module_title": "SQLite Database Setup",
+      "lab_dir": "flaskr-app",
+      "kind": "run",
+      "goal": "Create the real database file on disk with the flask CLI.",
+      "files": [
+        "flaskr-app/instance/flaskr.sqlite"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "cli:flaskr-app",
+        "db:flaskr-app/instance/flaskr.sqlite"
+      ]
+    },
+    {
+      "name": "Create a Blueprint",
+      "display_name": "Create a Blueprint",
+      "instruction": "lab_content/step32.md",
+      "solution": "lab_content/step32.md",
+      "verify": ".labex/verify_step32.sh",
+      "step": 32,
+      "module": 7,
+      "module_title": "Modular Application with Blueprints and Authentication",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Create the auth blueprint module with its URL prefix.",
+      "files": [
+        "flaskr-app/flaskr/auth.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/auth.py",
+        "app:flaskr-app"
+      ]
+    },
+    {
+      "name": "Register the Blueprint",
+      "display_name": "Register the Blueprint",
+      "instruction": "lab_content/step33.md",
+      "solution": "lab_content/step33.md",
+      "verify": ".labex/verify_step33.sh",
+      "step": 33,
+      "module": 7,
+      "module_title": "Modular Application with Blueprints and Authentication",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Register the auth blueprint from the application factory.",
+      "files": [
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/__init__.py",
+        "app:flaskr-app"
+      ]
+    },
+    {
+      "name": "Implement Registration View",
+      "display_name": "Implement Registration View",
+      "instruction": "lab_content/step34.md",
+      "solution": "lab_content/step34.md",
+      "verify": ".labex/verify_step34.sh",
+      "step": 34,
+      "module": 7,
+      "module_title": "Modular Application with Blueprints and Authentication",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Implement the registration view that stores a hashed password.",
+      "files": [
+        "flaskr-app/flaskr/auth.py",
+        "flaskr-app/flaskr/templates/auth/register.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/auth.py",
+        "http:/auth/register"
+      ]
+    },
+    {
+      "name": "Implement Login View",
+      "display_name": "Implement Login View",
+      "instruction": "lab_content/step35.md",
+      "solution": "lab_content/step35.md",
+      "verify": ".labex/verify_step35.sh",
+      "step": 35,
+      "module": 7,
+      "module_title": "Modular Application with Blueprints and Authentication",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Implement the login view that checks the password hash and opens a session.",
+      "files": [
+        "flaskr-app/flaskr/auth.py",
+        "flaskr-app/flaskr/templates/auth/login.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/auth.py",
+        "http:/auth/login"
+      ]
+    },
+    {
+      "name": "Implement Logout View",
+      "display_name": "Implement Logout View",
+      "instruction": "lab_content/step36.md",
+      "solution": "lab_content/step36.md",
+      "verify": ".labex/verify_step36.sh",
+      "step": 36,
+      "module": 7,
+      "module_title": "Modular Application with Blueprints and Authentication",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Add the logout view that clears the session.",
+      "files": [
+        "flaskr-app/flaskr/auth.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/auth.py",
+        "app:flaskr-app"
+      ]
+    },
+    {
+      "name": "Implement Login Required Decorator",
+      "display_name": "Implement Login Required Decorator",
+      "instruction": "lab_content/step37.md",
+      "solution": "lab_content/step37.md",
+      "verify": ".labex/verify_step37.sh",
+      "step": 37,
+      "module": 7,
+      "module_title": "Modular Application with Blueprints and Authentication",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Write the login_required decorator that guards views behind the session.",
+      "files": [
+        "flaskr-app/flaskr/auth.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/auth.py",
+        "script:flaskr-app"
+      ]
+    },
+    {
+      "name": "Create CSS file",
+      "display_name": "Create CSS file",
+      "instruction": "lab_content/step38.md",
+      "solution": "lab_content/step38.md",
+      "verify": ".labex/verify_step38.sh",
+      "step": 38,
+      "module": 8,
+      "module_title": "Styling the Application with Static Files",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Create the stylesheet file inside the static folder.",
+      "files": [
+        "flaskr-app/flaskr/static/style.css"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "file:flaskr-app/flaskr/static/style.css"
+      ]
+    },
+    {
+      "name": "Add CSS rules",
+      "display_name": "Add CSS rules",
+      "instruction": "lab_content/step39.md",
+      "solution": "lab_content/step39.md",
+      "verify": ".labex/verify_step39.sh",
+      "step": 39,
+      "module": 8,
+      "module_title": "Styling the Application with Static Files",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Fill the stylesheet with the layout rules for the application.",
+      "files": [
+        "flaskr-app/flaskr/static/style.css"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "css:flaskr-app/flaskr/static/style.css"
+      ]
+    },
+    {
+      "name": "Link CSS file in HTML",
+      "display_name": "Link CSS file in HTML",
+      "instruction": "lab_content/step40.md",
+      "solution": "lab_content/step40.md",
+      "verify": ".labex/verify_step40.sh",
+      "step": 40,
+      "module": 8,
+      "module_title": "Styling the Application with Static Files",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Attach the stylesheet from the base template with url_for('static').",
+      "files": [
+        "flaskr-app/flaskr/templates/base.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "http:/auth/login"
+      ]
+    },
+    {
+      "name": "Verify the changes",
+      "display_name": "Verify the changes",
+      "instruction": "lab_content/step41.md",
+      "solution": "lab_content/step41.md",
+      "verify": ".labex/verify_step41.sh",
+      "step": 41,
+      "module": 8,
+      "module_title": "Styling the Application with Static Files",
+      "lab_dir": "flaskr-app",
+      "kind": "run",
+      "goal": "Confirm Flask's static view actually serves the stylesheet.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "http:/static/style.css"
+      ]
+    },
+    {
+      "name": "Define Blueprint",
+      "display_name": "Define Blueprint",
+      "instruction": "lab_content/step42.md",
+      "solution": "lab_content/step42.md",
+      "verify": ".labex/verify_step42.sh",
+      "step": 42,
+      "module": 9,
+      "module_title": "The Blog Application (CRUD)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Define the blog blueprint module.",
+      "files": [
+        "flaskr-app/flaskr/blog.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/blog.py",
+        "app:flaskr-app"
+      ]
+    },
+    {
+      "name": "Register Blueprint",
+      "display_name": "Register Blueprint",
+      "instruction": "lab_content/step43.md",
+      "solution": "lab_content/step43.md",
+      "verify": ".labex/verify_step43.sh",
+      "step": 43,
+      "module": 9,
+      "module_title": "The Blog Application (CRUD)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Register the blog blueprint and bind '/' to the blog index endpoint.",
+      "files": [
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "app:flaskr-app",
+        "app:flaskr-app"
+      ]
+    },
+    {
+      "name": "Create Blog Index",
+      "display_name": "Create Blog Index",
+      "instruction": "lab_content/step44.md",
+      "solution": "lab_content/step44.md",
+      "verify": ".labex/verify_step44.sh",
+      "step": 44,
+      "module": 9,
+      "module_title": "The Blog Application (CRUD)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "List every post with its author, newest first.",
+      "files": [
+        "flaskr-app/flaskr/blog.py",
+        "flaskr-app/flaskr/templates/blog/index.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/blog.py",
+        "http:/"
+      ]
+    },
+    {
+      "name": "Post Creation",
+      "display_name": "Post Creation",
+      "instruction": "lab_content/step45.md",
+      "solution": "lab_content/step45.md",
+      "verify": ".labex/verify_step45.sh",
+      "step": 45,
+      "module": 9,
+      "module_title": "The Blog Application (CRUD)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Let a logged-in user create a post that is written to the database.",
+      "files": [
+        "flaskr-app/flaskr/blog.py",
+        "flaskr-app/flaskr/templates/blog/create.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/blog.py",
+        "script:flaskr-app"
+      ]
+    },
+    {
+      "name": "Post Update",
+      "display_name": "Post Update",
+      "instruction": "lab_content/step46.md",
+      "solution": "lab_content/step46.md",
+      "verify": ".labex/verify_step46.sh",
+      "step": 46,
+      "module": 9,
+      "module_title": "The Blog Application (CRUD)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Let the author edit their own post.",
+      "files": [
+        "flaskr-app/flaskr/blog.py",
+        "flaskr-app/flaskr/templates/blog/update.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/blog.py",
+        "script:flaskr-app"
+      ]
+    },
+    {
+      "name": "Post Deletion",
+      "display_name": "Post Deletion",
+      "instruction": "lab_content/step47.md",
+      "solution": "lab_content/step47.md",
+      "verify": ".labex/verify_step47.sh",
+      "step": 47,
+      "module": 9,
+      "module_title": "The Blog Application (CRUD)",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Let the author delete their own post.",
+      "files": [
+        "flaskr-app/flaskr/blog.py",
+        "flaskr-app/flaskr/templates/blog/delete.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/flaskr/blog.py",
+        "script:flaskr-app"
+      ]
+    },
+    {
+      "name": "Create a Flask Application",
+      "display_name": "Create a Flask Application",
+      "instruction": "lab_content/step48.md",
+      "solution": "lab_content/step48.md",
+      "verify": ".labex/verify_step48.sh",
+      "step": 48,
+      "module": 10,
+      "module_title": "Configuration Management",
+      "lab_dir": "config-lab",
+      "kind": "build",
+      "goal": "Create the config-lab application that configuration will be attached to.",
+      "files": [
+        "config-lab/app.py"
+      ],
+      "expected_state": "_states/m10-step-48",
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:config-lab/app.py"
+      ]
+    },
+    {
+      "name": "Basic Configuration",
+      "display_name": "Basic Configuration",
+      "instruction": "lab_content/step49.md",
+      "solution": "lab_content/step49.md",
+      "verify": ".labex/verify_step49.sh",
+      "step": 49,
+      "module": 10,
+      "module_title": "Configuration Management",
+      "lab_dir": "config-lab",
+      "kind": "build",
+      "goal": "Set DEBUG and SECRET_KEY directly on app.config.",
+      "files": [
+        "config-lab/app.py"
+      ],
+      "expected_state": "_states/m10-step-49",
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "app:config-lab"
+      ]
+    },
+    {
+      "name": "Configuration from Files",
+      "display_name": "Configuration from Files",
+      "instruction": "lab_content/step50.md",
+      "solution": "lab_content/step50.md",
+      "verify": ".labex/verify_step50.sh",
+      "step": 50,
+      "module": 10,
+      "module_title": "Configuration Management",
+      "lab_dir": "config-lab",
+      "kind": "build",
+      "goal": "Move configuration into a module loaded with from_object().",
+      "files": [
+        "config-lab/config.py",
+        "config-lab/app.py"
+      ],
+      "expected_state": "_states/m10-step-50",
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "file:config-lab/config.py",
+        "app:config-lab"
+      ]
+    },
+    {
+      "name": "Environment-based Configuration",
+      "display_name": "Environment-based Configuration",
+      "instruction": "lab_content/step51.md",
+      "solution": "lab_content/step51.md",
+      "verify": ".labex/verify_step51.sh",
+      "step": 51,
+      "module": 10,
+      "module_title": "Configuration Management",
+      "lab_dir": "config-lab",
+      "kind": "build",
+      "goal": "Select dev or production configuration from an environment variable.",
+      "files": [
+        "config-lab/config.py",
+        "config-lab/config_prod.py",
+        "config-lab/app.py"
+      ],
+      "expected_state": "_states/m10-step-51",
+      "note": null,
+      "checks": 3,
+      "check_targets": [
+        "file:config-lab/config_prod.py",
+        "app:config-lab",
+        "app:config-lab"
+      ]
+    },
+    {
+      "name": "Instance Folder",
+      "display_name": "Instance Folder",
+      "instruction": "lab_content/step52.md",
+      "solution": "lab_content/step52.md",
+      "verify": ".labex/verify_step52.sh",
+      "step": 52,
+      "module": 10,
+      "module_title": "Configuration Management",
+      "lab_dir": "config-lab",
+      "kind": "build",
+      "goal": "Load deployment-specific settings from the instance folder.",
+      "files": [
+        "config-lab/instance/config.cfg",
+        "config-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "file:config-lab/instance/config.cfg",
+        "app:config-lab"
+      ]
+    },
+    {
+      "name": "Installing Flask and Blinker",
+      "display_name": "Installing Flask and Blinker",
+      "instruction": "lab_content/step53.md",
+      "solution": "lab_content/step53.md",
+      "verify": ".labex/verify_step53.sh",
+      "step": 53,
+      "module": 11,
+      "module_title": "Signals and Application Lifecycle",
+      "lab_dir": "signals-lab",
+      "kind": "build",
+      "goal": "Install the blinker package that Flask uses for signals.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "pkg:blinker"
+      ]
+    },
+    {
+      "name": "Importing the Required Modules",
+      "display_name": "Importing the Required Modules",
+      "instruction": "lab_content/step54.md",
+      "solution": "lab_content/step54.md",
+      "verify": ".labex/verify_step54.sh",
+      "step": 54,
+      "module": 11,
+      "module_title": "Signals and Application Lifecycle",
+      "lab_dir": "signals-lab",
+      "kind": "build",
+      "goal": "Import Flask and blinker's Namespace in the signals application.",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:signals-lab/app.py"
+      ]
+    },
+    {
+      "name": "Creating a Flask Application",
+      "display_name": "Creating a Flask Application",
+      "instruction": "lab_content/step55.md",
+      "solution": "lab_content/step55.md",
+      "verify": ".labex/verify_step55.sh",
+      "step": 55,
+      "module": 11,
+      "module_title": "Signals and Application Lifecycle",
+      "lab_dir": "signals-lab",
+      "kind": "build",
+      "goal": "Instantiate the Flask application object.",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:signals-lab/app.py"
+      ]
+    },
+    {
+      "name": "Creating a Namespace for Signals",
+      "display_name": "Creating a Namespace for Signals",
+      "instruction": "lab_content/step56.md",
+      "solution": "lab_content/step56.md",
+      "verify": ".labex/verify_step56.sh",
+      "step": 56,
+      "module": 11,
+      "module_title": "Signals and Application Lifecycle",
+      "lab_dir": "signals-lab",
+      "kind": "build",
+      "goal": "Create a signal namespace so your signals do not collide with Flask's.",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:signals-lab/app.py",
+        "script:signals-lab"
+      ]
+    },
+    {
+      "name": "Creating a Signal",
+      "display_name": "Creating a Signal",
+      "instruction": "lab_content/step57.md",
+      "solution": "lab_content/step57.md",
+      "verify": ".labex/verify_step57.sh",
+      "step": 57,
+      "module": 11,
+      "module_title": "Signals and Application Lifecycle",
+      "lab_dir": "signals-lab",
+      "kind": "build",
+      "goal": "Define a named application signal.",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:signals-lab/app.py",
+        "script:signals-lab"
+      ]
+    },
+    {
+      "name": "Subscribing to a Signal",
+      "display_name": "Subscribing to a Signal",
+      "instruction": "lab_content/step58.md",
+      "solution": "lab_content/step58.md",
+      "verify": ".labex/verify_step58.sh",
+      "step": 58,
+      "module": 11,
+      "module_title": "Signals and Application Lifecycle",
+      "lab_dir": "signals-lab",
+      "kind": "build",
+      "goal": "Subscribe a receiver function to the signal.",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:signals-lab/app.py",
+        "script:signals-lab"
+      ]
+    },
+    {
+      "name": "Emitting a Signal",
+      "display_name": "Emitting a Signal",
+      "instruction": "lab_content/step59.md",
+      "solution": "lab_content/step59.md",
+      "verify": ".labex/verify_step59.sh",
+      "step": 59,
+      "module": 11,
+      "module_title": "Signals and Application Lifecycle",
+      "lab_dir": "signals-lab",
+      "kind": "build",
+      "goal": "Emit the signal and confirm the receiver runs.",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:signals-lab/app.py",
+        "script:signals-lab"
+      ]
+    },
+    {
+      "name": "Running the Application",
+      "display_name": "Running the Application",
+      "instruction": "lab_content/step60.md",
+      "solution": "lab_content/step60.md",
+      "verify": ".labex/verify_step60.sh",
+      "step": 60,
+      "module": 11,
+      "module_title": "Signals and Application Lifecycle",
+      "lab_dir": "signals-lab",
+      "kind": "run",
+      "goal": "Run the application that emits the signal during startup.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "running:signals-lab"
+      ]
+    },
+    {
+      "name": "Starting the Shell",
+      "display_name": "Starting the Shell",
+      "instruction": "lab_content/step61.md",
+      "solution": "",
+      "verify": ".labex/verify_step61.sh",
+      "step": 61,
+      "module": 12,
+      "module_title": "Working with the Shell and Request Context",
+      "lab_dir": "shell-lab",
+      "kind": "read",
+      "goal": "Open the Flask shell and inspect the application and request context interactively.",
+      "files": [],
+      "expected_state": null,
+      "note": "Interactive step: flask shell opens a Python REPL inside an app context, so it leaves no file artefact to grade. Run the commands in the terminal and read what they print, then continue to step 62.",
+      "checks": 0,
+      "check_targets": []
+    },
+    {
+      "name": "Creating a Request Context",
+      "display_name": "Creating a Request Context",
+      "instruction": "lab_content/step62.md",
+      "solution": "lab_content/step62.md",
+      "verify": ".labex/verify_step62.sh",
+      "step": 62,
+      "module": 12,
+      "module_title": "Working with the Shell and Request Context",
+      "lab_dir": "shell-lab",
+      "kind": "build",
+      "goal": "Push a test request context outside a request and read request data from it.",
+      "files": [
+        "shell-lab/shell.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:shell-lab/shell.py",
+        "cli:shell-lab"
+      ]
+    },
+    {
+      "name": "Firing Before/After Request Functions",
+      "display_name": "Firing Before/After Request Functions",
+      "instruction": "lab_content/step63.md",
+      "solution": "lab_content/step63.md",
+      "verify": ".labex/verify_step63.sh",
+      "step": 63,
+      "module": 12,
+      "module_title": "Working with the Shell and Request Context",
+      "lab_dir": "shell-lab",
+      "kind": "build",
+      "goal": "Fire the before-request and after-request functions from a script.",
+      "files": [
+        "shell-lab/shell.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "ast:shell-lab/shell.py"
+      ]
+    },
+    {
+      "name": "Improving the Shell Experience",
+      "display_name": "Improving the Shell Experience",
+      "instruction": "lab_content/step64.md",
+      "solution": "lab_content/step64.md",
+      "verify": ".labex/verify_step64.sh",
+      "step": 64,
+      "module": 12,
+      "module_title": "Working with the Shell and Request Context",
+      "lab_dir": "shell-lab",
+      "kind": "build",
+      "goal": "Expose helper functions to the shell with a shell context processor.",
+      "files": [
+        "shell-lab/shelltools.py",
+        "shell-lab/shell.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 3,
+      "check_targets": [
+        "ast:shell-lab/shelltools.py",
+        "ast:shell-lab/shell.py",
+        "cli:shell-lab"
+      ]
+    },
+    {
+      "name": "Set up the Testing Environment",
+      "display_name": "Set up the Testing Environment",
+      "instruction": "lab_content/step65.md",
+      "solution": "lab_content/step65.md",
+      "verify": ".labex/verify_step65.sh",
+      "step": 65,
+      "module": 13,
+      "module_title": "Testing Flask Applications (pytest basics)",
+      "lab_dir": "test-lab",
+      "kind": "build",
+      "goal": "Create the pytest fixtures that hand the app, test client and CLI runner to tests.",
+      "files": [
+        "test-lab/tests/conftest.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 3,
+      "check_targets": [
+        "pkg:pytest",
+        "ast:test-lab/tests/conftest.py",
+        "cli:test-lab"
+      ]
+    },
+    {
+      "name": "Writing Tests",
+      "display_name": "Writing Tests",
+      "instruction": "lab_content/step66.md",
+      "solution": "lab_content/step66.md",
+      "verify": ".labex/verify_step66.sh",
+      "step": 66,
+      "module": 13,
+      "module_title": "Testing Flask Applications (pytest basics)",
+      "lab_dir": "test-lab",
+      "kind": "test",
+      "goal": "Write view tests and a CLI test that actually pass.",
+      "files": [
+        "test-lab/tests/test_app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:test-lab/tests/test_app.py",
+        "pytest:test-lab"
+      ]
+    },
+    {
+      "name": "Install Pytest and Coverage",
+      "display_name": "Install Pytest and Coverage",
+      "instruction": "lab_content/step67.md",
+      "solution": "lab_content/step67.md",
+      "verify": ".labex/verify_step67.sh",
+      "step": 67,
+      "module": 14,
+      "module_title": "Unit Testing flaskr with pytest and Coverage",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Install the test and coverage tooling for the flaskr suite.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "pkg:pytest",
+        "pkg:coverage"
+      ]
+    },
+    {
+      "name": "Setup and Fixtures",
+      "display_name": "Setup and Fixtures",
+      "instruction": "lab_content/step68.md",
+      "solution": "lab_content/step68.md",
+      "verify": ".labex/verify_step68.sh",
+      "step": 68,
+      "module": 14,
+      "module_title": "Unit Testing flaskr with pytest and Coverage",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Build the fixtures that give every test a fresh temporary database loaded from tests/data.sql.",
+      "files": [
+        "flaskr-app/tests/conftest.py",
+        "flaskr-app/tests/data.sql"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 3,
+      "check_targets": [
+        "file:flaskr-app/tests/data.sql",
+        "ast:flaskr-app/tests/conftest.py",
+        "cli:flaskr-app"
+      ]
+    },
+    {
+      "name": "Write Tests for Factory",
+      "display_name": "Write Tests for Factory",
+      "instruction": "lab_content/step69.md",
+      "solution": "lab_content/step69.md",
+      "verify": ".labex/verify_step69.sh",
+      "step": 69,
+      "module": 14,
+      "module_title": "Unit Testing flaskr with pytest and Coverage",
+      "lab_dir": "flaskr-app",
+      "kind": "test",
+      "goal": "Test the application factory: configuration and the hello view.",
+      "files": [
+        "flaskr-app/tests/test_factory.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/tests/test_factory.py",
+        "pytest:flaskr-app"
+      ]
+    },
+    {
+      "name": "Test Database Connection",
+      "display_name": "Test Database Connection",
+      "instruction": "lab_content/step70.md",
+      "solution": "lab_content/step70.md",
+      "verify": ".labex/verify_step70.sh",
+      "step": 70,
+      "module": 14,
+      "module_title": "Unit Testing flaskr with pytest and Coverage",
+      "lab_dir": "flaskr-app",
+      "kind": "test",
+      "goal": "Test that database connections are registered on g and closed after the context.",
+      "files": [
+        "flaskr-app/tests/test_db.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/tests/test_db.py",
+        "pytest:flaskr-app"
+      ]
+    },
+    {
+      "name": "Test Authentication",
+      "display_name": "Test Authentication",
+      "instruction": "lab_content/step71.md",
+      "solution": "lab_content/step71.md",
+      "verify": ".labex/verify_step71.sh",
+      "step": 71,
+      "module": 14,
+      "module_title": "Unit Testing flaskr with pytest and Coverage",
+      "lab_dir": "flaskr-app",
+      "kind": "test",
+      "goal": "Test registration, login, logout and the login guard.",
+      "files": [
+        "flaskr-app/tests/test_auth.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/tests/test_auth.py",
+        "pytest:flaskr-app"
+      ]
+    },
+    {
+      "name": "Test Blog Posts",
+      "display_name": "Test Blog Posts",
+      "instruction": "lab_content/step72.md",
+      "solution": "lab_content/step72.md",
+      "verify": ".labex/verify_step72.sh",
+      "step": 72,
+      "module": 14,
+      "module_title": "Unit Testing flaskr with pytest and Coverage",
+      "lab_dir": "flaskr-app",
+      "kind": "test",
+      "goal": "Test the blog views: index, create, update, delete and their guards.",
+      "files": [
+        "flaskr-app/tests/test_blog.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:flaskr-app/tests/test_blog.py",
+        "pytest:flaskr-app"
+      ]
+    },
+    {
+      "name": "Run the Tests",
+      "display_name": "Run the Tests",
+      "instruction": "lab_content/step73.md",
+      "solution": "lab_content/step73.md",
+      "verify": ".labex/verify_step73.sh",
+      "step": 73,
+      "module": 14,
+      "module_title": "Unit Testing flaskr with pytest and Coverage",
+      "lab_dir": "flaskr-app",
+      "kind": "run",
+      "goal": "Run the whole suite under coverage and read the report.",
+      "files": [
+        "flaskr-app/.coverage"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 3,
+      "check_targets": [
+        "cli:flaskr-app",
+        "cli:flaskr-app",
+        "cli:flaskr-app"
+      ]
+    },
+    {
+      "name": "Cross-Site Scripting (XSS)",
+      "display_name": "Cross-Site Scripting (XSS)",
+      "instruction": "lab_content/step74.md",
+      "solution": "lab_content/step74.md",
+      "verify": ".labex/verify_step74.sh",
+      "step": 74,
+      "module": 15,
+      "module_title": "Secure Web Application Development",
+      "lab_dir": "secure-lab",
+      "kind": "build",
+      "goal": "Render user input through Jinja2 autoescaping so a script tag stays inert data.",
+      "files": [
+        "secure-lab/xss/app.py",
+        "secure-lab/xss/templates/greet.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:secure-lab/xss/app.py",
+        "app:secure-lab/xss"
+      ]
+    },
+    {
+      "name": "Cross-Site Request Forgery (CSRF)",
+      "display_name": "Cross-Site Request Forgery (CSRF)",
+      "instruction": "lab_content/step75.md",
+      "solution": "lab_content/step75.md",
+      "verify": ".labex/verify_step75.sh",
+      "step": 75,
+      "module": 15,
+      "module_title": "Secure Web Application Development",
+      "lab_dir": "secure-lab",
+      "kind": "build",
+      "goal": "Reject a state-changing request that carries no CSRF token, accept one that does.",
+      "files": [
+        "secure-lab/csrf/app.py",
+        "secure-lab/csrf/templates/form.html"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:secure-lab/csrf/app.py",
+        "script:secure-lab/csrf"
+      ]
+    },
+    {
+      "name": "JSON Security",
+      "display_name": "JSON Security",
+      "instruction": "lab_content/step76.md",
+      "solution": "lab_content/step76.md",
+      "verify": ".labex/verify_step76.sh",
+      "step": 76,
+      "module": 15,
+      "module_title": "Secure Web Application Development",
+      "lab_dir": "secure-lab",
+      "kind": "build",
+      "goal": "Confirm the framework version that parses JSON only through Flask's safe provider.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "pkgmin:flask"
+      ]
+    },
+    {
+      "name": "Security Headers",
+      "display_name": "Security Headers",
+      "instruction": "lab_content/step77.md",
+      "solution": "lab_content/step77.md",
+      "verify": ".labex/verify_step77.sh",
+      "step": 77,
+      "module": 15,
+      "module_title": "Secure Web Application Development",
+      "lab_dir": "secure-lab",
+      "kind": "build",
+      "goal": "Add the response headers that constrain framing, sniffing, policy loading and force HTTPS.",
+      "files": [
+        "secure-lab/headers/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 1,
+      "check_targets": [
+        "app:secure-lab/headers"
+      ]
+    },
+    {
+      "name": "Set-Cookie Options",
+      "display_name": "Set-Cookie Options",
+      "instruction": "lab_content/step78.md",
+      "solution": "lab_content/step78.md",
+      "verify": ".labex/verify_step78.sh",
+      "step": 78,
+      "module": 15,
+      "module_title": "Secure Web Application Development",
+      "lab_dir": "secure-lab",
+      "kind": "build",
+      "goal": "Set the session cookie with Secure, HttpOnly and SameSite attributes.",
+      "files": [
+        "secure-lab/cookies/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:secure-lab/cookies/app.py",
+        "app:secure-lab/cookies"
+      ]
+    },
+    {
+      "name": "HTTP Public Key Pinning (HPKP)",
+      "display_name": "HTTP Public Key Pinning (HPKP)",
+      "instruction": "lab_content/step79.md",
+      "solution": "",
+      "verify": ".labex/verify_step79.sh",
+      "step": 79,
+      "module": 15,
+      "module_title": "Secure Web Application Development",
+      "lab_dir": "secure-lab",
+      "kind": "read",
+      "goal": "Understand why HPKP was abandoned and what replaces it.",
+      "files": [],
+      "expected_state": null,
+      "note": "History-and-judgement step. HPKP was removed from browsers (RFC 7469 deprecated) because a bad pin could lock everyone out of a site; the modern equivalent is Certificate Transparency plus short-lived certs and an expect-CT policy. Nothing to build or run, so there is no grader for this step.",
+      "checks": 0,
+      "check_targets": []
+    },
+    {
+      "name": "Defining an Async View",
+      "display_name": "Defining an Async View",
+      "instruction": "lab_content/step80.md",
+      "solution": "lab_content/step80.md",
+      "verify": ".labex/verify_step80.sh",
+      "step": 80,
+      "module": 16,
+      "module_title": "Async and Await in Flask",
+      "lab_dir": "async-lab",
+      "kind": "build",
+      "goal": "Write a view that awaits a coroutine instead of blocking the worker.",
+      "files": [
+        "async-lab/app.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "ast:async-lab/app.py",
+        "app:async-lab"
+      ]
+    },
+    {
+      "name": "Build the Application",
+      "display_name": "Build the Application",
+      "instruction": "lab_content/step81.md",
+      "solution": "lab_content/step81.md",
+      "verify": ".labex/verify_step81.sh",
+      "step": 81,
+      "module": 17,
+      "module_title": "Deploying the Application",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Build a wheel for the flaskr project so it can be installed on a server.",
+      "files": [
+        "flaskr-app/dist/"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "pkg:build",
+        "file:flaskr-app/dist/flaskr-1.0.0-py3-none-any.whl"
+      ]
+    },
+    {
+      "name": "Install the Application on the Server",
+      "display_name": "Install the Application on the Server",
+      "instruction": "lab_content/step82.md",
+      "solution": "lab_content/step82.md",
+      "verify": ".labex/verify_step82.sh",
+      "step": 82,
+      "module": 17,
+      "module_title": "Deploying the Application",
+      "lab_dir": "flaskr-app",
+      "kind": "run",
+      "goal": "Install the built wheel and run the CLI against the installed package.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "pkgpath:flaskr",
+        "cli:."
+      ]
+    },
+    {
+      "name": "Configure the Secret Key",
+      "display_name": "Configure the Secret Key",
+      "instruction": "lab_content/step83.md",
+      "solution": "lab_content/step83.md",
+      "verify": ".labex/verify_step83.sh",
+      "step": 83,
+      "module": 17,
+      "module_title": "Deploying the Application",
+      "lab_dir": "flaskr-app",
+      "kind": "build",
+      "goal": "Give the installed application a real secret key in its instance folder.",
+      "files": [
+        "flaskr-app/instance/config.py"
+      ],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "file:flaskr-app/instance/config.py",
+        "script:flaskr-app"
+      ]
+    },
+    {
+      "name": "Run the Application with a Production Server",
+      "display_name": "Run the Application with a Production Server",
+      "instruction": "lab_content/step84.md",
+      "solution": "lab_content/step84.md",
+      "verify": ".labex/verify_step84.sh",
+      "step": 84,
+      "module": 17,
+      "module_title": "Deploying the Application",
+      "lab_dir": "flaskr-app",
+      "kind": "run",
+      "goal": "Serve the application with the Waitress production server and prove it answers.",
+      "files": [],
+      "expected_state": null,
+      "note": null,
+      "checks": 2,
+      "check_targets": [
+        "pkg:waitress",
+        "running:/"
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "n": 1,
+      "title": "Getting Started with the Flask Web Framework",
+      "slug": "quickstart-web-app",
+      "dir": "quickstart",
+      "steps": [
+        1,
+        7
+      ],
+      "solution": "m01-quickstart-web-app",
+      "corpus": "labex-flask-getting-started-with-flask-web-framework",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "Install Flask, write a route, serve a Jinja template, render dynamic URL values."
+    },
+    {
+      "n": 2,
+      "title": "Flask + Jinja2 Templates",
+      "slug": "jinja2-templates",
+      "dir": "templates-lab",
+      "steps": [
+        8,
+        11
+      ],
+      "solution": "m02-jinja2-templates",
+      "corpus": "labex-flask-flask-jinja2-templates",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "Separate presentation from logic: render_template with a templates/ folder."
+    },
+    {
+      "n": 3,
+      "title": "Working with the Development Server",
+      "slug": "dev-server-workflow",
+      "dir": "devserver-lab",
+      "steps": [
+        12,
+        17
+      ],
+      "solution": "m03-dev-server-workflow",
+      "corpus": "labex-flask-develop-flask-app-with-development-server",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "flask run, --debug reloader and interactive debugger, --app, port conflicts, app.run()."
+    },
+    {
+      "n": 4,
+      "title": "The Flask Command Line Interface",
+      "slug": "flask-cli",
+      "dir": "cli-lab",
+      "steps": [
+        18,
+        22
+      ],
+      "solution": "m04-flask-cli",
+      "corpus": "labex-flask-flask-command-line-interface",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "flask run, click commands, app.cli.add_command, custom management commands."
+    },
+    {
+      "n": 5,
+      "title": "Building a Flask Application (Application Factory)",
+      "slug": "flaskr-factory",
+      "dir": "flaskr-app",
+      "steps": [
+        23,
+        26
+      ],
+      "solution": "m05-flaskr-factory",
+      "corpus": "labex-flask-building-a-flask-application",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "Package layout, create_app(), config mapping, instance path, first route."
+    },
+    {
+      "n": 6,
+      "title": "SQLite Database Setup",
+      "slug": "flaskr-sqlite",
+      "dir": "flaskr-app",
+      "steps": [
+        27,
+        31
+      ],
+      "solution": "m06-flaskr-sqlite",
+      "corpus": "labex-flask-python-flask-sqlite-database-setup",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "sqlite3 + g, schema.sql, init_db, CLI command registration, real database file."
+    },
+    {
+      "n": 7,
+      "title": "Modular Application with Blueprints and Authentication",
+      "slug": "flaskr-auth",
+      "dir": "flaskr-app",
+      "steps": [
+        32,
+        37
+      ],
+      "solution": "m07-flaskr-auth",
+      "corpus": "labex-flask-modular-flask-application-with-authenticatio",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "auth blueprint, register/login/logout views, password hashing, session, login_required."
+    },
+    {
+      "n": 8,
+      "title": "Styling the Application with Static Files",
+      "slug": "flaskr-styling",
+      "dir": "flaskr-app",
+      "steps": [
+        38,
+        41
+      ],
+      "solution": "m08-flaskr-styling",
+      "corpus": "labex-flask-styling-flask-application",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "static/style.css, url_for('static'), template inheritance, served CSS."
+    },
+    {
+      "n": 9,
+      "title": "The Blog Application (CRUD)",
+      "slug": "flaskr-blog",
+      "dir": "flaskr-app",
+      "steps": [
+        42,
+        47
+      ],
+      "solution": "m09-flaskr-blog",
+      "corpus": "labex-flask-flask-blog-application",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "blog blueprint, index JOIN, create/update/delete with author checks."
+    },
+    {
+      "n": 10,
+      "title": "Configuration Management",
+      "slug": "configuration-management",
+      "dir": "config-lab",
+      "steps": [
+        48,
+        52
+      ],
+      "solution": "m10-configuration-management",
+      "corpus": "labex-flask-flask-configuration-management",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "dict config, from_object, from_pyfile, env-selected config, instance folder."
+    },
+    {
+      "n": 11,
+      "title": "Signals and Application Lifecycle",
+      "slug": "signals",
+      "dir": "signals-lab",
+      "steps": [
+        53,
+        60
+      ],
+      "solution": "m11-signals",
+      "corpus": "labex-flask-signals-in-flask-for-application-lifecycle",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "blinker Namespace, named signals, subscribers, send() during app lifecycle."
+    },
+    {
+      "n": 12,
+      "title": "Working with the Shell and Request Context",
+      "slug": "working-with-the-shell",
+      "dir": "shell-lab",
+      "steps": [
+        61,
+        64
+      ],
+      "solution": "m12-working-with-the-shell",
+      "corpus": "labex-flask-working-with-the-shell",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "flask shell, test_request_context, preprocess_request/process_response, shelltools helpers."
+    },
+    {
+      "n": 13,
+      "title": "Testing Flask Applications (pytest basics)",
+      "slug": "testing-basics",
+      "dir": "test-lab",
+      "steps": [
+        65,
+        66
+      ],
+      "solution": "m13-testing-basics",
+      "corpus": "labex-flask-testing-flask-applications",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "app/client/runner fixtures, view tests, CLI runner tests."
+    },
+    {
+      "n": 14,
+      "title": "Unit Testing flaskr with pytest and Coverage",
+      "slug": "pytest-and-coverage",
+      "dir": "flaskr-app",
+      "steps": [
+        67,
+        73
+      ],
+      "solution": "m14-pytest-and-coverage",
+      "corpus": "labex-flask-flask-unit-testing-with-pytest-and-coverage",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "conftest fixtures with a temp DB, factory/db/auth/blog suites, coverage report."
+    },
+    {
+      "n": 15,
+      "title": "Secure Web Application Development",
+      "slug": "secure-development",
+      "dir": "secure-lab",
+      "steps": [
+        74,
+        79
+      ],
+      "solution": "m15-secure-development",
+      "corpus": "labex-flask-secure-flask-web-application-development",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "XSS escaping, CSRF tokens, JSON security, security headers, cookie flags, HPKP."
+    },
+    {
+      "n": 16,
+      "title": "Async and Await in Flask",
+      "slug": "async-views",
+      "dir": "async-lab",
+      "steps": [
+        80,
+        80
+      ],
+      "solution": "m16-async-views",
+      "corpus": "labex-flask-using-async-and-await-in-flask",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "async def views, awaited I/O, jsonify payloads."
+    },
+    {
+      "n": 17,
+      "title": "Deploying the Application",
+      "slug": "deployment",
+      "dir": "flaskr-app",
+      "steps": [
+        81,
+        84
+      ],
+      "solution": "m17-deployment",
+      "corpus": "labex-flask-deploy-flask-application",
+      "corpus_title": "pallets/flask · BSD 3-Clause",
+      "summary": "build a wheel, install it, instance SECRET_KEY, run under Waitress."
+    }
+  ]
+}

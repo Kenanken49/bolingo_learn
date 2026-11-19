@@ -456,7 +456,8 @@ export const GERMAN_PLUS: Record<string, CourseLesson> = {
   'german-final': {
     id: 'german-final',
     title: 'German Final Exam',
-    theory: ['Final exam: greetings, numbers, food, travel, family, present verbs, and past stories — the whole comprehensive course.'],
+    theory: ['Final exam: greetings, numbers, food, travel, family, present verbs, and past stories — the whole comprehensive course.',
+    'The exam mixes greetings, numbers, food, travel, family, present verbs and past stories, so recall has to come from meaning rather than from a unit title. Reread the unit behind each guess before taking it a second time.'],
     questions: [
       BUILD(
         'Ask a friend “How is it going?”:',

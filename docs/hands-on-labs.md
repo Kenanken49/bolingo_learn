@@ -43,6 +43,14 @@ leaves the device — there is no network in the shell, and the UI says so.
 Current coverage: **59 scenarios, 59 of 63 Git labs runnable**
 (`npm run check:vm`).
 
+A path lesson can drive one of these scenarios directly: author the question with
+`kind: 'terminal'` and `terminal: { scenarioId }`, and the quiz screen swaps the
+token taps for the real VM player. `npm run check:curriculum` refuses a terminal
+item whose `scenarioId` is not in the registry, whose scenario has no graded
+task, or that still ships token options — the VM grades the repository, so there
+is nothing to tap. Five path lessons drive it today: the branching, stashing and reverting
+labs, plus both Git workshops, whose graded steps now bind four scenarios each.
+
 ## Sandbox editors (JS / CSS / HTML)
 
 `buildSandboxDoc()` compiles the learner's source plus every assertion into one
@@ -81,7 +89,7 @@ the steps on your own machine."* Walkthroughs are split into lazy chunks per
 category (40 labs each) so opening one lab costs one small chunk, resolved by
 `getGuidedLab(id)` in [lib/labex/guided/index.ts](../lib/labex/guided/index.ts).
 
-Current coverage: **1 842 walkthroughs, 1 783 of them guided-only**
+Current coverage: **1 893 walkthroughs, 1 834 of them guided-only**
 (`npm run check:guided`).
 
 ## Where the material comes from
@@ -102,7 +110,7 @@ npm run check:labex && npm run check:sandbox && npm run check:guided
 
 Read [docs/content-rights.md](content-rights.md) before adding a new upstream.
 
-Library size today: **1 842 labs, 6 580 questions, 12 categories**
+Library size today: **1 893 labs, 6 734 questions, 12 categories**
 (`npm run check:labex`).
 
 ## Gates
@@ -113,9 +121,81 @@ Library size today: **1 842 labs, 6 580 questions, 12 categories**
 | `sandbox-labs` | `npm run check:sandbox` | Any generated exercise stops executing honestly (see above). |
 | `vm-labs` | `npm run check:vm` | A scenario's reference solution no longer passes its own task checks. |
 | `guided-labs` | `npm run check:guided` | A lab has neither a runnable stage nor a walkthrough, or content health drops. |
+| `course-score` | `npm run check:courses` | A workshop, lab or capstone block runs nothing and its title and blurb do not say plainly that it is a paper exercise. |
 
-All four are `required` in [content/quality/gates.json](../content/quality/gates.json),
+All five are `required` in [content/quality/gates.json](../content/quality/gates.json),
 so `npm run gate` and CI block on them.
+
+### The runs floor takes no exemptions
+
+The `runs` floor of `scripts/score-courses.cjs` asks the question that
+[lib/execution.ts](../lib/execution.ts) answers, in one place the app can read
+too: is there an engine here — the Git VM, a `code` question whose test carries
+a `run`, a `speak` question graded by on-device recognition, or a capstone story
+with a live `check`? Token chains, `match`, `text` and `listen` grade strings
+the learner typed or tapped, so a block built only from them does not execute
+however hands-on its copy sounds — and the guided walkthrough is the honest
+fallback for exactly those, labelled NO EXECUTION.
+
+Every build block has to pass one of two tests, with nothing in between: an
+engine runs what the learner writes, or the block's own title and blurb say
+plainly that it is paper. There used to be a third answer — a ledger of
+per-course counts of blocks allowed to do neither, which kept those blocks out of
+the floor's total. Every block it forgave — 118 of them: the AI/ML and
+certification workshops and capstones, the html/rwd/design workshops and
+capstones, and four chess labs — has since been relabelled, and the file is
+deleted. The floor now measures all 278 build blocks in all 13 courses, none
+withheld. A block that runs nothing and does not say so is new debt the day it
+is written, and no number makes that legal again.
+
+The wording the relabel settled on, by kind of block: `Paper workshop: <task>`,
+`Paper lab: <task>`, and `On paper: <name>` for a capstone or project — often
+behind a level marker, as in `L2 · Paper workshop: wire pads and keys`. What
+`saysPaper` requires is a phrase from `PAPER_PHRASE` in the title **and** in the
+blurb: either field alone leaves the block badged.
+
+The blurb is steadier than the title: all 127 open `Paper exercise,`, 125 of
+them with `nothing runs here: <what you actually do>` and the two TypeScript
+workshops with `nothing compiles here`. Most go on with `; nothing executes —
+your text is matched.`, but that tail is convention; what the floor and the
+badge read is the `PAPER_PHRASE` wording above.
+
+The two Git workshops took the other road and must not be relabelled. Every step the VM can grade
+now binds a shipped scenario and is graded from repository state: `git-workshop-history` runs
+`labex-git-add-files-to-the-staging-area`, `labex-git-remove-files-from-the-staging-area`,
+`labex-git-configure-the-git-text-editor` and `labex-git-edit-the-last-commit`; `git-workshop-recovery`
+runs `labex-git-remove-a-file-from-the-last-commit`, `labex-git-update-remote-branch-after-rewriting-history`,
+`labex-git-discard-uncommitted-changes` and `labex-git-restore-a-deleted-file`. The two steps no scenario
+can check — staging one hunk with `git add -p`, and an ignore rule — say so inside the step itself.
+Their titles and blurbs say "Runs in the offline Git VM" — and `scripts/check-curriculum-quality.cjs`
+fails if copy like that ever drifts from an engine in either direction.
+
+### What the learner sees
+
+A block that runs nothing without saying so is a promise this build cannot keep,
+so the app says it out loud.
+[components/lesson/NoExecutionBadge.tsx](../components/lesson/NoExecutionBadge.tsx)
+renders **NO EXECUTION** wherever `defersExecution` holds — no engine behind the
+block *and* no paper wording in its own title and blurb — using the helper the
+floor grades, not a summary of it.
+
+| Where it shows | What the learner gets |
+| --- | --- |
+| The path card, `src/app/curriculum/[unitId].tsx` | a chip beside `WORKSHOP`, `LAB` or `CAPSTONE` |
+| The lesson header, `src/app/quiz/[lessonId].tsx` | a line above the questions naming what is graded instead |
+| The project header, `src/app/project/[lessonId].tsx` | the chip beside `Certification project`, for a capstone with no live check |
+
+No block carries it today: of the 278 build blocks, 151 run in an engine and 127
+say plainly in their title and blurb that they are paper, so the badge would be
+either a lie or an echo for every one of them. The label went, not the debt: a
+workshop that says nothing runs here still grades matched text.
+`scripts/check-curriculum-quality.cjs` keeps the two readers joined: it fails
+if `lib/execution.ts` stops exporting the three helpers, if the scorer stops
+requiring that helper or keeps its own copy of the test, if any of the three
+screens above stops rendering `<NoExecutionBadge`, if no build block runs
+anything or none admits being paper, and on drift in either direction — copy in
+the "Runs in the …" form must clear `executionEngine`, and a block an engine
+runs may not call itself paper.
 
 ## Telemetry
 

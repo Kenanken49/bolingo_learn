@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SOUND_KEY = 'bolingo.soundOn';
 const REWARD_VOLUME_KEY = 'bolingo.rewardVolume';
+const MEDIA_VOLUME_KEY = 'bolingo.mediaVolume';
 const AMBIENT_KEY = 'bolingo.ambientOn';
 const HAPTICS_KEY = 'bolingo.hapticsOn';
 const MINUTES_KEY = 'bolingo.dailyMinutes';
@@ -93,6 +94,34 @@ export async function setRewardVolume(volume: number): Promise<void> {
   try {
     const next = REWARD_VOLUME_OPTIONS.find((o) => o.value === volume)?.value ?? 1;
     await AsyncStorage.setItem(REWARD_VOLUME_KEY, String(next));
+  } catch {}
+}
+
+/** Narration volume for the media player, in ten audible steps. It is kept
+ *  separate from the reward-cue level: ducking a long audiobook to a whisper
+ *  for a shared room should not silence the completion chime you chose in
+ *  Settings, and vice versa. */
+export const MEDIA_VOLUME_STEP = 0.1;
+
+export function clampMediaVolume(volume: number): number {
+  if (!Number.isFinite(volume)) return 1;
+  return Math.round(Math.min(1, Math.max(0, volume)) * 10) / 10;
+}
+
+export async function getMediaVolume(): Promise<number> {
+  try {
+    const raw = await AsyncStorage.getItem(MEDIA_VOLUME_KEY);
+    if (raw === null) return 1;
+    const v = Number(raw);
+    return Number.isFinite(v) ? clampMediaVolume(v) : 1;
+  } catch {
+    return 1;
+  }
+}
+
+export async function setMediaVolume(volume: number): Promise<void> {
+  try {
+    await AsyncStorage.setItem(MEDIA_VOLUME_KEY, String(clampMediaVolume(volume)));
   } catch {}
 }
 

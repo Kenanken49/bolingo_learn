@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Guard the AdMob rewarded-heart rail.
+ * Guard the AdMob rewarded-diamond rail.
  *
  * The rail is the only place in the app that shows an ad, and it is the one
  * feature that can cost the owner money (invalid traffic) or get the app
@@ -12,10 +12,10 @@
  *   2. Safety — no live unit id is hardcoded anywhere in the app, the native
  *      hook creates exactly one ad instance and only after consent, and a
  *      reward is granted only from Google's `earnedReward`.
- *   3. Wiring — a wrong answer spends a heart, zero hearts blocks grading and
- *      opens the refill sheet, and the sheet's "watch" path persists the heart
- *      through `lib/progress.ts` (never a local-only counter for signed-in
- *      learners).
+ *   3. Wiring — wrong answers are always free, a failed lesson spends one
+ *      diamond, zero diamonds pauses the lesson behind the refill sheet, and
+ *      the sheet's "watch" path persists the diamond through `lib/progress.ts`
+ *      (never a local-only counter for signed-in learners).
  *
  * No network call, no device, no AdMob account needed.
  */
@@ -36,7 +36,7 @@ const STUB = path.join(ROOT, 'lib', 'rewarded', 'index.ts');
 const WEB_STUB = path.join(ROOT, 'lib', 'rewarded', 'index.web.ts');
 const RUNTIME = path.join(ROOT, 'lib', 'adsRuntime.native.ts');
 const RUNTIME_STUB = path.join(ROOT, 'lib', 'adsRuntime.ts');
-const SHEET = path.join(ROOT, 'components', 'OutOfHeartsSheet.tsx');
+const SHEET = path.join(ROOT, 'components', 'OutOfDiamondsSheet.tsx');
 const PLAYER = path.join(ROOT, 'components', 'GamifiedCodePlayer.tsx');
 const REFILL = path.join(ROOT, 'components', 'RefillContent.tsx');
 const QUIZ = path.join(ROOT, 'src', 'app', 'quiz', '[lessonId].tsx');
@@ -126,8 +126,8 @@ check('Load retries are bounded and back off', () => {
   assert(policy.retryDelayMs(0) === 2000 && policy.retryDelayMs(NaN) === 2000, 'bad input is clamped');
 });
 
-check('One ad yields one heart, the same as a regen tick', () => {
-  assert(policy.HEARTS_PER_REWARDED_AD === 1, 'reward size must stay one heart');
+check('One ad yields one diamond, the same as a regen tick', () => {
+  assert(policy.DIAMONDS_PER_REWARDED_AD === 1, 'reward size must stay one diamond');
 });
 
 // --- 2. Safety ------------------------------------------------------------
@@ -219,46 +219,41 @@ check('Web builds never touch the native SDK', () => {
 
 // --- 3. Wiring ------------------------------------------------------------
 
-check('A wrong answer spends a heart', () => {
+check('Wrong answers never cost a diamond', () => {
   const source = read(PLAYER);
-  assert(source.includes('onHeartLost?.()'), 'the player must report the lost heart');
-  const wrongBlock = source.slice(source.indexOf('setFeedback(\'wrong\')'));
-  assert(wrongBlock.includes('onHeartLost?.()'), 'the loss must happen in the wrong-answer branch');
-  const correctBlock = source.slice(source.indexOf('setFeedback(\'correct\')'), source.indexOf('setFeedback(\'wrong\')'));
-  assert(!correctBlock.includes('onHeartLost'), 'a correct answer must never cost a heart');
+  assert(!/onHeartLost|onHeartsChange|onOutOfHearts|loseDiamond|diamonds\s*<=\s*0/.test(source), 'the player must not spend, gate on, or track diamonds');
+  assert(!source.includes('loseDiamond'), 'only a failed lesson may spend a diamond');
+  assert(source.includes('Wrong answers are free'), 'the player must say so in a comment');
 });
 
-check('Zero hearts blocks grading and points at the refill', () => {
-  const source = read(PLAYER);
-  assert(/if \(hearts <= 0\) \{\s*\n\s*onOutOfHearts\(\);/.test(source), 'grading must stop at zero hearts');
-  assert(source.includes('Out of hearts'), 'the blocked state needs a visible explanation');
-  assert(source.includes('Get a heart'), 'the blocked state needs a refill action');
-});
-
-check('The quiz screen persists hearts and pauses at zero', () => {
+check('A failed lesson spends exactly one diamond', () => {
   const source = read(QUIZ);
-  assert(source.includes('await loseHeart(userId)'), 'a spent heart must be persisted');
-  assert(source.includes('await grantHearts(userId, 1)'), 'a rewarded heart must be persisted');
-  assert(
-    /if \(!userId\) return;/.test(source.slice(source.indexOf('const handleHeartLost'))),
-    'guests must not be charged a heart they cannot refill'
-  );
-  assert(source.includes('onHeartLost={handleHeartLost}'), 'the player must be wired to the handler');
-  assert(
-    /const outOfHearts = \(questions\?\.length \?\? 0\) > 0 && hearts <= 0;/.test(source),
-    'the sheet must be derived from the heart count, not duplicated in state'
-  );
-  assert(source.includes('hearts_depleted'), 'depletion must be measured');
-  assert(source.includes('<OutOfHeartsSheet'), 'the quiz screen must render the sheet');
-  assert(source.includes('visible={outOfHearts}'), 'the sheet is driven by the heart count');
+  assert(source.includes('loseDiamond(userId)'), 'a failed lesson must persist the lost diamond');
+  assert(source.includes('if (userId && !isPremium)'), 'guests and Premium must never lose a diamond');
+  assert(source.includes('diamondLost'), 'the results screen must be told about the lost diamond');
+  const failBlock = source.slice(source.indexOf('if (!mastered)'));
+  assert((source.match(/loseDiamond\(/g) || []).length === 1, 'exactly one call site may spend a diamond');
+  assert(failBlock.includes('loseDiamond(userId)'), 'the spend must live in the failed-lesson branch');
 });
 
-check('The sheet grants the heart through the caller', () => {
+check('The quiz screen persists diamonds and pauses at zero', () => {
+  const source = read(QUIZ);
+  assert(source.includes('await grantDiamonds(userId, 1)'), 'a rewarded diamond must be persisted');
+  assert(
+    /const outOfDiamonds = \(questions\?\.length \?\? 0\) > 0 && diamonds <= 0;/.test(source),
+    'the sheet must be derived from the diamond count, not duplicated in state'
+  );
+  assert(source.includes('diamonds_depleted'), 'depletion must be measured');
+  assert(source.includes('<OutOfDiamondsSheet'), 'the quiz screen must render the sheet');
+  assert(source.includes('visible={outOfDiamonds}'), 'the sheet is driven by the diamond count');
+});
+
+check('The sheet grants the diamond through the caller', () => {
   const source = read(SHEET);
-  assert(source.includes('useRewardedHeart('), 'the sheet must own the rewarded flow');
+  assert(source.includes('useRewardedDiamond('), 'the sheet must own the rewarded flow');
   assert(source.includes('earnedRef.current()'), 'the reward must be handed to the caller');
   assert(source.includes('visible={visible}'), 'the sheet must be controllable');
-  assert(source.includes('Wait for a free heart'), 'the non-ad path must be offered');
+  assert(source.includes('Wait for a free diamond'), 'the non-ad path must be offered');
   assert(source.includes('Go Premium'), 'the non-ad path must be offered');
   assert(source.includes('Test ad'), 'a test build must say so on screen');
   assert(source.includes('testAd'), 'telemetry must record test vs live inventory');

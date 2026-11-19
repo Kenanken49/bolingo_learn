@@ -1,0 +1,15 @@
+# Python packages for the local Flask lab. Installed once into /labenv by the image.
+# Versions are the ones the graders were written and verified against (Flask 3.x on CPython 3.12).
+Flask>=3.0,<4
+Jinja2>=3.1
+Werkzeug>=3.0
+itsdangerous>=2.1
+click>=8.1
+blinker>=1.7
+asgiref>=3.7          # required for `async def` views in module 16
+pytest>=8.0
+coverage[toml]>=7.4
+waitress>=3.0         # production server used by step 84
+setuptools>=68        # PEP 517 backend used by `python -m build --no-isolation`
+wheel>=0.42           # ditto - module 17 builds a wheel offline, so no network
+build>=1.0          # python -m build, used by module 17 to produce the wheel

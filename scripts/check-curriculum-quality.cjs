@@ -24,6 +24,14 @@ const fs = require('node:fs');
 const ts = require('typescript');
 
 require.extensions['.ts'] = (module, filename) => {
+  // lib/execution.ts reads the certification capstone registry, and that module
+  // reaches for Supabase, which pulls the React Native fetch polyfill. The
+  // registries are static data; nothing here needs a client. (Same stub as
+  // scripts/check-exercise-solutions.cjs.)
+  if (filename.split(/[\\/]/).join('/').endsWith('lib/supabase.ts')) {
+    module.exports = { supabase: {} };
+    return;
+  }
   const source = fs.readFileSync(filename, 'utf8');
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: {
@@ -49,6 +57,8 @@ const {
 } = require('../lib/learningStandards.ts');
 const { normalizeAnswer } = require('../lib/quizBank.ts');
 const { SESSION_MAX, selectSession } = require('../lib/quizSession.ts');
+const { GIT_SCENARIOS } = require('../lib/labex/gitScenarios.ts');
+const { executionEngine, saysPaper, isBuildBlock, defersExecution } = require('../lib/execution.ts');
 
 const failures = [];
 const fail = (message) => failures.push(message);
@@ -86,6 +96,7 @@ for (const kind of ['lesson', 'workshop', 'lab', 'quiz', 'review', 'project']) {
 /* ---- Every lesson teaches, tests, and explains ---- */
 let questionCount = 0;
 let codeTasks = 0;
+let terminalTasks = 0;
 let textTasks = 0;
 let matchTasks = 0;
 let listenTasks = 0;
@@ -122,6 +133,26 @@ for (const lesson of Object.values(ALL_LESSONS)) {
     }
     if (!Array.isArray(question.correctChain) || question.correctChain.length === 0) {
       fail(`${at}: empty correctChain.`);
+      return;
+    }
+    // A terminal exercise is graded by the offline Git VM from repository
+    // state, so it deliberately has no tokens to tap: its tasks live in the
+    // scenario. Anything else here would be a fake terminal.
+    if (question.kind === 'terminal') {
+      terminalTasks += 1;
+      const scenario = question.terminal?.scenarioId
+        ? GIT_SCENARIOS[question.terminal.scenarioId]
+        : undefined;
+      if (!scenario) {
+        fail(`${at}: terminal exercise needs a scenarioId present in the offline VM registry.`);
+        return;
+      }
+      if (!Array.isArray(scenario.tasks) || scenario.tasks.filter((task) => task?.check?.trim()).length === 0) {
+        fail(`${at}: VM scenario ${scenario.id} has no graded task with a check to run.`);
+      }
+      if (Array.isArray(question.scrambledTokens) && question.scrambledTokens.length > 0) {
+        fail(`${at}: a terminal exercise must not ship token options — the VM grades the repository.`);
+      }
       return;
     }
     if (question.kind === 'code') {
@@ -231,6 +262,18 @@ for (const lesson of Object.values(ALL_LESSONS)) {
 
 if (questionCount < 1000) fail(`The catalog looks truncated: only ${questionCount} questions.`);
 if (codeTasks < 1) fail('The catalog has no runnable code exercise.');
+if (terminalTasks < 1) fail('The catalog has no exercise that runs in the offline Git VM.');
+// An authored terminal item only works because the quiz screen forwards the
+// payload to the VM player. Without that line the learner sees a token exercise
+// with nothing to tap, so the catalog and the runtime are checked together.
+if (terminalTasks > 0) {
+  const routePath = 'src/app/quiz/[lessonId].tsx';
+  if (!fs.existsSync(routePath)) {
+    fail(`${routePath} is missing, so a terminal exercise has nowhere to run.`);
+  } else if (!/terminal:\s*q\.terminal/.test(fs.readFileSync(routePath, 'utf8'))) {
+    fail(`${routePath} does not forward terminal exercises to the VM player, though the catalog ships ${terminalTasks} of them.`);
+  }
+}
 if (textTasks < 1) fail('The catalog has no free-response exercise.');
 
 /* ---- The skill gradient is real, not a plan ---- *
@@ -245,6 +288,75 @@ if (listenTasks < GRADIENT_FLOOR.listen) {
 }
 if (speakTasks < GRADIENT_FLOOR.speak) {
   fail(`Speaking coverage regressed: ${speakTasks} speak exercises, floor ${GRADIENT_FLOOR.speak}.`);
+}
+
+/* ---- A block that runs nothing tells the learner, not only the scorer ----
+ * lib/execution.ts is one test with two readers: the `runs` floor of
+ * scripts/score-courses.cjs, and the NO EXECUTION badge on the path card and the
+ * lesson and project headers. Checked together on purpose — a scorer that stopped
+ * reading the helper or a screen that stopped rendering the badge would put the
+ * debt back somewhere only a script can see it. */
+const HELPER_PATH = 'lib/execution.ts';
+const helper = fs.existsSync(HELPER_PATH) ? fs.readFileSync(HELPER_PATH, 'utf8') : '';
+if (!helper) {
+  fail(`${HELPER_PATH} is missing, so nothing decides whether a build block runs anything.`);
+} else {
+  for (const [name, pattern] of [
+    ['executionEngine', /export function executionEngine/],
+    ['saysPaper', /export const saysPaper/],
+    ['defersExecution', /export function defersExecution/],
+  ]) {
+    if (!pattern.test(helper)) fail(`${HELPER_PATH} no longer exports ${name}.`);
+  }
+  const scorerPath = 'scripts/score-courses.cjs';
+  const scorer = fs.readFileSync(scorerPath, 'utf8');
+  if (!/require\('\.\.\/lib\/execution\.ts'\)/.test(scorer)) {
+    fail(`${scorerPath} does not read ${HELPER_PATH}, so the runs floor and the badge are separate truths.`);
+  }
+  if (/const PAPER_PHRASE|function executionEngine/.test(scorer)) {
+    fail(`${scorerPath} keeps its own copy of the test; ${HELPER_PATH} is the only place it belongs.`);
+  }
+  for (const screenPath of [
+    'src/app/curriculum/[unitId].tsx',
+    'src/app/quiz/[lessonId].tsx',
+    'src/app/project/[lessonId].tsx',
+  ]) {
+    if (!fs.existsSync(screenPath)) fail(`${screenPath} is missing.`);
+    else if (!/<NoExecutionBadge /.test(fs.readFileSync(screenPath, 'utf8'))) {
+      fail(`${screenPath} no longer renders the runs badge, so the learner cannot see which blocks run nothing.`);
+    }
+  }
+}
+// The badge has to stay selective: it fires on work this build cannot run and
+// keeps quiet where an engine really runs it or the copy already admits it is a
+// paper exercise. There is no ledger and no allowance, so this count is the
+// whole debt: it goes down by relabelling or by wiring an engine, never by
+// raising a number somewhere else.
+const buildBlocksAll = ALL_BLOCKS.filter(isBuildBlock);
+const badgedBlocks = buildBlocksAll.filter((block) => defersExecution(block));
+const engineBacked = buildBlocksAll.filter((block) => !!executionEngine(block));
+const paperLabelled = buildBlocksAll.filter((block) => !executionEngine(block) && saysPaper(block));
+if (engineBacked.length < 1) fail('No build block executes anything, yet the catalog is sold as hands-on.');
+if (paperLabelled.length < 1) {
+  fail('No build block admits in its own copy that it is paper, so the badge cannot be seen to stay off them.');
+}
+
+/* The copy and the engine have to agree in both directions. "Runs in the offline
+ * Git VM: …" is a promise a learner acts on, and so is a block that admits it is
+ * a paper exercise; either one drifting from executionEngine is the same debt
+ * hiding behind honest words. Both git workshops moved from the second claim to
+ * the first by adding a real VM item, and this is what keeps them there. */
+const RUN_CLAIM = /\bruns in the\b/i;
+const runClaims = buildBlocksAll.filter((block) => RUN_CLAIM.test(`${block.title} ${block.blurb}`));
+for (const block of runClaims) {
+  if (!executionEngine(block)) {
+    fail(`${block.id}: the copy promises a run ("Runs in the …"), but no engine backs ${block.lessonId}.`);
+  }
+}
+for (const block of engineBacked) {
+  if (saysPaper(block)) {
+    fail(`${block.id}: ${executionEngine(block)} runs ${block.lessonId}, so its copy must stop calling it paper.`);
+  }
 }
 
 /* ---- A deep bank still fits one bite-sized session ---- */
@@ -343,6 +455,12 @@ for (const block of ALL_BLOCKS) {
   if (lesson.questions.length < minimum) {
     fail(`${at}: ${block.kind} ${block.lessonId} needs ${minimum}+ questions, has ${lesson.questions.length}.`);
   }
+
+  // "A lab must do something, a workshop must scaffold a build" is owned by
+  // score-courses.cjs (its `produce` floor covers every lesson on the path,
+  // including labs and workshops) against PRODUCTION_KINDS in lib/quizBank.ts.
+  // It is not repeated here: two lists of question kinds drift, and the weaker
+  // one starts failing work the stronger one accepts.
 }
 
 /* ---- Every course card has a real path, and capstones where expected ---- */
@@ -405,4 +523,12 @@ console.log(
 console.log(
   `Practice modes: ${workshops} workshops · ${labs} labs · ${quizzes} quizzes/checkpoints/finals. ` +
     `Mastery ${sessionStandard('quiz').masteryPct}% first-try.`
+);
+console.log(
+  `Runs badge: ${badgedBlocks.length}/${buildBlocksAll.length} build blocks show NO EXECUTION ` +
+    `(${engineBacked.length} run in an engine, ${paperLabelled.length} say they are paper), ` +
+    `and the runs floor forgives none of them.`
+);
+console.log(
+  `Copy and engine agree: ${runClaims.length} build blocks promise a run in their own copy, and every one of them has an engine.`
 );

@@ -1,0 +1,60 @@
+# Bolingo website on the VPS: the app image plus its Postgres.
+#
+#   cd /opt/bolingo/app/deploy && docker compose --env-file ../.env up -d --build
+#
+# nginx stays the only thing on 80/443 (it already holds the bolingo.co.ke
+# certificate and the /llm-<token>/ tutor path), so the web container publishes
+# on loopback only and nginx proxies to it.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bolingo
+      POSTGRES_USER: bolingo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in the env file}
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U bolingo -d bolingo']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # Small box: keep Postgres from growing a big shared buffer.
+    command: ['postgres', '-c', 'shared_buffers=64MB', '-c', 'max_connections=20']
+
+  web:
+    image: bolingo-web:latest
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        EXPO_PUBLIC_SUPABASE_URL: ${EXPO_PUBLIC_SUPABASE_URL:-}
+        EXPO_PUBLIC_SUPABASE_ANON_KEY: ${EXPO_PUBLIC_SUPABASE_ANON_KEY:-}
+        EXPO_PUBLIC_SITE_URL: ${EXPO_PUBLIC_SITE_URL:-https://bolingo.co.ke}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgres://bolingo:${POSTGRES_PASSWORD}@db:5432/bolingo
+      SUPABASE_URL: ${EXPO_PUBLIC_SUPABASE_URL:-}
+      SUPABASE_ANON_KEY: ${EXPO_PUBLIC_SUPABASE_ANON_KEY:-}
+      MIGRATE_ON_START: '1'
+    ports:
+      - 127.0.0.1:3000:3000
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:3000/api/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  db:

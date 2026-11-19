@@ -1,0 +1,2627 @@
+{
+ "version": 1,
+ "cluster": "mystery",
+ "label": "Mystery & Detective",
+ "source": "https://www.loyalbooks.com/genre/Mystery?type=all",
+ "fetchedAt": "2026-11-16T13:01:41.563Z",
+ "rights": "Public domain (US): LibriVox narration via archive.org, ebook text via Project Gutenberg / LoyalBooks. Every title here is listed by LoyalBooks, whose catalog is public-domain only, so nothing in copyright is crawled or shipped. See docs/classics-audiobooks.md.",
+ "books": [
+  {
+   "slug": "a-strange-disappearance-by-anna-katharine-green",
+   "title": "A Strange Disappearance",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/a-strange-disappearance-by-anna-katharine-green",
+   "cover": "https://www.loyalbooks.com/image/layout2/a-strange-disappearance-by-anna-katharine-green.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "astrangedisappearance_0805_librivox",
+   "audioZip": "https://www.archive.org/download/astrangedisappearance_0805_librivox/astrangedisappearance_0805_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/StrangeDisappearance.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Strange-Disappearance-by-Anna-Katharine-Green.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Strange-Disappearance-by-Anna-Katharine-Green.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/1/6/1167/1167-h/1167-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "a-master-of-mysteries-by-l-t-meade-and-robert-eustace",
+   "title": "A Master of Mysteries",
+   "author": "L. T. Meade",
+   "url": "https://www.loyalbooks.com/book/a-master-of-mysteries-by-l-t-meade-and-robert-eustace",
+   "cover": "https://www.loyalbooks.com/image/layout2/Master-of-Mysteries.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "master_of_mysteries_jms_librivox",
+   "audioZip": "https://www.archive.org/download/master_of_mysteries_jms_librivox/master_of_mysteries_jms_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/MasterOfMysteries.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Master-of-Mysteries-by-L-T-Meade-and-Robert-Eustace.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Master-of-Mysteries-by-L-T-Meade-and-Robert-Eustace.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/2/7/22278/22278-h/22278-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-film-mystery-by-arthur-b-reeve",
+   "title": "The Film Mystery",
+   "author": "Arthur B. Reeve",
+   "url": "https://www.loyalbooks.com/book/the-film-mystery-by-arthur-b-reeve",
+   "cover": "https://www.loyalbooks.com/image/layout2/Film-Mystery.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "film_mystery_0804_librivox",
+   "audioZip": "https://www.archive.org/download/film_mystery_0804_librivox/film_mystery_0804_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/FilmMystery.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Film-Mystery-by-Arthur-B-Reeve.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-film-mystery-by-arthur-b-reeve.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5270/pg5270.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "it-happened-in-egypt-by-charles-norris-williamson-and-alice-muriel-williamson",
+   "title": "It Happened In Egypt",
+   "author": "Charles Norris Williamson",
+   "url": "https://www.loyalbooks.com/book/it-happened-in-egypt-by-charles-norris-williamson-and-alice-muriel-williamson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Happened-in-egypt-by-charles-norris-williamson.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature",
+    "Romance",
+    "Travel"
+   ],
+   "archiveId": "it_happened_in_egypt_sd_librivox",
+   "audioZip": "https://www.archive.org/download/it_happened_in_egypt_sd_librivox/it_happened_in_egypt_sd_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/ItHappenedInEgyptPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/It-Happened-in-Egypt-by-Charles-Norris-Williamson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/It-Happened-in-Egypt-by-Charles-Norris-Williamson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/files/9799/9799-h/9799-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "bat-wing-by-sax-rohmer",
+   "title": "Bat Wing",
+   "author": "Sax Rohmer",
+   "url": "https://www.loyalbooks.com/book/bat-wing-by-sax-rohmer",
+   "cover": "https://www.loyalbooks.com/image/layout2/bat-wing-by-sax-rohmer.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "bat_wing_mn_0906_librivox",
+   "audioZip": "https://www.archive.org/download/bat_wing_mn_0906_librivox/bat_wing_mn_0906_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Bat-Wing-by-Sax-Rohmer.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Bat-Wing-by-Sax-Rohmer.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6382/pg6382.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-lodger-by-marie-belloc-lowndes",
+   "title": "The Lodger",
+   "author": "Marie Belloc Lowndes",
+   "url": "https://www.loyalbooks.com/book/the-lodger-by-marie-belloc-lowndes",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lodger-Marie-Lowndes.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "History",
+    "Literature"
+   ],
+   "archiveId": "the_lodger_lah_librivox",
+   "audioZip": "https://www.archive.org/download/the_lodger_lah_librivox/the_lodger_lah_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Lodger.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Lodger-by-Marie-Belloc-Lowndes.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lodger-by-Marie-Belloc-Lowndes.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2014/pg2014.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-black-moth-by-georgette-heyer",
+   "title": "The Black Moth",
+   "author": "Georgette Heyer",
+   "url": "https://www.loyalbooks.com/book/the-black-moth-by-georgette-heyer",
+   "cover": "https://www.loyalbooks.com/image/layout2/Black-Moth-Georgette-Heyer.jpg",
+   "genres": [
+    "Humor",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "blackmoth_v2_1109_librivox",
+   "audioZip": "https://www.archive.org/download/blackmoth_v2_1109_librivox/blackmoth_v2_1109_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "a-house-to-let-by-charles-dickens-and-others",
+   "title": "A House to Let",
+   "author": "Charles Dickens",
+   "url": "https://www.loyalbooks.com/book/a-house-to-let-by-charles-dickens-and-others",
+   "cover": "https://www.loyalbooks.com/image/layout2/house_to_let.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "house_to_let_rg_librivox",
+   "audioZip": "https://www.archive.org/download/house_to_let_rg_librivox/house_to_let_rg_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/HouseToLet-48kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-House-to-Let-by-Charles-Dickens-and-Others.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/House-to-Let-by-Charles-Dickens-and-Others.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/3/2/2324/2324-h/2324-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-eye-of-osiris-by-r-austin-freeman",
+   "title": "The Eye of Osiris",
+   "author": "R. Austin Freeman",
+   "url": "https://www.loyalbooks.com/book/the-eye-of-osiris-by-r-austin-freeman",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-eye-of-osiris-by-r-austin-freeman.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "eyeofosiris_0905_librivox",
+   "audioZip": "https://www.archive.org/download/eyeofosiris_0905_librivox/eyeofosiris_0905_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Eye-of-Osiris-by-R-Austin-Freeman.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Eye-of-Osiris-by-R-Austin-Freeman.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/24201/pg24201.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-bat-by-mary-roberts-reinhart",
+   "title": "The Bat",
+   "author": "Mary Roberts Rinehart",
+   "url": "https://www.loyalbooks.com/book/the-bat-by-mary-roberts-reinhart",
+   "cover": "https://www.loyalbooks.com/image/layout2/Bat-Mary-Rinehart.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery",
+    "Dramatic Works"
+   ],
+   "archiveId": "bat_0909_librivox",
+   "audioZip": "https://www.archive.org/download/bat_0909_librivox/bat_0909_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Bat.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Bat-by-Mary-Roberts-Reinhart.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Bat-by-Mary-Roberts-Reinhart.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/1/2019/2019-h/2019-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-mystery-of-a-hansom-cab-by-fergus-hume",
+   "title": "The Mystery of a Hansom Cab",
+   "author": "Fergus Hume",
+   "url": "https://www.loyalbooks.com/book/the-mystery-of-a-hansom-cab-by-fergus-hume",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mystery-of-a-Hansom-Cab.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "hansom_cab_sd_0808_librivox",
+   "audioZip": "https://www.archive.org/download/hansom_cab_sd_0808_librivox/hansom_cab_sd_0808_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/MysteryOfAHansomCab.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Mystery-of-a-Hansom-Cab-by-Fergus-Hume.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mystery-of-a-Hansom-Cab-by-Fergus-Hume.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/4/2/2/4223/4223-h/4223-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Celebrated-Crimes-1",
+   "title": "Celebrated Crimes",
+   "author": "Alexandre Dumas",
+   "url": "https://www.loyalbooks.com/book/Celebrated-Crimes-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Celebrated-Crimes-1.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Non-fiction",
+    "Science",
+    "Religion",
+    "History",
+    "Biography",
+    "Mystery"
+   ],
+   "archiveId": "celebrated_crimes_1_1001_librivox",
+   "audioZip": "https://www.archive.org/download/celebrated_crimes_1_1001_librivox/celebrated_crimes_1_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/CelebratedCrimesVol.1Part1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Celebrated-Crimes-Complete-by-Alexandre-Dumas.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Celebrated-Crimes-Complete-by-Alexandre-Dumas.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/6/2760/2760-h/2760-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-case-of-the-pocket-diary-found-in-the-snow-by-augusta-groner",
+   "title": "The Case of the Pocket Diary Found in the Snow",
+   "author": "Augusta Groner",
+   "url": "https://www.loyalbooks.com/book/the-case-of-the-pocket-diary-found-in-the-snow-by-augusta-groner",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-case-of-the-pocket-diary-found-in-the-snow-by-augusta-groner.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "pocket_diary_dl_librivox",
+   "audioZip": "https://www.archive.org/download/pocket_diary_dl_librivox/pocket_diary_dl_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/CaseOfThePocketDiaryFoundInTheSnow.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Case-of-the-Pocket-Diary-Found-in-the-Snow-by-Augusta-Groner.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Case-of-the-Pocket-Diary-Found-in-the-Snow-by-Augusta-Groner.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/3/1834/1834-h/1834-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Double-Barreled-Detective-Story",
+   "title": "A Double Barreled Detective Story",
+   "author": "Mark Twain",
+   "url": "https://www.loyalbooks.com/book/Double-Barreled-Detective-Story",
+   "cover": "https://www.loyalbooks.com/image/layout2/Double-Barreled-Detective-Story.jpg",
+   "genres": [
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "double_barrelled_1001_librivox_",
+   "audioZip": "https://www.archive.org/download/double_barrelled_1001_librivox_/double_barrelled_1001_librivox__64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Double-Barreled-Detective-Story.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Double-Barreled-Detective-Story.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/1/8/3180/3180-h/3180-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-mystery-at-number-six-by-augusta-huiell-seamans",
+   "title": "The Mystery at Number Six",
+   "author": "Augusta Huiell Seaman",
+   "url": "https://www.loyalbooks.com/book/the-mystery-at-number-six-by-augusta-huiell-seamans",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mystery-at-Number-Six.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "mystery_number6_0904_librivox",
+   "audioZip": "https://www.archive.org/download/mystery_number6_0904_librivox/mystery_number6_0904_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "midnight-by-octavus-roy-cohen",
+   "title": "Midnight",
+   "author": "Octavus Roy Cohen",
+   "url": "https://www.loyalbooks.com/book/midnight-by-octavus-roy-cohen",
+   "cover": "https://www.loyalbooks.com/image/layout2/Midnight-Octavus-Roy-Cohen.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "midnight_rm_0907_librivox",
+   "audioZip": "https://www.archive.org/download/midnight_rm_0907_librivox/midnight_rm_0907_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/Midnight.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Midnight-by-Octavus-Roy-Cohen.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Midnight-by-Octavus-Roy-Cohen.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/11043/pg11043.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-string-of-pearls-by-unknown",
+   "title": "The String of Pearls",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/the-string-of-pearls-by-unknown",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-string-of-pearls-by-unknown.jpg",
+   "genres": [
+    "Fiction",
+    "Horror/Ghost stories",
+    "Mystery"
+   ],
+   "archiveId": "stringofpearls_0809_librivox",
+   "audioZip": "https://www.archive.org/download/stringofpearls_0809_librivox/stringofpearls_0809_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/StringOfPearlsPart1.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-beetle-by-richard-marsh",
+   "title": "The Beetle",
+   "author": "Richard Marsh",
+   "url": "https://www.loyalbooks.com/book/the-beetle-by-richard-marsh",
+   "cover": "https://www.loyalbooks.com/image/layout2/Beetle-Richard-Marsh.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Horror/Ghost stories",
+    "Literature"
+   ],
+   "archiveId": "the_beetle_0904_librivox",
+   "audioZip": "https://www.archive.org/download/the_beetle_0904_librivox/the_beetle_0904_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/BeetlePart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Beetle-by-Richard-Marsh.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Beetle-by-Richard-Marsh.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5164/pg5164.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "mary-louise-by-l-frank-baum",
+   "title": "Mary Louise",
+   "author": "L. Frank Baum",
+   "url": "https://www.loyalbooks.com/book/mary-louise-by-l-frank-baum",
+   "cover": "https://www.loyalbooks.com/image/layout2/mary-louise-by-l-frank-baum.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Teen/Young adult",
+    "Literature",
+    "Instruction"
+   ],
+   "archiveId": "mary_louise_0902_librivox",
+   "audioZip": "https://www.archive.org/download/mary_louise_0902_librivox/mary_louise_0902_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/Librivoxm4bCollectionAudiobooks_12/MaryLouise.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Mary-Louise-by-L-Frank-Baum.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mary-Louise-by-L-Frank-Baum.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5660/pg5660.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Lady-Windermeres-Fan",
+   "title": "Lady Windermere's Fan",
+   "author": "Oscar Wilde",
+   "url": "https://www.loyalbooks.com/book/Lady-Windermeres-Fan",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lady-Windermeres-Fan.jpg",
+   "genres": [
+    "Comedy",
+    "Dramatic Works",
+    "Mystery",
+    "Satire",
+    "Literature",
+    "Play"
+   ],
+   "archiveId": "lady_windermeres_fan_1002_librivox",
+   "audioZip": "https://www.archive.org/download/lady_windermeres_fan_1002_librivox/lady_windermeres_fan_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/LadyWindermeresFan.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Lady-Windermeres-Fan.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lady-Windermeres-Fan.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/etext97/lwfan10h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Ashiel-Mystery-A-Detective-Story",
+   "title": "The Ashiel Mystery - A Detective Story",
+   "author": "Mrs Charles Bryce",
+   "url": "https://www.loyalbooks.com/book/Ashiel-Mystery-A-Detective-Story",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ashiel-Mystery-A-Detective-Story.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "ashiel_mystery_a_detective_story_1102_librivox",
+   "audioZip": "https://www.archive.org/download/ashiel_mystery_a_detective_story_1102_librivox/ashiel_mystery_a_detective_story_1102_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Ashiel-Mystery-a-Detective-Story.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ashiel-Mystery-a-Detective-Story.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9746/pg9746.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-master-mystery-by-arthur-b-reeve-and-john-w-grey",
+   "title": "The Master Mystery",
+   "author": "Arthur B. Reeve",
+   "url": "https://www.loyalbooks.com/book/the-master-mystery-by-arthur-b-reeve-and-john-w-grey",
+   "cover": "https://www.loyalbooks.com/image/layout2/Master-Mystery.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "master_mystery_0902_librivox",
+   "audioZip": "https://www.archive.org/download/master_mystery_0902_librivox/master_mystery_0902_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/TheMasterMystery.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Master-Mystery-by-Arthur-B-Reeve-and-John-W-Grey.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-master-mystery-by-arthur-b-reeve-and-john-w-grey.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/16168/pg16168-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Cleek-The-Man-of-the-Forty-Faces",
+   "title": "Cleek: The Man of the Forty Faces",
+   "author": "Thomas W. Hanshew",
+   "url": "https://www.loyalbooks.com/book/Cleek-The-Man-of-the-Forty-Faces",
+   "cover": "https://www.loyalbooks.com/image/layout2/Cleek-The-Man-of-the-Forty-Faces.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "cleek_man_of_forty_faces_rg_librivox",
+   "audioZip": "https://www.archive.org/download/cleek_man_of_forty_faces_rg_librivox/cleek_man_of_forty_faces_rg_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/CleekTheManOfTheFortyFaces-64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Cleek-the-Man-of-the-Forty-Faces.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Cleek-the-Man-of-the-Forty-Faces.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/14332/pg14332.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "mary-louise-solves-a-mystery-by-l-frank-baum",
+   "title": "Mary Louise Solves a Mystery",
+   "author": "L. Frank Baum",
+   "url": "https://www.loyalbooks.com/book/mary-louise-solves-a-mystery-by-l-frank-baum",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mary-Louise-Solves-a-Mystery-L-Frank-Baum.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Teen/Young adult"
+   ],
+   "archiveId": "mary_louise_solves_a_mystery_0903_librivox",
+   "audioZip": "https://www.archive.org/download/mary_louise_solves_a_mystery_0903_librivox/mary_louise_solves_a_mystery_0903_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/Librivoxm4bCollectionAudiobooks_12/MaryLouiseSolvesAMystery.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Mary-Louise-Solves-a-Mystery-by-L-Frank-Baum.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mary-Louise-Solves-a-Mystery-by-L-Frank-Baum.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/5/7/24578/24578-h/24578-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Lady-Molly-of-Scotland-Yard",
+   "title": "Lady Molly of Scotland Yard",
+   "author": "Baroness Orczy",
+   "url": "https://www.loyalbooks.com/book/Lady-Molly-of-Scotland-Yard",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lady-Molly-of-Scotland-Yard.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "ladymolly_1104_librivox",
+   "audioZip": "https://www.archive.org/download/ladymolly_1104_librivox/ladymolly_1104_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-stillwater-tragedy-by-thomas-bailey-aldrich",
+   "title": "The Stillwater Tragedy",
+   "author": "Thomas Bailey Aldrich",
+   "url": "https://www.loyalbooks.com/book/the-stillwater-tragedy-by-thomas-bailey-aldrich",
+   "cover": "https://www.loyalbooks.com/image/layout2/Stillwater-Tragedy-Thomas-Bailey-Aldrich.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "stillwatertragedy_0907_librivox",
+   "audioZip": "https://www.archive.org/download/stillwatertragedy_0907_librivox/stillwatertragedy_0907_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/StillwaterTragedyPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Stillwater-Tragedy-by-Thomas-Bailey-Aldrich.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Stillwater-Tragedy-by-Thomas-Bailey-Aldrich.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/5/4/3/5435/5435-h/5435-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-woman-in-the-alcove-by-anna-katharine-green",
+   "title": "The Woman in the Alcove",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/the-woman-in-the-alcove-by-anna-katharine-green",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-woman-in-the-alcove-by-anna-katharine-green.jpg",
+   "genres": [
+    "Mystery",
+    "Literature",
+    "Fiction"
+   ],
+   "archiveId": "woman_in_alcove_0908_librivox",
+   "audioZip": "https://www.archive.org/download/woman_in_alcove_0908_librivox/woman_in_alcove_0908_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/WomanInTheAlcove.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Woman-in-the-Alcove-by-Anna-Katharine-Green.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Woman-in-the-Alcove-by-Anna-Katharine-Green.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/5/1851/1851-h/1851-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "At-the-Time-Appointed",
+   "title": "At the Time Appointed",
+   "author": "Anna Maynard Barbour",
+   "url": "https://www.loyalbooks.com/book/At-the-Time-Appointed",
+   "cover": "https://www.loyalbooks.com/image/layout2/At-the-Time-Appointed.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "at_the_time_appointed_1007_librivox",
+   "audioZip": "https://www.archive.org/download/at_the_time_appointed_1007_librivox/at_the_time_appointed_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/AtTheTimeAppointed.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/At-the-Time-Appointed.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/At-the-Time-Appointed.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21892/pg21892-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "manalive-by-g-k-chesterton",
+   "title": "Manalive",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/manalive-by-g-k-chesterton",
+   "cover": "https://www.loyalbooks.com/image/layout2/manalive-by-g-k-chesterton.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "manalive_0811_rc_librivox1",
+   "audioZip": "https://www.archive.org/download/manalive_0811_rc_librivox1/manalive_0811_rc_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/Manalive.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Manalive-by-G-K-Chesterton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/manalive-by-g-k-chesterton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1718/pg1718.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Black-Robe-Wilkie-Collins",
+   "title": "The Black Robe",
+   "author": "Wilkie Collins",
+   "url": "https://www.loyalbooks.com/book/Black-Robe-Wilkie-Collins",
+   "cover": "https://www.loyalbooks.com/image/layout2/Black-Robe-Wilkie-Collins.jpg",
+   "genres": [
+    "Epistolary fiction",
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "black_robe_1011_librivox",
+   "audioZip": "https://www.archive.org/download/black_robe_1011_librivox/black_robe_1011_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/BlackRobePart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Black-Robe-Wilkie-Collins.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Black-Robe-Wilkie-Collins.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/5/8/1587/1587-h/1587-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Window-at-the-White-Cat",
+   "title": "The Window at the White Cat",
+   "author": "Mary Roberts Rinehart",
+   "url": "https://www.loyalbooks.com/book/Window-at-the-White-Cat",
+   "cover": "https://www.loyalbooks.com/image/layout2/Window-at-the-White-Cat.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "whitecat_rk_1002_librivox",
+   "audioZip": "https://www.archive.org/download/whitecat_rk_1002_librivox/whitecat_rk_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/WindowAtTheWhiteCat.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Window-at-the-White-Cat.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Window-at-the-White-Cat.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/4/0/2/34020/34020-h/34020-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-exploits-of-elaine-by-arthur-b-reeve",
+   "title": "The Exploits Of Elaine",
+   "author": "Arthur B. Reeve",
+   "url": "https://www.loyalbooks.com/book/the-exploits-of-elaine-by-arthur-b-reeve",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-exploits-of-elaine-by-arthur-b-reeve.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "exploits_of_elaine_lb_librivox",
+   "audioZip": "https://www.archive.org/download/exploits_of_elaine_lb_librivox/exploits_of_elaine_lb_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/ExploitsOfElainePart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Exploits-of-Elaine-by-Arthur-B-Reeve.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-exploits-of-elaine-by-arthur-b-reeve.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5151/pg5151.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "mary-louise-in-the-country-by-l-frank-baum",
+   "title": "Mary Louise in the Country",
+   "author": "L. Frank Baum",
+   "url": "https://www.loyalbooks.com/book/mary-louise-in-the-country-by-l-frank-baum",
+   "cover": "https://www.loyalbooks.com/image/layout2/mary-louise-in-the-country-by-l-frank-baum.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Teen/Young adult"
+   ],
+   "archiveId": "mary_louise_in_the_country_0902_librivox",
+   "audioZip": "https://www.archive.org/download/mary_louise_in_the_country_0902_librivox/mary_louise_in_the_country_0902_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/Librivoxm4bCollectionAudiobooks_12/MaryLouiseInTheCountry.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Mary-Louise-in-the-Country-by-L-Frank-Baum.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/mary-louise-in-the-country-by-l-frank-baum.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/22225/pg22225-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-lost-stradivarius-by-j-meade-falkner",
+   "title": "The Lost Stradivarius",
+   "author": "John Meade Falkner",
+   "url": "https://www.loyalbooks.com/book/the-lost-stradivarius-by-j-meade-falkner",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-lost-stradivarius-by-j-meade-falkner.jpg",
+   "genres": [
+    "Fiction",
+    "Horror/Ghost stories",
+    "Mystery",
+    "Literature",
+    "Music"
+   ],
+   "archiveId": "lost_stradivarius_0806_librivox",
+   "audioZip": "https://www.archive.org/download/lost_stradivarius_0806_librivox/lost_stradivarius_0806_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/LostStradivarius.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Lost-Stradivarius-by-J-Meade-Falkner.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lost-Stradivarius-by-J-Meade-Falkner.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/4/1/0/14107/14107-h/14107-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Aurora-Floyd-Mary-Braddon",
+   "title": "Aurora Floyd",
+   "author": "Mary Elizabeth Braddon",
+   "url": "https://www.loyalbooks.com/book/Aurora-Floyd-Mary-Braddon",
+   "cover": "https://www.loyalbooks.com/image/layout2/Aurora-Floyd-Mary-Braddon.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "aurora_floyd_1012_librivox",
+   "audioZip": "https://www.archive.org/download/aurora_floyd_1012_librivox/aurora_floyd_1012_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "No-Name-Wilkie-Collins",
+   "title": "No Name",
+   "author": "Wilkie Collins",
+   "url": "https://www.loyalbooks.com/book/No-Name-Wilkie-Collins",
+   "cover": "https://www.loyalbooks.com/image/layout2/No-Name-Wilkie-Collins.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "no_name_1002_librivox",
+   "audioZip": "https://www.archive.org/download/no_name_1002_librivox/no_name_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/NoName_1_Collins.64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/No-Name-Wilkie-Collins.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/No-Name-Wilkie-Collins.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/4/3/1438/1438-h/1438-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Hushed-Up-Mystery-of-London",
+   "title": "Hushed Up! A Mystery of London",
+   "author": "William Le Queux",
+   "url": "https://www.loyalbooks.com/book/Hushed-Up-Mystery-of-London",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hushed-Up-Mystery-of-London.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "hushed_up_1106_librivox",
+   "audioZip": "https://www.archive.org/download/hushed_up_1106_librivox/hushed_up_1106_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/HushedUp.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Hushed-Up-Mystery-of-London.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Hushed-Up-Mystery-of-London.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/8/3/3/28337/28337-h/28337-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Blindfolded",
+   "title": "Blindfolded",
+   "author": "Earle Ashley Walcott",
+   "url": "https://www.loyalbooks.com/book/Blindfolded",
+   "cover": "https://www.loyalbooks.com/image/layout2/Blindfolded.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "blindfolded_1002_librivox",
+   "audioZip": "https://www.archive.org/download/blindfolded_1002_librivox/blindfolded_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/BlindfoldedPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Blindfolded.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Blindfolded.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/7788/pg7788.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-slipper-point-mystery-by-augusta-huiell-seaman",
+   "title": "The Slipper Point Mystery",
+   "author": "Augusta Huiell Seaman",
+   "url": "https://www.loyalbooks.com/book/the-slipper-point-mystery-by-augusta-huiell-seaman",
+   "cover": "https://www.loyalbooks.com/image/layout2/slipper_point_mystery.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "slipper_point_mystery_0810_librivox",
+   "audioZip": "https://www.archive.org/download/slipper_point_mystery_0810_librivox/slipper_point_mystery_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/SlipperPointMystery.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Seven-Secrets",
+   "title": "The Seven Secrets",
+   "author": "William Le Queux",
+   "url": "https://www.loyalbooks.com/book/Seven-Secrets",
+   "cover": "https://www.loyalbooks.com/image/layout2/Seven-Secrets.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "seven_secrets_tw_librivox",
+   "audioZip": "https://www.archive.org/download/seven_secrets_tw_librivox/seven_secrets_tw_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/SevenSecrets.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Seven-Secrets.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Seven-Secrets.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/5/4/27549/27549-h/27549-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "X-Y-Z-A-Detective-Story",
+   "title": "X Y Z - A Detective Story",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/X-Y-Z-A-Detective-Story",
+   "cover": "https://www.loyalbooks.com/image/layout2/X-Y-Z-A-Detective-Story.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "x_y_z_detective_1102_librivox",
+   "audioZip": "https://www.archive.org/download/x_y_z_detective_1102_librivox/x_y_z_detective_1102_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/XyzADetectiveStory.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/X-Y-Z-a-Detective-Story.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/X-Y-Z-a-Detective-Story.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/3/6/9/33695/33695-h/33695-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Law-and-the-Lady",
+   "title": "The Law and the Lady",
+   "author": "Wilkie Collins",
+   "url": "https://www.loyalbooks.com/book/Law-and-the-Lady",
+   "cover": "https://www.loyalbooks.com/image/layout2/Law-and-the-Lady.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "lawandthelady_1012_librivox",
+   "audioZip": "https://www.archive.org/download/lawandthelady_1012_librivox/lawandthelady_1012_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Law-and-the-Lady.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Law-and-the-Lady.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/2/1622/1622-h/1622-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Crevice-William-Burns",
+   "title": "The Crevice",
+   "author": "William J. Burns",
+   "url": "https://www.loyalbooks.com/book/Crevice-William-Burns",
+   "cover": "https://www.loyalbooks.com/image/layout2/Crevice-William-Burns.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "crevice_1009_librivox",
+   "audioZip": "https://www.archive.org/download/crevice_1009_librivox/crevice_1009_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Crevice.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Crevice-William-Burns.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Crevice-William-Burns.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/29331/pg29331-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Chestermarke-Instinct",
+   "title": "The Chestermarke Instinct",
+   "author": "Joseph Smith Fletcher",
+   "url": "https://www.loyalbooks.com/book/Chestermarke-Instinct",
+   "cover": "https://www.loyalbooks.com/image/layout2/Chestermarke-Instinct.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "chestermarke_instinct_1007_librivox",
+   "audioZip": "https://www.archive.org/download/chestermarke_instinct_1007_librivox/chestermarke_instinct_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/ChestermarkeInstinct.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Chestermarke-Instinct.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Chestermarke-Instinct.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/27965/pg27965.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-four-pools-mystery-by-jean-webster",
+   "title": "The Four-Pools Mystery",
+   "author": "Jean Webster",
+   "url": "https://www.loyalbooks.com/book/the-four-pools-mystery-by-jean-webster",
+   "cover": "https://www.loyalbooks.com/image/layout2/Four-Pools-Mystery.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "four_pools_mystery_lb_librivox",
+   "audioZip": "https://www.archive.org/download/four_pools_mystery_lb_librivox/four_pools_mystery_lb_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Four-poolsMystery.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Four-Pools-Mystery-by-Jean-Webster.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-four-pools-mystery-by-jean-webster.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21264/pg21264-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Therese-Raquin",
+   "title": "Therese Raquin",
+   "author": "Émile Zola",
+   "url": "https://www.loyalbooks.com/book/Therese-Raquin",
+   "cover": "https://www.loyalbooks.com/image/layout2/Therese-Raquin.jpg",
+   "genres": [
+    "Fiction",
+    "Horror/Ghost stories",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "therese_raquin_1008_librivox",
+   "audioZip": "https://www.archive.org/download/therese_raquin_1008_librivox/therese_raquin_1008_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/ThereseRaquin.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Therese-Raquin.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Therese-Raquin.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/6/6/2/6626/6626-h/6626-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Case-of-the-Golden-Bullet",
+   "title": "The Case of the Golden Bullet",
+   "author": "Grace Isabel Colbron",
+   "url": "https://www.loyalbooks.com/book/Case-of-the-Golden-Bullet",
+   "cover": "https://www.loyalbooks.com/image/layout2/Case-of-the-Golden-Bullet.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "goldenbullet_1105_librivox",
+   "audioZip": "https://www.archive.org/download/goldenbullet_1105_librivox/goldenbullet_1105_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Case-of-the-Golden-Bullet.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Case-of-the-Golden-Bullet.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/3/1836/1836-h/1836-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Rivals-of-Sherlock-Holmes-1",
+   "title": "The Rivals of Sherlock Holmes, Volume 1",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/Rivals-of-Sherlock-Holmes-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Rivals-of-Sherlock-Holmes-1.jpg",
+   "genres": [
+    "Mystery",
+    "Short stories",
+    "Fiction"
+   ],
+   "archiveId": "rivals_sherlock_holmes1_1111_librivox",
+   "audioZip": "https://www.archive.org/download/rivals_sherlock_holmes1_1111_librivox/rivals_sherlock_holmes1_1111_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/Rivalsls_Sherlock_Holmes_part1.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Millionaire-Baby",
+   "title": "The Millionaire Baby",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/Millionaire-Baby",
+   "cover": "https://www.loyalbooks.com/image/layout2/Millionaire-Baby.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "millionaire_baby_1001_librivox",
+   "audioZip": "https://www.archive.org/download/millionaire_baby_1001_librivox/millionaire_baby_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Millionare_baby.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Millionaire-Baby.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Millionaire-Baby.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21904/pg21904-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Red-Thumb-Mark",
+   "title": "The Red Thumb Mark",
+   "author": "R. Austin Freeman",
+   "url": "https://www.loyalbooks.com/book/Red-Thumb-Mark",
+   "cover": "https://www.loyalbooks.com/image/layout2/Red-Thumb-Mark.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "redthumbmark_0911_librivox",
+   "audioZip": "https://www.archive.org/download/redthumbmark_0911_librivox/redthumbmark_0911_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Red-Thumb-Mark.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Red-Thumb-Mark.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/11128/pg11128.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Officer-666-Barton-Wood-Currie",
+   "title": "Officer 666",
+   "author": "Barton Wood Currie",
+   "url": "https://www.loyalbooks.com/book/Officer-666-Barton-Wood-Currie",
+   "cover": "https://www.loyalbooks.com/image/layout2/Officer-666-Barton-Wood-Currie.jpg",
+   "genres": [
+    "Fiction",
+    "Humor",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "officer_666_1003_librivox",
+   "audioZip": "https://www.archive.org/download/officer_666_1003_librivox/officer_666_1003_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/Officer666.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Officer-666-Barton-Wood-Currie.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Officer-666-Barton-Wood-Currie.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/2/2/30228/30228-h/30228-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "madame-midas-by-fergus-hume",
+   "title": "Madame Midas",
+   "author": "Fergus Hume",
+   "url": "https://www.loyalbooks.com/book/madame-midas-by-fergus-hume",
+   "cover": "https://www.loyalbooks.com/image/layout2/madame-midas-by-fergus-hume.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "madame_midas_lb_librivox",
+   "audioZip": "https://www.archive.org/download/madame_midas_lb_librivox/madame_midas_lb_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/MadameMidasPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Madame-Midas-by-Fergus-Hume.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/madame-midas-by-fergus-hume.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4946/pg4946.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "mary-louise-and-the-liberty-girls-by-l-frank-baum",
+   "title": "Mary Louise and the Liberty Girls",
+   "author": "L. Frank Baum",
+   "url": "https://www.loyalbooks.com/book/mary-louise-and-the-liberty-girls-by-l-frank-baum",
+   "cover": "https://www.loyalbooks.com/image/layout2/mary-louise-and-the-liberty-girls-by-l-frank-baum.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Teen/Young adult",
+    "War stories"
+   ],
+   "archiveId": "mary_louise_and_liberty_girls_0906_librivox",
+   "audioZip": "https://www.archive.org/download/mary_louise_and_liberty_girls_0906_librivox/mary_louise_and_liberty_girls_0906_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mary-Louise-and-the-Liberty-Girls-by-L-Frank-Baum.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/mary-louise-and-the-liberty-girls-by-l-frank-baum.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21876/pg21876-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Uncle-Silas",
+   "title": "Uncle Silas",
+   "author": "Joseph Sheridan LeFanu",
+   "url": "https://www.loyalbooks.com/book/Uncle-Silas",
+   "cover": "https://www.loyalbooks.com/image/layout2/Uncle-Silas.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Spy stories"
+   ],
+   "archiveId": "uncle_silas_0911_librivox",
+   "audioZip": "https://www.archive.org/download/uncle_silas_0911_librivox/uncle_silas_0911_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Uncle-Silas.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Uncle-Silas.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/4/8/5/14851/14851-h/14851-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Riddle-of-the-Purple-Emperor",
+   "title": "The Riddle of the Purple Emperor",
+   "author": "Mary E. Hanshew",
+   "url": "https://www.loyalbooks.com/book/Riddle-of-the-Purple-Emperor",
+   "cover": "https://www.loyalbooks.com/image/layout2/Riddle-of-the-Purple-Emperor.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "purple_emperor_rg_librivox",
+   "audioZip": "https://www.archive.org/download/purple_emperor_rg_librivox/purple_emperor_rg_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/RiddleOfThePurpleEmperor-64kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Basil-Wilkie-Collins",
+   "title": "Basil",
+   "author": "Wilkie Collins",
+   "url": "https://www.loyalbooks.com/book/Basil-Wilkie-Collins",
+   "cover": "https://www.loyalbooks.com/image/layout2/Basil-Wilkie-Collins.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature",
+    "Psychology"
+   ],
+   "archiveId": "basil_105_librivox",
+   "audioZip": "https://www.archive.org/download/basil_105_librivox/basil_105_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Basil-Wilkie-Collins.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Basil-Wilkie-Collins.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/4/6/0/4605/4605-h/4605-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Shadow-of-the-Rope",
+   "title": "The Shadow of the Rope",
+   "author": "Ernest William Hornung",
+   "url": "https://www.loyalbooks.com/book/Shadow-of-the-Rope",
+   "cover": "https://www.loyalbooks.com/image/layout2/Shadow-of-the-Rope.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "shadow_ofthe_rope_1007_librivox",
+   "audioZip": "https://www.archive.org/download/shadow_ofthe_rope_1007_librivox/shadow_ofthe_rope_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/ShadowOfTheRope.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Shadow-of-the-Rope.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Shadow-of-the-Rope.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/2/5/9/12590/12590-h/12590-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-open-door-by-margaret-oliphant",
+   "title": "The Open Door and The Portrait: Stories of the Seen and the Unseen",
+   "author": "Margaret Oliphant",
+   "url": "https://www.loyalbooks.com/book/the-open-door-by-margaret-oliphant",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-open-door-by-margaret-oliphant.jpg",
+   "genres": [
+    "Mystery"
+   ],
+   "archiveId": "open_door_0802_librivox",
+   "audioZip": "https://www.archive.org/download/open_door_0802_librivox/open_door_0802_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/OpenDoorAndThePortrait.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Open-Door-by-Margaret-Oliphant.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-open-door-by-margaret-oliphant.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/10052/pg10052.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Secret-Sharer",
+   "title": "The Secret Sharer",
+   "author": "Joseph Conrad",
+   "url": "https://www.loyalbooks.com/book/Secret-Sharer",
+   "cover": "https://www.loyalbooks.com/image/layout2/Secret-Sharer.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Sea stories",
+    "Literature"
+   ],
+   "archiveId": "secret_sharer_gm_librivox",
+   "audioZip": "https://www.archive.org/download/secret_sharer_gm_librivox/secret_sharer_gm_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Secret-Sharer.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Secret-Sharer.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/220/220-h/220-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mystery-of-the-Four-Fingers",
+   "title": "The Mystery of the Four Fingers",
+   "author": "Fred M. White",
+   "url": "https://www.loyalbooks.com/book/Mystery-of-the-Four-Fingers",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mystery-of-the-Four-Fingers.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "mystery_four_fingers_1001_librivox",
+   "audioZip": "https://www.archive.org/download/mystery_four_fingers_1001_librivox/mystery_four_fingers_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/MysteryOfTheFourFingers.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Mystery-of-the-Four-Fingers.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mystery-of-the-Four-Fingers.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9853/pg9853.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Other-Side-of-the-Door",
+   "title": "The Other Side of the Door",
+   "author": "Lucia Chamberlain",
+   "url": "https://www.loyalbooks.com/book/Other-Side-of-the-Door",
+   "cover": "https://www.loyalbooks.com/image/layout2/Other-Side-of-the-Door.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "othersideofthedoor_1009",
+   "audioZip": "https://www.archive.org/download/othersideofthedoor_1009/othersideofthedoor_1009_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/OtherSideOfTheDoor.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Other-Side-of-the-Door.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Other-Side-of-the-Door.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/25724/pg25724-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Secret-of-Lonesome-Cove-by-Adams",
+   "title": "The Secret of Lonesome Cove",
+   "author": "Samuel Hopkins Adams",
+   "url": "https://www.loyalbooks.com/book/Secret-of-Lonesome-Cove-by-Adams",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Secret-of-Lonesome-Cove.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "secret_lonesome_cove_1107_librivox",
+   "audioZip": "https://www.archive.org/download/secret_lonesome_cove_1107_librivox/secret_lonesome_cove_1107_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Secret_Lonesome_Cove_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Secret-of-Lonesome-Cove-by-Adams.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Secret-of-Lonesome-Cove-by-Adams.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/36335/pg36335-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Silent-Bullet",
+   "title": "The Silent Bullet",
+   "author": "Arthur B. Reeve",
+   "url": "https://www.loyalbooks.com/book/Silent-Bullet",
+   "cover": "https://www.loyalbooks.com/image/layout2/Silent-Bullet.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "silent_bullet_1010_librivox",
+   "audioZip": "https://www.archive.org/download/silent_bullet_1010_librivox/silent_bullet_1010_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Silent-Bullet.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Silent-Bullet.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2454/pg2454.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Hilda-Wade-A-Woman-With-Tenacity-of-Purpose",
+   "title": "Hilda Wade, A Woman With Tenacity of Purpose",
+   "author": "Grant Allen",
+   "url": "https://www.loyalbooks.com/book/Hilda-Wade-A-Woman-With-Tenacity-of-Purpose",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hilda-Wade-A-Woman-With-Tenacity-of-Purpose.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "hilda_wade_1004_librivox",
+   "audioZip": "https://www.archive.org/download/hilda_wade_1004_librivox/hilda_wade_1004_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/HildaWadeAWomanWithTenacityOfPurpose.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Hilda-Wade-a-Woman-With-Tenacity-of-Purpose.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Hilda-Wade-A-Woman-With-Tenacity-of-Purpose.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4903/pg4903.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Secret-of-the-Night",
+   "title": "The Secret of the Night",
+   "author": "Gaston Leroux",
+   "url": "https://www.loyalbooks.com/book/Secret-of-the-Night",
+   "cover": "https://www.loyalbooks.com/image/layout2/Secret-of-the-Night.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "secret_of_night_dj_librivox",
+   "audioZip": "https://www.archive.org/download/secret_of_night_dj_librivox/secret_of_night_dj_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/SecretOfTheNight.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Secret-of-the-Night.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Secret-of-the-Night.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/8/1686/1686-h/1686-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Stretton-Street-Affair-by-William-Le-Queux",
+   "title": "The Stretton Street Affair",
+   "author": "William Le Queux",
+   "url": "https://www.loyalbooks.com/book/Stretton-Street-Affair-by-William-Le-Queux",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Stretton-Street-Affair.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "strettonstreetaffair_1111_librivox",
+   "audioZip": "https://www.archive.org/download/strettonstreetaffair_1111_librivox/strettonstreetaffair_1111_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/StrettonStreetAffairPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Stretton-Street-Affair-by-William-Le-Queux.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Stretton-Street-Affair-by-William-Le-Queux.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/1/4/27147/27147-h/27147-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Three-Thousand-Dollars",
+   "title": "Three Thousand Dollars",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/Three-Thousand-Dollars",
+   "cover": "https://www.loyalbooks.com/image/layout2/Three-Thousand-Dollars.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "threethousand_dollars_1006_librivox",
+   "audioZip": "https://www.archive.org/download/threethousand_dollars_1006_librivox/threethousand_dollars_1006_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/ThreeThousandDollars.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Three-Thousand-Dollars.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Three-Thousand-Dollars.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/32795/pg32795-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Street-of-Seven-Stars",
+   "title": "The Street of Seven Stars",
+   "author": "Mary Roberts Rinehart",
+   "url": "https://www.loyalbooks.com/book/Street-of-Seven-Stars",
+   "cover": "https://www.loyalbooks.com/image/layout2/Street-of-Seven-Stars.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "street_seven_stars_0912_librivox",
+   "audioZip": "https://www.archive.org/download/street_seven_stars_0912_librivox/street_seven_stars_0912_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/StreetOfSevenStars.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Street-of-Seven-Stars.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Street-of-Seven-Stars.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/2/1/1214/1214-h/1214-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Diamond-Master",
+   "title": "The Diamond Master",
+   "author": "Jaques Futrelle",
+   "url": "https://www.loyalbooks.com/book/Diamond-Master",
+   "cover": "https://www.loyalbooks.com/image/layout2/Diamond-Master.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "diamond_master_1006_librivox",
+   "audioZip": "https://www.archive.org/download/diamond_master_1006_librivox/diamond_master_1006_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/DiamondMaster.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Diamond-Master.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Diamond-Master.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/14896/pg14896.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mysterious-Key-and-What-It-Opened",
+   "title": "The Mysterious Key and What It Opened",
+   "author": "Louisa May Alcott",
+   "url": "https://www.loyalbooks.com/book/Mysterious-Key-and-What-It-Opened",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mysterious-Key-and-What-It-Opened.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "mysteriouskey_1106_librivox",
+   "audioZip": "https://www.archive.org/download/mysteriouskey_1106_librivox/mysteriouskey_1106_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mysterious-Key-and-What-it-Opened.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mysterious-Key-and-What-it-Opened.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/8/1/8/8188/8188-h/8188-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Expressman-and-the-Detective",
+   "title": "The Expressman and the Detective",
+   "author": "Allan Pinkerton",
+   "url": "https://www.loyalbooks.com/book/Expressman-and-the-Detective",
+   "cover": "https://www.loyalbooks.com/image/layout2/Expressman-and-the-Detective.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Biography",
+    "Science"
+   ],
+   "archiveId": "expressman_and_detective_1103_librivox",
+   "audioZip": "https://www.archive.org/download/expressman_and_detective_1103_librivox/expressman_and_detective_1103_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/ExpressmanAndTheDetective.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Expressman-and-the-Detective.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Expressman-and-the-Detective.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/22155/pg22155-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Uttermost-Farthing",
+   "title": "The Uttermost Farthing",
+   "author": "R. Austin Freeman",
+   "url": "https://www.loyalbooks.com/book/Uttermost-Farthing",
+   "cover": "https://www.loyalbooks.com/image/layout2/Uttermost-Farthing.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "uttermost_farthing_1001_librivox",
+   "audioZip": "https://www.archive.org/download/uttermost_farthing_1001_librivox/uttermost_farthing_1001_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Uttermost-Farthing.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Uttermost-Farthing.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/12028/pg12028.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mystery-of-a-Turkish-Bath",
+   "title": "The Mystery of a Turkish Bath",
+   "author": "Rita (E. M. Gollan)",
+   "url": "https://www.loyalbooks.com/book/Mystery-of-a-Turkish-Bath",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mystery-of-a-Turkish-Bath.jpg",
+   "genres": [
+    "Fiction",
+    "Horror/Ghost stories",
+    "Mystery",
+    "Tragedy",
+    "Literature",
+    "Teen/Young adult"
+   ],
+   "archiveId": "mystery_turkish_bath_bs_librivox",
+   "audioZip": "https://www.archive.org/download/mystery_turkish_bath_bs_librivox/mystery_turkish_bath_bs_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mystery-of-a-Turkish-Bath.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mystery-of-a-Turkish-Bath.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/25656/pg25656.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Red-Arrows-in-the-Night",
+   "title": "Red Arrows in the Night",
+   "author": "Daniel A. Lord",
+   "url": "https://www.loyalbooks.com/book/Red-Arrows-in-the-Night",
+   "cover": "https://www.loyalbooks.com/image/layout2/Red-Arrows-in-the-Night.jpg",
+   "genres": [
+    "Fiction",
+    "Horror/Ghost stories",
+    "Mystery"
+   ],
+   "archiveId": "red_arrows_in_night_1011_librivox",
+   "audioZip": "https://www.archive.org/download/red_arrows_in_night_1011_librivox/red_arrows_in_night_1011_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/RedArrowsInTheNight.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Midnight-Passenger",
+   "title": "The Midnight Passenger",
+   "author": "Richard Henry Savage",
+   "url": "https://www.loyalbooks.com/book/Midnight-Passenger",
+   "cover": "https://www.loyalbooks.com/image/layout2/Midnight-Passenger.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "midnight_passenger_1104_librivox",
+   "audioZip": "https://www.archive.org/download/midnight_passenger_1104_librivox/midnight_passenger_1104_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/TheMidnightPassengerPart1/MidnightPassengerPart1_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Midnight-Passenger.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Midnight-Passenger.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6008/pg6008.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Masquerader-Katherine-Thurston",
+   "title": "The Masquerader",
+   "author": "Katherine Thurston",
+   "url": "https://www.loyalbooks.com/book/Masquerader-Katherine-Thurston",
+   "cover": "https://www.loyalbooks.com/image/layout2/Masquerader-Katherine-Thurston.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Politics",
+    "Romance",
+    "Literature",
+    "Historical Fiction",
+    "Spy stories"
+   ],
+   "archiveId": "masquerader_tw_librivox",
+   "audioZip": "https://www.archive.org/download/masquerader_tw_librivox/masquerader_tw_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/MasqueraderPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Masquerader-Katherine-Thurston.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Masquerader-Katherine-Thurston.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5422/pg5422.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Monsieur-Lecoq-1-The-Inquiry",
+   "title": "Monsieur Lecoq: The Inquiry",
+   "author": "Émile Gaboriau",
+   "url": "https://www.loyalbooks.com/book/Monsieur-Lecoq-1-The-Inquiry",
+   "cover": "https://www.loyalbooks.com/image/layout2/Monsieur-Lecoq-1-The-Inquiry.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "monsieur_lecoq_part1_1105_librivox",
+   "audioZip": "https://www.archive.org/download/monsieur_lecoq_part1_1105_librivox/monsieur_lecoq_part1_1105_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/MonsieurLecoqPart1-TheInquiryPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Monsieur-Lecoq-1-the-Inquiry.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Monsieur-Lecoq-1-The-Inquiry.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4071/pg4071.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mysterious-Disappearance",
+   "title": "A Mysterious Disappearance",
+   "author": "Louis Tracy",
+   "url": "https://www.loyalbooks.com/book/Mysterious-Disappearance",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mysterious-Disappearance.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "a_mysterious_disappearance_ck_librivox",
+   "audioZip": "https://www.archive.org/download/a_mysterious_disappearance_ck_librivox/a_mysterious_disappearance_ck_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mysterious-Disappearance.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mysterious-Disappearance.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/4/2/7/34277/34277-h/34277-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Lock-and-Key-Library",
+   "title": "The Lock and Key Library",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/Lock-and-Key-Library",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lock-and-Key-Library.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "lock_key_library_1104_librivox",
+   "audioZip": "https://www.archive.org/download/lock_key_library_1104_librivox/lock_key_library_1104_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Lock-and-Key-Library.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lock-and-Key-Library.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1831/pg1831.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Secret-House-by-Edgar-Wallace",
+   "title": "The Secret House",
+   "author": "Edgar Wallace",
+   "url": "https://www.loyalbooks.com/book/Secret-House-by-Edgar-Wallace",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Secret-House.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "secret_house_dwj_librivox",
+   "audioZip": "https://www.archive.org/download/secret_house_dwj_librivox/secret_house_dwj_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Secret-House-by-Edgar-Wallace.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Secret-House-by-Edgar-Wallace.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/1/7/26176/26176-h/26176-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Sister-Simons-Murder-Case",
+   "title": "Sister Simon's Murder Case",
+   "author": "Margaret Ann Hubbard",
+   "url": "https://www.loyalbooks.com/book/Sister-Simons-Murder-Case",
+   "cover": "https://www.loyalbooks.com/image/layout2/Sister-Simons-Murder-Case.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "sistersimons_mt_librivox",
+   "audioZip": "https://www.archive.org/download/sistersimons_mt_librivox/sistersimons_mt_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Pagan-Madonna",
+   "title": "The Pagan Madonna",
+   "author": "Harold MacGrath",
+   "url": "https://www.loyalbooks.com/book/Pagan-Madonna",
+   "cover": "https://www.loyalbooks.com/image/layout2/Pagan-Madonna.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "the_pagan_madonna_dj_librivox",
+   "audioZip": "https://www.archive.org/download/the_pagan_madonna_dj_librivox/the_pagan_madonna_dj_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Pagan-Madonna.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Pagan-Madonna.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/27339/pg27339-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Beverly-Of-Graustark",
+   "title": "Beverly Of Graustark",
+   "author": "George Barr McCutcheon",
+   "url": "https://www.loyalbooks.com/book/Beverly-Of-Graustark",
+   "cover": "https://www.loyalbooks.com/image/layout2/Beverly-Of-Graustark.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Romance",
+    "Literature"
+   ],
+   "archiveId": "beverly_graustark_0912_librivox",
+   "audioZip": "https://www.archive.org/download/beverly_graustark_0912_librivox/beverly_graustark_0912_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/BeverlyOfGraustarkPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Beverly-of-Graustark.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Beverly-Of-Graustark.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6801/pg6801.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Just-and-the-Unjust",
+   "title": "The Just And The Unjust",
+   "author": "Vaughan Kester",
+   "url": "https://www.loyalbooks.com/book/Just-and-the-Unjust",
+   "cover": "https://www.loyalbooks.com/image/layout2/Just-and-the-Unjust.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "just_and_unjust_1103_librivox",
+   "audioZip": "https://www.archive.org/download/just_and_unjust_1103_librivox/just_and_unjust_1103_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/JustAndTheUnjust.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Just-and-the-Unjust.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Just-and-the-Unjust.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/14581/pg14581-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Captain-Ted",
+   "title": "Captain Ted",
+   "author": "Mary T. Waggaman",
+   "url": "https://www.loyalbooks.com/book/Captain-Ted",
+   "cover": "https://www.loyalbooks.com/image/layout2/Captain-Ted.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Mystery",
+    "Teen/Young adult"
+   ],
+   "archiveId": "captain_ted_mt_librivox",
+   "audioZip": "https://www.archive.org/download/captain_ted_mt_librivox/captain_ted_mt_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/CaptainTed.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "the-motor-girls-on-a-tour-by-margaret-penrose",
+   "title": "The Motor Girls on a Tour",
+   "author": "Margaret Penrose",
+   "url": "https://www.loyalbooks.com/book/the-motor-girls-on-a-tour-by-margaret-penrose",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-motor-girls-on-a-tour-by-margaret-penrose.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Mystery",
+    "Literature",
+    "Teen/Young adult"
+   ],
+   "archiveId": "motor_girls_tour_lb_librivox",
+   "audioZip": "https://www.archive.org/download/motor_girls_tour_lb_librivox/motor_girls_tour_lb_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Motor-Girls-on-a-Tour-by-Margaret-Penrose.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-motor-girls-on-a-tour-by-margaret-penrose.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2789/pg2789.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Evil-Guest-by-Joseph-Sheridan-Le-Fanu",
+   "title": "The Evil Guest",
+   "author": "Joseph Sheridan LeFanu",
+   "url": "https://www.loyalbooks.com/book/Evil-Guest-by-Joseph-Sheridan-Le-Fanu",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Evil-Guest.jpg",
+   "genres": [
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "evilguest_1107_librivox",
+   "audioZip": "https://www.archive.org/download/evilguest_1107_librivox/evilguest_1107_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Evil-Guest-by-Joseph-Sheridan-Le-Fanu.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Evil-Guest-by-Joseph-Sheridan-Le-Fanu.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/10377/pg10377.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Rivals-of-sherlock-holmes-2",
+   "title": "The Rivals of Sherlock Holmes, Vol. 2",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/Rivals-of-sherlock-holmes-2",
+   "cover": "https://www.loyalbooks.com/image/layout2/Rivals-of-sherlock-holmes-2.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "rivals_sherlock_holmes_2_1207_librivox",
+   "audioZip": "https://www.archive.org/download/rivals_sherlock_holmes_2_1207_librivox/rivals_sherlock_holmes_2_1207_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mansion-of-Mystery-by-Chester-K-Steele",
+   "title": "The Mansion of Mystery",
+   "author": "Chester K. Steele",
+   "url": "https://www.loyalbooks.com/book/Mansion-of-Mystery-by-Chester-K-Steele",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Mansion-of-Mystery.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "mansion_mystery_1111_librivox",
+   "audioZip": "https://www.archive.org/download/mansion_mystery_1111_librivox/mansion_mystery_1111_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Mansion_of_Mystery_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Mansion-of-Mystery-by-Chester-K-Steele.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mansion-of-Mystery-by-Chester-K-Steele.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/16204/pg16204.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Can-Such-Things-Be-by-Ambrose-Bierce",
+   "title": "Can Such Things Be?",
+   "author": "Ambrose Bierce",
+   "url": "https://www.loyalbooks.com/book/Can-Such-Things-Be-by-Ambrose-Bierce",
+   "cover": "https://www.loyalbooks.com/image/layout2/Can-Such-Things-Be.jpg",
+   "genres": [
+    "Literature",
+    "Short stories",
+    "Fiction",
+    "Horror/Ghost stories",
+    "Mystery"
+   ],
+   "archiveId": "can_such_things_be_1205_librivox",
+   "audioZip": "https://archive.org/download/can_such_things_be_1205_librivox/can_such_things_be_1205_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Can-Such-Things-Be-by-Ambrose-Bierce.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Can-Such-Things-Be-by-Ambrose-Bierce.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/etext03/canbe10h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Murder-Takes-the-Veil",
+   "title": "Murder Takes the Veil",
+   "author": "Margaret Ann Hubbard",
+   "url": "https://www.loyalbooks.com/book/Murder-Takes-the-Veil",
+   "cover": "https://www.loyalbooks.com/image/layout2/Murder-Takes-the-Veil.jpg",
+   "genres": [
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "murdertakesveil_mt_librivox",
+   "audioZip": "https://www.archive.org/download/murdertakesveil_mt_librivox/murdertakesveil_mt_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/MurderTakesTheVeil.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Lady-from-Nowhere",
+   "title": "The Lady from Nowhere",
+   "author": "Fergus Hume",
+   "url": "https://www.loyalbooks.com/book/Lady-from-Nowhere",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Lady-from-Nowhere.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "lady_from_nowhere_1203_librivox",
+   "audioZip": "https://www.archive.org/download/lady_from_nowhere_1203_librivox/lady_from_nowhere_1203_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/TheLadyFromNowhere_64kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Avenger-by-E-Phillips-Oppenheim",
+   "title": "The Avenger",
+   "author": "Edward Phillips Oppenheim",
+   "url": "https://www.loyalbooks.com/book/Avenger-by-E-Phillips-Oppenheim",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Avenger.jpg",
+   "genres": [
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "avenger_1207_librivox",
+   "audioZip": "https://www.archive.org/download/avenger_1207_librivox/avenger_1207_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Avenger-by-E-Phillips-Oppenheim.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Avenger-by-E-Phillips-Oppenheim.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9871/pg9871-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Dark-Hollow-by-Anna-Katharine-Green",
+   "title": "Dark Hollow",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/Dark-Hollow-by-Anna-Katharine-Green",
+   "cover": "https://www.loyalbooks.com/image/layout2/Dark-Hollow.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "dark_hollow_1202_librivox",
+   "audioZip": "https://www.archive.org/download/dark_hollow_1202_librivox/dark_hollow_1202_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Dark-Hollow-by-Anna-Katharine-Green.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Dark-Hollow-by-Anna-Katharine-Green.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5121/pg5121.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Boarded-Up-House",
+   "title": "The Boarded Up House",
+   "author": "Augusta Huiell Seaman",
+   "url": "https://www.loyalbooks.com/book/Boarded-Up-House",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Boarded-Up-House.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "boardeduphouse_1112_librivox",
+   "audioZip": "https://www.archive.org/download/boardeduphouse_1112_librivox/boardeduphouse_1112_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/BoardedUpHouse.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Boarded-Up-House-by-Augusta-Huiell-Seaman.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Boarded-Up-House-by-Augusta-Huiell-Seaman.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/9/0/30905/30905-h/30905-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mystery-of-the-Locks-by-Edgar-Watson-Howe",
+   "title": "The Mystery of the Locks",
+   "author": "E.W. Howe",
+   "url": "https://www.loyalbooks.com/book/Mystery-of-the-Locks-by-Edgar-Watson-Howe",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mystery-of-the-Locks-by-Edgar-Watson-Howe.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "mystery_locks_1108_librivox",
+   "audioZip": "https://www.archive.org/download/mystery_locks_1108_librivox/mystery_locks_1108_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mystery-of-the-Locks-by-Edgar-Watson-Howe.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mystery-of-the-Locks-by-Edgar-Watson-Howe.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/6/2/3/36237/36237-h/36237-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Case-of-the-Pool-of-Blood-in-the-Pastors-Stud",
+   "title": "The Case of the Pool of Blood in the Pastor’s Study",
+   "author": "Grace Isabel Colbron",
+   "url": "https://www.loyalbooks.com/book/Case-of-the-Pool-of-Blood-in-the-Pastors-Stud",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Case-of-the-Pool-of-Blood-in-the-Pastors-Study.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "poolofblood_1107_librivox",
+   "audioZip": "https://www.archive.org/download/poolofblood_1107_librivox/poolofblood_1107_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/Case_Pool_Blood.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Case-of-the-Pool-of-Blood-in-the-Pastors-Stud.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Case-of-the-Pool-of-Blood-in-the-Pastors-Stud.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1835/pg1835.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Lone-Wolf-by-Louis-Joseph-Vance",
+   "title": "The Lone Wolf",
+   "author": "Louis Joseph Vance",
+   "url": "https://www.loyalbooks.com/book/Lone-Wolf-by-Louis-Joseph-Vance",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Lone-Wolf.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Romance",
+    "Spy stories"
+   ],
+   "archiveId": "lone_wolf_1205_librivox",
+   "audioZip": "https://www.archive.org/download/lone_wolf_1205_librivox/lone_wolf_1205_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Lone-Wolf-by-Louis-Joseph-Vance.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lone-Wolf-by-Louis-Joseph-Vance.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9378/pg9378.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Master-Hand-by-Richard-Dallas",
+   "title": "A Master Hand",
+   "author": "Richard Dallas",
+   "url": "https://www.loyalbooks.com/book/Master-Hand-by-Richard-Dallas",
+   "cover": "https://www.loyalbooks.com/image/layout2/A-Master-Hand.jpg",
+   "genres": [
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "master_hand_1108_librivox",
+   "audioZip": "https://www.archive.org/download/master_hand_1108_librivox/master_hand_1108_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Master-Hand-by-Richard-Dallas.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Master-Hand-by-Richard-Dallas.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/3/2/2/33228/33228-h/33228-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Roman-Collar-Detective",
+   "title": "Roman Collar Detective",
+   "author": "Grace and Harold Johnson",
+   "url": "https://www.loyalbooks.com/book/Roman-Collar-Detective",
+   "cover": "https://www.loyalbooks.com/image/layout2/Roman-Collar-Detective.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "romancollardetective_mt_librivox",
+   "audioZip": "https://www.archive.org/download/romancollardetective_mt_librivox/romancollardetective_mt_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/RomanCollarDetective.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Silent-House-by-Fergus-Hume",
+   "title": "The Silent House",
+   "author": "Fergus Hume",
+   "url": "https://www.loyalbooks.com/book/Silent-House-by-Fergus-Hume",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Silent-House.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "silent_house_1109_librivox",
+   "audioZip": "https://www.archive.org/download/silent_house_1109_librivox/silent_house_1109_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/SilentHousePart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Silent-House-by-Fergus-Hume.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Silent-House-by-Fergus-Hume.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/0/6/19069/19069-h/19069-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Confession-by-Mary-Roberts-Rinehart",
+   "title": "The Confession",
+   "author": "Mary Roberts Rinehart",
+   "url": "https://www.loyalbooks.com/book/Confession-by-Mary-Roberts-Rinehart",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Confession.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "confession_1107_librivox",
+   "audioZip": "https://www.archive.org/download/confession_1107_librivox/confession_1107_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Confession-by-Mary-Roberts-Rinehart.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Confession-by-Mary-Roberts-Rinehart.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/6/1963/1963-h/1963-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "In-the-Fog-by-Richard-Harding-Davis",
+   "title": "In the Fog",
+   "author": "Richard Harding Davis",
+   "url": "https://www.loyalbooks.com/book/In-the-Fog-by-Richard-Harding-Davis",
+   "cover": "https://www.loyalbooks.com/image/layout2/In-the-Fog.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "in_the_fog_1112_librivox",
+   "audioZip": "https://www.archive.org/download/in_the_fog_1112_librivox/in_the_fog_1112_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/In-the-Fog-by-Richard-Harding-Davis.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/In-the-Fog-by-Richard-Harding-Davis.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/7/8/8/7884/7884-h/7884-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Four-Faces-by-William-Le-Queux",
+   "title": "The Four Faces",
+   "author": "William Le Queux",
+   "url": "https://www.loyalbooks.com/book/Four-Faces-by-William-Le-Queux",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Four-Faces.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "fourfaces_tw_librivox",
+   "audioZip": "https://www.archive.org/download/fourfaces_tw_librivox/fourfaces_tw_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/FourFacesPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Four-Faces-by-William-Le-Queux.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Four-Faces-by-William-Le-Queux.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9795/pg9795.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Ashton-Kirk-Investigator",
+   "title": "Ashton-Kirk, Investigator",
+   "author": "John Thomas McIntyre",
+   "url": "https://www.loyalbooks.com/book/Ashton-Kirk-Investigator",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ashton-Kirk-Investigator.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "ashtonkirk_1209_pm",
+   "audioZip": "https://www.archive.org/download/ashtonkirk_1209_pm/ashtonkirk_1209_pm_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Ashton-Kirk-Investigator-by-John-T-Mcintyre.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ashton-Kirk-Investigator-by-John-T-Mcintyre.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/2/3/1/12314/12314-h/12314-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "At-the-Villa-Rose-by-A-E-W-Mason",
+   "title": "At the Villa Rose",
+   "author": "A.E.W. Mason",
+   "url": "https://www.loyalbooks.com/book/At-the-Villa-Rose-by-A-E-W-Mason",
+   "cover": "https://www.loyalbooks.com/image/layout2/At-the-Villa-Rose.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "at_villa_rose_1112_librivox",
+   "audioZip": "https://www.archive.org/download/at_villa_rose_1112_librivox/at_villa_rose_1112_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/At_the_Villa_Rose.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/At-the-Villa-Rose-by-a-E-W-Mason.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/At-the-Villa-Rose-by-a-E-W-Mason.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/4/7/4/4745/4745-h/4745-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Pawns-Count-by-E-Phillips-Oppenheim",
+   "title": "The Pawns Count",
+   "author": "Edward Phillips Oppenheim",
+   "url": "https://www.loyalbooks.com/book/Pawns-Count-by-E-Phillips-Oppenheim",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Pawns-Count.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Adventure",
+    "Spy stories",
+    "Fiction"
+   ],
+   "archiveId": "pawnscount_1206_librivox",
+   "audioZip": "https://www.archive.org/download/pawnscount_1206_librivox/pawnscount_1206_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Pawns-Count-by-E-Phillips-Oppenheim.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Pawns-Count-by-E-Phillips-Oppenheim.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9836/pg9836.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mystery-of-the-Hasty-Arrow-by-Green",
+   "title": "The Mystery of the Hasty Arrow",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/Mystery-of-the-Hasty-Arrow-by-Green",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Mystery-of-the-Hasty-Arrow.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "mystery_hasty_arrow_1209",
+   "audioZip": "https://www.archive.org/download/mystery_hasty_arrow_1209/mystery_hasty_arrow_1209_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mystery-of-the-Hasty-Arrow-by-Green.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mystery-of-the-Hasty-Arrow-by-Green.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/17763/pg17763-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Black-Bag-by-Louis-Joseph-Vance",
+   "title": "The Black Bag",
+   "author": "Louis Joseph Vance",
+   "url": "https://www.loyalbooks.com/book/Black-Bag-by-Louis-Joseph-Vance",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Black-Bag.jpg",
+   "genres": [
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "black_bag_1202_librivox",
+   "audioZip": "https://www.archive.org/download/black_bag_1202_librivox/black_bag_1202_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Black-Bag-by-Louis-Joseph-Vance.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Black-Bag-by-Louis-Joseph-Vance.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/9/7/7/9779/9779-h/9779-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Shrieking-Pit-by-Arthur-J-Rees",
+   "title": "The Shrieking Pit",
+   "author": "Arthur J. Rees",
+   "url": "https://www.loyalbooks.com/book/Shrieking-Pit-by-Arthur-J-Rees",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Shrieking-Pit.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "shrieking_pit_1206_librivox",
+   "audioZip": "https://www.archive.org/download/shrieking_pit_1206_librivox/shrieking_pit_1206_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Shrieking-Pit-by-Arthur-J-Rees.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Shrieking-Pit-by-Arthur-J-Rees.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/4/9/20494/20494-h/20494-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Miss-Frances-Baird-Detective",
+   "title": "Miss Frances Baird, Detective",
+   "author": "Reginald Wright Kauffman",
+   "url": "https://www.loyalbooks.com/book/Miss-Frances-Baird-Detective",
+   "cover": "https://www.loyalbooks.com/image/layout2/Miss-Frances-Baird-Detective.jpg",
+   "genres": [
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "francesbaird_1209_librivox",
+   "audioZip": "https://www.archive.org/download/francesbaird_1209_librivox/francesbaird_1209_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Amethyst-Box-by-Anna-Katharine-Green",
+   "title": "The Amethyst Box",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/Amethyst-Box-by-Anna-Katharine-Green",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Amethyst-Box.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Romance",
+    "Short stories"
+   ],
+   "archiveId": "amethyst_box_1204_librivox",
+   "audioZip": "https://www.archive.org/download/amethyst_box_1204_librivox/amethyst_box_1204_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Amethyst-Box-by-Anna-Katharine-Green.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Amethyst-Box-by-Anna-Katharine-Green.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/5/4/2/35424/35424-h/35424-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Golden-Silence",
+   "title": "The Golden Silence",
+   "author": "Charles Norris Williamson",
+   "url": "https://www.loyalbooks.com/book/Golden-Silence",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Golden-Silence.jpg",
+   "genres": [
+    "Adventure",
+    "Fiction",
+    "Literature",
+    "Romance",
+    "Mystery",
+    "Travel"
+   ],
+   "archiveId": "golden_silence_1205_librivox",
+   "audioZip": "https://www.archive.org/download/golden_silence_1205_librivox/golden_silence_1205_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Golden-Silence-by-Williamson-and-Williamson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Golden-Silence-by-Williamson-and-Williamson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/1/0/19108/19108-h/19108-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Wolf-Hunters-by-James-Oliver-Curwood",
+   "title": "The Wolf Hunters",
+   "author": "James Oliver Curwood",
+   "url": "https://www.loyalbooks.com/book/Wolf-Hunters-by-James-Oliver-Curwood",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Wolf-Hunters.jpg",
+   "genres": [
+    "Adventure",
+    "Animals",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "wolfhunters_1206_librivox",
+   "audioZip": "https://www.archive.org/download/wolfhunters_1206_librivox/wolfhunters_1206_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Wolf-Hunters-by-James-Oliver-Curwood.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Wolf-Hunters-by-James-Oliver-Curwood.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/2/1/7/12170/12170-h/12170-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Red-Seal-by-Natalie-Sumner-Lincoln",
+   "title": "The Red Seal",
+   "author": "Natalie Sumner Lincoln",
+   "url": "https://www.loyalbooks.com/book/Red-Seal-by-Natalie-Sumner-Lincoln",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Red-Seal.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "redseal_1203_librivox",
+   "audioZip": "https://www.archive.org/download/redseal_1203_librivox/redseal_1203_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Red-Seal-by-Natalie-Sumner-Lincoln.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Red-Seal-by-Natalie-Sumner-Lincoln.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/7/4/1747/1747-h/1747-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Sorceress-of-the-Strand",
+   "title": "The Sorceress of the Strand",
+   "author": "L. T. Meade",
+   "url": "https://www.loyalbooks.com/book/Sorceress-of-the-Strand",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Sorceress-of-the-Strand.jpg",
+   "genres": [
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "sorceressofthestrand_1109_librivox",
+   "audioZip": "https://www.archive.org/download/sorceressofthestrand_1109_librivox/sorceressofthestrand_1109_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Broken-Rosary",
+   "title": "The Broken Rosary",
+   "author": "Grace and Harold Johnson",
+   "url": "https://www.loyalbooks.com/book/Broken-Rosary",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Broken-Rosary.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery"
+   ],
+   "archiveId": "brokenrosary_mt_librivox",
+   "audioZip": "https://www.archive.org/download/brokenrosary_mt_librivox/brokenrosary_mt_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mysteries-of-Paris-Volume-1-of-6-by-Sue",
+   "title": "The Mysteries of Paris, Volume 1",
+   "author": "Eugène Sue",
+   "url": "https://www.loyalbooks.com/book/Mysteries-of-Paris-Volume-1-of-6-by-Sue",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Mysteries-of-Paris-1.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Fantasy",
+    "Mystery",
+    "Adventure"
+   ],
+   "archiveId": "mysteries_paris_vol1_1206_librivox",
+   "audioZip": "https://www.archive.org/download/mysteries_paris_vol1_1206_librivox/mysteries_paris_vol1_1206_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mysteries-of-Paris-volume-1-of-6-by-Sue.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mysteries-of-Paris-Volume-1-of-6-by-Sue.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/33800/pg33800-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Room-in-the-Dragon-Volant-by-Le-Fanu",
+   "title": "The Room in the Dragon Volant",
+   "author": "Joseph Sheridan LeFanu",
+   "url": "https://www.loyalbooks.com/book/Room-in-the-Dragon-Volant-by-Le-Fanu",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Room-in-the-Dragon-Volant.jpg",
+   "genres": [
+    "Horror/Ghost stories",
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "dragonvolant_etk_librivox",
+   "audioZip": "https://www.archive.org/download/dragonvolant_etk_librivox/dragonvolant_etk_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Room-in-the-Dragon-Volant-by-Le-Fanu.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Room-in-the-Dragon-Volant-by-Le-Fanu.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/etext05/8drag10h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Messengers-of-Evil-by-Allain-and-Souvestre",
+   "title": "Messengers of Evil",
+   "author": "Marcel Allain",
+   "url": "https://www.loyalbooks.com/book/Messengers-of-Evil-by-Allain-and-Souvestre",
+   "cover": "https://www.loyalbooks.com/image/layout2/Messengers-of-Evil.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "messengers_of_evil_1109_librivox",
+   "audioZip": "https://www.archive.org/download/messengers_of_evil_1109_librivox/messengers_of_evil_1109_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Messengers-of-Evil-by-Allain-and-Souvestre.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Messengers-of-Evil-by-Allain-and-Souvestre.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/28333/pg28333.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Exploits-of-Juve-by-Allain-and-Souvestre",
+   "title": "The Exploits of Juve",
+   "author": "Marcel Allain",
+   "url": "https://www.loyalbooks.com/book/Exploits-of-Juve-by-Allain-and-Souvestre",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Exploits-of-Juve.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery",
+    "Adventure"
+   ],
+   "archiveId": "exploits_juve_djw_librivox",
+   "audioZip": "https://www.archive.org/download/exploits_juve_djw_librivox/exploits_juve_djw_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Exploits-of-Juve-by-Allain-and-Souvestre.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Exploits-of-Juve-by-Allain-and-Souvestre.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/30586/pg30586-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "That-Affair-at-Elizabeth-by-Stevenson",
+   "title": "That Affair at Elizabeth",
+   "author": "Burton E. Stevenson",
+   "url": "https://www.loyalbooks.com/book/That-Affair-at-Elizabeth-by-Stevenson",
+   "cover": "https://www.loyalbooks.com/image/layout2/That-Affair-at-Elizabeth-by-Stevenson.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Romance",
+    "Fiction"
+   ],
+   "archiveId": "that_affair_cb_librivox",
+   "audioZip": "https://www.archive.org/download/that_affair_cb_librivox/that_affair_cb_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/That-Affair-at-Elizabeth-by-Stevenson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/That-Affair-at-Elizabeth-by-Stevenson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/5/2/4/35247/35247-h/35247-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Sign-of-Silence-by-William-Le-Queux",
+   "title": "The Sign of Silence",
+   "author": "William Le Queux",
+   "url": "https://www.loyalbooks.com/book/Sign-of-Silence-by-William-Le-Queux",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Sign-of-Silence.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "signofsilence_tw_librivox",
+   "audioZip": "https://www.archive.org/download/signofsilence_tw_librivox/signofsilence_tw_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/SignOfSilence.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Sign-of-Silence-by-William-Le-Queux.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Sign-of-Silence-by-William-Le-Queux.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/4/7/30477/30477-h/30477-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Bronze-Hand-by-Anna-Katharine-Green",
+   "title": "The Bronze Hand",
+   "author": "Anna Katharine Green",
+   "url": "https://www.loyalbooks.com/book/Bronze-Hand-by-Anna-Katharine-Green",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Bronze-Hand.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "bronze_hand_1112_librivox",
+   "audioZip": "https://www.archive.org/download/bronze_hand_1112_librivox/bronze_hand_1112_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/BronzeHand.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Bronze-Hand-by-Anna-Katharine-Green.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Bronze-Hand-by-Anna-Katharine-Green.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/8/0/22806/22806-h/22806-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Port-of-Missing-Men",
+   "title": "The Port of Missing Men",
+   "author": "Meredith Nicholson",
+   "url": "https://www.loyalbooks.com/book/Port-of-Missing-Men",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Port-of-Missing-Men.jpg",
+   "genres": [
+    "Mystery",
+    "Romance",
+    "Spy stories",
+    "Fiction"
+   ],
+   "archiveId": "portmissingmen_1109_librivox",
+   "audioZip": "https://www.archive.org/download/portmissingmen_1109_librivox/portmissingmen_1109_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/PortOfMissingMen.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Port-of-Missing-Men-by-Meredith-Nicholson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Port-of-Missing-Men-by-Meredith-Nicholson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/13913/pg13913.html.utf8",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Wanderer-Volume-1-of-5-by-Fanny-Burney",
+   "title": "The Wanderer",
+   "author": "Frances Burney",
+   "url": "https://www.loyalbooks.com/book/Wanderer-Volume-1-of-5-by-Fanny-Burney",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Wanderer.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "Literature",
+    "Mystery",
+    "Politics",
+    "Romance"
+   ],
+   "archiveId": "wanderer_1210_librivox",
+   "audioZip": "https://www.archive.org/download/wanderer_1210_librivox/wanderer_1210_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Wanderer-volume-1-of-5-by-Fanny-Burney.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Wanderer-volume-1-of-5-by-Fanny-Burney.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/7/4/3/37437/37437-h/37437-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Philo-Gubb-Correspondence-School-Detective",
+   "title": "Philo Gubb, Correspondence-School Detective",
+   "author": "Ellis Parker Butler",
+   "url": "https://www.loyalbooks.com/book/Philo-Gubb-Correspondence-School-Detective",
+   "cover": "https://www.loyalbooks.com/image/layout2/Philo-Gubb-Correspondence-School-Detective.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Humor",
+    "Fiction"
+   ],
+   "archiveId": "philogubb_1208_librivox",
+   "audioZip": "https://www.archive.org/download/philogubb_1208_librivox/philogubb_1208_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Philo-Gubb-Correspondence-School-Detective.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Philo-Gubb-Correspondence-School-Detective.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/29721/pg29721-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Ziska-by-Marie-Corelli",
+   "title": "Ziska",
+   "author": "Marie Corelli",
+   "url": "https://www.loyalbooks.com/book/Ziska-by-Marie-Corelli",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ziska.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Fiction"
+   ],
+   "archiveId": "ziska_1107_librivox",
+   "audioZip": "https://www.archive.org/download/ziska_1107_librivox/ziska_1107_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Ziska_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Ziska-by-Marie-Corelli.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ziska-by-Marie-Corelli.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/5079/pg5079.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Collected-Works-of-Ambrose-Bierce-Volume-2",
+   "title": "In the Midst of Life; Tales of Soldiers and Civilians",
+   "author": "Ambrose Bierce",
+   "url": "https://www.loyalbooks.com/book/Collected-Works-of-Ambrose-Bierce-Volume-2",
+   "cover": "https://www.loyalbooks.com/image/layout2/In-the-Midst-of-Life-Tales-of-Soldiers-and-Civilians.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "Literature",
+    "Mystery",
+    "Satire",
+    "Short stories",
+    "War stories"
+   ],
+   "archiveId": "in_midst_life_dw_librivox",
+   "audioZip": "https://www.archive.org/download/in_midst_life_dw_librivox/in_midst_life_dw_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Collected-Works-of-Ambrose-Bierce-volume-2.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Collected-Works-of-Ambrose-Bierce-volume.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/3/3/3/13334/13334-h/13334-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Dangerous-Days-by-Mary-Roberts-Rinehart",
+   "title": "Dangerous Days",
+   "author": "Mary Roberts Rinehart",
+   "url": "https://www.loyalbooks.com/book/Dangerous-Days-by-Mary-Roberts-Rinehart",
+   "cover": "https://www.loyalbooks.com/image/layout2/Dangerous-Days.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Mystery"
+   ],
+   "archiveId": "dangerous_days_1209_librivox",
+   "audioZip": "https://www.archive.org/download/dangerous_days_1209_librivox/dangerous_days_1209_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Dangerous-Days-by-Mary-Roberts-Rinehart.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Dangerous-Days-by-Mary-Roberts-Rinehart.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/9/1693/1693-h/1693-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Mystery-at-Geneva",
+   "title": "Mystery at Geneva: An Improbable Tale of Singular Happenings",
+   "author": "Dame Rose Macaulay",
+   "url": "https://www.loyalbooks.com/book/Mystery-at-Geneva",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mystery-at-Geneva.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literature"
+   ],
+   "archiveId": "mystery_geneva_1209_librivox",
+   "audioZip": "https://www.archive.org/download/mystery_geneva_1209_librivox/mystery_geneva_1209_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mystery-at-Geneva.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mystery-at-Geneva.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/30647/pg30647-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Rome-Express-by-Arthur-Griffiths",
+   "title": "The Rome Express",
+   "author": "Arthur Griffiths",
+   "url": "https://www.loyalbooks.com/book/Rome-Express-by-Arthur-Griffiths",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Rome-Express.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Travel",
+    "Fiction"
+   ],
+   "archiveId": "rome_express_1210_librivox",
+   "audioZip": "https://www.archive.org/download/rome_express_1210_librivox/rome_express_1210_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Rome-Express-by-Arthur-Griffiths.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Rome-Express-by-Arthur-Griffiths.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/11451/pg11451-images.mobi",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Silent-Barrier-by-Louis-Tracy",
+   "title": "The Silent Barrier",
+   "author": "Louis Tracy",
+   "url": "https://www.loyalbooks.com/book/Silent-Barrier-by-Louis-Tracy",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Silent-Barrier.jpg",
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Romance"
+   ],
+   "archiveId": "silent_barrier_1208_librivox",
+   "audioZip": "https://www.archive.org/download/silent_barrier_1208_librivox/silent_barrier_1208_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Silent-Barrier-by-Louis-Tracy.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Silent-Barrier-by-Louis-Tracy.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/1/6/3/31635/31635-h/31635-h.htm",
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Yellow-Journalist",
+   "title": "A Yellow Journalist",
+   "author": "Miriam Michelson",
+   "url": "https://www.loyalbooks.com/book/Yellow-Journalist",
+   "cover": "https://www.loyalbooks.com/image/layout2/A-Yellow-Journalist.jpg",
+   "genres": [
+    "Adventure",
+    "Fiction",
+    "Mystery",
+    "Politics",
+    "Romance"
+   ],
+   "archiveId": "yellow_journalist_lah_librivox",
+   "audioZip": "https://www.archive.org/download/yellow_journalist_lah_librivox/yellow_journalist_lah_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "Steel-Hammer",
+   "title": "The Steel Hammer",
+   "author": "Louis Ulbach",
+   "url": "https://www.loyalbooks.com/book/Steel-Hammer",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Steel-Hammer.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "Mystery",
+    "Tragedy"
+   ],
+   "archiveId": "steel_hammer_1205_librivox",
+   "audioZip": "https://www.archive.org/download/steel_hammer_1205_librivox/steel_hammer_1205_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "mystery"
+  },
+  {
+   "slug": "An-Amiable-Charlatan-by-E-Phillips-Oppenheim",
+   "title": "An Amiable Charlatan",
+   "author": "Edward Phillips Oppenheim",
+   "url": "https://www.loyalbooks.com/book/An-Amiable-Charlatan-by-E-Phillips-Oppenheim",
+   "cover": "https://www.loyalbooks.com/image/layout2/An-Amiable-Charlatan.jpg",
+   "genres": [
+    "Literature",
+    "Mystery",
+    "Adventure",
+    "Fiction",
+    "Humor",
+    "Romance"
+   ],
+   "archiveId": "amiable_charlatan_1207_librivox",
+   "audioZip": "https://www.archive.org/download/amiable_charlatan_1207_librivox/amiable_charlatan_1207_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/An-Amiable-Charlatan-by-E-Phillips-Oppenheim.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/An-Amiable-Charlatan-by-E-Phillips-Oppenheim.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9664/pg9664.mobi",
+   "cluster": "mystery"
+  }
+ ]
+}

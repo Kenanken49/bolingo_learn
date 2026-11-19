@@ -14,17 +14,19 @@ import { LIFE_STAGES, type LifeStageId } from './lifeStage';
 
 export type SpaceId = LifeStageId;
 
-/** Priority order of COURSES_META ids (lib/curriculum.ts) per space. */
+/** Priority order of COURSES_META ids (lib/curriculum.ts) per space. The
+ * fundamentals tracks sit with the professional ones, Git first, because
+ * every other course in the catalog assumes it. */
 export const SPACE_COURSE_ORDER: Record<SpaceId, string[]> = {
   // Tier 1 Gamified Explorer: languages first (playful pace), then creative
   // web building, then the heavier pro tracks last.
-  explorer: ['lang', 'html', 'design', 'rwd', 'linux', 'certs'],
+  explorer: ['aiml-explorer', 'lang', 'html', 'design', 'rwd', 'git', 'linux', 'certs', 'typescript', 'testing', 'crypto', 'aiml-launcher', 'aiml-leader'],
   // Tier 2 Career Launcher: the full shelf in catalog order — university
   // supplements + first-job skills side by side.
-  launcher: ['html', 'rwd', 'design', 'lang', 'certs', 'linux'],
+  launcher: ['aiml-launcher', 'html', 'rwd', 'git', 'typescript', 'testing', 'crypto', 'design', 'lang', 'certs', 'linux', 'aiml-explorer', 'aiml-leader'],
   // Tier 3 Career Ladder Climber: credentials first, bite-sized; languages
   // (long ongoing courses) last.
-  climber: ['certs', 'linux', 'rwd', 'design', 'html', 'lang'],
+  climber: ['aiml-leader', 'certs', 'git', 'typescript', 'testing', 'crypto', 'linux', 'rwd', 'design', 'html', 'lang', 'aiml-explorer', 'aiml-launcher'],
 };
 
 /** Certification tracks before language courses for climbers only. */

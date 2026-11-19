@@ -7,9 +7,10 @@ import Text from '../../components/ui/Text';
 import AppIcon, { type AppIconName } from '../../components/AppIcon';
 import { getProfile, type Profile } from '../../lib/progress';
 import { greeting, firstName, latestBookTitle } from '../../lib/dashboard';
+import { CLASSICS } from '../../lib/classicsAudiobooks';
 
 const SHELVES: { title: string; sub: string; icon: AppIconName; route: string }[] = [
-  { title: 'Audiobooks', sub: '186 classics + your generated books', icon: 'headset', route: '/audiobooks' },
+  { title: 'Audiobooks', sub: `${CLASSICS.length} classics + your generated books`, icon: 'headset', route: '/audiobooks' },
   { title: 'My uploads', sub: 'Turn files into lessons & narration', icon: 'upload', route: '/uploads' },
   { title: 'Dictionary', sub: 'Swahili ↔ English lookup', icon: 'book', route: '/dictionary' },
 ];

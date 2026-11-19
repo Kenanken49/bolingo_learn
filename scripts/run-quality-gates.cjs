@@ -61,6 +61,44 @@ function tail(text, lines = 40, chars = 6000) {
   return clipped.slice(-chars);
 }
 
+const isActions = process.env.GITHUB_ACTIONS === 'true';
+
+// Workflow commands travel through stdout, so their payload cannot carry raw
+// newlines or percent signs (GitHub unescapes %0A / %0D / %25 / %3A / %2C).
+const escapeData = (text) =>
+  String(text).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+const escapeProperty = (text) =>
+  escapeData(text).replace(/:/g, '%3A').replace(/,/g, '%2C');
+
+// GitHub shows at most 10 error annotations per step, so a broad failure spends
+// the last slot on the gates it could not name individually.
+const ANNOTATION_LIMIT = 10;
+
+/** A red job names its failing gate on the run page, which stays readable when
+ * the raw log needs a token. The title carries the verdict, so the body is only
+ * what the title cannot say. */
+function annotate(result) {
+  const state = result.timedOut ? 'timed out' : `exit ${result.exitCode}`;
+  const body = [`${result.label} (${state}) · ${result.command}`, tail(result.outputTail, 12, 1400)]
+    .filter(Boolean)
+    .join('\n');
+  console.log(`::error title=${escapeProperty('quality gate ' + result.id + ' failed')}::${escapeData(body)}`);
+}
+
+function annotateFailures(failed) {
+  if (!isActions) return;
+  const named = failed.length > ANNOTATION_LIMIT ? failed.slice(0, ANNOTATION_LIMIT - 1) : failed;
+  named.forEach(annotate);
+  if (named.length < failed.length) {
+    const rest = failed.slice(named.length).map((gate) => gate.id);
+    console.log(
+      `::error title=${escapeProperty(`quality gate: ${rest.length} more failed`)}::${escapeData(
+        `${rest.join(', ')} — full report in the job summary and the quality-report artifact.`
+      )}`
+    );
+  }
+}
+
 const startedAt = new Date();
 const commitSha = runGit(['rev-parse', 'HEAD']);
 const branch = runGit(['rev-parse', '--abbrev-ref', 'HEAD']) || 'unknown';
@@ -123,6 +161,7 @@ for (let index = 0; index < gates.length; index += 1) {
 
 const finishedAt = new Date();
 const failed = results.filter((gate) => gate.status === 'failed');
+annotateFailures(failed);
 const requiredFailures = failed.filter((gate) => gate.required);
 const passed = results.length - failed.length;
 const summary = {
@@ -172,8 +211,30 @@ const markdown = [
     ? `Required gates failed: ${requiredFailures.map((gate) => gate.id).join(', ')}`
     : 'Every required gate passed.',
   '',
+  ...failed.flatMap((gate) => [
+    `## ${gate.id} — ${gate.label}`,
+    '',
+    '````sh',
+    gate.command,
+    '````',
+    '',
+    '````',
+    gate.outputTail || '(no output)',
+    '````',
+    '',
+  ]),
 ].join('\n');
 fs.writeFileSync(path.join(REPORT_DIR, 'last-run.md'), markdown);
+
+// The job summary and the uploaded .quality/ report carry the same table, so a
+// failed CI run is diagnosed from its own page instead of the raw log.
+if (process.env.GITHUB_STEP_SUMMARY) {
+  try {
+    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, markdown);
+  } catch (error) {
+    console.error(`Could not write the job summary: ${error instanceof Error ? error.message : error}`);
+  }
+}
 
 console.log('');
 console.log(

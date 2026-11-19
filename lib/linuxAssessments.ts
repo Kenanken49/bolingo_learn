@@ -14,7 +14,7 @@ import { MCQ, TEXT, type CourseLesson } from './quizBank';
 export const LINUX_ASSESSMENTS: Record<string, CourseLesson> = {
   'linux-grasshopper-lab': {
     id: 'linux-grasshopper-lab',
-    title: 'Grasshopper command lab',
+    title: 'Paper lab: files, permissions and processes from memory',
     theory: [
       'A command lab is a rehearsal for a real shell. Type the exact command you would run, including flags, because flags are where the meaning lives.',
       'Work from what you know: pwd prints the working directory, ls lists it, mkdir creates a directory, chmod changes permissions, and grep searches text. Short flags can usually be combined, but spelling matters.',
@@ -125,7 +125,7 @@ export const LINUX_ASSESSMENTS: Record<string, CourseLesson> = {
 
   'linux-journeyman-lab': {
     id: 'linux-journeyman-lab',
-    title: 'Journeyman command lab',
+    title: 'Paper lab: disks, services and logs from memory',
     theory: [
       'Journeyman work is about seeing the machine: storage, mounts, boot and service state, kernels and logs.',
       'Type the command that answers the question, not a command that merely mentions the topic. Flags such as -h, -u and -f change the output enough to matter.',
@@ -236,7 +236,7 @@ export const LINUX_ASSESSMENTS: Record<string, CourseLesson> = {
 
   'linux-networking-lab': {
     id: 'linux-networking-lab',
-    title: 'Networking command lab',
+    title: 'Paper lab: addresses, DNS and ports from memory',
     theory: [
       'Networking labs reward a disciplined sequence: find your address, test reachability, resolve names, trace the path, and inspect listeners.',
       'Type the command you would actually run, including the flags that change output. “ping” alone is not the same as “ping -c 4”.',
@@ -352,12 +352,12 @@ export const LINUX_ASSESSMENT_BLOCKS: Record<string, CurriculumBlock[]> = {
     {
       id: 'lx-grasshopper-lab',
       kind: 'lab',
-      title: 'Grasshopper command lab',
-      blurb: 'Independent lab: type the real commands for files, permissions, text search and processes.',
+      title: 'Paper lab: files, permissions and processes from memory',
+      blurb: 'Paper exercise, nothing runs here: type the commands for files, permissions, text search and processes; nothing executes — your text is matched.',
       minutes: 8,
       xp: 30,
       lessonId: 'linux-grasshopper-lab',
-      lessonTitle: 'Grasshopper command lab',
+      lessonTitle: 'Paper lab: files, permissions and processes from memory',
     },
     {
       id: 'lx-grasshopper-final',
@@ -374,12 +374,12 @@ export const LINUX_ASSESSMENT_BLOCKS: Record<string, CurriculumBlock[]> = {
     {
       id: 'lx-journeyman-lab',
       kind: 'lab',
-      title: 'Journeyman command lab',
-      blurb: 'Independent lab: inspect disks, services, logs and running processes from the shell.',
+      title: 'Paper lab: disks, services and logs from memory',
+      blurb: 'Paper exercise, nothing runs here: write the commands for disks, services, logs and processes; nothing executes — your text is matched.',
       minutes: 8,
       xp: 30,
       lessonId: 'linux-journeyman-lab',
-      lessonTitle: 'Journeyman command lab',
+      lessonTitle: 'Paper lab: disks, services and logs from memory',
     },
     {
       id: 'lx-journeyman-final',
@@ -396,12 +396,12 @@ export const LINUX_ASSESSMENT_BLOCKS: Record<string, CurriculumBlock[]> = {
     {
       id: 'lx-networking-lab',
       kind: 'lab',
-      title: 'Networking command lab',
-      blurb: 'Independent lab: addresses, reachability, DNS, routes and listening ports.',
+      title: 'Paper lab: addresses, DNS and ports from memory',
+      blurb: 'Paper exercise, nothing runs here: write the commands for addresses, reachability, DNS, routes and ports; nothing executes — your text is matched.',
       minutes: 8,
       xp: 30,
       lessonId: 'linux-networking-lab',
-      lessonTitle: 'Networking command lab',
+      lessonTitle: 'Paper lab: addresses, DNS and ports from memory',
     },
     {
       id: 'lx-networking-final',

@@ -3,6 +3,7 @@ import { Link, usePathname, type Href } from 'expo-router';
 import Text from '../ui/Text';
 import AppIcon, { type AppIconName } from '../AppIcon';
 import { useNatural } from '../../lib/natural';
+import { useTheme } from '../../lib/theme';
 import { useTierStyle } from '../../lib/tierStyle';
 import { useLifeStageSnapshot } from '../../lib/lifeStageStore';
 import { DEFAULT_TABS, isTabActive, tabsFor, type MenuTab } from '../../lib/tierMenu';
@@ -23,12 +24,37 @@ export function useTabs(): MenuTab[] {
 export default function TabBar() {
   const p = useNatural();
   const t = useTierStyle();
+  const [theme, setTheme] = useTheme();
+  const dark = theme === 'dark';
   const path = usePathname();
   const tabs = useTabs();
   const tight = tabs.length > 4;
   return (
+    <View className="md:hidden relative">
+      {/* Floating theme switch above the bar (mobile only, like the desktop sidebar toggle). */}
+      <Pressable
+        onPress={() => void setTheme(dark ? 'light' : 'dark')}
+        accessibilityRole="button"
+        accessibilityLabel={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+        style={{
+          position: 'absolute',
+          right: 16,
+          bottom: 78,
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: p.surface,
+          borderWidth: 1,
+          borderColor: p.line,
+          zIndex: 10,
+          elevation: 10,
+        }}
+      >
+        <AppIcon name={dark ? 'moon' : 'sunny'} size={20} color={dark ? '#7DD3FC' : '#F59E0B'} />
+      </Pressable>
     <View
-      className="md:hidden"
       accessibilityRole="tablist"
       style={{
         borderTopWidth: 1,
@@ -70,6 +96,7 @@ export default function TabBar() {
           </Link>
         );
       })}
+    </View>
     </View>
   );
 }

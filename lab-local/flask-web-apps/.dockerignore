@@ -1,0 +1,13 @@
+# Keep the build context small and deterministic.
+# Note: .labex and solutions are NOT ignored - the image needs them.
+.git
+.github
+.idea
+.quality
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.mypy_cache
+node_modules
+*.log
+screenshot.png

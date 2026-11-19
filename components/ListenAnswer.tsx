@@ -15,7 +15,7 @@ interface Props {
   questionData: CodeQuizData;
   questionLabel: string;
   progressPct: number;
-  hearts: number;
+  diamonds: number;
   sessionKind?: BlockKind;
   /** The lesson's own voice. Without it there is nothing to hear, so the
    *  loader drops listen items instead of showing a silent fake. */

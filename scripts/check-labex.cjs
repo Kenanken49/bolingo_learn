@@ -11,7 +11,9 @@
  *   - every lesson keeps its attribution line and at least three questions;
  *   - prompts are unique inside a lesson and options stay readable;
  *   - the eager metadata registry and the lazy category banks agree exactly;
- *   - nothing from the LabEx VM leaks into learner-facing copy.
+ *   - nothing from the LabEx VM leaks into learner-facing copy;
+ *   - the /labs header and count row take their duration range from the
+ *     registry, so no screen copy can quote a range the corpus left behind.
  *
  * Runs inside `npm test`.
  */
@@ -49,6 +51,108 @@ const MAX_OPTION = 95;
 /* ---- metadata registry ---- */
 if (LABEX_COUNT !== Object.keys(LABEX_META).length) fail('LABEX_COUNT disagrees with the registry.');
 if (LABEX_COUNT < 1500) fail(`The lab library looks truncated: only ${LABEX_COUNT} labs.`);
+
+/* ---- library screen copy ---- */
+// The /labs header and count row quote the corpus duration spread. Typed into
+// the copy, that range rots the day a longer lab lands, so the screen has to
+// derive it from LABEX_META; a digit literal here is a regression.
+const SCREEN = path.join(ROOT, 'src', 'app', 'labs.tsx');
+const screenSource = fs.readFileSync(SCREEN, 'utf8');
+const flatScreen = screenSource.replace(/\s+/g, '');
+const MINUTES = Object.values(LABEX_META).map((lab) => lab.minutes);
+const span = `${Math.min(...MINUTES)}–${Math.max(...MINUTES)}`;
+
+// The fold has to reach the registry. Two separate checks used to pass a file
+// where the registry map line was dead and Math.min/Math.max ran over some
+// other array, so the array is captured and both folds must name it.
+const derivation = flatScreen.match(
+  /const([A-Za-z_$][\w$]*)=Object\.values\(LABEX_META\)(?:\.map|\.flatMap)\(([^;]*?)\);/
+);
+// The mapper has to hand back the minutes field, not merely mention it: a map
+// like (lab) => (lab.minutes ? 5 : 30) keeps the name and hard-codes the range.
+const mappedBody = derivation ? derivation[2].split('=>').pop().replace(/[()]/g, '') : '';
+const minutesArray = /^(?:[A-Za-z_$][\w$]*\.)?minutes$/.test(mappedBody) ? derivation[1] : null;
+if (!minutesArray) {
+  fail(
+    'labs.tsx must derive its minute spread from LABEX_META: Object.values(LABEX_META).map((lab) => lab.minutes).'
+  );
+} else {
+  for (const fold of ['min', 'max']) {
+    if (!flatScreen.includes('Math.' + fold + '(...' + minutesArray + ')')) {
+      fail('labs.tsx must take Math.' + fold + '(...' + minutesArray + '), the minutes derived from LABEX_META.');
+    }
+  }
+}
+
+// Which fold a name is bound to, if any: written inline, or a const whose value
+// is that fold. Looked up by the name the copy uses rather than parsed back from
+// the fold call, so a second declarator on one line (const MIN = …, MAX = …) resolves.
+const foldOf = (name) =>
+  minutesArray
+    ? ['min', 'max'].find((fold) =>
+        new RegExp(
+          '(?:const|,)' + name + '(?::[^=]*)?=Math\\.' + fold + '\\(\\.\\.\\.' + minutesArray + '\\)'
+        ).test(flatScreen)
+      )
+    : undefined;
+
+// Judge a range where learners read it: the <Text> body carrying the phrase.
+const copyAt = (marker) => {
+  const at = screenSource.indexOf(marker);
+  if (at === -1) return null;
+  const open = screenSource.lastIndexOf('<Text', at);
+  const close = screenSource.indexOf('</Text>', at);
+  if (open === -1 || close === -1) return null;
+  return screenSource.slice(screenSource.indexOf('>', open) + 1, close);
+};
+
+for (const [marker, where] of [
+  ['hands-on labs', 'The /labs header'],
+  ['first try counts', 'The /labs count row'],
+]) {
+  // Without a derived array there is nothing to compare the copy against, and the
+  // derivation failure above already names the shape the screen has to have.
+  if (!minutesArray) continue;
+  const copy = copyAt(marker);
+  if (!copy) {
+    fail(`${where} no longer says "${marker}"; update this gate with the new copy.`);
+    continue;
+  }
+  const typed = copy.replace(/\{[^{}]*\}/g, '').match(/\d+(?:\s*(?:to|[–-])\s*\d+)?/);
+  if (typed) {
+    fail(
+      `${where} types its duration range ("${typed[0].replace(/\s+/g, ' ').trim()}"); it must interpolate the registry spread (${span} minutes).`
+    );
+  }
+  const shown = new Set();
+  const foreign = [];
+  for (const [, expr] of copy.matchAll(/\{([^{}]*)\}/g)) {
+    if (/\d/.test(expr)) {
+      fail(`${where} interpolates the numeric literal {${expr.trim()}}; the range must come from LABEX_META.`);
+      continue;
+    }
+    const trimmed = expr.trim();
+    const flat = expr.replace(/\s+/g, '');
+    if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(trimmed)) {
+      const fold = foldOf(trimmed);
+      if (fold) shown.add(fold);
+      else foreign.push('{' + trimmed + '}');
+      continue;
+    }
+    // Math.min(...X) / Math.max(...X) written straight into the copy. Anything
+    // else (LABEX_COUNT.toLocaleString()) is not a range and is not judged here.
+    const inline = flat.match(/^Math\.(min|max)\(\.\.\.([A-Za-z_$][A-Za-z0-9_$]*)\)$/);
+    if (!inline) continue;
+    if (inline[2] === minutesArray) shown.add(inline[1]);
+    else foreign.push('{' + flat + '}');
+  }
+  if (foreign.length > 0) {
+    fail(`${where} interpolates ${foreign.join(' and ')}, which is not the Math.min/Math.max fold over ${minutesArray} that LABEX_META supplies.`);
+  } else if (!shown.has('min') || !shown.has('max')) {
+    const got = shown.size === 0 ? 'nothing' : `only the ${shown.has('min') ? 'minimum' : 'maximum'}`;
+    fail(`${where} must interpolate both ends of the range, got ${got}.`);
+  }
+}
 
 const categoryIds = LABEX_CATEGORIES.map((c) => c.id);
 if (new Set(categoryIds).size !== categoryIds.length) fail('duplicate LabEx category id.');

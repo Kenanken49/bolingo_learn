@@ -271,13 +271,14 @@ check('Job matching counts only earned certifications', () => {
 });
 
 check('Public credentials and jobs are server-checked', () => {
-  const cred = read(rel('netlify', 'functions', 'credentials.mts'));
+  const cred = read(rel('server', 'api', 'credentials.mjs'));
   assert(cred.includes('lesson_completions') && /ids\.every\(\(id\) => passed\.has\(id\)\)/.test(cred), 'issuing must re-check every project server-side');
-  assert(cred.includes("path: ['/api/credentials', '/api/credentials/:code']"), 'credential routes');
-  assert(!/service_role|SERVICE_ROLE/.test(cred + read(rel('netlify', 'lib', 'supabaseAuth.ts'))), 'functions must not use a Supabase service-role key');
-  const jobs = read(rel('netlify', 'functions', 'jobs.mts'));
+  const router = read(rel('server', 'index.mjs'));
+  assert(/credentials: \{ handler: credentials/.test(router) && /jobs: \{ handler: jobs/.test(router), 'credential and job routes');
+  assert(!/service_role|SERVICE_ROLE/.test(cred + read(rel('server', 'lib', 'supabaseAuth.mjs'))), 'the API must not use a Supabase service-role key');
+  const jobs = read(rel('server', 'api', 'jobs.mjs'));
   assert(jobs.includes('isAdmin(user)') && jobs.includes("https:\\/\\/"), 'only admins post, and apply links must be https');
-  assert(fs.readdirSync(rel('netlify', 'database', 'migrations')).length > 0, 'a migration must exist for the new tables');
+  assert(fs.readdirSync(rel('db', 'migrations')).some((f) => f.endsWith('.sql')), 'a migration must exist for the new tables');
   assert(fs.existsSync(rel('src', 'app', 'verify', '[code].tsx')), 'public /verify/<code> page');
 });
 

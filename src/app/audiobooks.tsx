@@ -13,10 +13,12 @@ import { supabase } from '../../lib/supabase';
 import { loadLessonAudiobook, type Audiobook, type AudioChapter } from '../../lib/audiobook';
 import {
   CLASSICS,
+  clusterCounts,
   downloadBook,
   formatBytes,
   genreCounts,
   getOfflineStatus,
+  listOfflineSlugs,
   localCoverUri,
   localTextUri,
   playableChapters,
@@ -34,6 +36,13 @@ import {
 } from '../../lib/classicsDailyLimit';
 
 const READER_PAGE = 5500;
+
+/**
+ * Cards drawn per section before "Show more". The catalog is over a thousand
+ * books now, and every card asks the filesystem for its offline status, so the
+ * screen renders a window and only probes that window.
+ */
+const SHELF_PAGE = 40;
 
 /** Split ebook text into word-safe pages so words are never cut in half. */
 function paginate(text: string, size: number = READER_PAGE): string[] {
@@ -68,8 +77,13 @@ export default function ClassicsLibrary() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [query, setQuery] = useState('');
   const [genre, setGenre] = useState<string | null>(null);
+  const [cluster, setCluster] = useState<string | null>(null);
+  // The rendered window of each shelf, keyed on the active filters below.
+  const [shelfWindow, setShelfWindow] = useState<{ key: string; limit: number }>({ key: '', limit: SHELF_PAGE });
   const [offlineOnly, setOfflineOnly] = useState(false);
   const [statuses, setStatuses] = useState<Record<string, OfflineStatus>>({});
+  // Which slugs have an offline folder, from one directory read per refresh.
+  const [downloaded, setDownloaded] = useState<Set<string>>(new Set());
   const [covers, setCovers] = useState<Record<string, string>>({});
   const [progress, setProgress] = useState<Record<string, { written: number; total: number }>>({});
   const [busy, setBusy] = useState<string | null>(null);
@@ -84,26 +98,35 @@ export default function ClassicsLibrary() {
   const [reader, setReader] = useState<ReaderState | null>(null);
   const [player, setPlayer] = useState<PlayerState | null>(null);
   const statusToken = useRef(0);
+  // The cards currently on screen — the only ones worth probing offline.
+  const visibleRef = useRef<ClassicBook[]>([]);
+
+  const refreshDownloaded = useCallback(async () => {
+    setDownloaded(await listOfflineSlugs().catch(() => new Set<string>()));
+  }, []);
 
   const isPremium = profile?.is_premium === true;
 
-  const refreshStatuses = useCallback(async () => {
+  const refreshStatuses = useCallback(async (books: ClassicBook[]) => {
+    if (books.length === 0) return;
     const token = statusToken.current + 1;
     statusToken.current = token;
     const entries = await Promise.all(
-      CLASSICS.map(async (b) => [b.slug, await getOfflineStatus(b).catch(() => null)] as const)
+      books.map(async (b) => [b.slug, await getOfflineStatus(b).catch(() => null)] as const)
     );
     if (statusToken.current !== token) return;
     const next: Record<string, OfflineStatus> = {};
     for (const [slug, st] of entries) if (st) next[slug] = st;
-    setStatuses(next);
+    // Merge, never replace: the window moves as the user filters, and the
+    // "MB on device" total adds up everything probed so far.
+    setStatuses((prev) => ({ ...prev, ...next }));
     const coverEntries = await Promise.all(
-      CLASSICS.map(async (b) => [b.slug, await localCoverUri(b).catch(() => null)] as const)
+      books.map(async (b) => [b.slug, await localCoverUri(b).catch(() => null)] as const)
     );
     if (statusToken.current !== token) return;
     const coverNext: Record<string, string> = {};
     for (const [slug, uri] of coverEntries) if (uri) coverNext[slug] = uri;
-    setCovers(coverNext);
+    setCovers((prev) => ({ ...prev, ...coverNext }));
   }, []);
 
   useFocusEffect(
@@ -124,7 +147,10 @@ export default function ClassicsLibrary() {
             if (alive) setUserBooks((data as { id: number; title: string }[] | null) ?? []);
           }
         } catch {}
-        await refreshStatuses().catch(() => {});
+        await Promise.all([
+          refreshStatuses(visibleRef.current).catch(() => {}),
+          refreshDownloaded(),
+        ]);
         try {
           const day = await getDailyDownload().catch(() => null);
           if (alive) setDaily(day);
@@ -133,15 +159,17 @@ export default function ClassicsLibrary() {
       return () => {
         alive = false;
       };
-    }, [refreshStatuses])
+    }, [refreshStatuses, refreshDownloaded])
   );
 
   const genres = useMemo(() => genreCounts(), []);
+  const clusters = useMemo(() => clusterCounts(), []);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return CLASSICS.filter((b) => {
+      if (cluster && b.cluster !== cluster) return false;
       if (genre && !b.genres.includes(genre)) return false;
-      if (offlineOnly && statuses[b.slug]?.state !== 'complete') return false;
+      if (offlineOnly && !downloaded.has(b.slug)) return false;
       if (!q) return true;
       return (
         b.title.toLowerCase().includes(q) ||
@@ -149,13 +177,31 @@ export default function ClassicsLibrary() {
         b.genres.some((g) => g.toLowerCase().includes(q))
       );
     });
-  }, [query, genre, offlineOnly, statuses]);
+  }, [query, genre, cluster, offlineOnly, downloaded]);
 
   // Top of the screen is audio-first (Listen to Audiobook Mode); the Books
-  // Library below is text-first. Both share the search / genre / offline
-  // filters so one search narrows the whole shelf.
+  // Library below is text-first. Both share the shelf / genre / offline
+  // filters so one search narrows the whole catalog.
   const audioBooks = useMemo(() => filtered.filter((b) => b.hasAudio), [filtered]);
   const libraryBooks = useMemo(() => filtered.filter((b) => b.hasText), [filtered]);
+  // Changing the search, genre, shelf or offline filter folds the window back to
+  // the top of the shelf. Keying the state on the filter combination does that
+  // while rendering, so no effect has to reset it afterwards.
+  const filterKey = [query, genre ?? '', cluster ?? '', offlineOnly ? 'off' : 'all'].join('|');
+  const limit = shelfWindow.key === filterKey ? shelfWindow.limit : SHELF_PAGE;
+  const growWindow = () => setShelfWindow({ key: filterKey, limit: limit + SHELF_PAGE });
+
+  const audioVisible = useMemo(() => audioBooks.slice(0, limit), [audioBooks, limit]);
+  const libraryVisible = useMemo(() => libraryBooks.slice(0, limit), [libraryBooks, limit]);
+  const visibleBooks = useMemo(
+    () => [...audioVisible, ...libraryVisible],
+    [audioVisible, libraryVisible]
+  );
+
+  useEffect(() => {
+    visibleRef.current = visibleBooks;
+    void refreshStatuses(visibleBooks).catch(() => {});
+  }, [visibleBooks, refreshStatuses]);
 
   const offlineBytes = useMemo(
     () => Object.values(statuses).reduce((n, s) => n + s.bytes, 0),
@@ -164,7 +210,7 @@ export default function ClassicsLibrary() {
 
   const guardPremium = () => {
     if (isPremium) return true;
-    setNotice(`Philosophy Classics is a Premium perk (${PREMIUM_PRICE_LABEL}). Your downloads and offline shelf unlock with Premium.`);
+    setNotice(`The classics shelf is a Premium perk (${PREMIUM_PRICE_LABEL}). Your downloads and offline shelf unlock with Premium.`);
     return false;
   };
 
@@ -256,7 +302,7 @@ export default function ClassicsLibrary() {
         delete next[book.slug];
         return next;
       });
-      await refreshStatuses().catch(() => {});
+      await Promise.all([refreshStatuses([book]).catch(() => {}), refreshDownloaded()]);
     }
   };
 
@@ -268,7 +314,7 @@ export default function ClassicsLibrary() {
       setNotice(String(e instanceof Error ? e.message : e));
     } finally {
       setBusy(null);
-      await refreshStatuses().catch(() => {});
+      await Promise.all([refreshStatuses([book]).catch(() => {}), refreshDownloaded()]);
     }
   };
 
@@ -427,7 +473,9 @@ export default function ClassicsLibrary() {
             <AppIcon name="chevBack" size={17} color={p.ink} />
           </Pressable>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 19, fontWeight: '800', color: p.ink }}>Philosophy Classics</Text>
+            <Text style={{ fontSize: 19, fontWeight: '800', color: p.ink }}>
+              {cluster ? (clusters.find((c) => c.id === cluster)?.label ?? 'Classics') : 'Classics Library'}
+            </Text>
             <Text style={{ fontSize: 11, fontWeight: '600', color: p.muted }}>
               {CLASSICS.length} public-domain books · {formatBytes(offlineBytes)} offline
             </Text>
@@ -469,6 +517,52 @@ export default function ClassicsLibrary() {
             }}
           />
         </View>
+
+        {/* Shelves: philosophy plus the crawled clusters, bestsellers first. */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingTop: 4 }}
+          style={{ maxHeight: 44, flexGrow: 0 }}
+        >
+          <Pressable
+            onPress={() => setCluster(null)}
+            accessibilityRole="button"
+            accessibilityLabel="All shelves"
+            style={{
+              borderRadius: 99,
+              paddingHorizontal: 12,
+              paddingVertical: 7,
+              backgroundColor: cluster === null ? p.moss : p.surface,
+              borderWidth: 1,
+              borderColor: p.line,
+            }}
+          >
+            <Text style={{ fontSize: 11, fontWeight: '800', color: cluster === null ? '#10150D' : p.muted }}>
+              ALL SHELVES ({CLASSICS.length})
+            </Text>
+          </Pressable>
+          {clusters.map((c) => (
+            <Pressable
+              key={c.id}
+              onPress={() => setCluster(cluster === c.id ? null : c.id)}
+              accessibilityRole="button"
+              accessibilityLabel={`Shelf ${c.label}`}
+              style={{
+                borderRadius: 99,
+                paddingHorizontal: 12,
+                paddingVertical: 7,
+                backgroundColor: cluster === c.id ? p.moss : p.surface,
+                borderWidth: 1,
+                borderColor: p.line,
+              }}
+            >
+              <Text style={{ fontSize: 11, fontWeight: '800', color: cluster === c.id ? '#10150D' : p.muted }}>
+                {c.label.toUpperCase()} ({c.count})
+              </Text>
+            </Pressable>
+          ))}
+        </ScrollView>
 
         <ScrollView
           horizontal
@@ -518,7 +612,7 @@ export default function ClassicsLibrary() {
               <Text style={{ fontSize: 14, fontWeight: '800', color: p.ink }}>Premium classics shelf</Text>
             </View>
             <Text style={{ marginTop: 4, fontSize: 12, lineHeight: 17, fontWeight: '600', color: p.muted }}>
-              {CLASSICS.length} public-domain philosophy books with full audio + text. Premium unlocks 1 book download per day for offline ({PREMIUM_PRICE_LABEL}).
+              {CLASSICS.length} public-domain books with full audio + text across {clusters.length} shelves. Premium unlocks 1 book download per day for offline ({PREMIUM_PRICE_LABEL}).
             </Text>
             <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
               <Pressable
@@ -598,7 +692,19 @@ export default function ClassicsLibrary() {
           <Text style={{ fontSize: 11.5, fontWeight: '600', color: p.muted, marginBottom: 2 }}>
             {audioBooks.length} narrated books · stream anytime{daily && daily.date === todayKey() ? ` · today's download: ${daily.title || 'picked'}` : ' · 1 download available today'}
           </Text>
-          {audioBooks.map((b) => renderRow(b, 'audio'))}
+          {audioVisible.map((b) => renderRow(b, 'audio'))}
+          {audioBooks.length > audioVisible.length ? (
+            <Pressable
+              onPress={growWindow}
+              accessibilityRole="button"
+              accessibilityLabel={`Show more narrated books, ${audioBooks.length - audioVisible.length} remaining`}
+              style={{ borderRadius: 12, borderWidth: 1, borderColor: p.line, backgroundColor: p.surface, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 4 }}
+            >
+              <Text style={{ fontSize: 11.5, fontWeight: '800', color: p.moss, textAlign: 'center' }}>
+                SHOW {Math.min(SHELF_PAGE, audioBooks.length - audioVisible.length)} MORE OF {audioBooks.length - audioVisible.length} NARRATED BOOKS
+              </Text>
+            </Pressable>
+          ) : null}
           {audioBooks.length === 0 ? (
             <Text style={{ textAlign: 'center', marginVertical: 12, fontSize: 13, fontWeight: '600', color: p.muted }}>
               No narrated books match — try another search or genre.
@@ -612,7 +718,19 @@ export default function ClassicsLibrary() {
           <Text style={{ fontSize: 11.5, fontWeight: '600', color: p.muted, marginBottom: 2 }}>
             {libraryBooks.length} ebooks · Premium downloads: 1 book per day
           </Text>
-          {libraryBooks.map((b) => renderRow(b, 'text'))}
+          {libraryVisible.map((b) => renderRow(b, 'text'))}
+          {libraryBooks.length > libraryVisible.length ? (
+            <Pressable
+              onPress={growWindow}
+              accessibilityRole="button"
+              accessibilityLabel={`Show more ebooks, ${libraryBooks.length - libraryVisible.length} remaining`}
+              style={{ borderRadius: 12, borderWidth: 1, borderColor: p.line, backgroundColor: p.surface, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 4 }}
+            >
+              <Text style={{ fontSize: 11.5, fontWeight: '800', color: p.moss, textAlign: 'center' }}>
+                SHOW {Math.min(SHELF_PAGE, libraryBooks.length - libraryVisible.length)} MORE OF {libraryBooks.length - libraryVisible.length} EBOOKS
+              </Text>
+            </Pressable>
+          ) : null}
           {filtered.length === 0 ? (
             <Text style={{ textAlign: 'center', marginTop: 24, fontSize: 13, fontWeight: '600', color: p.muted }}>
               Nothing matches — try another search or genre.

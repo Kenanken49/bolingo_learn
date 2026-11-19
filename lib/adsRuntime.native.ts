@@ -7,7 +7,7 @@
  * rewarded hook only creates an ad instance once this resolves to 'ready'.
  *
  * Never throws and never blocks the UI: a failure here means "no ads today",
- * which the heart loop already handles through the free 4-hour regen.
+ * which the diamond loop already handles through the free 4-hour regen.
  */
 import { AdsConsent, AdsConsentStatus, MaxAdContentRating, MobileAds } from 'react-native-google-mobile-ads';
 import { adsSupported, isTestAd } from './ads';

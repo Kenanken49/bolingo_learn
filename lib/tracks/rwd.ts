@@ -65,6 +65,7 @@ export const TRACK_RWD: Record<string, CourseLesson> = {
     title: 'Build a phone layout step by step',
     theory: [
       'Workshop: assemble a responsive page exactly as instructed. Each step adds one real rule you already studied.',
+      'Work top to bottom: structure first, then the one breakpoint that changes the layout, then spacing. Test at the narrowest width you support before you widen it, because a page that fits a phone usually stretches to a desktop without extra work.',
     ],
     questions: [
       BUILD(
@@ -104,6 +105,7 @@ export const TRACK_RWD: Record<string, CourseLesson> = {
     title: 'Responsive Web Design checkpoint',
     theory: [
       'Final check across all five levels: markup, links, selectors, flexbox, and responsive behavior. Pass to prove the track.',
+      'Answer for the narrowest screen first, because most of these questions change shape below the breakpoint. A missed tap on the last item usually means the flex axis, not the markup.',
     ],
     questions: [
       MCQ(

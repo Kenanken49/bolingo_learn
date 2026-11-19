@@ -1,9 +1,10 @@
 import { index, integer, pgTable, serial, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
 /**
- * Netlify Database tables for features that need a public, server-owned
- * record. Learner accounts, progress and certifications stay in Supabase;
- * these tables only hold what the website must serve to anyone.
+ * Postgres tables for features that need a public, server-owned record.
+ * Learner accounts, progress and certifications stay in Supabase; these
+ * tables only hold what the website must serve to anyone. Migrations live in
+ * db/migrations and are applied by `node server/migrate.mjs`.
  */
 
 /** A verified certification. `code` is the public id in /verify/<code>. */

@@ -1,0 +1,1448 @@
+{
+ "labex-flask-getting-started-with-flask-web-framework": {
+  "intro": "This lab will guide you through the process of getting started with Flask, a lightweight web framework for Python. You will learn how to create a basic Flask application, run it locally, and understand the basic concepts of routing and rendering templates.",
+  "steps": [
+   {
+    "title": "Setting up Flask",
+    "body": [
+     "To get started with Flask, you need to install it and set up a new project. Follow the instructions below:",
+     "• Open a new file and save it as app.py.",
+     "• Import the Flask module and create an instance of the Flask class:"
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "pip install flask"
+     },
+     {
+      "lang": "bash",
+      "text": "cd ~/project\n   touch app.py"
+     },
+     {
+      "lang": "python",
+      "text": "from flask import Flask\n\n   app = Flask(__name__)"
+     }
+    ]
+   },
+   {
+    "title": "Creating a Basic Route",
+    "body": [
+     "Routes in Flask define the URL patterns for your application. Let's create a basic route that displays a \"Hello, World!\" message.",
+     "• Add the following code to your app.py file:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "@app.route(\"/\")\n   def hello_world():\n       return \"Hello, World!\""
+     }
+    ]
+   },
+   {
+    "title": "Running the Application",
+    "body": [
+     "Now that you have set up your Flask application and created a basic route, let's run the application and see it in action.",
+     "The --host=0.0.0.0 flag is used to make the application publicly available. If you don't specify this, the application will only be available on your local machine."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "flask run --host=0.0.0.0"
+     }
+    ]
+   },
+   {
+    "title": "Adding HTML Templates",
+    "body": [
+     "Flask uses Jinja2 templates to generate HTML content. Let's create a template file and render it in our route.",
+     "• Create a new directory in your project called templates.",
+     "• Inside the templates directory, create a new file called index.html.",
+     "• Open the index.html file and add the following HTML code:"
+    ],
+    "code": [
+     {
+      "lang": "html",
+      "text": "<!doctype html>\n   <html>\n     <head>\n       <title>Flask Quickstart</title>\n     </head>\n     <body>\n       <h1>Hello, Flask!</h1>\n     </body>\n   </html>"
+     },
+     {
+      "lang": "python",
+      "text": "from flask import render_template\n\n   @app.route(\"/\")\n   def hello_world():\n       return render_template(\"index.html\")"
+     }
+    ]
+   },
+   {
+    "title": "Running the Application Again",
+    "body": [
+     "Now that we have added an HTML template, let's run the application again and see the rendered template.",
+     "• Stop the Flask development server if it is still running (press Ctrl+C).",
+     "• Run the following command to start the server again:",
+     "You should now see the \"Hello, Flask!\" message displayed in the HTML template."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "flask run --host=0.0.0.0"
+     }
+    ]
+   },
+   {
+    "title": "Adding Dynamic Content",
+    "body": [
+     "Flask allows us to pass dynamic content to our templates. Let's modify our route to pass a name parameter and display a personalized greeting.",
+     "• Modify your app.py file to accept a name parameter in the route:",
+     "• Open the index.html file and modify the <h1> tag to display the personalized greeting:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "@app.route(\"/<name>\")\n   def hello(name):\n       return render_template(\"index.html\", name=name)"
+     },
+     {
+      "lang": "html",
+      "text": "<h1>Hello, {{ name }}!</h1>"
+     }
+    ]
+   },
+   {
+    "title": "Running the Application Again",
+    "body": [
+     "Let's run the application again and test the dynamic content feature.",
+     "• Stop the Flask development server if it is still running (press Ctrl+C). • Run the following command to start the server again:",
+     "• Copy the URL of the tab **Web 5000** and paste it into a new tab in your browser.",
+     "![Copying Web 5000 URL](../assets/copy-url.png)"
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "flask run --host=0.0.0.0"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "pip install flask",
+   "cd ~/project",
+   "touch app.py",
+   "flask run --host=0.0.0.0"
+  ],
+  "reference": [
+   {
+    "path": "reference.sh",
+    "text": "flask run --host=0.0.0.0"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-building-a-flask-application": {
+  "intro": "This Lab will guide you through the process of setting up a basic Flask application. Flask is a lightweight web application framework for Python. It's designed to make getting started with web development quick and easy.",
+  "steps": [
+   {
+    "title": "Creating the Application Directory",
+    "body": [
+     "Creating the Application Directory",
+     "First, you need to create a directory for your application. This will serve as the main folder where all the necessary files for your application will be stored."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "cd ~/project\nmkdir flaskr"
+     }
+    ]
+   },
+   {
+    "title": "Setting up the Application Factory",
+    "body": [
+     "Setting up the Application Factory",
+     "Next, create an __init__.py file in the flaskr directory. This file serves two purposes: it will contain the application factory, and it signals to Python that the flaskr directory should be treated as a package.",
+     "In your __init__.py file, import the necessary modules and define a function, create_app(), that will instantiate and configure your application."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/__init__.py\n\nimport os\nfrom flask import Flask\n\ndef create_app(test_config=None):\n    # create and configure the app\n    app = Flask(__name__, instance_relative_config=True)\n    app.config.from_mapping(\n        SECRET_KEY='dev',\n        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),\n    )\n\n    # More code to be added here...\n\n    return app"
+     }
+    ]
+   },
+   {
+    "title": "Configuring the Application",
+    "body": [
+     "In the same __init__.py file, add the necessary configuration details for your application. This includes setting up a secret key and specifying the location of your database file."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/__init__.py\n\n# More code above...\n\nif test_config is None:\n    # load the instance config, if it exists, when not testing\n    app.config.from_pyfile('config.py', silent=True)\nelse:\n    # load the test config if passed in\n    app.config.from_mapping(test_config)\n\n# ensure the instance folder exists\ntry:\n    os.makedirs(app.instance_path)\nexcept OSError:\n    pass\n\n# a simple page that says hello\n@app.route('/')\ndef hello():\n    return 'Hello, World!'"
+     }
+    ]
+   },
+   {
+    "title": "Running the Application",
+    "body": [
+     "With your application set up and configured, you can now run it using the flask command. Be sure to run this command from the top-level directory, not the flaskr package.",
+     "You should see output similar to this:",
+     "Then, open the tab **Web 5000**, and you should see the following:",
+     "![Flask app hello world page](../assets/hello-world.png)"
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "flask --app flaskr run --debug --host=0.0.0.0"
+     },
+     {
+      "lang": "bash",
+      "text": "* Serving Flask app \"flaskr\"\n * Debug mode: on\n * Running on all addresses (0.0.0.0)\n * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)\n * Restarting with stat\n * Debugger is active!\n * Debugger PIN: nnn-nnn-nnn"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "cd ~/project",
+   "mkdir flaskr",
+   "flask --app flaskr run --debug --host=0.0.0.0"
+  ],
+  "reference": [
+   {
+    "path": "reference.sh",
+    "text": "* Serving Flask app \"flaskr\"\n * Debug mode: on\n * Running on all addresses (0.0.0.0)\n * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)\n * Restarting with stat\n * Debugger is active!\n * Debugger PIN: nnn-nnn-nnn"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-python-flask-sqlite-database-setup": {
+  "intro": "In this lab, we will learn how to define and access a SQLite database using the Python Flask framework. We will set up a SQLite database, establish a connection with it, create tables, and initialize the database.",
+  "steps": [
+   {
+    "title": "Setting up the Database",
+    "body": [
+     "First, we need to set up a SQLite database to store users and posts. SQLite is a convenient choice as it doesn't require a separate database server and is in-built in Python.",
+     "In our Flask application, we will create a connection to the SQLite database. This connection is typically tied to the request in web applications, and it is closed after the work is finished.",
+     "The connection is established using the sqlite3.connect function and we use the Flask's special object g to store and reuse the connection.",
+     "Create a new Python file db.py and add the following code:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/db.py\n\nimport sqlite3\nfrom flask import current_app, g\n\ndef get_db():\n    # Check if 'db' is not in 'g'\n    if 'db' not in g:\n        # Establish a connection to the database\n        g.db = sqlite3.connect(\n            current_app.config['DATABASE'],\n            detect_types=sqlite3.PARSE_DECLTYPES\n        )\n        # Return rows that behave like dicts\n        g.db.row_factory = sqlite3.Row\n\n    return g.db\n\ndef close_db(e=None):\n    # Pop 'db' from 'g' and close the connection if it exists\n    db = g.pop('db', None)\n\n    if db is not None:\n        db.close()"
+     }
+    ]
+   },
+   {
+    "title": "Creating Tables",
+    "body": [
+     "In SQLite, data is stored in tables and columns. We need to create these before we can store and retrieve data. Our application will store users in the user table, and posts in the post table.",
+     "Create a new SQL file schema.sql and add the following code:"
+    ],
+    "code": [
+     {
+      "lang": "sql",
+      "text": "# flaskr/schema.sql\n\nDROP TABLE IF EXISTS user;\nDROP TABLE IF EXISTS post;\n\nCREATE TABLE user (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  username TEXT UNIQUE NOT NULL,\n  password TEXT NOT NULL\n);\n\nCREATE TABLE post (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  author_id INTEGER NOT NULL,\n  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  title TEXT NOT NULL,\n  body TEXT NOT NULL,\n  FOREIGN KEY (author_id) REFERENCES user (id)\n);"
+     }
+    ]
+   },
+   {
+    "title": "Initializing the Database",
+    "body": [
+     "Next, we will add Python functions that will run the SQL commands to create the tables. Add the following functions to the db.py file:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/db.py\n\ndef init_db():\n    db = get_db()\n\n    with current_app.open_resource('schema.sql') as f:\n        db.executescript(f.read().decode('utf8'))\n\n@click.command('init-db')\ndef init_db_command():\n    \"\"\"Clear the existing data and create new tables.\"\"\"\n    init_db()\n    click.echo('Initialized the database.')"
+     }
+    ]
+   },
+   {
+    "title": "Registering with the Application",
+    "body": [
+     "Registering with the Application",
+     "The close_db and init_db_command functions need to be registered with the application instance to be used by the application. Since we're using a factory function, we will write a function that takes an application and does the registration.",
+     "Add the following function to the db.py file:",
+     "Then, import and call this function from the factory. Add the following code to the __init__.py file:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/db.py\n\ndef init_app(app):\n    app.teardown_appcontext(close_db)\n    app.cli.add_command(init_db_command)"
+     },
+     {
+      "lang": "python",
+      "text": "# flaskr/__init__.py\n\ndef create_app():\n    app = ...\n    # existing code omitted\n\n    from . import db\n    db.init_app(app)\n\n    return app"
+     }
+    ]
+   },
+   {
+    "title": "Initializing the Database File",
+    "body": [
+     "Initializing the Database File",
+     "Now that init-db has been registered with the app, it can be called using the flask command."
+    ],
+    "code": [
+     {
+      "lang": "shell",
+      "text": "flask --app flaskr init-db\nInitialized the database."
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "flask --app flaskr init-db"
+  ],
+  "reference": [
+   {
+    "path": "reference.sh",
+    "text": "flask --app flaskr init-db\nInitialized the database."
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-modular-flask-application-with-authenticatio": {
+  "intro": "In this lab, we will walk through how to create and use Flask blueprints to structure your application using views. Flask blueprints allow you to group related views, code, and resources together making your application modular and scalable. We will create a simple application which will include user authentication and blog posts functionality.",
+  "steps": [
+   {
+    "title": "Create a Blueprint",
+    "body": [
+     "Let's start by creating a blueprint for our application. This blueprint will be named 'auth' and will handle user authentication related views. We will define our blueprint in a separate module named flaskr/auth.py."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/auth.py\n\nimport functools\nfrom flask import Blueprint, flash, g, redirect, render_template, request, session, url_for\nfrom werkzeug.security import check_password_hash, generate_password_hash\nfrom flaskr.db import get_db\n\n# Create a Blueprint named 'auth'\nbp = Blueprint('auth', __name__, url_prefix='/auth')"
+     }
+    ]
+   },
+   {
+    "title": "Register the Blueprint",
+    "body": [
+     "After creating the blueprint, we need to register it with our application. This is done in the application factory function in flaskr/__init__.py."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/__init__.py\n\ndef create_app():\n    app = ...\n    # existing code omitted\n\n    # Import and register the blueprint\n    from . import auth\n    app.register_blueprint(auth.bp)\n\n    return app"
+     }
+    ]
+   },
+   {
+    "title": "Implement Registration View",
+    "body": [
+     "Now, let's implement the registration view in flaskr/auth.py. This view will render a registration form and handle form submission."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/auth.py\n\n@bp.route('/register', methods=('GET', 'POST'))\ndef register():\n    if request.method == 'POST':\n        username = request.form['username']\n        password = request.form['password']\n        db = get_db()\n        error = None\n\n        if not username:\n            error = 'Username is required.'\n        elif not password:\n            error = 'Password is required.'\n\n        if error is None:\n            try:\n                db.execute(\n                    \"INSERT INTO user (username, password) VALUES (?, ?)\",\n                    (username, generate_password_hash(password)),\n                )\n                db.commit()\n            except db.IntegrityError:\n                error = f\"User {username} is already registered.\"\n            else:\n                return redirect(url_for(\"auth.login\"))\n\n        flash(error)\n\n    return render_template('auth/register.html')"
+     }
+    ]
+   },
+   {
+    "title": "Implement Login View",
+    "body": [
+     "Next, we will implement the login view in flaskr/auth.py. This view will handle user login functionality."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/auth.py\n\n@bp.route('/login', methods=('GET', 'POST'))\ndef login():\n    if request.method == 'POST':\n        username = request.form['username']\n        password = request.form['password']\n        db = get_db()\n        error = None\n        user = db.execute(\n            'SELECT * FROM user WHERE username = ?', (username,)\n        ).fetchone()\n\n        if user is None:\n            error = 'Incorrect username.'\n        elif not check_password_hash(user['password'], password):\n            error = 'Incorrect password.'\n\n        if error is None:\n            session.clear()\n            session['user_id'] = user['id']\n            return redirect(url_for('index'))\n\n        flash(error)\n\n    return render_template('auth/login.html')"
+     }
+    ]
+   },
+   {
+    "title": "Implement Logout View",
+    "body": [
+     "Let's now add a logout view in flaskr/auth.py. This view will handle user logout functionality."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/auth.py\n\n@bp.route('/logout')\ndef logout():\n    session.clear()\n    return redirect(url_for('index'))"
+     }
+    ]
+   },
+   {
+    "title": "Implement Login Required Decorator",
+    "body": [
+     "Implement Login Required Decorator",
+     "We will also need a decorator to protect our views that require a user to be logged in. This decorator will be implemented in flaskr/auth.py."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/auth.py\n\ndef login_required(view):\n    @functools.wraps(view)\n    def wrapped_view(**kwargs):\n        if g.user is None:\n            return redirect(url_for('auth.login'))\n\n        return view(**kwargs)\n\n    return wrapped_view"
+     }
+    ]
+   }
+  ],
+  "commands": [],
+  "reference": [
+   {
+    "path": "reference.py",
+    "text": "# flaskr/auth.py\n\ndef login_required(view):\n    @functools.wraps(view)\n    def wrapped_view(**kwargs):\n        if g.user is None:\n            return redirect(url_for('auth.login'))\n\n        return view(**kwargs)\n\n    return wrapped_view"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-styling-flask-application": {
+  "intro": "In this lab, we will learn how to add CSS to our Flask application to make it visually appealing. We will use static files, specifically a CSS file, to style our application. Static files are files that don't change, such as CSS files, JavaScript files, and images.",
+  "steps": [
+   {
+    "title": "Create CSS file",
+    "body": [
+     "First, we need to create a CSS file that will hold our styles. In Flask, static files are stored in a directory named static. Let's create a CSS file named style.css in the flaskr/static directory."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "# Navigate to the static directory\ncd flaskr/static\n\n# Create style.css file\ntouch style.css"
+     }
+    ]
+   },
+   {
+    "title": "Add CSS rules",
+    "body": [
+     "Next, copy the following CSS rules into the style.css file. These rules will style various HTML elements in our application."
+    ],
+    "code": [
+     {
+      "lang": "css",
+      "text": "/* flaskr/static/style.css */\n\nhtml {\n  font-family: sans-serif;\n  background: #eee;\n  padding: 1rem;\n}\nbody {\n  max-width: 960px;\n  margin: 0 auto;\n  background: white;\n}\n/* More CSS rules... */"
+     }
+    ]
+   },
+   {
+    "title": "Link CSS file in HTML",
+    "body": [
+     "Now, we need to link our CSS file in the HTML templates. Flask automatically adds a static view that serves static files. We can use the url_for function in the base.html template to link our CSS file."
+    ],
+    "code": [
+     {
+      "lang": "html+jinja",
+      "text": "<!-- base.html -->\n\n{{ url_for('static', filename='style.css') }}"
+     }
+    ]
+   },
+   {
+    "title": "Verify the changes",
+    "body": [
+     "To verify the changes, start your Flask application and navigate to the login page at http://127.0.0.1:5000/auth/login. The page should now be styled according to the rules in the style.css file."
+    ],
+    "code": []
+   }
+  ],
+  "commands": [
+   "cd flaskr/static",
+   "touch style.css"
+  ],
+  "reference": [],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-flask-blog-application": {
+  "intro": "In this lab, we'll walk through creating a blog application using Flask, a popular web framework in Python. This application will list all blog posts, allow logged-in users to create posts, and let authors edit or delete their own posts.",
+  "steps": [
+   {
+    "title": "Define Blueprint",
+    "body": [
+     "Firstly, we'll define a blueprint for our blog. A blueprint is a way to organize a group of related views and other code."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/blog.py\n\nfrom flask import Blueprint, flash, g, redirect, render_template, request, url_for\nfrom werkzeug.exceptions import abort\n\nfrom flaskr.auth import login_required\nfrom flaskr.db import get_db\n\n# The Blueprint is named 'blog'. It's defined in the same file.\n# The blueprint needs to know where it's defined, so __name__ is passed as the second argument.\nbp = Blueprint('blog', __name__)"
+     }
+    ]
+   },
+   {
+    "title": "Register Blueprint",
+    "body": [
+     "Next, we'll register the blueprint with our application."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/__init__.py\n\ndef create_app():\n    app = ...\n    # existing code omitted\n\n    # import and register the blueprint from the factory using app.register_blueprint()\n    from . import blog\n    app.register_blueprint(blog.bp)\n    app.add_url_rule('/', endpoint='index')\n\n    return app"
+     }
+    ]
+   },
+   {
+    "title": "Create Blog Index",
+    "body": [
+     "Now, let's create an index view to display all blog posts. We'll use a SQL JOIN to include author information from the user table in our results."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/blog.py\n\n@bp.route('/')\ndef index():\n    db = get_db()\n    posts = db.execute(\n        'SELECT p.id, title, body, created, author_id, username'\n        ' FROM post p JOIN user u ON p.author_id = u.id'\n        ' ORDER BY created DESC'\n    ).fetchall()\n    return render_template('blog/index.html', posts=posts)"
+     }
+    ]
+   },
+   {
+    "title": "Post Creation",
+    "body": [
+     "Next, we'll create a view that allows logged-in users to create new blog posts."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/blog.py\n\n@bp.route('/create', methods=('GET', 'POST'))\n@login_required\ndef create():\n    if request.method == 'POST':\n        title = request.form['title']\n        body = request.form['body']\n        error = None\n\n        if not title:\n            error = 'Title is required.'\n\n        if error is not None:\n            flash(error)\n        else:\n            db = get_db()\n            db.execute(\n                'INSERT INTO post (title, body, author_id)'\n                ' VALUES (?, ?, ?)',\n                (title, body, g.user['id'])\n            )\n            db.commit()\n            return redirect(url_for('blog.index'))\n\n    return render_template('blog/create.html')"
+     }
+    ]
+   },
+   {
+    "title": "Post Update",
+    "body": [
+     "We'll add the ability for authors to update their own posts. To avoid duplicating code, we'll create a helper function to get a post and check if the current user is the author."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/blog.py\n\n@bp.route('/<int:id>/update', methods=('GET', 'POST'))\n@login_required\ndef update(id):\n    post = get_post(id)\n\n    if request.method == 'POST':\n        title = request.form['title']\n        body = request.form['body']\n        error = None\n\n        if not title:\n            error = 'Title is required.'\n\n        if error is not None:\n            flash(error)\n        else:\n            db = get_db()\n            db.execute(\n                'UPDATE post SET title = ?, body = ?'\n                ' WHERE id = ?',\n                (title, body, id)\n            )\n            db.commit()\n            return redirect(url_for('blog.index'))\n\n    return render_template('blog/update.html', post=post)"
+     }
+    ]
+   },
+   {
+    "title": "Post Deletion",
+    "body": [
+     "Lastly, we'll add the ability for authors to delete their own posts."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# flaskr/blog.py\n\n@bp.route('/<int:id>/delete', methods=('POST',))\n@login_required\ndef delete(id):\n    get_post(id)\n    db = get_db()\n    db.execute('DELETE FROM post WHERE id = ?', (id,))\n    db.commit()\n    return redirect(url_for('blog.index'))"
+     }
+    ]
+   }
+  ],
+  "commands": [],
+  "reference": [
+   {
+    "path": "reference.py",
+    "text": "# flaskr/blog.py\n\n@bp.route('/<int:id>/delete', methods=('POST',))\n@login_required\ndef delete(id):\n    get_post(id)\n    db = get_db()\n    db.execute('DELETE FROM post WHERE id = ?', (id,))\n    db.commit()\n    return redirect(url_for('blog.index'))"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-flask-unit-testing-with-pytest-and-coverage": {
+  "intro": "In this lab, we will learn how to write unit tests for a Flask application. We will use pytest and coverage to test and measure our code. By the end of this lab, you will understand how to ensure your application works as expected and identify areas that need improvement.",
+  "steps": [
+   {
+    "title": "Install Pytest and Coverage",
+    "body": [],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "pip install pytest coverage"
+     }
+    ]
+   },
+   {
+    "title": "Setup and Fixtures",
+    "body": [
+     "Next, we will set up test fixtures in a file called conftest.py. A fixture is a function that is run before each test function to which it is applied.",
+     "In this step, we will create a temporary database and populate it with some data for testing.",
+     "Here is the code to add in tests/conftest.py:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# tests/conftest.py\n\nimport os\nimport tempfile\nimport pytest\nfrom flaskr import create_app\nfrom flaskr.db import get_db, init_db\n\nwith open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:\n    _data_sql = f.read().decode('utf8')\n\n@pytest.fixture\ndef app():\n    db_fd, db_path = tempfile.mkstemp()\n\n    app = create_app({\n        'TESTING': True,\n        'DATABASE': db_path,\n    })\n\n    with app.app_context():\n        init_db()\n        get_db().executescript(_data_sql)\n\n    yield app\n\n    os.close(db_fd)\n    os.unlink(db_path)\n\n@pytest.fixture\ndef client(app):\n    return app.test_client()\n\n@pytest.fixture\ndef runner(app):\n    return app.test_cli_runner()"
+     }
+    ]
+   },
+   {
+    "title": "Write Tests for Factory",
+    "body": [
+     "Next, we will write tests for the factory function which is responsible for creating the Flask application. These tests ensure that the application behaves as expected based on the configuration passed to it.",
+     "Here is the code to add in tests/test_factory.py:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# tests/test_factory.py\n\nfrom flaskr import create_app\n\ndef test_config():\n    assert not create_app().testing\n    assert create_app({'TESTING': True}).testing\n\ndef test_hello(client):\n    response = client.get('/hello')\n    assert response.data == b'Hello, World!'"
+     }
+    ]
+   },
+   {
+    "title": "Test Database Connection",
+    "body": [
+     "After testing the factory, we will test the database connection. These tests ensure that the database connection is established and closed as expected.",
+     "Here is the code to add in tests/test_db.py:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# tests/test_db.py\n\nimport sqlite3\nimport pytest\nfrom flaskr.db import get_db\n\ndef test_get_close_db(app):\n    with app.app_context():\n        db = get_db()\n        assert db is get_db()\n\n    with pytest.raises(sqlite3.ProgrammingError) as e:\n        db.execute('SELECT 1')\n\n    assert 'closed' in str(e.value)"
+     }
+    ]
+   },
+   {
+    "title": "Test Authentication",
+    "body": [
+     "Next, we will write tests for user authentication. These tests ensure that users can log in and log out as expected, and that appropriate error messages are displayed when necessary.",
+     "Here is the code to add in tests/test_auth.py:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# tests/test_auth.py\n\nimport pytest\nfrom flask import g, session\nfrom flaskr.db import get_db\n\ndef test_login(client, auth):\n    assert client.get('/auth/login').status_code == 200\n    response = auth.login()\n    assert response.headers[\"Location\"] == \"/\"\n\n    with client:\n        client.get('/')\n        assert session['user_id'] == 1\n        assert g.user['username'] == 'test'"
+     }
+    ]
+   },
+   {
+    "title": "Test Blog Posts",
+    "body": [
+     "Finally, we will write tests for blog posts. These tests ensure that users can create, update, and delete blog posts as expected.",
+     "Here is the code to add in tests/test_blog.py:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# tests/test_blog.py\n\nimport pytest\nfrom flaskr.db import get_db\n\ndef test_create(client, auth, app):\n    auth.login()\n    assert client.get('/create').status_code == 200\n    client.post('/create', data={'title': 'created', 'body': ''})\n\n    with app.app_context():\n        db = get_db()\n        count = db.execute('SELECT COUNT(id) FROM post').fetchone()[0]\n        assert count == 2"
+     }
+    ]
+   },
+   {
+    "title": "Run the Tests",
+    "body": [
+     "Now that we have written our tests, we can run them using the pytest command:",
+     "To measure the code coverage of your tests, use the coverage command to run pytest:"
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "coverage run -m pytest"
+     },
+     {
+      "lang": "bash",
+      "text": "coverage report"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "pip install pytest coverage"
+  ],
+  "reference": [
+   {
+    "path": "reference.sh",
+    "text": "coverage report"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-deploy-flask-application": {
+  "intro": "In this lab, we will learn how to deploy a Flask application to a server. We will create a distribution file for our application and install it on the server. The lab assumes you have a basic understanding of Flask, Python's virtual environments, and the command line.",
+  "steps": [
+   {
+    "title": "Build the Application",
+    "body": [
+     "First, we need to create a wheel file for our application. We will use the build tool for this. Install the build tool using pip if you haven't already:",
+     "Now, use the build tool to create the wheel file:",
+     "The wheel file should be in the dist directory with a name like flaskr-1.0.0-py3-none-any.whl."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "# Install the build tool\npip install build"
+     },
+     {
+      "lang": "bash",
+      "text": "# Build the wheel file\npython -m build --wheel"
+     }
+    ]
+   },
+   {
+    "title": "Install the Application on the Server",
+    "body": [
+     "Install the Application on the Server"
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "# Install the wheel file\npip install flaskr-1.0.0-py3-none-any.whl"
+     },
+     {
+      "lang": "bash",
+      "text": "# Initialize the database\nflask --app flaskr init-db"
+     }
+    ]
+   },
+   {
+    "title": "Configure the Secret Key",
+    "body": [
+     "Create a config.py file in the instance folder and set SECRET_KEY to the generated value."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "# Generate a random secret key\npython -c 'import secrets; print(secrets.token_hex())'"
+     },
+     {
+      "lang": "python",
+      "text": "# .venv/var/flaskr-instance/config.py\n\nSECRET_KEY = 'your_generated_secret_key'"
+     }
+    ]
+   },
+   {
+    "title": "Run the Application with a Production Server",
+    "body": [
+     "Run the Application with a Production Server",
+     "Now, tell Waitress to serve your application:"
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "# Install Waitress\npip install waitress"
+     },
+     {
+      "lang": "bash",
+      "text": "# Run the application with Waitress\nwaitress-serve --call 'flaskr:create_app'"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "pip install build",
+   "python -m build --wheel",
+   "pip install flaskr-1.0.0-py3-none-any.whl",
+   "flask --app flaskr init-db",
+   "python -c 'import secrets; print(secrets.token_hex())'",
+   "pip install waitress"
+  ],
+  "reference": [
+   {
+    "path": "reference.sh",
+    "text": "# Run the application with Waitress\nwaitress-serve --call 'flaskr:create_app'"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-flask-configuration-management": {
+  "intro": "In this lab, you will learn how to handle configuration in a Flask application. Configuration allows you to change settings in your application based on different environments, such as toggling debug mode, setting secret keys, and other environment-specific variables.",
+  "steps": [
+   {
+    "title": "Create a Flask Application",
+    "body": [
+     "First, let's create a basic Flask application. Create a file called app.py and add the following code:",
+     "Open your web browser and visit http://localhost:5000 to see the \"Hello, Flask!\" message."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "from flask import Flask\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    return 'Hello, Flask!'"
+     },
+     {
+      "lang": "shell",
+      "text": "python app.py"
+     }
+    ]
+   },
+   {
+    "title": "Basic Configuration",
+    "body": [
+     "Now let's add some basic configuration to our Flask application. In the same app.py file, add the following code:",
+     "The DEBUG configuration enables debug mode, which provides helpful error messages during development. The SECRET_KEY configuration is used for securely signing session cookies and other security-related needs.",
+     "To access the configuration values, you can use the app.config dictionary. For example, to print the value of the SECRET_KEY, add the following code to the hello route:",
+     "Restart the Flask application and visit http://localhost:5000 to see the updated message with the secret key."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "app.config['DEBUG'] = True\napp.config['SECRET_KEY'] = 'mysecretkey'"
+     },
+     {
+      "lang": "python",
+      "text": "@app.route('/')\ndef hello():\n    secret_key = app.config['SECRET_KEY']\n    return f'Hello, Flask! Secret Key: {secret_key}'"
+     }
+    ]
+   },
+   {
+    "title": "Configuration from Files",
+    "body": [
+     "Hardcoding the configuration values in the code is not ideal, especially for sensitive information. Flask provides a way to load configuration from separate files. Create a new file called config.py and add the following code:",
+     "In the app.py file, replace the previous configuration code with the following:",
+     "The from_object method loads the configuration from the config module. Now, the DEBUG and SECRET_KEY values will be loaded from the config.py file.",
+     "Restart the Flask application and visit http://localhost:5000 to see the updated message with the new configuration values."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "DEBUG = False\nSECRET_KEY = 'myothersecretkey'"
+     },
+     {
+      "lang": "python",
+      "text": "app.config.from_object('config')"
+     }
+    ]
+   },
+   {
+    "title": "Environment-based Configuration",
+    "body": [
+     "Create another file called config_prod.py with the following code:",
+     "In the app.py file, replace the previous configuration code with the following:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "DEBUG = True\nSECRET_KEY = 'devsecretkey'"
+     },
+     {
+      "lang": "python",
+      "text": "DEBUG = False\nSECRET_KEY = 'prodsecretkey'"
+     },
+     {
+      "lang": "python",
+      "text": "import os\n\nif os.environ.get('FLASK_ENV') == 'production':\n    app.config.from_object('config_prod')\nelse:\n    app.config.from_object('config_dev')"
+     }
+    ]
+   },
+   {
+    "title": "Instance Folder",
+    "body": [
+     "Flask provides an instance folder for storing configuration files that are specific to a particular deployment. This allows you to separate deployment-specific configurations from the rest of your code. By default, Flask uses a folder named instance in the same directory as your application.",
+     "Create a new folder called instance in the same directory as your app.py file. In the instance folder, create a file called config.cfg and add the following code:",
+     "In the app.py file, add the following code before the configuration code:",
+     "The instance_path is set to the absolute path of the instance folder. The from_pyfile method loads the configuration from the config.cfg file in the instance folder."
+    ],
+    "code": [
+     {
+      "lang": "text",
+      "text": "DEBUG = True\nSECRET_KEY = 'instancekey'"
+     },
+     {
+      "lang": "python",
+      "text": "app.instance_path = os.path.abspath(os.path.dirname(__file__))\napp.config.from_pyfile('config.cfg')"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "python app.py"
+  ],
+  "reference": [
+   {
+    "path": "reference.py",
+    "text": "app.instance_path = os.path.abspath(os.path.dirname(__file__))\napp.config.from_pyfile('config.cfg')"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-develop-flask-app-with-development-server": {
+  "intro": "In this tutorial, you will learn how to use the development server in Flask to run your Flask application during local development. The development server provides an interactive debugger and automatically reloads the code when changes are made. This tutorial will guide you through the steps to run the development server and handle common issues that may arise.",
+  "steps": [
+   {
+    "title": "Set up Flask Application",
+    "body": [
+     "Before we can run the development server, we need to set up a Flask application. Create a new Python file called app.py and add the following code:",
+     "In this code, we create a Flask application and define a route that returns a simple \"Hello, Flask!\" message. The if __name__ == \"__main__\": block ensures that the Flask application is only run when the script is executed directly, not when it is imported as a module."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "from flask import Flask\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    return 'Hello, Flask!'\n\nif __name__ == \"__main__\":\n    app.run(debug=True)"
+     }
+    ]
+   },
+   {
+    "title": "Run Development Server with Flask CLI",
+    "body": [
+     "Run Development Server with Flask CLI",
+     "This will start the development server on http://localhost:5000/. You can access your Flask application by opening a web browser and entering this URL."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "flask run"
+     }
+    ]
+   },
+   {
+    "title": "Enable Debug Mode",
+    "body": [
+     "To enable debug mode, which provides an interactive debugger and automatically reloads the code when changes are made, add the --debug option to the flask run command:",
+     "Now, any changes you make to your code will trigger an automatic reload of the development server."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "flask run --debug"
+     }
+    ]
+   },
+   {
+    "title": "Specify Application File",
+    "body": [
+     "By default, Flask will look for a file named app.py to run as the Flask application. If your file has a different name or is located in a different directory, you can use the --app option to specify the application file:",
+     "Replace myapp.py with the name of your application file."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "flask run --app myapp.py"
+     }
+    ]
+   },
+   {
+    "title": "Address Already in Use",
+    "body": [
+     "If you see an OSError with the message \"Address already in use\" when trying to start the server, it means that another program is already using the port 5000, which is the default port for the development server. You can either identify and stop the other program or choose a different port.",
+     "To identify the process using port 5000, you can use the netstat or lsof command. Here are examples for Linux, macOS, and Windows:",
+     "Once you have identified the process, you can use other operating system tools to stop it. After stopping the process, you should be able to run the development server without any issues."
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "netstat -nlp | grep 5000"
+     },
+     {
+      "lang": "bash",
+      "text": "lsof -P -i :5000"
+     },
+     {
+      "lang": "bash",
+      "text": "netstat -ano | findstr :5000"
+     }
+    ]
+   },
+   {
+    "title": "Running the Development Server from Python",
+    "body": [
+     "Running the Development Server from Python",
+     "In addition to using the Flask CLI command, you can also start the development server from Python code. Add the following code at the end of your app.py file:",
+     "Now, you can run the development server by executing the app.py file with Python:",
+     "This will start the development server and you can access your Flask application in the same way as before."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "if __name__ == \"__main__\":\n    app.run(debug=True)"
+     },
+     {
+      "lang": "bash",
+      "text": "python app.py"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "flask run",
+   "flask run --debug",
+   "flask run --app myapp.py",
+   "python app.py"
+  ],
+  "reference": [
+   {
+    "path": "reference.sh",
+    "text": "python app.py"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-flask-command-line-interface": {
+  "intro": "In this lab, you will learn how to use the Flask Command Line Interface (CLI) to manage your Flask application. The Flask CLI provides a set of commands that can help you run the development server, create custom commands, and more.",
+  "steps": [
+   {
+    "title": "Install Flask",
+    "body": [],
+    "code": [
+     {
+      "lang": "text",
+      "text": "pip install flask"
+     }
+    ]
+   },
+   {
+    "title": "Create a Flask Application",
+    "body": [
+     "Create a new Python file named app.py and add the following code to create a basic Flask application:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "from flask import Flask\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    return 'Hello, Flask!'\n\nif __name__ == '__main__':\n    app.run()"
+     },
+     {
+      "lang": "text",
+      "text": "python app.py"
+     }
+    ]
+   },
+   {
+    "title": "Run the Development Server",
+    "body": [
+     "Instead of manually running the Flask application using python app.py, you can use the Flask CLI to start the development server. Stop the currently running application (if any) and execute the following command:",
+     "You should see the Flask development server start and display the URL where your application is running (usually http://127.0.0.1:5000/). Open that URL in your browser and you should see the \"Hello, Flask!\" message."
+    ],
+    "code": [
+     {
+      "lang": "text",
+      "text": "flask run"
+     }
+    ]
+   },
+   {
+    "title": "Create a Custom Command",
+    "body": [
+     "The Flask CLI allows you to create custom commands that can be executed from the command line. Let's create a custom command named greet that takes a name as an argument and prints a greeting message.",
+     "Create a new Python file named commands.py and add the following code:",
+     "Save the file and execute it using the following command:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "import click\n\n@click.command()\n@click.argument('name')\ndef greet(name):\n    click.echo(f'Hello, {name}!')\n\nif __name__ == '__main__':\n    greet()"
+     },
+     {
+      "lang": "text",
+      "text": "python commands.py John"
+     }
+    ]
+   },
+   {
+    "title": "Register Commands with the Flask Application",
+    "body": [
+     "Register Commands with the Flask Application",
+     "To make your custom commands available through the Flask CLI, you need to register them with your Flask application. Open the app.py file and modify it as follows:",
+     "Save the file and restart the Flask development server using the flask run command. Now you can execute your custom command greet from the command line:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "from flask import Flask\nfrom commands import greet\n\napp = Flask(__name__)\napp.cli.add_command(greet)\n\n@app.route('/')\ndef hello():\n    return 'Hello, Flask!'\n\nif __name__ == '__main__':\n    app.run()"
+     },
+     {
+      "lang": "text",
+      "text": "flask greet John"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "pip install flask",
+   "python app.py",
+   "flask run",
+   "python commands.py John",
+   "flask greet John"
+  ],
+  "reference": [
+   {
+    "path": "reference.txt",
+    "text": "flask greet John"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-signals-in-flask-for-application-lifecycle": {
+  "intro": "In this lab, you will learn how to use signals in Flask, which are a lightweight way to notify subscribers of certain events during the lifecycle of the application and each request. Signals allow you to perform actions in response to specific events without directly affecting the application code. They are useful for testing, metrics, auditing, and more.",
+  "steps": [
+   {
+    "title": "Installing Flask and Blinker",
+    "body": [
+     "Before we begin, make sure you have Flask and Blinker installed. You can install them using pip:"
+    ],
+    "code": [
+     {
+      "lang": "text",
+      "text": "pip install flask blinker"
+     }
+    ]
+   },
+   {
+    "title": "Importing the Required Modules",
+    "body": [
+     "Importing the Required Modules",
+     "In your Flask application, import the necessary modules:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "from flask import Flask\nfrom blinker import Namespace"
+     }
+    ]
+   },
+   {
+    "title": "Creating a Flask Application",
+    "body": [
+     "Create a Flask application instance:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "app = Flask(__name__)"
+     }
+    ]
+   },
+   {
+    "title": "Creating a Namespace for Signals",
+    "body": [
+     "Creating a Namespace for Signals",
+     "Create a namespace for your signals using the Blinker library:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "my_signals = Namespace()"
+     }
+    ]
+   },
+   {
+    "title": "Creating a Signal",
+    "body": [
+     "Create a new signal in your namespace. Give it a descriptive name to identify the event it represents:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "model_saved = my_signals.signal('model-saved')"
+     }
+    ]
+   },
+   {
+    "title": "Subscribing to a Signal",
+    "body": [
+     "To subscribe to a signal, use the connect method of the signal. Provide a function that should be called when the signal is emitted:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "@model_saved.connect\ndef on_model_saved(sender):\n    print(\"Model saved!\")"
+     }
+    ]
+   },
+   {
+    "title": "Emitting a Signal",
+    "body": [
+     "To emit a signal, call the send method of the signal. Pass the sender as the first argument:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "model_saved.send(app)"
+     }
+    ]
+   },
+   {
+    "title": "Running the Application",
+    "body": [
+     "Finally, run the Flask application:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "if __name__ == '__main__':\n    app.run()"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "pip install flask blinker"
+  ],
+  "reference": [
+   {
+    "path": "reference.py",
+    "text": "if __name__ == '__main__':\n    app.run()"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-flask-jinja2-templates": {
+  "intro": "In this lab, you will learn how to use Jinja2 templates in Flask. Jinja2 is a powerful template engine that allows you to generate dynamic HTML pages in your Flask application. Templates are a great way to separate the presentation logic from the business logic of your application.",
+  "steps": [
+   {
+    "title": "Install Flask and Jinja2",
+    "body": [],
+    "code": [
+     {
+      "lang": "text",
+      "text": "pip install Flask\npip install Jinja2"
+     }
+    ]
+   },
+   {
+    "title": "Create a Flask Application",
+    "body": [
+     "Create a new file called app.py and import the necessary modules:",
+     "In this code, we create a new Flask application and define a route for the root URL (\"/\"). When a user visits the root URL, the index() function will be called and it will render the index.html template."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "from flask import Flask, render_template\n\napp = Flask(__name__)\n\n@app.route('/')\ndef index():\n    return render_template('index.html')\n\nif __name__ == '__main__':\n    app.run(debug=True)"
+     }
+    ]
+   },
+   {
+    "title": "Create a Jinja2 Template",
+    "body": [
+     "Create a new directory called templates in the same directory as your app.py file. Inside the templates directory, create a new file called index.html. This file will contain the HTML code for your template.",
+     "In this template, we have a simple HTML structure with a heading and a paragraph. You can customize the content of the template to fit your needs."
+    ],
+    "code": [
+     {
+      "lang": "html",
+      "text": "<!doctype html>\n<html>\n  <head>\n    <title>Flask Jinja2 Templates Lab</title>\n  </head>\n  <body>\n    <h1>Welcome to Flask Jinja2 Templates Lab</h1>\n    <p>This is a simple Flask application using Jinja2 templates.</p>\n  </body>\n</html>"
+     }
+    ]
+   },
+   {
+    "title": "Run the Flask Application",
+    "body": [
+     "Save the app.py file and run it using the following command:",
+     "Open your web browser and visit http://localhost:5000. You should see the content of the index.html template rendered in your browser."
+    ],
+    "code": [
+     {
+      "lang": "text",
+      "text": "python app.py"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "pip install Flask",
+   "pip install Jinja2",
+   "python app.py"
+  ],
+  "reference": [
+   {
+    "path": "reference.txt",
+    "text": "python app.py"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-secure-flask-web-application-development": {
+  "intro": "In this lab, we will explore important security considerations when developing web applications using Flask. We will cover topics such as Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF), JSON security, security headers, and secure cookie options. By following these steps, you will learn how to enhance the security of your Flask applications.",
+  "steps": [
+   {
+    "title": "Cross-Site Scripting (XSS)",
+    "body": [
+     "Cross-Site Scripting (XSS) is a vulnerability that allows attackers to inject malicious scripts into web pages viewed by users. To prevent XSS attacks in Flask, follow these guidelines:",
+     "• Always escape text to prevent the inclusion of arbitrary HTML tags. • Be cautious when generating HTML without the help of Jinja2 templates. • Use the Markup class to escape user-submitted data. • Avoid sending out HTML or text files from uploaded files.",
+     "To run the code, save it in a file called app.py and execute the command flask run."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# app.py\n\nfrom flask import Flask, render_template_string, Markup\n\napp = Flask(__name__)\n\n@app.route('/')\ndef index():\n    value = '<script>alert(\"XSS Attack\")</script>'\n    safe_value = Markup.escape(value)\n    return render_template_string('<input value=\"{{ value }}\">', value=safe_value)"
+     }
+    ]
+   },
+   {
+    "title": "Cross-Site Request Forgery (CSRF)",
+    "body": [
+     "Cross-Site Request Forgery (CSRF)",
+     "Cross-Site Request Forgery (CSRF) is an attack that tricks users into performing unintended actions on a website. To prevent CSRF attacks in Flask, follow these guidelines:",
+     "• Use one-time tokens to validate requests that modify server content. • Store the token in the cookie and transmit it with form data. • Compare the token received on the server with the one stored in the cookie.",
+     "To run the code, save it in a file called app.py and execute the command flask run."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# app.py\n\nfrom flask import Flask, request, session, redirect, url_for\n\napp = Flask(__name__)\napp.secret_key = 'secret_key'\n\n@app.route('/')\ndef index():\n    return render_template('index.html')\n\n@app.route('/delete', methods=['POST'])\ndef delete_user():\n    if request.method == 'POST':\n        token = request.form.get('token')\n        if token and token == session.get('csrf_token'):\n            # Delete user profile\n            return redirect(url_for('index'))\n    return 'Invalid request'\n\nif __name__ == '__main__':\n    app.run()"
+     }
+    ]
+   },
+   {
+    "title": "JSON Security",
+    "body": [
+     "In Flask, it's important to ensure the security of JSON responses. In versions prior to Flask 0.10, top-level arrays were not serialized to JSON due to a security vulnerability. However, this behavior has been changed, and top-level arrays are now serialized. It is recommended to use the latest version of Flask to take advantage of this security improvement."
+    ],
+    "code": []
+   },
+   {
+    "title": "Security Headers",
+    "body": [
+     "Browsers recognize various response headers to control security. It is recommended to review and use the following security headers in your Flask application:",
+     "• HTTP Strict Transport Security (HSTS): Tells the browser to convert all HTTP requests to HTTPS. • Content Security Policy (CSP): Specifies where various types of resources can be loaded from. • X-Content-Type-Options: Forces the browser to honor the response content type. • X-Frame-Options: Prevents external sites from embedding your site in an iframe.",
+     "You can use the Flask-Talisman extension to manage HTTPS and security headers in your Flask application."
+    ],
+    "code": []
+   },
+   {
+    "title": "Set-Cookie Options",
+    "body": [
+     "When setting cookies in Flask, it's important to consider security options to protect sensitive data. Some recommended options are:",
+     "• Secure: Limits cookies to HTTPS traffic only. • HttpOnly: Protects the contents of cookies from being read with JavaScript. • SameSite: Restricts how cookies are sent with requests from external sites.",
+     "To run the code, save it in a file called app.py and execute the command flask run."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# app.py\n\nfrom flask import Flask, make_response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef index():\n    response = make_response('Hello, world!')\n    response.set_cookie('username', 'flask', secure=True, httponly=True, samesite='Lax')\n    return response\n\nif __name__ == '__main__':\n    app.run()"
+     }
+    ]
+   },
+   {
+    "title": "HTTP Public Key Pinning (HPKP)",
+    "body": [
+     "HTTP Public Key Pinning (HPKP)",
+     "HTTP Public Key Pinning (HPKP) is a security feature that tells the browser to authenticate with the server using only a specific certificate key. While this can enhance security, it is also difficult to undo if set up or upgraded incorrectly. Consider using HPKP with caution and ensure proper configuration."
+    ],
+    "code": []
+   }
+  ],
+  "commands": [],
+  "reference": [],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-testing-flask-applications": {
+  "intro": "In this lab, you will learn how to test Flask applications using the pytest framework. Testing is an important part of the software development process, as it helps to ensure the correctness and reliability of your application. Flask provides utilities for testing, making it easy to write tests for different parts of your application.",
+  "steps": [
+   {
+    "title": "Set up the Testing Environment",
+    "body": [
+     "• Install the pytest framework by running the following command:",
+     "• Create a new file called conftest.py in the tests folder of your Flask application.",
+     "• In the conftest.py file, import the necessary modules:",
+     "• Define a fixture named app that creates and configures an app instance:"
+    ],
+    "code": [
+     {
+      "lang": "bash",
+      "text": "pip install pytest"
+     },
+     {
+      "lang": "python",
+      "text": "import pytest\n   from my_app import create_app"
+     },
+     {
+      "lang": "python",
+      "text": "@pytest.fixture()\n   def app():\n       app = create_app()\n       app.config.update({\n           \"TESTING\": True,\n       })\n       yield app"
+     }
+    ]
+   },
+   {
+    "title": "Writing Tests",
+    "body": [
+     "This test sends a GET request to the root route (\"/\") and checks that the response status code is 200 and the response data contains the string \"Hello, World!\".",
+     "This test sends a POST request to the login route (\"/login\") with form data containing a username and password. It checks that the response status code is 200 and the response data contains the string \"Logged in successfully\".",
+     "This test invokes a command named \"hello\" and checks that the command exits with a code of 0 and the output contains the string \"Hello, World!\"."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "def test_hello(client):\n       response = client.get(\"/\")\n       assert response.status_code == 200\n       assert b\"Hello, World!\" in response.data"
+     },
+     {
+      "lang": "python",
+      "text": "def test_login(client):\n       response = client.post(\"/login\", data={\"username\": \"test\", \"password\": \"pass\"})\n       assert response.status_code == 200\n       assert b\"Logged in successfully\" in response.data"
+     },
+     {
+      "lang": "python",
+      "text": "def test_hello_command(runner):\n       result = runner.invoke(args=[\"hello\"])\n       assert result.exit_code == 0\n       assert \"Hello, World!\" in result.output"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "pip install pytest"
+  ],
+  "reference": [
+   {
+    "path": "reference.py",
+    "text": "def test_hello_command(runner):\n       result = runner.invoke(args=[\"hello\"])\n       assert result.exit_code == 0\n       assert \"Hello, World!\" in result.output"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-using-async-and-await-in-flask": {
+  "intro": "This lab will guide you through the process of using async and await in Flask, a popular Python web framework. You will learn how to define asynchronous views and handlers, understand the performance implications of using async code, and explore background tasks in Flask.",
+  "steps": [
+   {
+    "title": "Defining an Async View",
+    "body": [
+     "In Flask, you can define views as asynchronous functions using the async def syntax. This allows you to use await to perform asynchronous operations within the view function.",
+     "To run this code, save it in a Python file (e.g., app.py) and execute the file using the Flask development server:"
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "@app.route(\"/get-data\")\nasync def get_data():\n    data = await async_db_query(...)\n    return jsonify(data)"
+     },
+     {
+      "lang": "bash",
+      "text": "flask run"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "flask run"
+  ],
+  "reference": [],
+  "source": "pallets/flask · BSD 3-Clause"
+ },
+ "labex-flask-working-with-the-shell": {
+  "intro": "The Python Flask tutorial 'Working with the Shell' provides guidance on using the interactive shell in Flask to execute Python commands in real-time. This tutorial explains how to create a request context, fire before/after request functions, and improve the shell experience.",
+  "steps": [
+   {
+    "title": "Starting the Shell",
+    "body": [
+     "To start the shell, use the flask shell command, which automatically initializes the shell with a loaded application context."
+    ],
+    "code": [
+     {
+      "lang": "text",
+      "text": "flask shell"
+     }
+    ]
+   },
+   {
+    "title": "Creating a Request Context",
+    "body": [
+     "To create a proper request context in the shell, use the test_request_context() method, which creates a RequestContext object. In the shell, manually push and pop the request context using the push() and pop() methods."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# File: shell.py\n# Execution: python shell.py\n\nfrom flask import Flask\n\napp = Flask(__name__)\n\n# Create a request context\nctx = app.test_request_context()\n\n# Push the request context\nctx.push()\n\n# Work with the request object\n\n# Pop the request context\nctx.pop()"
+     }
+    ]
+   },
+   {
+    "title": "Firing Before/After Request Functions",
+    "body": [
+     "Firing Before/After Request Functions",
+     "By creating a request context, the code that is normally run before a request is not triggered. To simulate the before-request functionality, call the preprocess_request() method. This ensures that database connections and other resources are available.",
+     "To simulate the after-request functionality, call the process_response() method with a dummy response object before popping the request context."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# File: shell.py\n# Execution: python shell.py\n\nfrom flask import Flask\n\napp = Flask(__name__)\n\n# Create a request context\nctx = app.test_request_context()\nctx.push()\n\n# Simulate the before-request functionality\napp.preprocess_request()\n\n# Work with the request object\n\n# Pop the request context\nctx.pop()"
+     },
+     {
+      "lang": "python",
+      "text": "# File: shell.py\n# Execution: python shell.py\n\nfrom flask import Flask\n\napp = Flask(__name__)\n\n# Create a request context\nctx = app.test_request_context()\nctx.push()\n\n# Simulate the before-request functionality\napp.preprocess_request()\n\n# Work with the request object\n\n# Simulate the after-request functionality\napp.process_response(app.response_class())\n\n# Pop the request context\nctx.pop()"
+     }
+    ]
+   },
+   {
+    "title": "Improving the Shell Experience",
+    "body": [
+     "Improving the Shell Experience",
+     "To improve the shell experience, create a module (shelltools.py) with helper methods that can be imported into the interactive session. This module can contain additional helper methods for tasks such as initializing the database or dropping tables.",
+     "In the interactive shell, import the desired methods from the shelltools module."
+    ],
+    "code": [
+     {
+      "lang": "python",
+      "text": "# File: shelltools.py\n\ndef initialize_database():\n    # Code to initialize the database\n    pass\n\ndef drop_tables():\n    # Code to drop tables\n    pass"
+     },
+     {
+      "lang": "python",
+      "text": "# File: shell.py\n# Execution: python shell.py\n\nfrom shelltools import initialize_database, drop_tables\n\n# Import desired methods from shelltools module\nfrom shelltools import *\n\n# Use imported methods\ninitialize_database()\ndrop_tables()"
+     }
+    ]
+   }
+  ],
+  "commands": [
+   "flask shell"
+  ],
+  "reference": [
+   {
+    "path": "reference.py",
+    "text": "# File: shell.py\n# Execution: python shell.py\n\nfrom shelltools import initialize_database, drop_tables\n\n# Import desired methods from shelltools module\nfrom shelltools import *\n\n# Use imported methods\ninitialize_database()\ndrop_tables()"
+   }
+  ],
+  "source": "pallets/flask · BSD 3-Clause"
+ }
+}

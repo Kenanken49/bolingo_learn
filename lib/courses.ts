@@ -20,6 +20,11 @@ import { TRACK_LINUX_GRASSHOPPER } from './tracks/linux-grasshopper';
 import { TRACK_LINUX_JOURNEYMAN } from './tracks/linux-journeyman';
 import { TRACK_LINUX_NETWORKING } from './tracks/linux-networking';
 import { LINUX_ASSESSMENTS } from './linuxAssessments';
+import { AI_ML_COURSES } from './tracks/ai-ml';
+import { TRACK_GIT } from './tracks/git';
+import { TRACK_TESTING } from './tracks/testing';
+import { TRACK_TYPESCRIPT } from './tracks/typescript';
+import { TRACK_CRYPTO } from './tracks/crypto';
 
 export type { CourseQuestion, CourseLesson } from './quizBank';
 
@@ -72,6 +77,7 @@ export const COURSES: Record<string, CourseLesson> = {
     title: 'Build a paragraph step by step',
     theory: [
       'Workshop: follow each step exactly. Every element you build here appears on real web pages.',
+      'A paragraph is an opening <p>, the sentence, then </p>. Elements nest like boxes: the last tag you open is the first you close, so nothing ends up inside its own heading.',
     ],
     questions: [
       BUILD(
@@ -110,7 +116,8 @@ export const COURSES: Record<string, CourseLesson> = {
   'html-lab-1': {
     id: 'html-lab-1',
     title: 'Lab: tag user stories',
-    theory: ['Solo build. No guidance — satisfy each story with the tags you learned.'],
+    theory: ['Solo build. No guidance — satisfy each story with the tags you learned.',
+    'Read one story, then name the element it asks for before you type it: heading, paragraph, list, link, or image. The checker grades structure only, so spend your care on nesting and on closing every tag you open.'],
     questions: [
       BUILD(
         'Story: the page needs a main heading reading: My Site',
@@ -187,7 +194,10 @@ export const COURSES: Record<string, CourseLesson> = {
   'html-quiz-1': {
     id: 'html-quiz-1',
     title: 'HTML quiz',
-    theory: ['Checkpoint: 5 questions on tags, headings, and structure.'],
+    theory: [
+      'Checkpoint on tags, headings, and document structure: five taps and one real build.',
+      'Answer from memory first. If a tap slips, reread the workshop behind it: one <h1> per page, and content always sits between the opening and closing tag.'
+    ],
     questions: [
       MCQ(
         'Which of these is a correctly closed element?',
@@ -251,6 +261,12 @@ export const COURSES: Record<string, CourseLesson> = {
         '<h1>Field Notes</h1>\n<p>Three things I learned while building this page today.</p>\n<a href="https://developer.mozilla.org">Read more</a>',
         'Structure, prose, and a real destination: the heading names the page, the paragraph carries meaning, and the anchor gives the reader somewhere useful to go.'
       ),
+      BUILD(
+        'Assemble a top-level heading that reads Day 1.',
+        ['<h1>', 'Day 1', '</h1>'],
+        ['<h6>', '<h1>', 'Day 1', '</h1>', '<p>'],
+        'The sandwich never changes: open with <h1>, put the text inside, close with </h1>. <h6> is the smallest heading, not the most important one.'
+      ),
     ],
   },
 
@@ -298,7 +314,8 @@ export const COURSES: Record<string, CourseLesson> = {
   'html-workshop-2': {
     id: 'html-workshop-2',
     title: 'Attributes workshop',
-    theory: ['Workshop: attributes live inside the opening tag as name="value" pairs.'],
+    theory: ['Workshop: attributes live inside the opening tag as name="value" pairs.',
+    'href tells a link where to go; src and alt tell an image what to load and what to say when it cannot. Put one space between the tag name and each attribute, and quote every value.'],
     questions: [
       BUILD(
         'Step 1 — image element with source pic.jpg (use tokens as-is)',
@@ -338,6 +355,7 @@ export const COURSES: Record<string, CourseLesson> = {
     title: 'Lab: lists',
     theory: [
       'Lists: <ul> wraps bullet lists, <ol> wraps numbered lists, and every item is an <li>.',
+      'Every piece of list content must sit inside its own <li>: text typed straight between the wrapper tags renders as loose clutter. Nest a second list inside an <li> when a step has sub-steps.',
     ],
     questions: [
       BUILD(
@@ -370,13 +388,48 @@ export const COURSES: Record<string, CourseLesson> = {
         ['<ol>', '<li>', 'One', '</li>', '<li>', 'Two', '</li>', '</ol>'],
         'Siblings stack: open <li>, text, close — once per item.'
       ),
+      CODE(
+        'Build the shopping page in index.html: an h1 reading “Shopping”, a ul with three items, and an ol with two steps.',
+        {
+          language: 'html',
+          starter: '<h1>Shopping</h1>\n<!-- Add the bullet list and the numbered steps. -->\n',
+          tests: [
+            {
+              id: 'h1',
+              label: 'Exactly one h1 reads “Shopping”',
+              run: "document.querySelectorAll('h1').length === 1 && document.querySelector('h1').textContent.trim() === 'Shopping'",
+              hint: 'Keep one top-level heading that names the page.',
+              pattern: '<h1[^>]*>\s*Shopping\s*</h1>',
+            },
+            {
+              id: 'bullets',
+              label: 'A ul contains at least three li items',
+              run: "Array.from(document.querySelectorAll('ul')).some(function (ul) { return ul.querySelectorAll('li').length >= 3; })",
+              hint: 'Wrap three <li> items in one <ul>.',
+              pattern: '<ul[\s\S]*<li[\s\S]*<li[\s\S]*<li',
+            },
+            {
+              id: 'steps',
+              label: 'An ol contains at least two li items',
+              run: "Array.from(document.querySelectorAll('ol')).some(function (ol) { return ol.querySelectorAll('li').length >= 2; })",
+              hint: 'Numbered steps belong in <ol>, one <li> each.',
+              pattern: '<ol[\s\S]*<li[\s\S]*<li',
+            },
+          ],
+        },
+        '<h1>Shopping</h1>\n<ul><li>Milk</li><li>Bread</li><li>Eggs</li></ul>\n<ol><li>Pay</li><li>Leave</li></ol>',
+        'Lists are containers: <ul> for bullets, <ol> for order, and one <li> per item. The tests read the real DOM, so the elements must actually be nested, not just typed in a comment.'
+      ),
     ],
   },
 
   'html-quiz-2': {
     id: 'html-quiz-2',
     title: 'Elements quiz',
-    theory: ['Checkpoint: links, images, attributes, and lists.'],
+    theory: [
+      'Checkpoint on links, images, attributes, and lists: five taps and one build.',
+      'Name the attribute out loud as you tap: href for a link, src plus alt for an image, and one <li> per item.'
+    ],
     questions: [
       MCQ(
         'Clicking <a href="/about">About</a> takes the reader…',
@@ -439,6 +492,12 @@ export const COURSES: Record<string, CourseLesson> = {
         },
         '<nav><a href="#work">Work</a><a href="#contact">Contact</a></nav>\n<img src="work.jpg" alt="A finished project on a desk">\n<ul><li>Fast</li><li>Accessible</li></ul>',
         'Links need destinations, images need alt text, and lists need list items. The live DOM checks each relationship, not just the presence of a tag name.'
+      ),
+      BUILD(
+        'Assemble a link to index.html that reads Home.',
+        ['<a', 'href=', '"index.html"', '>', 'Home', '</a>'],
+        ['<a', '</a>', 'href=', '"index.html"', '>', 'Home', '<img', 'src='],
+        'The anchor opens with <a, carries href="the target", closes the opening tag with >, shows its label, then closes with </a>.'
       ),
     ],
   },
@@ -584,6 +643,7 @@ export const COURSES: Record<string, CourseLesson> = {
     title: 'Box model workshop',
     theory: [
       'Every element is a box: content, then padding (inside space), border, then margin (outside space).',
+      'Padding is space you paint inside the box, margin is space that pushes neighbours away, and the border sits between them. Change one property at a time and watch which gap moved.',
     ],
     questions: [
       MCQ(
@@ -622,7 +682,8 @@ export const COURSES: Record<string, CourseLesson> = {
   'css-lab-1': {
     id: 'css-lab-1',
     title: 'Lab: style stories',
-    theory: ['Solo styling. Each story is one rule — pick the right selector.'],
+    theory: ['Solo styling. Each story is one rule — pick the right selector.',
+    'Each story is one rule: pick the selector the story names, then write only the declarations it asks for. When two rules fight over the same element, the more specific selector wins, so a class beats a bare element name.'],
     questions: [
       BUILD(
         'Story: paragraphs get green text',
@@ -702,7 +763,10 @@ export const COURSES: Record<string, CourseLesson> = {
   'css-quiz-1': {
     id: 'css-quiz-1',
     title: 'CSS quiz',
-    theory: ['Checkpoint: selectors, declarations, and the box model.'],
+    theory: [
+      'Checkpoint on selectors, declarations, and the box model: five taps and one build.',
+      'Read every prompt as a rule you would type: selector, brace, property colon value, semicolon, close brace.'
+    ],
     questions: [
       MCQ(
         'Which rule centers text in all h2 elements?',
@@ -767,6 +831,12 @@ export const COURSES: Record<string, CourseLesson> = {
         '.card { padding: 16px; border-radius: 12px; border: 1px solid #cbd5e1; }',
         'Three declarations, three visual jobs: padding makes the interior breathe, radius softens the box, and the border separates the card from its background. CSS checks read the computed result, so a rule hidden in a comment cannot pass.'
       ),
+      BUILD(
+        'Assemble the rule that makes every paragraph navy.',
+        ['p {', 'color: navy;', '}'],
+        ['p {', '}', 'color: navy;', 'navy: color;', 'div {'],
+        'Selector first, then the declaration inside braces: p { color: navy; }. Reversing property and value is the most common first-week mistake.'
+      ),
     ],
   },
 
@@ -814,7 +884,10 @@ export const COURSES: Record<string, CourseLesson> = {
   'css-quiz-2': {
     id: 'css-quiz-2',
     title: 'Layout quiz',
-    theory: ['Final check: flexbox axes, direction, and responsive thinking.'],
+    theory: [
+      'Final check on flexbox axes, direction, and responsive thinking: five taps and one build.',
+      'Decide which axis you are moving along before you tap: the main axis runs the way children line up, the cross axis runs across them.'
+    ],
     questions: [
       MCQ(
         'In a column container, align-items: center aligns children…',
@@ -885,6 +958,12 @@ export const COURSES: Record<string, CourseLesson> = {
         },
         '.nav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }',
         'Flexbox is four decisions: the container (display), distribution along the main axis (justify-content), interior spacing (gap), and what happens when space runs out (wrap). All four are verified from computed styles.'
+      ),
+      BUILD(
+        'Assemble the declaration that turns an element into a row-based flex container.',
+        ['display:', 'flex;'],
+        ['display:', 'flex;', 'grid;', 'block;'],
+        'display: flex makes the element a flex container; its children then line up along the main axis, which is a row unless you change flex-direction.'
       ),
     ],
   },
@@ -965,6 +1044,7 @@ export const COURSES: Record<string, CourseLesson> = {
     title: 'Scaling & alignment workshop',
     theory: [
       'Clean layouts run on grids: consistent margins, one spacing scale (4/8/16/24/32px), and elements aligned to shared edges. Whitespace is strategic — it groups related items and separates the rest.',
+      'Pick one spacing scale and reuse it everywhere, so 16px body text and 24px headings look related instead of accidental. Alignment is what makes a layout feel calm: edges that line up read as decisions, edges that drift read as mistakes.',
     ],
     questions: [
       BUILD(
@@ -1005,6 +1085,7 @@ export const COURSES: Record<string, CourseLesson> = {
     title: 'User-centered design lab',
     theory: [
       'Design from the human outward: real users scan in F-patterns, tap with thumbs, and quit when confused. Every layout choice should trace back to behavior — Fitts\'s law (big, close targets), Hick\'s law (fewer choices decide faster), and Jakob\'s law (users expect your site to work like the ones they already know).',
+      'Before drawing anything, write down the one thing a visitor came to do, then rank every element against it. A choice that cannot be traced back to that task is decoration, not design.',
     ],
     questions: [
       MCQ(
@@ -1076,7 +1157,10 @@ export const COURSES: Record<string, CourseLesson> = {
   'ux-quiz': {
     id: 'ux-quiz',
     title: 'Design fundamentals quiz',
-    theory: ['Checkpoint: hierarchy, contrast, grids, and human behavior.'],
+    theory: [
+      'Checkpoint on hierarchy, contrast, grids, and human behavior: five taps and one build.',
+      'Judge each prompt the way a reviewer does: where does the eye land first, and does that match what the page cares most about?'
+    ],
     questions: [
       MCQ(
         'A page where headline, subhead, and body are all 16px gray has what problem?',
@@ -1148,6 +1232,12 @@ export const COURSES: Record<string, CourseLesson> = {
         '.copy { color: #0f172a; }\n.cta { background: #0f172a; color: #ffffff; min-height: 44px; padding: 12px 20px; border: 0; border-radius: 8px; }',
         'Contrast and target size are measurable. White on near-black clears WCAG AA for normal text; 44px keeps the control reachable. This is the same audit you would run on a real interface.'
       ),
+      BUILD(
+        'Assemble the declaration that makes a heading larger than the body text.',
+        ['font-size:', '2rem;'],
+        ['font-size:', '2rem;', '12px;', 'text-align:'],
+        'Size is the cheapest hierarchy tool: raise the heading above the body with font-size, then let whitespace separate the two groups.'
+      ),
     ],
   },
 
@@ -1173,6 +1263,19 @@ export const COURSES: Record<string, CourseLesson> = {
 
   // Course 6 mastery layer: command labs + cumulative finals for each unit.
   ...LINUX_ASSESSMENTS,
+
+  // Courses 7–9 (AI & ML Academy) live in lib/tracks/ai-ml/. Three tiers of
+  // 20 modules each, compiled from authored module records into notes,
+  // workshop, lab and quiz banks.
+  ...AI_ML_COURSES,
+
+  // Courses 10–13: developer fundamentals — Git, testing and debugging,
+  // TypeScript, applied cryptography. Authored in lib/tracks/, two units each
+  // with a final exam.
+  ...TRACK_GIT,
+  ...TRACK_TESTING,
+  ...TRACK_TYPESCRIPT,
+  ...TRACK_CRYPTO,
 };
 
 // Fail loudly at import time — a bad seed breaks the bundle, not a session.

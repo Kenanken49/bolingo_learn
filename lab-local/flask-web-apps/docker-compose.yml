@@ -1,0 +1,40 @@
+# Local rebuild of the LabEx Flask lab.
+#
+#   docker compose up -d --build
+#   docker compose exec lab ./lab check 1
+#
+# Ports are published straight to the host so the two things the hosted VM gave
+# you in the browser still work here: the app on 8080 and the editor on 3000.
+services:
+  lab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # set to false to skip the ~100 MB editor download and build only the runtime
+        INSTALL_CODE_SERVER: "true"
+    image: labex-flask-web-apps:local
+    container_name: flask-web-apps-lab
+    working_dir: /lab
+    ports:
+      - "8080:8080"   # the web application you write (steps 3, 5, 7, 11, 26, 41, 60, 82, 84 ...)
+      - "3000:3000"   # code-server (VS Code in the browser)
+    volumes:
+      # your code lives on the host, the engine lives in the image
+      - ./workspace:/lab/workspace
+    environment:
+      LAB_WORKSPACE: /lab/workspace
+      LAB_PYTHON: /labenv/bin/python
+      LAB_WEB_PORT: "8080"
+      LAB_PRIVATE_PORT: "18080"
+      FLASK_RUN_HOST: "0.0.0.0"
+      FLASK_RUN_PORT: "8080"
+    stdin_open: true
+    tty: true
+    command: ["bash", "-l"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import flask, os; print(os.path.isdir('/lab/workspace'))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped

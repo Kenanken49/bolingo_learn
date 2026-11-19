@@ -1,0 +1,20 @@
+{
+  "name": "Bolingo Learn",
+  "short_name": "Bolingo",
+  "description": "Learn languages, tech skills and real-world work with lessons, labs and a tutor that works offline.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8F9FC",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/pwa-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

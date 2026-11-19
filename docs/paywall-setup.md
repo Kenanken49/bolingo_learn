@@ -63,16 +63,82 @@ M-Pesa PIN **on the phone**, and Safaricom tells the server whether it landed.
 1. Run [`supabase/migrations_mpesa_premium.sql`](../supabase/migrations_mpesa_premium.sql)
    (creates `mpesa_checkouts`: select-only RLS for the owner, service-role writes).
 2. `supabase secrets set DARAJA_CONSUMER_KEY=… DARAJA_CONSUMER_SECRET=… DARAJA_SHORTCODE=… DARAJA_PASSKEY=… MPESA_CALLBACK_URL=… MPESA_CALLBACK_TOKEN=…`
-   — get the first four from the Daraja dashboard (sandbox keys first); invent
-   the token and embed it in the callback URL as `?t=<token>`.
+   — get the first four from the Daraja dashboard (sandbox keys first; see step 5
+   for going live); invent the token and embed it in the callback URL as
+   `?t=<token>`.
 3. `supabase functions deploy mpesa-push --no-verify-jwt=false` and
    `supabase functions deploy mpesa-callback --no-verify-jwt`.
-4. Sandbox test: with `DARAJA_BASE_URL` left at its sandbox default, pay with a
-   Safaricom test MSISDN, confirm `mpesa_checkouts.status` flips to `confirmed`
-   and `profiles.is_premium` follows.
-5. Enable the `mpesa_premium` release flag in Settings → Quality & Operations
+4. Sandbox test: with `MPESA_ENV=sandbox` (the default when it is unset), pay
+   with a Safaricom test MSISDN, confirm `mpesa_checkouts.status` flips to
+   `confirmed` and `profiles.is_premium` follows.
+5. Go live. Create a keys file **outside this repository** — the CLI refuses a
+   file git tracks, because a committed key is already public (`.env.example`
+   lists the names only). It holds the live consumer key/secret pair, the live
+   paybill or till number and its passkey, the live callback URL with a freshly
+   invented `MPESA_CALLBACK_TOKEN`, and `MPESA_ENV=production`. Then read the
+   report before sending anything:
+
+   ```bash
+   npm run mpesa:golive -- --from ~/mpesa-live.env            # audit only
+   npm run mpesa:golive -- --from ~/mpesa-live.env --apply    # secrets + deploy
+   ```
+
+   The file may be dotenv (`DARAJA_CONSUMER_KEY=…`) or the label form Daraja’s
+   dashboard shows (`Consumer Key:…`, `Consumer Secret:…`, `Passkey:…`,
+   `Short Code:…`); the reader maps those labels to the canonical names the Edge
+   Function reads. It also needs
+   `MPESA_ENV=production`, `MPESA_CALLBACK_TOKEN=…`, and
+   `MPESA_CALLBACK_URL=https://<project-ref>.supabase.co/functions/v1/mpesa-callback?t=<token>`.
+
+   Run the non-charging preflight before sending anything:
+
+   ```bash
+   npm run mpesa:preflight
+   ```
+
+   It reads the sibling `../mpesa-live.env`, obtains a Daraja OAuth token,
+   checks the shortcode shape and passkey presence, and posts a synthetic
+   callback with an impossible `CheckoutRequestID` to prove the deployed
+   callback accepts the configured token. It never calls STK Push and never
+   asks anyone to pay. Shortcode ownership and passkey correctness cannot be
+   proven without a real push; the first live payment is their only
+   confirmation. If the callback is not deployed yet, the preflight reports
+   that instead of pretending the configuration is ready. For a file elsewhere,
+   run `node scripts/mpesa-golive.cjs --from <path> --preflight`.
+
+   The auditor checks the pair that a live outage actually comes from: `MPESA_ENV`
+   against `DARAJA_BASE_URL`, the Daraja test paybill `17439` sitting on the live
+   endpoint, a `MPESA_CALLBACK_URL` whose `?t=` token is missing or is not the
+   value in `MPESA_CALLBACK_TOKEN` (that one is silent and expensive: the learner
+   pays, the callback is rejected, premium never arrives), a plain-HTTP callback,
+   an unrecognised `MPESA_TRANSACTION_TYPE`, and any missing key — those are
+   problems, and they block. A token under 16 characters, a price that differs
+   from the `KSh 770/mo` card and a sandbox number under `MPESA_ENV=sandbox` are
+   warnings the report prints without blocking. It names variables and their
+   lengths, never values, which is what makes its output safe to paste into a
+   report. `--apply` builds its own private temp file out of the resolved
+   variable names and hands that to the CLI — never your file as written,
+   because `supabase secrets set --env-file` reads names literally and would
+   create a secret called `Consumer_Key` while the Edge Function went on reading
+   the old `DARAJA_CONSUMER_KEY`. It prints, by name only, where each uploaded
+   value came from (your file, this shell, or resolved by the audit), and warns
+   loudly about any required variable the file does not carry: for those the
+   server keeps whatever it already holds, which is how a stale sandbox
+   credential survives a green report. It then deploys both functions, and
+   refuses to do either while the audit has problems unless `--force` is given —
+   `mpesa-push` runs the same audit on every request and answers `503` rather
+   than push a configuration that cannot settle.
+6. Live self-test: `MPESA_ENV=production` selects `https://api.safaricom.co.ke`,
+   the only live host the code accepts. Pay yourself once from a Kenyan number at
+   the real price, check the ledger row lands `confirmed` with `amount_kes` equal
+   to what was charged, and confirm the app shows premium. If the price had to be
+   lowered for the test, put `MPESA_PREMIUM_KES` back before the flag goes on:
+   the paywall card and the server price are checked to agree (`KSh 770/mo`).
+7. Enable the `mpesa_premium` release flag in Settings → Quality & Operations
    and roll out gradually. The card is hidden on iOS by rule 3.1.1 and on
-   Android until the flag is on, so nothing changes for existing learners.
+   Android until the flag is on, so nothing changes for existing learners. The
+   flag ships dark in `content/quality/flags.json`, and `npm run check:mpesa`
+   keeps it that way — enabling is an operator action, not a commit.
 
 Who owns what: the **server** picks the amount (`MPESA_PREMIUM_KES`, default
 770) and the paid-through window; the client only ever sends a phone number and

@@ -292,6 +292,7 @@ export const TRACK_JS: Record<string, CourseLesson> = {
     title: 'Build a counter step by step',
     theory: [
       'Workshop: assemble the counting loop exactly as instructed. Every token already appeared in the lesson.',
+      'Declare the counter once, outside the loop, then change only the value inside it. Re-declaring with let on every pass resets the count to zero, which is why the loop never seems to finish.',
     ],
     questions: [
       BUILD(
@@ -345,6 +346,7 @@ export const TRACK_JS: Record<string, CourseLesson> = {
     title: 'Build a converter step by step',
     theory: [
       'Workshop: assemble the value-map converter exactly as instructed.',
+      'Map the input to the output in one table, then write a function that looks the value up and returns it. A converter that branches by hand grows with every unit you add; a data map grows by one line.',
     ],
     questions: [
       BUILD(
@@ -384,6 +386,7 @@ export const TRACK_JS: Record<string, CourseLesson> = {
     title: 'Fold a drawer step by step',
     theory: [
       'Workshop: assemble the functional pipeline exactly as instructed.',
+      'filter, map, reduce each describe what to produce, never how to loop. Keep every step returning a new array instead of mutating the old one, and the whole pipeline stays safe to reorder and re-run.',
     ],
     questions: [
       BUILD(
@@ -437,6 +440,7 @@ export const TRACK_JS: Record<string, CourseLesson> = {
     title: 'Clean and shift text step by step',
     theory: [
       'Workshop: assemble the normalizer and decoder exactly as instructed.',
+      'Write the pattern in two passes: normalise away what varies, like stray spaces and case, then decode what means something, like a code followed by a number. Anchor what must be at the start and leave the rest alone.',
     ],
     questions: [
       BUILD(
@@ -491,6 +495,7 @@ export const TRACK_JS: Record<string, CourseLesson> = {
     title: 'Wire a verdict display step by step',
     theory: [
       'Workshop: assemble the grab-compute-show pattern exactly as instructed.',
+      'Grab the node once, compute from data, then show the result: select, decide, write. Keeping the computation separate from the display is what lets the same verdict render into a different element later.',
     ],
     questions: [
       BUILD(
@@ -545,13 +550,14 @@ export const TRACK_JS: Record<string, CourseLesson> = {
     title: 'JavaScript checkpoint',
     theory: [
       'Final check across all five levels: loops, functions, array methods, regex, and DOM verdicts.',
+      'Trace each snippet by hand the way an engine does: bindings first, then calls, then the returned value. The distractors are all things the code could have done, which is why the order of lines matters so much.',
     ],
     questions: [
       MCQ(
         'for (let i = 0; i < 3; i++) runs its body…',
         '3 times',
         ['3 times', '4 times', '2 times', 'Forever'],
-        'i takes 0, 1, 2.'
+        'The test runs before each pass: i is 0, 1 and 2, then 3 fails i < 3, so the body executes exactly three times and never a fourth.'
       ),
       MCQ(
         'Why does a converter use an object like { M: 1000, CM: 900 }?',

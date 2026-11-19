@@ -61,6 +61,12 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
         ['fetch(`/api/stock-prices?stock=${symbol}`)', 'GET /prices', 'axios.all', 'stock()'],
         'Symbol as a query param; price and like state come back together.'
       ),
+      BUILD(
+        'Assemble the call that refuses to let the page be framed',
+        ['app.use(', 'helmet.frameguard({', 'action: "deny"', '})', ');'],
+        ['app.use(', 'helmet.frameguard({', 'action: "deny"', '})', ');', 'res.set(', '.json()'],
+        'Helmet bundles frameguard in its defaults, and naming it pins the policy: action deny tells every browser to refuse the embed.'
+      ),
     ],
   },
 
@@ -293,6 +299,7 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
     title: 'Lock headers step by step',
     theory: [
       'Workshop: set secure defaults, count fair votes.',
+      'Set the defaults before your own routes so every response inherits them, then count votes on the server where the button cannot be replayed. Headers tell the browser what to refuse; the dedupe keeps one voter to one vote.',
     ],
     questions: [
       BUILD(
@@ -327,7 +334,12 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
           'Buttons lack database access',
           'IPs are unguessable secrets',
         ],
-        'One like per IP.'
+        'A button can be clicked again for free, so the vote needs a server-side key; the IP is the cheapest stand-in for one person, and shared networks show how rough that stand-in is.'
+      ),
+      TEXT(
+        'Type the one-line Helmet setup that applies its secure header defaults.',
+        ['app.use(helmet());'],
+        'app.use(helmet()) installs the baseline header policy for every response.'
       ),
     ],
   },
@@ -337,6 +349,7 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
     title: 'Gate changes step by step',
     theory: [
       'Workshop: flag reports, check passwords, float fresh threads.',
+      'Flag the report, verify the password again for the change itself, and start a fresh thread per request. Reusing one connection across threads is how one user ends up reading another write.',
     ],
     questions: [
       BUILD(
@@ -398,6 +411,7 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
     title: 'Audit writes step by step',
     theory: [
       'Workshop: filter reads, validate writes, stamp time.',
+      'Filter on read, validate on write, and stamp the time on both. The timestamp is not decoration: it is what lets you reconstruct the order of two requests that arrived a millisecond apart.',
     ],
     questions: [
       BUILD(
@@ -442,6 +456,7 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
     title: 'Fit honestly step by step',
     theory: [
       'Workshop: stack layers, split data, trust only held-out error.',
+      'Split before you fit, then judge only the held-out rows. Training error falls for any model that memorises, so a score computed on data the model already saw proves nothing.',
     ],
     questions: [
       BUILD(
@@ -465,7 +480,7 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
           'Resizes images',
           'Deletes weak layers',
         ],
-        'Fit equals learn.'
+        'fit runs the training loop: over each epoch it nudges the weights to lower the loss on the batch you pass in — it learns, it does not measure.'
       ),
       MCQ(
         'MAE 2.1 on house prices ($1k units) means?',
@@ -501,6 +516,7 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
     title: 'Vectorize words step by step',
     theory: [
       'Workshop: tokenize, pad, squeeze to probability.',
+      'Words become ids, id lists become equal-length rows, and the final sigmoid turns one number into a probability. Each step loses human meaning on purpose, because the model only ever reads aligned columns of numbers.',
     ],
     questions: [
       BUILD(
@@ -542,6 +558,11 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
         ],
         '[loss, accuracy] — index 1.'
       ),
+      TEXT(
+        'Type the pipeline that turns texts into equal-length padded sequences.',
+        ['pad_sequences(tokenizer.texts_to_sequences(texts))', "pad_sequences(tokenizer.texts_to_sequences(texts), padding='post')"],
+        'Convert words to ids first, then pad every sequence to the same length.'
+      ),
     ],
   },
 
@@ -550,19 +571,20 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
     title: 'Security & ML checkpoint',
     theory: [
       'Final check across all five levels: headers, identity, CRUD, regression, and classification.',
+      'Decide which layer owns the failure before you answer: headers decide framing, identity decides access, CRUD decides the audit, the model decides the metric. Security questions are mostly about ordering, so read the sequence before the values.',
     ],
     questions: [
       MCQ(
         'What does frameguard stop?',
         'Clickjacking via invisible framing',
         ['Clickjacking via invisible framing', 'Slow queries', 'Double likes', 'Typos'],
-        'Deny framing.'
+        'frameguard decides whether other sites may embed your page in an iframe, which is the vehicle for clickjacking: an invisible layer parked on top of a real button.'
       ),
       MCQ(
         'Delete arrives with wrong password. Action?',
         'Refuse, reveal nothing',
         ['Refuse, reveal nothing', 'Delete anyway', 'Return the password', 'Lock the board'],
-        'No leaks.'
+        'Refuse with a generic error and change nothing: explaining why the call failed tells an attacker that the username itself was correct.'
       ),
       BUILD(
         'Find by project plus query',
@@ -580,13 +602,13 @@ export const TRACK_SECML: Record<string, CourseLesson> = {
         'Texts to equal sequences',
         ['pad_sequences(tokenizer.texts_to_sequences(texts))'],
         ['pad_sequences(tokenizer.texts_to_sequences(texts))', '.split('],
-        'Ids, then padding.'
+        'tokenizer.texts_to_sequences maps each word to an id, and pad_sequences stretches every list to one length so the batch becomes a rectangle the network can read.'
       ),
       MCQ(
         'Sigmoid head outputs?',
         'A 0–1 spam probability',
         ['A 0–1 spam probability', 'Double speed', 'Double vocabulary', 'English sentences'],
-        'Near 1 spam.'
+        'A sigmoid squashes its input into a single number between 0 and 1, read here as the probability that the message is spam rather than ham.'
       ),
       TEXT(
         'Type the scikit-learn helper that splits data into training and test sets.',

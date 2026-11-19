@@ -6,7 +6,7 @@ import { startAds } from '../adsRuntime';
 import type { RewardHook, RewardStatus } from './types';
 
 /**
- * Rewarded video → one heart.
+ * Rewarded video → one diamond.
  *
  * Three rules this hook exists to enforce:
  *
@@ -19,7 +19,7 @@ import type { RewardHook, RewardStatus } from './types';
  *    inventory, so a failed load retries three times with backoff and then
  *    leaves the UI to the free 4-hour regen.
  */
-export function useRewardedHeart(onEarn: () => void): RewardHook {
+export function useRewardedDiamond(onEarn: () => void): RewardHook {
   const [ready, setReady] = useState(false);
 
   // Latest callback without re-creating the ad on every parent render.

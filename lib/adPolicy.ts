@@ -49,7 +49,7 @@ export function isTestUnit(unitId: string | null | undefined): boolean {
 }
 
 /**
- * Whether this learner may be asked to watch an ad for a heart.
+ * Whether this learner may be asked to watch an ad for a diamond.
  *
  * Premium is the promise that makes the paid tier worth buying, so it is
  * checked first: a paying learner is never shown an ad, not even one they
@@ -75,5 +75,5 @@ export function retryDelayMs(attempt: number): number {
   return Math.min(60_000, 2_000 * 2 ** (safe - 1));
 }
 
-/** Reward granted per completed video. One heart, same as a 4-hour regen tick. */
-export const HEARTS_PER_REWARDED_AD = 1;
+/** Reward granted per completed video. One diamond, same as a 4-hour regen tick. */
+export const DIAMONDS_PER_REWARDED_AD = 1;

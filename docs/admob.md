@@ -1,18 +1,22 @@
-# AdMob rewarded hearts
+# AdMob rewarded diamonds
 
-The only ad in Bolingo Learn. A learner who spends their last heart sees one
-30-second rewarded video; finishing it returns one heart and the lesson
-resumes. Nothing else in the product shows an ad, and Premium never does.
+The only ad in Bolingo Learn. A learner with zero diamonds who tries to start
+(or retry) a lesson sees one 30-second rewarded video; finishing it returns
+one diamond and the lesson can begin. Nothing else in the product shows an
+ad, and Premium never does.
 
 ```
-wrong answer ──► loseHeart() ──► hearts = 0
-                                    │
-                                    ▼
-                        OutOfHeartsSheet (pauses the session)
-                          ├─ Watch video ──► +1 heart, lesson continues
-                          ├─ Wait 4 hours ──► free regen (no ad)
-                          └─ Premium ──────► unlimited hearts
+failed lesson (mastery not cleared) ──► loseDiamond() ──► diamonds = 0
+                                                              │
+                                                              ▼
+                                              OutOfDiamondsSheet (pauses the session)
+                                                    ├─ Watch video ──► +1 diamond, lesson starts
+                                                    ├─ Wait 4 hours ──► free regen (no ad)
+                                                    └─ Premium ──────► unlimited diamonds
 ```
+
+Wrong answers are always free — only the finished lesson's verdict can cost a
+diamond.
 
 ## What exists where
 
@@ -22,10 +26,10 @@ wrong answer ──► loseHeart() ──► hearts = 0
 | `lib/ads.ts` | Resolves the rewarded unit for this platform from env. |
 | `lib/adsRuntime.native.ts` | UMP consent → `MobileAds().initialize()`. Never throws. |
 | `lib/adsRuntime.ts` | Web/desktop stub (no SDK). |
-| `lib/rewarded/index.native.ts` | `useRewardedHeart` — one ad instance, gated on consent, idempotent reward, bounded retries. |
+| `lib/rewarded/index.native.ts` | `useRewardedDiamond` — one ad instance, gated on consent, idempotent reward, bounded retries. |
 | `lib/rewarded/index.ts` · `index.web.ts` | Web stubs reporting `available: false`. |
-| `components/OutOfHeartsSheet.tsx` | The sheet shown at zero hearts. |
-| `components/GamifiedCodePlayer.tsx` | Spends a heart on a wrong answer, blocks grading at zero. |
+| `components/OutOfDiamondsSheet.tsx` | The sheet shown at zero diamonds. |
+| `components/GamifiedCodePlayer.tsx` | Spends nothing: wrong answers are free, grading never blocks. |
 | `src/app/quiz/[lessonId].tsx` | Persists the spend/grant and opens the sheet. |
 | `components/RefillContent.tsx`, `src/app/refill.tsx` | The full refill screen (wait timer, ad, Premium). |
 | `scripts/check-ads.cjs` | The gate: behaviour, safety, wiring. |
@@ -66,13 +70,13 @@ emulator count as invalid traffic on the owner's account.
 
 ## Reward rules
 
-- The heart is granted only from Google's `onUserEarnedReward` (`earnedReward`).
+- The diamond is granted only from Google's `onUserEarnedReward` (`earnedReward`).
   Closing the video early earns nothing.
-- One video grants exactly one heart (`HEARTS_PER_REWARDED_AD`), the same as one
-  4-hour regen tick. Hearts cap at 5.
+- One video grants exactly one diamond (`DIAMONDS_PER_REWARDED_AD`), the same as one
+  4-hour regen tick. Diamonds cap at 5.
 - The grant is idempotent per ad: a re-render cannot double-pay an earn event.
-- Signed-in learners are persisted through `lib/progress.ts` (`grantHearts`),
-  so the heart survives a reinstall and appears on every device. Guests keep a
+- Signed-in learners are persisted through `lib/progress.ts` (`grantDiamonds`),
+  so the diamond survives a reinstall and appears on every device. Guests keep a
   session-local count, like the rest of guest mode.
 - Premium is checked first and never sees the sheet.
 
@@ -81,10 +85,10 @@ emulator count as invalid traffic on the owner's account.
 | Situation | What happens |
 |---|---|
 | No fill / offline | Three retries at 2s, 4s, 8s, then the button explains and the timer path stays open. |
-| Loaded but dismissed early | No heart; the next ad is preloaded immediately. |
+| Loaded but dismissed early | No diamond; the next ad is preloaded immediately. |
 | Consent denied (EEA) | No ad requested; wait + Premium only. |
 | Web / desktop | `available: false`; wait + Premium only. |
-| Ad SDK broken by an OTA-free build | The sheet still renders; the wait timer still refills hearts. |
+| Ad SDK broken by an OTA-free build | The sheet still renders; the wait timer still refills diamonds. |
 
 ## Verifying
 
@@ -93,10 +97,10 @@ on-device check is:
 
 1. `npx expo run:android` (or install a dev build — the ad SDK is native, so
    Expo Go cannot show one).
-2. Sign in, open a lesson, answer wrong five times.
-3. The sheet appears with "Test ad — Google sample unit".
-4. Tap **Watch a short video · +1 heart** and finish the video.
-5. Hearts goes 0 → 1, the sheet closes, the lesson continues, and the heart is
+2. Sign in, open a lesson and fail it until diamonds reach 0 (wrong answers are free, so only failed lessons count).
+3. Try to start another lesson — the sheet appears with "Test ad — Google sample unit".
+4. Tap **Watch a short video · +1 diamond** and finish the video.
+5. Diamonds goes 0 → 1, the sheet closes, the lesson starts, and the diamond is
    still there after a reload (signed-in learner).
 
 Log lines to watch: `adb logcat | grep -i "ads\|rewarded"`.
@@ -138,14 +142,15 @@ Verified on the Android 37 emulator with the Google sample unit:
 [Ads] status showing → closed → loading (next ad preloaded)
 ```
 
-The full loop, with a throwaway account whose hearts were set to 0: the quiz
-player opened the sheet, the sheet's button played the video, "Reward granted"
-appeared, the sheet closed on its own, the lesson resumed, and `profiles.hearts`
-went 0 → 1 in the database. The temporary account was deleted afterwards.
+The full loop, with a throwaway account whose diamonds were set to 0: the quiz
+screen opened the sheet, the sheet's button played the video, "Reward granted"
+appeared, the sheet closed on its own, the lesson started, and
+`profiles.diamonds` went 0 → 1 in the database. The temporary account was
+deleted afterwards.
 
-Guests never spend hearts, so the sheet only exists for signed-in learners: a
-guest heart could never be refilled (no row to write) and would dead-end the
-lesson.
+Guests never spend diamonds, so the sheet only exists for signed-in learners:
+a guest diamond could never be refilled (no row to write) and would dead-end
+the lesson.
 
 - The SDK never runs on web, so `expo start --web` stays ad-free.
 - Requests are billed by impression, not by load; the preload after a close is

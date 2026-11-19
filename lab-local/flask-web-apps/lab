@@ -1,0 +1,250 @@
+#!/usr/bin/env bash
+# ---------------------------------------------------------------------------
+# lab - the command palette for this course.
+#
+#   ./lab check 12            run the grader for step 12 (exit 0 = passed)
+#   ./lab next                the step you should work on, and its instructions
+#   ./lab show 31             print the markdown for a step
+#   ./lab steps               list modules and steps
+#   ./lab status              where you are + what is running
+#   ./lab serve [dir] [app]   start your Flask app on port 8080 (background)
+#   ./lab stop [dir]          stop servers started here
+#   ./lab solve --step 31     copy the finished code up to a step into workspace
+#   ./lab reset --module 5    pristine starter for that module's directory
+#   ./lab reset --all         pristine starter for everything
+#
+# Everything is relative to this file's directory, so it works identically in
+# the container (/lab) and on a host clone.
+# ---------------------------------------------------------------------------
+set -uo pipefail
+
+LABEX_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE="${LAB_WORKSPACE:-$LABEX_ROOT/workspace}"
+CONFIG="$LABEX_ROOT/.labex/config.json"
+STATE="$LABEX_ROOT/.labex/.state"
+WEB_PORT="${LAB_WEB_PORT:-8080}"
+PIDS_DIR="$LABEX_ROOT/.labex/pids"
+
+mkdir -p "$PIDS_DIR"
+
+resolve_python() {
+  if [ -n "${LAB_PYTHON:-}" ] && { command -v "$LAB_PYTHON" >/dev/null 2>&1 || [ -x "$LAB_PYTHON" ]; }; then
+    echo "$LAB_PYTHON"; return 0
+  fi
+  for c in "$LABEX_ROOT/.venv/bin/python" "$LABEX_ROOT/.venv/Scripts/python.exe" /labenv/bin/python; do
+    [ -x "$c" ] && { echo "$c"; return 0; }
+  done
+  command -v python3 2>/dev/null || command -v python 2>/dev/null || return 1
+}
+
+PY="$(resolve_python)" || { echo "ERROR: no Python found. In the container: docker compose exec lab ./lab ... ; on the host create .venv first." >&2; exit 2; }
+
+cfg() { # cfg <python-expression over the loaded config, bound to `c`>
+  # The expression travels in the environment: with `python - <script>` the
+  # heredoc consumes stdin, so argv only ever holds the config path.
+  # Written as raw bytes and CR-stripped: on Windows Python translates \n to
+  # \r\n, and a trailing \r silently breaks every path the shell reads back.
+  CFG_EXPR="$1" "$PY" - "$CONFIG" <<'PYEOF' | tr -d '\r'
+import json, os, sys
+c = json.load(open(sys.argv[1], encoding="utf-8"))
+try:
+    os.write(1, ("%s\n" % (eval(os.environ["CFG_EXPR"], {"c": c}),)).encode("utf-8"))
+except Exception as exc:
+    sys.stderr.write("config query failed: %s\n" % exc)
+    sys.exit(2)
+PYEOF
+}
+
+last_step() { [ -f "$STATE" ] && sed -n 's/^step=\(.*\)$/\1/p' "$STATE" | head -1 || echo 0; }
+
+cmd_check() {
+  local n="${1:-}"
+  [ -n "$n" ] || { echo "usage: ./lab check <step-number>   (see ./lab steps)"; return 2; }
+  local script="$LABEX_ROOT/.labex/verify_step${n}.sh"
+  [ -f "$script" ] || { echo "ERROR: no such step: $n (1..$(cfg 'len(c["steps"])'))"; return 2; }
+  bash "$script"
+  local rc=$?
+  echo "step=$n" > "$STATE"
+  echo "result=$rc" >> "$STATE"
+  echo "time=$(date -u +%FT%TZ)" >> "$STATE"
+  return $rc
+}
+
+cmd_show() {
+  local n="${1:-}"
+  [ -n "$n" ] || { echo "usage: ./lab show <step-number>"; return 2; }
+  local md="$LABEX_ROOT/lab_content/step${n}.md"
+  [ -f "$md" ] || { echo "ERROR: no such step file: $md"; return 2; }
+  cat "$md"
+}
+
+cmd_next() {
+  local n=$(( $(last_step) + 1 ))
+  local total; total=$(cfg 'len(c["steps"])')
+  [ "$n" -gt "$total" ] && n=1
+  echo "step=$n" > "$STATE"
+  cmd_show "$n"
+}
+
+cmd_steps() {
+  cfg '
+"\n".join(
+  "module %2d  %-52s steps %s-%s  (./lab reset --module %d)" % (m["n"], m["title"], m["steps"][0], m["steps"][1], m["n"])
+  for m in c["modules"]
+) + "\n\n" + "\n".join(
+  "  %2d  %-6s %-58s %d check(s)" % (s["step"], s["kind"], s["display_name"][:58], s["checks"])
+  for s in c["steps"]
+)'
+}
+
+cmd_status() {
+  echo "workspace : $WORKSPACE"
+  echo "python    : $PY"
+  echo "last step : $(last_step) ($(sed -n 's/^result=//p' "$STATE" 2>/dev/null | head -1 | sed 's/0/PASS/;s/1/FAIL/'))"
+  echo "web port  : $WEB_PORT $( (exec 3<>/dev/tcp/127.0.0.1/$WEB_PORT) 2>/dev/null && echo ' <- something is listening' || echo ' <- nothing listening (./lab serve)' )"
+  for f in "$PIDS_DIR"/*.pid; do
+    [ -e "$f" ] || continue
+    pid=$(cat "$f"); name=$(basename "$f" .pid)
+    if kill -0 "$pid" 2>/dev/null; then echo "running   : $name (pid $pid)"; else rm -f "$f"; fi
+  done
+}
+
+cmd_serve() {
+  local dir="${1:-quickstart}" app="${2:-app}"
+  local target="$WORKSPACE/$dir"
+  [ -d "$target" ] || { echo "ERROR: $target does not exist. ./lab reset --module <m> first."; return 2; }
+  local log="$LABEX_ROOT/.labex/serve-$(basename "$dir").log"
+  echo "starting flask --app $app run --host=0.0.0.0 --port $WEB_PORT in $dir (log: $log)"
+  ( cd "$target" && nohup "$PY" -m flask --app "$app" run --host=0.0.0.0 --port "$WEB_PORT" >"$log" 2>&1 & echo $! > "$PIDS_DIR/$(basename "$dir").pid" )
+  sleep 2
+  echo "pid $(cat "$PIDS_DIR/$(basename "$dir").pid") - http://localhost:$WEB_PORT/"
+  tail -3 "$log" 2>/dev/null | sed 's/^/    /'
+}
+
+cmd_stop() {
+  local want="${1:-}"
+  local hit=0
+  for f in "$PIDS_DIR"/*.pid; do
+    [ -e "$f" ] || continue
+    local name=$(basename "$f" .pid)
+    [ -n "$want" ] && [ "$name" != "$(basename "$want")" ] && continue
+    kill "$(cat "$f")" 2>/dev/null && echo "stopped $name (pid $(cat "$f"))"
+    rm -f "$f"; hit=1
+  done
+  [ "$hit" = 1 ] || echo "no servers started by ./lab serve"
+}
+
+apply_overlay() { # apply_overlay <overlay-dir-relative-to-solutions>
+  local src="$LABEX_ROOT/solutions/$1"
+  if [ ! -d "$src" ]; then echo "ERROR: missing solution overlay: $src" >&2; return 2; fi
+  # Everything except the +hooks is copied, merging into workspace/ so an
+  # existing project directory is never nested inside itself; +hooks then run
+  # in name order (they are how a module installs a wheel or seeds a database).
+  ( cd "$src" && find . -mindepth 1 -maxdepth 1 ! -name '+*' -print0 ) | \
+    while IFS= read -r -d '' item; do
+      name="${item#./}"
+      if [ -d "$src/$name" ]; then
+        mkdir -p "$WORKSPACE/$name"
+        cp -a "$src/$name/." "$WORKSPACE/$name/"
+      else
+        cp -a "$src/$name" "$WORKSPACE/"
+      fi
+    done
+  for hook in "$src"/+*.sh; do
+    [ -e "$hook" ] || continue
+    echo "  running $(basename "$hook") ..."
+    LAB_WORKSPACE="$WORKSPACE" LAB_PYTHON="$PY" bash "$hook" || echo "  (hook $(basename "$hook") reported a problem - see above)"
+  done
+}
+
+seed_into() { # seed_into <module-dir> : restore the pristine starter for one directory
+  local dir="$1"
+  local src="$LABEX_ROOT/starter/$dir"
+  [ -d "$src" ] || src="/opt/workspace-default/$dir"
+  [ -d "$src" ] || { echo "ERROR: no pristine starter for $dir (looked in starter/ and /opt/workspace-default)" >&2; return 2; }
+  rm -rf "$WORKSPACE/$dir"
+  mkdir -p "$WORKSPACE"
+  cp -a "$src" "$WORKSPACE/"
+}
+
+cmd_reset() {
+  local what="${1:-}" val="${2:-}"
+  case "$what" in
+    --module)
+      [ -n "$val" ] || { echo "usage: ./lab reset --module <n>"; return 2; }
+      local dir chain
+      dir=$(cfg "next(m['dir'] for m in c['modules'] if m['n']==$val)") || return 2
+      seed_into "$dir" || return 2
+      # a directory can be shared by a module chain (flaskr-app): replay the
+      # finished code of every earlier module in that chain
+      chain=$(cfg "chr(10).join(m['solution'] for m in c['modules'] if m['dir']=='$dir' and m['n']<$val)")
+      if [ -n "$chain" ]; then
+        echo "replaying earlier modules of $dir: $(echo "$chain" | tr '\n' ' ')"
+        while IFS= read -r o; do [ -n "$o" ] && apply_overlay "$o" || return 2; done <<< "$chain"
+      fi
+      echo "workspace/$dir is now the pristine starter"
+      ;;
+    --all)
+      local dirs
+      dirs=$(cfg "' '.join(sorted(set(m['dir'] for m in c['modules'])))" | tr -d '\r')
+      for d in $dirs; do seed_into "$d" || return 2; done
+      echo "workspace reset: $(echo "$dirs" | tr ' ' ',')"
+      ;;
+    *) echo "usage: ./lab reset --module <n> | --all"; return 2 ;;
+  esac
+}
+
+cmd_solve() {
+  local what="${1:-}" n="${2:-}"
+  case "$what" in
+    --step) ;;
+    *) echo "usage: ./lab solve --step <n> | --module <n>"; return 2 ;;
+  esac
+  local list
+  list=$(N="$n" "$PY" - "$CONFIG" <<'PYEOF' | tr -d '\r'
+import json, os, sys
+c = json.load(open(sys.argv[1], encoding="utf-8"))
+n = int(os.environ["N"])
+step = next((s for s in c["steps"] if s["step"] == n), None)
+if step is None:
+    sys.exit("no such step: %d (1..%d)" % (n, len(c["steps"])))
+mods = c["modules"]
+mine = next(m for m in mods if m["steps"][0] <= n <= m["steps"][1])
+out = [m["solution"] for m in mods if m["steps"][1] < n]
+if step.get("expected_state"):
+    out.append(step["expected_state"])   # a mid-module snapshot replaces the module overlay
+else:
+    out.append(mine["solution"])
+os.write(1, ("\n".join(out) + "\n#MODULE:%s\n" % mine["n"]).encode("utf-8"))
+PYEOF
+)
+  local overlays=(); local target_mod=""
+  while IFS= read -r line; do
+    case "$line" in
+      '#MODULE:'*) target_mod="${line#\#MODULE:}" ;;
+      *) [ -n "$line" ] && overlays+=("$line") ;;
+    esac
+  done <<< "$list"
+  echo "applying ${#overlays[@]} solution overlay(s) for step $n (module $target_mod)"
+  for o in "${overlays[@]}"; do apply_overlay "$o" || return 2; done
+  echo "done. ./lab check $n"
+}
+
+usage() {
+  sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+}
+
+case "${1:-}" in
+  check)  shift; cmd_check "${1:-}" ;;
+  show)   shift; cmd_show "${1:-}" ;;
+  next)   cmd_next ;;
+  steps)  cmd_steps ;;
+  status) cmd_status ;;
+  serve)  shift; cmd_serve "${1:-}" "${2:-}" ;;
+  stop)   shift; cmd_stop "${1:-}" ;;
+  solve)  shift; cmd_solve "$@" ;;
+  reset)  shift; cmd_reset "$@" ;;
+  run-all|all) exec "$LABEX_ROOT/.labex/run-all.sh" "${@:2}" ;;
+  "" | -h | --help | help) usage ;;
+  *) echo "unknown command: $1"; usage; exit 2 ;;
+esac

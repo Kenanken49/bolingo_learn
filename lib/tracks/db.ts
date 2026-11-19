@@ -288,6 +288,7 @@ export const TRACK_DB: Record<string, CourseLesson> = {
     title: 'Declare keys step by step',
     theory: [
       'Workshop: write the identity and relationship clauses exactly as instructed.',
+      'Declare the identity of a row before you describe its contents: PRIMARY KEY says how a row is found, REFERENCES says which other table must already exist. Order your CREATE statements by that dependency and the script runs top to bottom.',
     ],
     questions: [
       BUILD(
@@ -327,6 +328,7 @@ export const TRACK_DB: Record<string, CourseLesson> = {
     title: 'Filter and sort step by step',
     theory: [
       'Workshop: assemble the read query clause by clause.',
+      'SQL reads like English but is written in a fixed order: what, from where, which rows, how sorted. Add one clause at a time and re-run, because a wrong WHERE silently returns a plausible-looking empty result.',
     ],
     questions: [
       BUILD(
@@ -375,6 +377,7 @@ export const TRACK_DB: Record<string, CourseLesson> = {
     title: 'Pair tables step by step',
     theory: [
       'Workshop: assemble the join, then predict who survives it.',
+      'A join answers a question two tables cannot: match one key against the other, then decide whether unmatched rows survive. INNER drops them, LEFT keeps the table on the left, and the count tells you which one you meant.',
     ],
     questions: [
       BUILD(
@@ -419,6 +422,7 @@ export const TRACK_DB: Record<string, CourseLesson> = {
     title: 'Script a rental step by step',
     theory: [
       'Workshop: build the helper variable, then the state-changing query.',
+      'Keep the value in a shell variable and pass it as a parameter instead of pasting it into the statement, so a quote inside the data cannot rewrite your query. Print what changed afterwards, not before.',
     ],
     questions: [
       BUILD(
@@ -463,6 +467,7 @@ export const TRACK_DB: Record<string, CourseLesson> = {
     title: 'Book safely step by step',
     theory: [
       'Workshop: identify first, insert second, never concatenate.',
+      'Look up the row first and insert only when the lookup comes back empty: that order is what stops a duplicate key error mid-script. Placeholder parameters carry the value; the statement text never changes.',
     ],
     questions: [
       BUILD(
@@ -507,13 +512,14 @@ export const TRACK_DB: Record<string, CourseLesson> = {
     title: 'Relational Databases checkpoint',
     theory: [
       'Final check across all five levels: keys, reads, joins, scripts, and safety.',
+      'Every question is one clause deep: keys decide identity, reads decide columns, joins decide survival, scripts decide safety. If a tap feels like a coin flip, that is the level to reopen rather than guess again.',
     ],
     questions: [
       MCQ(
         'What does PRIMARY KEY guarantee?',
         'Unique, non-empty identity per row',
         ['Unique, non-empty identity per row', 'Alphabetical storage', 'Single-user access', 'Automatic backups'],
-        'The row address.'
+        'A primary key is unique and never null, so one value identifies exactly one row — the anchor every foreign key points at.'
       ),
       BUILD(
         'Read all columns from characters',
@@ -531,7 +537,7 @@ export const TRACK_DB: Record<string, CourseLesson> = {
         'Why -t --no-align in scripts?',
         'Bare values that scripts can parse',
         ['Bare values that scripts can parse', 'Faster queries', 'Admin-only mode', 'Encryption'],
-        'Values, not tables.'
+        'Those psql flags strip the table borders and the column padding, leaving one bare value per line, which is what grep, awk and while-read expect.'
       ),
       BUILD(
         'Mark bike 3 rented',

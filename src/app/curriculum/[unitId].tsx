@@ -11,6 +11,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CURRICULUM, KIND_META, type BlockKind } from '../../../lib/curriculum';
 import AppIcon, { ContentMark } from '../../../components/AppIcon';
+import NoExecutionBadge from '../../../components/lesson/NoExecutionBadge';
 import { getCourseLesson } from '../../../lib/courses';
 import AskBingo from '../../../components/AskBingo';
 
@@ -193,6 +194,8 @@ export default function CurriculumUnit() {
                           <Text className={`mr-2 rounded-full px-2 py-0.5 text-[10px] font-extrabold ${meta.color}`}>
                             {meta.label.toUpperCase()}
                           </Text>
+                          {/* Copy that promises a build, with no engine behind it: say so on the card. */}
+                          <NoExecutionBadge block={b} />
                           <Text className="text-xs font-bold text-slate-400 dark:text-slate-500">
                             {b.minutes} min · +{b.xp} XP
                           </Text>

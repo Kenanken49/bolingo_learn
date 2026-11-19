@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Pressable, ScrollView, Platform, useWindowDimensions, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import Text from '../ui/Text';
 import TextInput from '../ui/TextInput';
 import AppIcon from '../AppIcon';
@@ -37,7 +37,7 @@ export default function Shell({
   onSearch?: (q: string) => void;
   children: React.ReactNode;
 }) {
-  const [theme] = useTheme();
+  const [theme, setTheme] = useTheme();
   const { width } = useWindowDimensions();
   const wide = Platform.OS === 'web' && width >= 1024;
   const [drawer, setDrawer] = useState(false);
@@ -83,6 +83,41 @@ export default function Shell({
                 {greeting}
               </Text>
             </View>
+            {/* Narrow screens have no sidebar, so the appearance switch lives in
+                the header — the same control the wide layout puts in the rail. */}
+            {!wide ? (
+              <Pressable
+                onPress={() => void setTheme(theme === 'dark' ? 'light' : 'dark')}
+                accessibilityRole="button"
+                accessibilityLabel={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                className="h-10 w-10 items-center justify-center rounded-full border border-dash-line bg-dash-card dark:border-dash-dline dark:bg-dash-dcard"
+              >
+                <AppIcon
+                  name={theme === 'dark' ? 'moon' : 'sunny'}
+                  size={19}
+                  color={theme === 'dark' ? '#7DD3FC' : '#F59E0B'}
+                />
+              </Pressable>
+            ) : null}
+            {/* The web is the only place a learner can install from: the app is
+                not in a store yet, so the download lives at /install. Keep it in
+                the top bar where it is visible on every screen, and render it as
+                a real link so the install page can be opened in a new tab, kept
+                as a bookmark, or read by a crawler. */}
+            {Platform.OS === 'web' ? (
+              <Link href="/install" asChild>
+                <Pressable
+                  accessibilityRole="link"
+                  accessibilityLabel="Download the Bolingo Learn app"
+                  className="flex-row items-center gap-2 rounded-full bg-dash-pillink px-3 py-2 sm:px-4"
+                >
+                  <AppIcon name="download" size={17} color="#FFFFFF" />
+                  {width >= 640 ? (
+                    <Text className="text-[13px] font-extrabold text-white">Download app</Text>
+                  ) : null}
+                </Pressable>
+              </Link>
+            ) : null}
             <Pressable
               onPress={() => router.push('/settings')}
               accessibilityRole="button"

@@ -293,6 +293,7 @@ export const TRACK_FED: Record<string, CourseLesson> = {
     title: 'Assemble a quote card step by step',
     theory: [
       'Workshop: build the quote machine markup exactly as instructed.',
+      'Build the markup as a component: one function, one returned tree, props coming in from above. Anything that changes lives in an expression inside braces; anything fixed stays plain text.',
     ],
     questions: [
       BUILD(
@@ -332,6 +333,7 @@ export const TRACK_FED: Record<string, CourseLesson> = {
     title: 'Wire editor to preview step by step',
     theory: [
       'Workshop: connect the textarea state to the preview pane.',
+      'The textarea and the preview read from the same state, so one setData call updates both. Never edit the DOM by hand in React: change the value and let the re-render redraw the screen.',
     ],
     questions: [
       BUILD(
@@ -371,6 +373,7 @@ export const TRACK_FED: Record<string, CourseLesson> = {
     title: 'Wire pads and keys step by step',
     theory: [
       'Workshop: connect keyboard, pads, clips, and display.',
+      'An effect is a subscription with a goodbye: register the keydown listener when the pad mounts, remove it when it unmounts. Missing the cleanup is how one keyboard press starts firing twice.',
     ],
     questions: [
       BUILD(
@@ -415,6 +418,7 @@ export const TRACK_FED: Record<string, CourseLesson> = {
     title: 'Route a digit press step by step',
     theory: [
       'Workshop: dispatch the press, reduce the state, show the result.',
+      'Data flows one way: the button dispatches an action, the reducer returns a new state, the connected view shows it. A digit press never edits the store directly, so every change has exactly one traceable cause.',
     ],
     questions: [
       BUILD(
@@ -459,6 +463,7 @@ export const TRACK_FED: Record<string, CourseLesson> = {
     title: 'Run a countdown step by step',
     theory: [
       'Workshop: schedule ticks, flip modes, sound the beep.',
+      'Schedule the tick, read the clock inside the callback, and clear the interval on unmount. Mode flips and beeps belong to the same tick, otherwise the display and the sound disagree for a frame.',
     ],
     questions: [
       BUILD(
@@ -513,6 +518,7 @@ export const TRACK_FED: Record<string, CourseLesson> = {
     title: 'Front End Libraries checkpoint',
     theory: [
       'Final check across all five levels: components, state, effects, data flow, and timers.',
+      'Read each prompt as a component you would actually write: which props arrive, which state changes, which effect cleans up. The wrong answer usually names a real API used in the wrong place.',
     ],
     questions: [
       MCQ(
@@ -525,13 +531,13 @@ export const TRACK_FED: Record<string, CourseLesson> = {
         'Hold editor text in state',
         ['const', '[text,', 'setText]', '=', 'useState("");'],
         ['const', '[text,', 'setText]', '=', 'useState("");', 'let'],
-        'Value plus setter.'
+        'const [text, setText] = useState("") keeps the value and its updater together: React owns the text, and calling setText is what redraws the preview.'
       ),
       MCQ(
         'Why share one play function between keys and clicks?',
         'One fix updates both — they can never disagree',
         ['One fix updates both — they can never disagree', 'Functions run only once', 'Clicks ignore shared functions', 'Keys cannot call functions'],
-        'Share the handler.'
+        'One function means one implementation, so the sound a keydown triggers cannot drift from the sound a click triggers — fixing either fixes both.'
       ),
       MCQ(
         'What is a Redux action?',

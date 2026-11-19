@@ -19,6 +19,8 @@ import { getProfile } from '../../../lib/progress';
 import { completeLessonOfflineFirst, offlineUserId } from '../../../lib/sync/syncStore';
 import AskBingo from '../../../components/AskBingo';
 import AppIcon from '../../../components/AppIcon';
+import NoExecutionBadge from '../../../components/lesson/NoExecutionBadge';
+import { blockByLessonId } from '../../../lib/curriculum';
 import Mascot from '../../../components/AfricanMascots';
 import { supabase } from '../../../lib/supabase';
 import { setLessonResult } from '../../../lib/quizResults';
@@ -293,6 +295,8 @@ export default function CertificationProject() {
             <View className="flex-row items-center gap-1.5">
               <AppIcon name="folder" size={14} color="#FB923C" />
               <Text className="text-xs font-extrabold uppercase tracking-widest text-orange-400">Certification project</Text>
+              {/* No live `check` in any story means the page never runs: say it here, not only beside the button. */}
+              <NoExecutionBadge block={blockByLessonId(lessonId)} />
             </View>
             <View className="rounded-full bg-amber-400 px-3 py-1.5">
               <View className="flex-row items-center gap-1">

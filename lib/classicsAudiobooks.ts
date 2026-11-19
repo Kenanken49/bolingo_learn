@@ -2,17 +2,27 @@ import { Platform } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as FileSystem from 'expo-file-system/legacy';
 import { BUNDLED_AUDIO, BUNDLED_TEXTS } from '../assets/audiobooks/seed';
-import catalog from '../assets/audiobooks/philosophy-catalog.json';
+import philosophyCatalog from '../assets/audiobooks/philosophy-catalog.json';
+import bestsellersCatalog from '../assets/audiobooks/bestsellers-catalog.json';
+import fictionCatalog from '../assets/audiobooks/fiction-catalog.json';
+import adventureCatalog from '../assets/audiobooks/adventure-catalog.json';
+import mysteryCatalog from '../assets/audiobooks/mystery-catalog.json';
+import scienceFictionCatalog from '../assets/audiobooks/science_fiction-catalog.json';
+import poetryCatalog from '../assets/audiobooks/poetry-catalog.json';
+import historyCatalog from '../assets/audiobooks/history-catalog.json';
 import { supabaseUrl } from './supabase';
 
 /**
- * Premium Philosophy classics library, seeded from LoyalBooks
- * (public-domain LibriVox narration + Gutenberg/LoyalBooks ebook text).
+ * Premium public-domain classics library: philosophy plus the crawled clusters
+ * (fiction, adventure, mystery, science fiction, poetry, history) and a curated
+ * "Bestsellers of their day" shelf. Seeded from LoyalBooks (public-domain
+ * LibriVox narration + Gutenberg/LoyalBooks ebook text) — see
+ * scripts/fetch-classics-clusters.cjs and docs/classics-audiobooks.md.
  *
- * Offline model: the catalog ships in the bundle so it is browsable with no
- * network. A short starter shelf ships its text + audio in the bundle; every
- * other book downloads on demand into `documentDirectory/classics/<slug>/`
- * and then reads/plays fully offline. See docs/classics-audiobooks.md.
+ * Offline model: every catalog ships in the bundle so the shelf is browsable
+ * with no network. A short starter shelf ships its text + audio in the bundle;
+ * every other book downloads on demand into `documentDirectory/classics/<slug>/`
+ * and then reads/plays fully offline.
  */
 
 export interface CatalogBook {
@@ -23,6 +33,8 @@ export interface CatalogBook {
   cover: string | null;
   /** LoyalBooks' own "Genres for this book" taxonomy, in page order. */
   genres: string[];
+  /** Shelf the crawler filed the book on (absent in the oldest catalog). */
+  cluster?: string;
   archiveId: string | null;
   audioZip: string | null;
   audioM4b: string | null;
@@ -38,6 +50,10 @@ export interface ClassicBook extends CatalogBook {
   bundledText: boolean;
   /** Number of audio parts shipped inside the app bundle. */
   bundledChapters: number;
+  /** Shelf id, e.g. 'bestsellers'. */
+  cluster: string;
+  /** Shelf label, e.g. 'Bestsellers of their day'. */
+  clusterLabel: string;
 }
 
 export interface ClassicChapter {
@@ -64,7 +80,7 @@ function bundledAudioSlugs(): Map<string, number[]> {
 const TEXT_SLUGS = bundledTextSlugs();
 const AUDIO_MODS = bundledAudioSlugs();
 
-function toClassic(raw: CatalogBook): ClassicBook {
+function toClassic(raw: CatalogBook, shelf: Shelf): ClassicBook {
   return {
     ...raw,
     genres: Array.isArray(raw.genres) ? raw.genres : [],
@@ -72,11 +88,73 @@ function toClassic(raw: CatalogBook): ClassicBook {
     hasText: raw.textUrl != null || TEXT_SLUGS.has(raw.slug),
     bundledText: TEXT_SLUGS.has(raw.slug),
     bundledChapters: AUDIO_MODS.get(raw.slug)?.length ?? 0,
+    cluster: shelf.id,
+    clusterLabel: shelf.label,
   };
 }
 
-/** The whole seeded catalog (bundled JSON — available offline). */
-export const CLASSICS: ClassicBook[] = ((catalog as { books: CatalogBook[] }).books ?? []).map(toClassic);
+/** One bundled catalog file per shelf, in display order. */
+interface Shelf {
+  id: string;
+  label: string;
+  file: unknown;
+}
+
+const SHELVES: Shelf[] = [
+  { id: 'philosophy', label: 'Philosophy Classics', file: philosophyCatalog },
+  { id: 'bestsellers', label: 'Bestsellers of their day', file: bestsellersCatalog },
+  { id: 'fiction', label: 'Fiction & Literature', file: fictionCatalog },
+  { id: 'adventure', label: 'Adventure & Sea Stories', file: adventureCatalog },
+  { id: 'mystery', label: 'Mystery & Detective', file: mysteryCatalog },
+  { id: 'science_fiction', label: 'Science Fiction & Fantasy', file: scienceFictionCatalog },
+  { id: 'poetry', label: 'Poetry & Plays', file: poetryCatalog },
+  { id: 'history', label: 'History & Biography', file: historyCatalog },
+];
+
+function shelfBooks(shelf: Shelf): ClassicBook[] {
+  const parsed = shelf.file as { books?: CatalogBook[] };
+  return (parsed.books ?? []).map((b) => toClassic(b, shelf));
+}
+
+/** The whole seeded catalog across every shelf (bundled JSON — offline). */
+export const CLASSICS: ClassicBook[] = (() => {
+  const seen = new Set<string>();
+  const merged: ClassicBook[] = [];
+  for (const shelf of SHELVES) {
+    for (const book of shelfBooks(shelf)) {
+      if (seen.has(book.slug)) continue;
+      seen.add(book.slug);
+      merged.push(book);
+    }
+  }
+  return merged;
+})();
+
+export interface ClassicsClusterSummary {
+  id: string;
+  label: string;
+  count: number;
+  audio: number;
+}
+
+/** Shelves with their book counts, for the shelf switcher. */
+export const CLUSTERS: ClassicsClusterSummary[] = SHELVES.map((shelf) => {
+  const books = shelfBooks(shelf);
+  return {
+    id: shelf.id,
+    label: shelf.label,
+    count: books.length,
+    audio: books.filter((b) => b.hasAudio).length,
+  };
+});
+
+export function clusterCounts(): ClassicsClusterSummary[] {
+  return CLUSTERS;
+}
+
+export function booksInCluster(id: string | null): ClassicBook[] {
+  return id === null ? CLASSICS : CLASSICS.filter((b) => b.cluster === id);
+}
 
 const BY_SLUG = new Map(CLASSICS.map((b) => [b.slug, b]));
 
@@ -86,7 +164,7 @@ export function getClassic(slug: string): ClassicBook | null {
 
 /** Primary shelf: the first genre LoyalBooks lists for the book. */
 export function primaryGenre(book: ClassicBook): string {
-  return book.genres[0] ?? 'Philosophy';
+  return book.genres[0] ?? book.clusterLabel;
 }
 
 /** Every genre in the catalog, most books first (for the filter chips). */
@@ -176,6 +254,22 @@ export async function fetchChapters(book: ClassicBook): Promise<ClassicChapter[]
     size: c.size,
     url: `https://archive.org/download/${book.archiveId}/${encodeURIComponent(c.name)}`,
   }));
+}
+
+/**
+ * Slugs that have an offline folder on the device, from one directory read.
+ * The catalog is over a thousand books, so the "offline only" filter must not
+ * probe every book individually — this is the cheap scan it uses instead.
+ * (The per-card badge still calls getOfflineStatus for the visible window.)
+ */
+export async function listOfflineSlugs(): Promise<Set<string>> {
+  try {
+    const dirs = await FileSystem.readDirectoryAsync(classicsDir());
+    return new Set(dirs);
+  } catch {
+    // No classics folder yet (fresh install) or a platform with no FS (web).
+    return new Set();
+  }
 }
 
 /**

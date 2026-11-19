@@ -183,12 +183,25 @@ A gate is a real command with a timeout. Required failures exit non-zero and
 block the workflow. Each run writes:
 
 - `.quality/last-run.json` — machine-readable, includes command output tails;
-- `.quality/last-run.md` — reviewable summary.
+- `.quality/last-run.md` — reviewable summary, with each failing gate's command
+  and output tail under the table.
+
+On GitHub Actions the runner also prints one `::error` annotation per failed
+gate (id in the title; label, command, exit code and output tail in the body)
+and appends the same table to the job summary, so the red run page names the
+culprit without the raw log. GitHub displays ten error annotations per step, so
+past nine failures the last one lists the remaining gate ids and points at the
+summary. Both CI workflows upload `.quality/` as the `quality-report` artifact
+for the full record.
 
 The runner is deliberately boring: sequential child processes, no hidden
 retries, no `continue-on-error`. Adding a gate is a JSON edit plus the script.
-The workflow publishes to `quality_runs`; the console reads the newest row and
-sorts failed gates first.
+Every gate in the catalog is blocking, and `check:quality-ops` enforces it: a check
+that cannot fail a release is decoration, so `required: false` has no place in
+`content/quality/gates.json`. A machine-level diagnosis is not a gate — it is
+a documented command, `npm run check:env`, described below with the render gate it
+explains. The workflow publishes to `quality_runs`; the console reads the newest row
+and sorts failed gates first.
 
 **Branch protection:** mark the `Required checks` job as a required status check
 for `main`. The workflow alone is advice until branch protection enforces it.
@@ -198,10 +211,111 @@ regression in an exercise is caught before a learner meets it:
 
 | Gate | Command | What it proves |
 | --- | --- | --- |
-| `labex` | `npm run check:labex` | Every imported lab lesson is well-formed, licensed and solvable as written. |
+| `labex` | `npm run check:labex` | Every imported lab lesson is well-formed, licensed and solvable as written, and the /labs header and count row take their duration range from `LABEX_META` instead of typing one. |
 | `sandbox-labs` | `npm run check:sandbox` | Each generated JS exercise executes in `node:vm` with harness-identical semantics: the reference passes every test, the starter fails at least one, assertions are non-trivial and offline. CSS/HTML fixtures stay script- and network-free and every DOM/CSSOM test has a pattern that matches the reference and not the starter. |
 | `vm-labs` | `npm run check:vm` | The offline Git shell resolves every task and reference solution for each terminal lab. |
 | `guided-labs` | `npm run check:guided` | Labs with no on-device runtime still ship a complete step-by-step walkthrough. |
+
+**The render smoke.** `web-render` (`npm run check:web-render`) is the gate that proves
+a screen exists in what actually gets published. It runs the deploy's own
+`expo export --platform web` into a temporary directory and reads what came out, in two
+steps. The shell: `index.html` keeps the `<div id="root">` the app mounts into, and every
+script it references is a file the export wrote bytes to. The screens: every route file
+in `src/app` appears in the emitted JavaScript as an Expo Router context key
+(`"./quiz/[lessonId].tsx"`). Metro builds that map by quoting `"./" +
+path.relative(src/app, file)`, so a key is in the bundle exactly when `require.context`
+found the file, and the `./` prefix stops a nested route standing in for a shallow one —
+which is why no module-count heuristic is needed. Nothing else caught the failure it was
+written for: a
+`node_modules` junction to another volume makes Metro canonicalise module paths through
+`D:\` while the router compares keys against a `C:\` root, so zero routes mount, the
+export still produces valid JavaScript, and the site serves Expo's "Welcome to Expo /
+touch src/app/index.tsx" starter screen — while `check:web`, which only reads the
+Dockerfile and the server, stayed green. It is the one required gate that runs Metro,
+so it costs minutes (measured 112 s), not seconds; the export aborts at 9 minutes and
+`content/quality/gates.json` caps the gate at 600 s, which leaves the 30-minute CI jobs
+room for the other 36 gates. The child pins the web container's own limits
+(`--max-workers 1`, `NODE_OPTIONS=--max-old-space-size=1536`), so a bundle that would not
+fit the deployed image cannot pass here. And it needs no secrets, deliberately: the web
+target is single-page, so `expo export` only inlines `EXPO_PUBLIC_*` values and never runs
+app code, and every hard failure in `app.config.js` is gated on
+`EAS_BUILD_PROFILE=production`. Neither workflow sets a build-time secret, and a required
+check that needed one would be red on every fork pull request. The scratch export is kept
+on failure so its `index.html` can be opened.
+
+**The environment diagnostic.** `npm run check:env`
+(`node scripts/check-environment.cjs`) resolves `node_modules` and the project root,
+compares their volumes, and checks that the path the tooling started from matches the
+on-disk casing — the two string comparisons a route map silently fails on.
+It is a command rather than a gate on purpose: it describes the machine, and only
+code may block a release. It still belongs to the render gate's story, because
+`check-web-render-smoke.cjs` prints `npm run check:env` in its own failure output, so
+a red `web-render` arrives with its explanation. That pairing is the whole design: a
+red `web-render` where `check:env` warns is a machine that cannot mount its routes
+(relocate `node_modules` onto the project volume, or export from a copy on it); a red
+`web-render` on a machine `check:env` pronounces clean is a real bundle bug.
+
+**The live gate.** `release-artifact` (`npm run check:release-artifact`) is the one
+required gate that reaches outside the repository: it verifies that the APK the
+production container serves still matches the release record committed in git.
+Every other gate is hermetic and must run offline. This one needs
+`BOLINGO_INTEGRITY_TOKEN` — a shared secret between the workflow and the web
+service, so the container hashes its own volume in about a second — or enough
+bandwidth in CI to hash the download itself. With neither it fails after its
+fifteen-minute budget instead of reporting a release it never measured, which is
+also why `npm run gate` on a laptop with a slow route to production can fail this
+gate while the release is fine.
+
+### The gate catalog
+
+Every required gate in `content/quality/gates.json`, in the order the file lists them:
+the id CI and the dashboard report, the category the console groups it under, the
+command to run by hand, and what that command actually proves — taken from each check
+script's own header, not inferred from its name. Reproduce a single failure with
+`npm run gate -- --only=<id>`.
+
+| Gate | Category | Runs | What it proves |
+| --- | --- | --- | --- |
+| `typecheck` | static | `npm run typecheck` | `tsc --noEmit` over the real sources, with no errors. |
+| `lint` | static | `npm run lint` | `expo lint` reports no problems. |
+| `quality-ops` | platform | `npm run check:quality-ops` | The quality system checks itself: unique gate ids with real blocking commands, flag weights and rollout bounds in step with the SQL seed, and sticky A/B assignment inside a 50/50 sanity band. |
+| `curriculum` | curriculum | `npm run check:curriculum` | Every curriculum block resolves to real content, every lesson teaches before it tests and every question has a reason, options are unique and every chain is solvable; the scorer, `lib/execution.ts` and the three screens that render the NO EXECUTION badge stay one test, a block is badged exactly when the floor counts it, and no block's own copy promises a run that no engine backs (or claims to be paper while one does). |
+| `solutions` | curriculum | `npm run check:solutions` | Each JavaScript exercise's reference solution passes its own tests in a timeout-guarded V8 context, and its starter fails at least one. |
+| `catalog` | language | `npm run check:catalog` | The generated language-catalog migration still matches the lesson banks, and no seeded question is unsolvable. |
+| `transcripts` | language | `npm run check:transcripts` | The committed draft JSON and SQL still match their transcripts, every generated row survives `toCourseLesson()`, and no draft is accidentally published. |
+| `subtitles` | language | `npm run check:subtitles` | The real SRT/VTT parser, sidecar manifest validation and draft generator turn a licensed video transcript into unpublished lesson drafts, offline. |
+| `rights` | safety | `npm run check:rights` | The client checklist and `process-upload` still agree on the attestation version and items, so incomplete or stale rights claims are rejected. |
+| `mpesa` | safety | `npm run check:mpesa` | The price comes only from the server, an underpayment cannot buy premium, one checkout settles once, and premium lapses by itself — against an in-memory ledger, never against Daraja. |
+| `transcription` | safety | `npm run check:transcription` | Provider resolution, request shapes, response parsing and size limits for consented audio/video transcription, driven by local HTTP stubs and fixture payloads. |
+| `uploads` | platform | `npm run check:uploads` | A picker URI that copied across as 0 bytes is refused before upload, and a book that overruns the isolate records a reason instead of failing with `error = null`. |
+| `leaderboard` | platform | `npm run check:leaderboard` | `xp_events` has table privileges for `authenticated`, so XP writes from `lib/progress.ts` reach the weekly board instead of the silent 403 that emptied it. |
+| `roleplay` | curriculum | `npm run check:roleplay` | The picker and the Edge Function keep the same persona and language ids, every pair has an opener and starters, and the bilingual reply parser holds. |
+| `course-score` | curriculum | `npm run check:courses` | Every course clears seven floors over its path: 2+ theory lines in every lesson, a production item in every lesson, a build block that either executes on the device or says plainly in its title and blurb that it is a paper exercise (no exemptions and no ledger: of 278 build blocks 151 run in an engine, 127 say they are paper, and any other one fails — the same test `lib/execution.ts` gives the app its NO EXECUTION badge), an explanation on every answer, a build and a graded quiz in every unit, six items with two production tasks in every graded quiz, and a finisher as the course's last block. |
+| `labex` | curriculum | `npm run check:labex` | Every imported lab lesson is well-formed, licensed and solvable as written, and the /labs header and count row interpolate the duration spread derived from `LABEX_META`, so the screen cannot quote a range the corpus left behind. |
+| `sandbox-labs` | curriculum | `npm run check:sandbox` | Each generated JS exercise executes in `node:vm` with harness-identical semantics: the reference passes every test, the starter fails at least one, assertions are non-trivial and offline. |
+| `vm-labs` | curriculum | `npm run check:vm` | The offline Git shell resolves every task and reference solution for each terminal lab. |
+| `guided-labs` | curriculum | `npm run check:guided` | Labs with no on-device runtime still ship a complete step-by-step walkthrough. |
+| `celebration` | experience | `npm run check:audio` | The celebration asset is still exactly five seconds, measured from the WAV header, so no re-export or trim quietly shortens the win. |
+| `celebration-benchmark` | experience | `npm run check:benchmark` | The real percentile and summary module, a route that measures the actual five-second Celebration, gated by `__DEV__` and reachable from a `__DEV__`-only Settings row. |
+| `results` | experience | `npm run check:results` | The real `shouldCelebrate()` against a pass/fail matrix: the celebration mounts for a pass and stays off for an ordinary failed run. It also runs `lib/sfx.ts` against fake audio and pins the lesson screen's reward cue: the pair must fire from the handler every exercise branch reports through, once per answer, silent when sound is off. |
+| `speakback` | experience | `npm run check:speakback` | Speak-back scoring from the shipped `lib/speakBack.ts`, compiled in memory, so the check cannot drift from the matcher a learner holds on a phone. |
+| `voice-casting` | voice | `npm run check:casting` | The whole-cast planner assigns Livia → Bingo → Zora the same voices whatever order the installed voice list arrives in, on the stable tie-break. |
+| `cold-tts` | voice | `npm run check:cold-tts` | A cold Android TTS engine is waited out while it enumerates voices, so the first phrase of a session gets the installed Swahili voice, not the engine default. |
+| `fliki` | voice | `npm run check:fliki` | The Fliki Swahili narration path: the generator's voice and request helpers and its licensed-clip phrase contracts, validated without network. |
+| `audiobook-voice` | voice | `npm run check:audiobook-voice` | The shared validator against valid, partial and deliberately broken configs, plus the exact provider request shape and its 4,000-character cap. |
+| `character-voices` | audio | `npm run check:characters` | The real registry behind Livia, Bingo and Zora: tuning ranges, the language list, unknown ids, the 320-character cap and the cache key. |
+| `ads` | monetization | `npm run check:ads` | The rewarded-diamond rail: per-platform unit ids, Google's sample id as the fallback when a real one is missing, and consent before any ad — the rail that can cost invalid traffic or a store rejection. |
+| `materials` | content | `npm run check:materials` | Classification decides the spend — a book is narrated end to end, notes become revision material — and a pack that invents facts fails, because a wrong pack is worse than none. |
+| `classics-audiobooks` | content | `npm run check:audiobooks` | The premium Philosophy classics shelf: 100+ public-domain LibriVox recordings with their Gutenberg text, unique slugs, and the LoyalBooks genre taxonomy intact. |
+| `web-publish` | platform | `npm run check:web` | The Dockerfile runs the Expo export and the server keeps the SPA fallback, so deep links, store-review clicks and `app-ads.txt` answer instead of 404. |
+| `web-render` | platform | `npm run check:web-render` | The real web export: `index.html` mounts a chunk the export actually wrote, and every file in `src/app` is present in the bundle as an Expo Router context key, so the published bundle contains its screens instead of Expo's starter screen. |
+| `release-artifact` | platform | `npm run check:release-artifact` | The APK the production container serves still matches the release record committed in git — the one gate that reaches outside the repository. |
+| `adaptive-ai` | platform | `npm run check:adaptive-ai` | The adaptive UI engine, the free/premium feature list and the offline-first stack as pure modules under Node: age → stage mapping, hub honesty on both routes and copy, the daily AI allowance, the tutor router and the sync queue. |
+| `abi-clean` | platform | `npm run check:abi-clean` | `scripts/clean-abi.sh` clears only generated `<abi>` trees, refuses the ABI the build is pinned to unless `--force`, skips any folder that resolves outside the project and never touches `src/main/jniLibs` — proved on a throwaway fixture tree, so it runs on a fresh clone and on Linux CI as well as on a machine with a 13 GB pile to reclaim. The same gate holds the two Android entry points apart: `scripts/android-env.sh --check` points at the cleaner for disk instead of re-implementing the size walk, because report mode takes ~71 s and a preflight people source before every build must not. |
+| `doc-commands` | static | `npm run check:docs` | The commands and gate ids this project teaches resolve to real scripts and real gates, in both directions, every relative file link in a document lands on a file that is there, and the curriculum coverage counts match the curriculum gate output. |
+
+`labex`, `sandbox-labs`, `vm-labs`, `guided-labs` and `release-artifact` also get their
+own paragraphs above, because those are the ones a learner or a release can feel.
 
 ## Telemetry & privacy
 

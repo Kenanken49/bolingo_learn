@@ -451,7 +451,8 @@ export const SPANISH_PLUS: Record<string, CourseLesson> = {
   'spanish-final': {
     id: 'spanish-final',
     title: 'Spanish Final Exam',
-    theory: ['Final exam: greetings, numbers, food, travel, family, present verbs, and past stories — the whole comprehensive course.'],
+    theory: ['Final exam: greetings, numbers, food, travel, family, present verbs, and past stories — the whole comprehensive course.',
+    'Greetings, numbers, food, travel, family, present verbs and past stories all arrive in one pass here, so the exam measures recall without headings. Work back through the unit behind each miss rather than retaking the exam hoping for a better draw.'],
     questions: [
       BUILD(
         'Ask a friend “How are you?”:',

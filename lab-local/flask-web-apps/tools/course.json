@@ -1,0 +1,2294 @@
+{
+  "course": {
+    "id": "flask-web-apps",
+    "title": "Flask Web Applications — Local Lab Course",
+    "subtitle": "17 modules, 84 steps. Reverse-engineered from the LabEx Flask path into a self-contained Docker lab.",
+    "attribution": "Curriculum distilled from LabEx Flask labs, whose code follows the official Flask tutorial (pallets/flask, BSD-3-Clause). See LICENSE-notes.md.",
+    "base_image": "python:3.12-slim",
+    "workspace_root": "/workspace",
+    "web_port": 8080,
+    "code_server_port": 3000,
+    "language": "python",
+    "framework": "flask"
+  },
+  "modules": [
+    {
+      "n": 1,
+      "slug": "quickstart-web-app",
+      "title": "Getting Started with the Flask Web Framework",
+      "corpus": "labex-flask-getting-started-with-flask-web-framework",
+      "dir": "quickstart",
+      "solution": "m01-quickstart-web-app",
+      "summary": "Install Flask, write a route, serve a Jinja template, render dynamic URL values.",
+      "step_from": 1,
+      "step_to": 7
+    },
+    {
+      "n": 2,
+      "slug": "jinja2-templates",
+      "title": "Flask + Jinja2 Templates",
+      "corpus": "labex-flask-flask-jinja2-templates",
+      "dir": "templates-lab",
+      "solution": "m02-jinja2-templates",
+      "summary": "Separate presentation from logic: render_template with a templates/ folder.",
+      "step_from": 8,
+      "step_to": 11
+    },
+    {
+      "n": 3,
+      "slug": "dev-server-workflow",
+      "title": "Working with the Development Server",
+      "corpus": "labex-flask-develop-flask-app-with-development-server",
+      "dir": "devserver-lab",
+      "solution": "m03-dev-server-workflow",
+      "summary": "flask run, --debug reloader and interactive debugger, --app, port conflicts, app.run().",
+      "step_from": 12,
+      "step_to": 17
+    },
+    {
+      "n": 4,
+      "slug": "flask-cli",
+      "title": "The Flask Command Line Interface",
+      "corpus": "labex-flask-flask-command-line-interface",
+      "dir": "cli-lab",
+      "solution": "m04-flask-cli",
+      "summary": "flask run, click commands, app.cli.add_command, custom management commands.",
+      "step_from": 18,
+      "step_to": 22
+    },
+    {
+      "n": 5,
+      "slug": "flaskr-factory",
+      "title": "Building a Flask Application (Application Factory)",
+      "corpus": "labex-flask-building-a-flask-application",
+      "dir": "flaskr-app",
+      "solution": "m05-flaskr-factory",
+      "summary": "Package layout, create_app(), config mapping, instance path, first route.",
+      "step_from": 23,
+      "step_to": 26
+    },
+    {
+      "n": 6,
+      "slug": "flaskr-sqlite",
+      "title": "SQLite Database Setup",
+      "corpus": "labex-flask-python-flask-sqlite-database-setup",
+      "dir": "flaskr-app",
+      "solution": "m06-flaskr-sqlite",
+      "summary": "sqlite3 + g, schema.sql, init_db, CLI command registration, real database file.",
+      "step_from": 27,
+      "step_to": 31
+    },
+    {
+      "n": 7,
+      "slug": "flaskr-auth",
+      "title": "Modular Application with Blueprints and Authentication",
+      "corpus": "labex-flask-modular-flask-application-with-authenticatio",
+      "dir": "flaskr-app",
+      "solution": "m07-flaskr-auth",
+      "summary": "auth blueprint, register/login/logout views, password hashing, session, login_required.",
+      "step_from": 32,
+      "step_to": 37
+    },
+    {
+      "n": 8,
+      "slug": "flaskr-styling",
+      "title": "Styling the Application with Static Files",
+      "corpus": "labex-flask-styling-flask-application",
+      "dir": "flaskr-app",
+      "solution": "m08-flaskr-styling",
+      "summary": "static/style.css, url_for('static'), template inheritance, served CSS.",
+      "step_from": 38,
+      "step_to": 41
+    },
+    {
+      "n": 9,
+      "slug": "flaskr-blog",
+      "title": "The Blog Application (CRUD)",
+      "corpus": "labex-flask-flask-blog-application",
+      "dir": "flaskr-app",
+      "solution": "m09-flaskr-blog",
+      "summary": "blog blueprint, index JOIN, create/update/delete with author checks.",
+      "step_from": 42,
+      "step_to": 47
+    },
+    {
+      "n": 10,
+      "slug": "configuration-management",
+      "title": "Configuration Management",
+      "corpus": "labex-flask-flask-configuration-management",
+      "dir": "config-lab",
+      "solution": "m10-configuration-management",
+      "summary": "dict config, from_object, from_pyfile, env-selected config, instance folder.",
+      "step_from": 48,
+      "step_to": 52
+    },
+    {
+      "n": 11,
+      "slug": "signals",
+      "title": "Signals and Application Lifecycle",
+      "corpus": "labex-flask-signals-in-flask-for-application-lifecycle",
+      "dir": "signals-lab",
+      "solution": "m11-signals",
+      "summary": "blinker Namespace, named signals, subscribers, send() during app lifecycle.",
+      "step_from": 53,
+      "step_to": 60
+    },
+    {
+      "n": 12,
+      "slug": "working-with-the-shell",
+      "title": "Working with the Shell and Request Context",
+      "corpus": "labex-flask-working-with-the-shell",
+      "dir": "shell-lab",
+      "solution": "m12-working-with-the-shell",
+      "summary": "flask shell, test_request_context, preprocess_request/process_response, shelltools helpers.",
+      "step_from": 61,
+      "step_to": 64
+    },
+    {
+      "n": 13,
+      "slug": "testing-basics",
+      "title": "Testing Flask Applications (pytest basics)",
+      "corpus": "labex-flask-testing-flask-applications",
+      "dir": "test-lab",
+      "solution": "m13-testing-basics",
+      "summary": "app/client/runner fixtures, view tests, CLI runner tests.",
+      "step_from": 65,
+      "step_to": 66
+    },
+    {
+      "n": 14,
+      "slug": "pytest-and-coverage",
+      "title": "Unit Testing flaskr with pytest and Coverage",
+      "corpus": "labex-flask-flask-unit-testing-with-pytest-and-coverage",
+      "dir": "flaskr-app",
+      "solution": "m14-pytest-and-coverage",
+      "summary": "conftest fixtures with a temp DB, factory/db/auth/blog suites, coverage report.",
+      "step_from": 67,
+      "step_to": 73
+    },
+    {
+      "n": 15,
+      "slug": "secure-development",
+      "title": "Secure Web Application Development",
+      "corpus": "labex-flask-secure-flask-web-application-development",
+      "dir": "secure-lab",
+      "solution": "m15-secure-development",
+      "summary": "XSS escaping, CSRF tokens, JSON security, security headers, cookie flags, HPKP.",
+      "step_from": 74,
+      "step_to": 79
+    },
+    {
+      "n": 16,
+      "slug": "async-views",
+      "title": "Async and Await in Flask",
+      "corpus": "labex-flask-using-async-and-await-in-flask",
+      "dir": "async-lab",
+      "solution": "m16-async-views",
+      "summary": "async def views, awaited I/O, jsonify payloads.",
+      "step_from": 80,
+      "step_to": 80
+    },
+    {
+      "n": 17,
+      "slug": "deployment",
+      "title": "Deploying the Application",
+      "corpus": "labex-flask-deploy-flask-application",
+      "dir": "flaskr-app",
+      "solution": "m17-deployment",
+      "summary": "build a wheel, install it, instance SECRET_KEY, run under Waitress.",
+      "step_from": 81,
+      "step_to": 84
+    }
+  ],
+  "steps": [
+    {
+      "n": 1,
+      "goal": "Install Flask and create the app module that the rest of the module builds on.",
+      "kind": "build",
+      "files": [
+        "quickstart/app.py"
+      ],
+      "checks": [
+        {
+          "t": "pkg",
+          "import": "flask",
+          "hint": "pip install flask"
+        },
+        {
+          "t": "ast",
+          "f": "quickstart/app.py",
+          "imports": [
+            "flask:Flask"
+          ],
+          "assigns": [
+            "app"
+          ],
+          "hint": "app.py must import Flask and create an instance: app = Flask(__name__)"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "goal": "Add the first route so the app answers '/' with a plain-text greeting.",
+      "kind": "build",
+      "files": [
+        "quickstart/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "quickstart/app.py",
+          "funcs": [
+            "hello_world"
+          ],
+          "routes": [
+            "/"
+          ],
+          "hint": "decorated view: @app.route(\"/\") def hello_world(): return \"Hello, World!\""
+        },
+        {
+          "t": "http",
+          "dir": "quickstart",
+          "app": "app",
+          "path": "/",
+          "status": 200,
+          "contains": "Hello, World!",
+          "hint": "run: cd quickstart && flask --app app run --host=0.0.0.0 --port 8080"
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "goal": "Start the built-in development server bound to all interfaces on the lab port.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "quickstart",
+          "app": "app",
+          "path": "/",
+          "status": 200,
+          "contains": "Hello, World!",
+          "header": "Server: Werkzeug",
+          "hint": "run: cd quickstart && flask --app app run --host=0.0.0.0 --port 8080"
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "goal": "Move the response into a Jinja2 template rendered with render_template().",
+      "kind": "build",
+      "files": [
+        "quickstart/templates/index.html",
+        "quickstart/app.py"
+      ],
+      "checks": [
+        {
+          "t": "file",
+          "f": "quickstart/templates/index.html",
+          "min": 5,
+          "hint": "create quickstart/templates/index.html"
+        },
+        {
+          "t": "ast",
+          "f": "quickstart/app.py",
+          "imports": [
+            "flask:render_template"
+          ],
+          "calls": [
+            "render_template"
+          ],
+          "hint": "import render_template and return render_template(\"index.html\")"
+        },
+        {
+          "t": "http",
+          "dir": "quickstart",
+          "app": "app",
+          "path": "/",
+          "status": 200,
+          "contains": "Flask Quickstart",
+          "hint": "the served page must come from templates/index.html"
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "goal": "Restart the server and confirm the rendered template is what the browser receives.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "quickstart",
+          "app": "app",
+          "path": "/",
+          "status": 200,
+          "contains": "<h1>Hello, Flask!</h1>",
+          "ctype": "text/html",
+          "hint": "stop the server (Ctrl+C) and run flask --app app run --host=0.0.0.0 --port 8080 again"
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "goal": "Accept a name in the URL and pass it to the template as dynamic context.",
+      "kind": "build",
+      "files": [
+        "quickstart/app.py",
+        "quickstart/templates/index.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "quickstart/app.py",
+          "funcs": [
+            "hello"
+          ],
+          "routes": [
+            "/<name>"
+          ],
+          "hint": "add @app.route(\"/<name>\") with def hello(name)"
+        },
+        {
+          "t": "http",
+          "dir": "quickstart",
+          "app": "app",
+          "path": "/Amina",
+          "status": 200,
+          "contains": "Hello, Amina!",
+          "hint": "template must render <h1>Hello, {{ name }}!</h1>"
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "goal": "Verify dynamic routing end to end through a real HTTP request.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "quickstart",
+          "app": "app",
+          "path": "/Nairobi",
+          "status": 200,
+          "contains": "Hello, Nairobi!",
+          "hint": "browse to http://localhost:8080/Nairobi"
+        },
+        {
+          "t": "http",
+          "dir": "quickstart",
+          "app": "app",
+          "path": "/Kimani",
+          "status": 200,
+          "contains": "Hello, Kimani!",
+          "hint": "any name segment must be reflected in the greeting"
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "goal": "Confirm the template engine and web framework are both installed in the runtime.",
+      "kind": "build",
+      "files": [],
+      "checks": [
+        {
+          "t": "pkg",
+          "import": "flask",
+          "hint": "pip install Flask"
+        },
+        {
+          "t": "pkg",
+          "import": "jinja2",
+          "hint": "pip install Jinja2 (Flask already pulls it in)"
+        }
+      ]
+    },
+    {
+      "n": 9,
+      "goal": "Create the templates-lab application that renders a template instead of a string.",
+      "kind": "build",
+      "files": [
+        "templates-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "templates-lab/app.py",
+          "imports": [
+            "flask:Flask",
+            "flask:render_template"
+          ],
+          "funcs": [
+            "index"
+          ],
+          "routes": [
+            "/"
+          ],
+          "hint": "define app = Flask(__name__), @app.route('/') def index(): return render_template('index.html')"
+        }
+      ]
+    },
+    {
+      "n": 10,
+      "goal": "Author the Jinja2 template that the index view renders.",
+      "kind": "build",
+      "files": [
+        "templates-lab/templates/index.html"
+      ],
+      "checks": [
+        {
+          "t": "file",
+          "f": "templates-lab/templates/index.html",
+          "min": 6,
+          "hint": "create templates-lab/templates/index.html"
+        },
+        {
+          "t": "ast",
+          "f": "templates-lab/app.py",
+          "main_guard": true,
+          "hint": "keep the if __name__ == '__main__': app.run(debug=True) guard"
+        }
+      ]
+    },
+    {
+      "n": 11,
+      "goal": "Run the app and check the template is served at http://localhost:8080.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "templates-lab",
+          "app": "app",
+          "path": "/",
+          "status": 200,
+          "contains": "Welcome to Flask Jinja2 Templates Lab",
+          "ctype": "text/html",
+          "hint": "cd templates-lab && flask --app app run --host=0.0.0.0 --port 8080"
+        }
+      ]
+    },
+    {
+      "n": 12,
+      "goal": "Create the devserver-lab application module used for the whole module.",
+      "kind": "build",
+      "files": [
+        "devserver-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "devserver-lab/app.py",
+          "imports": [
+            "flask:Flask"
+          ],
+          "funcs": [
+            "hello"
+          ],
+          "routes": [
+            "/"
+          ],
+          "hint": "app = Flask(__name__) with @app.route('/') def hello(): return 'Hello, Flask!'"
+        }
+      ]
+    },
+    {
+      "n": 13,
+      "goal": "Start the development server through the Flask CLI rather than python app.py.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "devserver-lab",
+          "app": "app",
+          "path": "/",
+          "status": 200,
+          "contains": "Hello, Flask!",
+          "running": true,
+          "hint": "cd devserver-lab && flask --app app run --host=0.0.0.0 --port 8080 (this step checks YOUR running server, it will not start one for you)"
+        }
+      ]
+    },
+    {
+      "n": 14,
+      "goal": "Turn on debug mode so the reloader and interactive debugger are active.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "running",
+          "match": "flask.*run.*debug|FLASK_DEBUG",
+          "port": 8080,
+          "dir": "devserver-lab",
+          "hint": "cd devserver-lab && flask --app app run --debug --host=0.0.0.0 --port 8080"
+        }
+      ]
+    },
+    {
+      "n": 15,
+      "goal": "Point the CLI at a differently named application file with --app.",
+      "kind": "build",
+      "files": [
+        "devserver-lab/myapp.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "devserver-lab/myapp.py",
+          "funcs": [
+            "hello"
+          ],
+          "routes": [
+            "/"
+          ],
+          "hint": "copy app.py to myapp.py (a second entry point is fine)"
+        },
+        {
+          "t": "http",
+          "dir": "devserver-lab",
+          "app": "myapp",
+          "path": "/",
+          "status": 200,
+          "contains": "Hello, Flask!",
+          "hint": "flask --app myapp run --host=0.0.0.0 --port 8080"
+        }
+      ]
+    },
+    {
+      "n": 16,
+      "goal": "Diagnose a port conflict with lsof / ss / netstat before choosing a new port.",
+      "kind": "read",
+      "files": [],
+      "checks": [],
+      "note": "Diagnosis step: there is no file artefact. The commands are shown so you can run them yourself; step 17 proves you recovered by serving on a free port."
+    },
+    {
+      "n": 17,
+      "goal": "Start the server from Python code with the __main__ guard and app.run(debug=True).",
+      "kind": "build",
+      "files": [
+        "devserver-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "devserver-lab/app.py",
+          "main_guard": true,
+          "calls": [
+            "app.run"
+          ],
+          "hint": "add: if __name__ == \"__main__\":  app.run(debug=True)"
+        }
+      ]
+    },
+    {
+      "n": 18,
+      "goal": "Have the Flask package importable for the CLI exercises.",
+      "kind": "build",
+      "files": [],
+      "checks": [
+        {
+          "t": "pkg",
+          "import": "flask",
+          "hint": "pip install flask"
+        }
+      ]
+    },
+    {
+      "n": 19,
+      "goal": "Write the cli-lab application that the CLI will discover.",
+      "kind": "build",
+      "files": [
+        "cli-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "cli-lab/app.py",
+          "funcs": [
+            "hello"
+          ],
+          "routes": [
+            "/"
+          ],
+          "main_guard": true,
+          "hint": "create cli-lab/app.py with app = Flask(__name__) and a hello view"
+        }
+      ]
+    },
+    {
+      "n": 20,
+      "goal": "Serve the app with flask run instead of python app.py.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "cli-lab",
+          "app": "app",
+          "path": "/",
+          "status": 200,
+          "contains": "Hello, Flask!",
+          "hint": "cd cli-lab && flask --app app run --host=0.0.0.0 --port 8080"
+        }
+      ]
+    },
+    {
+      "n": 21,
+      "goal": "Build a standalone click command that prints a greeting.",
+      "kind": "build",
+      "files": [
+        "cli-lab/commands.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "cli-lab/commands.py",
+          "funcs": [
+            "greet"
+          ],
+          "imports": [
+            "click:"
+          ],
+          "hint": "create cli-lab/commands.py using @click.command() and @click.argument('name')"
+        },
+        {
+          "t": "cli",
+          "dir": "cli-lab",
+          "cmd": [
+            "python",
+            "commands.py",
+            "John"
+          ],
+          "contains": "Hello, John!",
+          "hint": "python commands.py John must print the greeting"
+        }
+      ]
+    },
+    {
+      "n": 22,
+      "goal": "Expose the custom command through the Flask CLI.",
+      "kind": "build",
+      "files": [
+        "cli-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "cli-lab/app.py",
+          "imports": [
+            "commands:greet"
+          ],
+          "calls": [
+            "app.cli.add_command"
+          ],
+          "hint": "import greet from commands and call app.cli.add_command(greet)"
+        },
+        {
+          "t": "cli",
+          "dir": "cli-lab",
+          "cmd": [
+            "flask",
+            "--app",
+            "app",
+            "greet",
+            "Wanjiru"
+          ],
+          "contains": "Hello, Wanjiru!",
+          "hint": "flask --app app greet Wanjiru"
+        }
+      ]
+    },
+    {
+      "n": 23,
+      "goal": "Create the flaskr package directory inside the flaskr-app project.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/"
+      ],
+      "checks": [
+        {
+          "t": "dir",
+          "f": "flaskr-app/flaskr",
+          "hint": "cd flaskr-app && mkdir flaskr"
+        }
+      ]
+    },
+    {
+      "n": 24,
+      "goal": "Write the application factory that instantiates and configures the app.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/__init__.py",
+          "funcs": [
+            "create_app"
+          ],
+          "imports": [
+            "os:",
+            "flask:Flask"
+          ],
+          "hint": "define def create_app(test_config=None): returning a Flask instance"
+        },
+        {
+          "t": "app",
+          "dir": "flaskr-app",
+          "target": "flaskr:create_app",
+          "expect_config": {
+            "SECRET_KEY": "dev"
+          },
+          "hint": "app.config.from_mapping(SECRET_KEY='dev', ...) inside create_app"
+        }
+      ]
+    },
+    {
+      "n": 25,
+      "goal": "Load instance/test config, create the instance folder, and add the hello route.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/__init__.py",
+          "funcs": [
+            "hello"
+          ],
+          "calls": [
+            "app.config.from_pyfile",
+            "os.makedirs"
+          ],
+          "hint": "add from_pyfile('config.py', silent=True), os.makedirs(app.instance_path) and the / route"
+        }
+      ]
+    },
+    {
+      "n": 26,
+      "goal": "Run flaskr from the project root and confirm it serves the hello page.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "flaskr-app",
+          "app": "flaskr",
+          "path": "/",
+          "status": 200,
+          "contains": "Hello, World!",
+          "hint": "cd flaskr-app && flask --app flaskr run --debug --host=0.0.0.0 --port 8080"
+        }
+      ]
+    },
+    {
+      "n": 27,
+      "goal": "Add per-request SQLite connections stored on flask.g, closed on teardown.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/db.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/db.py",
+          "funcs": [
+            "get_db",
+            "close_db"
+          ],
+          "imports": [
+            "sqlite3:",
+            "flask:current_app",
+            "flask:g"
+          ],
+          "hint": "create flaskr/db.py with get_db() and close_db()"
+        }
+      ]
+    },
+    {
+      "n": 28,
+      "goal": "Define the user and post tables in schema.sql.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/schema.sql"
+      ],
+      "checks": [
+        {
+          "t": "sql",
+          "f": "flaskr-app/flaskr/schema.sql",
+          "tables": [
+            "user",
+            "post"
+          ],
+          "columns": {
+            "user": [
+              "id",
+              "username",
+              "password"
+            ],
+            "post": [
+              "id",
+              "author_id",
+              "created",
+              "title",
+              "body"
+            ]
+          },
+          "hint": "your schema.sql is executed against a real SQLite database; it must create user and post with those columns"
+        }
+      ]
+    },
+    {
+      "n": 29,
+      "goal": "Write init_db() and the init-db CLI command that loads schema.sql.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/db.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/db.py",
+          "funcs": [
+            "init_db",
+            "init_db_command"
+          ],
+          "calls": [
+            "db.executescript"
+          ],
+          "hint": "init_db() must open schema.sql with current_app.open_resource and executescript it; init_db_command is the click command"
+        }
+      ]
+    },
+    {
+      "n": 30,
+      "goal": "Register teardown and CLI hooks from the factory via db.init_app(app).",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/db.py",
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/db.py",
+          "funcs": [
+            "init_app"
+          ],
+          "calls": [
+            "app.teardown_appcontext",
+            "app.cli.add_command"
+          ],
+          "hint": "db.init_app(app) must register close_db and init_db_command"
+        },
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/__init__.py",
+          "calls": [
+            "db.init_app"
+          ],
+          "hint": "call db.init_app(app) inside create_app"
+        }
+      ]
+    },
+    {
+      "n": 31,
+      "goal": "Create the real database file on disk with the flask CLI.",
+      "kind": "run",
+      "files": [
+        "flaskr-app/instance/flaskr.sqlite"
+      ],
+      "checks": [
+        {
+          "t": "cli",
+          "dir": "flaskr-app",
+          "cmd": [
+            "flask",
+            "--app",
+            "flaskr",
+            "init-db"
+          ],
+          "contains": "Initialized the database.",
+          "hint": "cd flaskr-app && flask --app flaskr init-db"
+        },
+        {
+          "t": "db",
+          "f": "flaskr-app/instance/flaskr.sqlite",
+          "tables": [
+            "user",
+            "post"
+          ],
+          "hint": "instance/flaskr.sqlite must exist with the user and post tables"
+        }
+      ]
+    },
+    {
+      "n": 32,
+      "goal": "Create the auth blueprint module with its URL prefix.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/auth.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/auth.py",
+          "imports": [
+            "functools:",
+            "flask:Blueprint",
+            "werkzeug.security:generate_password_hash",
+            "werkzeug.security:check_password_hash",
+            "flaskr.db:get_db"
+          ],
+          "hint": "import functools, Blueprint, the password hash helpers and get_db"
+        },
+        {
+          "t": "app",
+          "dir": "flaskr-app",
+          "target": "flaskr.auth:bp",
+          "blueprint": {
+            "name": "auth",
+            "url_prefix": "/auth"
+          },
+          "hint": "bp = Blueprint('auth', __name__, url_prefix='/auth')"
+        }
+      ]
+    },
+    {
+      "n": 33,
+      "goal": "Register the auth blueprint from the application factory.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/__init__.py",
+          "calls": [
+            "app.register_blueprint"
+          ],
+          "hint": "from . import auth  then  app.register_blueprint(auth.bp)"
+        },
+        {
+          "t": "app",
+          "dir": "flaskr-app",
+          "target": "flaskr:create_app",
+          "blueprint_registered": "auth",
+          "hint": "create_app() must register the 'auth' blueprint"
+        }
+      ]
+    },
+    {
+      "n": 34,
+      "goal": "Implement the registration view that stores a hashed password.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/auth.py",
+        "flaskr-app/flaskr/templates/auth/register.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/auth.py",
+          "funcs": [
+            "register"
+          ],
+          "routes": [
+            "/register"
+          ],
+          "hint": "@bp.route('/register', methods=('GET', 'POST')) def register():"
+        },
+        {
+          "t": "http",
+          "dir": "flaskr-app",
+          "app": "flaskr",
+          "path": "/auth/register",
+          "status": 200,
+          "form_field": "username",
+          "hint": "GET /auth/register must render a form with a username input"
+        }
+      ]
+    },
+    {
+      "n": 35,
+      "goal": "Implement the login view that checks the password hash and opens a session.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/auth.py",
+        "flaskr-app/flaskr/templates/auth/login.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/auth.py",
+          "funcs": [
+            "login"
+          ],
+          "routes": [
+            "/login"
+          ],
+          "hint": "@bp.route('/login', methods=('GET','POST')) def login():"
+        },
+        {
+          "t": "http",
+          "dir": "flaskr-app",
+          "app": "flaskr",
+          "path": "/auth/login",
+          "status": 200,
+          "form_field": "password",
+          "hint": "GET /auth/login must render a form with a password input"
+        }
+      ]
+    },
+    {
+      "n": 36,
+      "goal": "Add the logout view that clears the session.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/auth.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/auth.py",
+          "funcs": [
+            "logout"
+          ],
+          "routes": [
+            "/logout"
+          ],
+          "calls": [
+            "session.clear"
+          ],
+          "hint": "@bp.route('/logout') must clear the session and redirect to index"
+        },
+        {
+          "t": "app",
+          "dir": "flaskr-app",
+          "target": "flaskr:create_app",
+          "endpoints": [
+            "auth.logout"
+          ],
+          "hint": "auth.logout must appear in the URL map"
+        }
+      ]
+    },
+    {
+      "n": 37,
+      "goal": "Write the login_required decorator that guards views behind the session.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/auth.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/auth.py",
+          "funcs": [
+            "login_required"
+          ],
+          "imports": [
+            "functools:"
+          ],
+          "hint": "def login_required(view) using functools.wraps"
+        },
+        {
+          "t": "script",
+          "name": "auth_guard.py",
+          "dir": "flaskr-app",
+          "hint": "an anonymous request through login_required must redirect to /auth/login"
+        }
+      ]
+    },
+    {
+      "n": 38,
+      "goal": "Create the stylesheet file inside the static folder.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/static/style.css"
+      ],
+      "checks": [
+        {
+          "t": "file",
+          "f": "flaskr-app/flaskr/static/style.css",
+          "min": 0,
+          "hint": "touch flaskr/static/style.css"
+        }
+      ]
+    },
+    {
+      "n": 39,
+      "goal": "Fill the stylesheet with the layout rules for the application.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/static/style.css"
+      ],
+      "checks": [
+        {
+          "t": "css",
+          "f": "flaskr-app/flaskr/static/style.css",
+          "selectors": [
+            "html",
+            "body",
+            "nav"
+          ],
+          "min_rules": 4,
+          "hint": "style.css needs real declarations for html, body and nav"
+        }
+      ]
+    },
+    {
+      "n": 40,
+      "goal": "Attach the stylesheet from the base template with url_for('static').",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/templates/base.html"
+      ],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "flaskr-app",
+          "app": "flaskr",
+          "path": "/auth/login",
+          "status": 200,
+          "contains": "/static/style.css",
+          "hint": "the served page must link the generated static URL"
+        }
+      ]
+    },
+    {
+      "n": 41,
+      "goal": "Confirm Flask's static view actually serves the stylesheet.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "http",
+          "dir": "flaskr-app",
+          "app": "flaskr",
+          "path": "/static/style.css",
+          "status": 200,
+          "ctype": "text/css",
+          "contains": "font-family",
+          "hint": "GET /static/style.css must return the CSS body"
+        }
+      ]
+    },
+    {
+      "n": 42,
+      "goal": "Define the blog blueprint module.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/blog.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/blog.py",
+          "imports": [
+            "flask:Blueprint",
+            "flaskr.auth:login_required",
+            "flaskr.db:get_db"
+          ],
+          "hint": "create flaskr/blog.py importing login_required and get_db"
+        },
+        {
+          "t": "app",
+          "dir": "flaskr-app",
+          "target": "flaskr.blog:bp",
+          "blueprint": {
+            "name": "blog"
+          },
+          "hint": "bp = Blueprint('blog', __name__)"
+        }
+      ]
+    },
+    {
+      "n": 43,
+      "goal": "Register the blog blueprint and bind '/' to the blog index endpoint.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/__init__.py"
+      ],
+      "checks": [
+        {
+          "t": "app",
+          "dir": "flaskr-app",
+          "target": "flaskr:create_app",
+          "blueprint_registered": "blog",
+          "hint": "app.register_blueprint(blog.bp)"
+        },
+        {
+          "t": "app",
+          "dir": "flaskr-app",
+          "target": "flaskr:create_app",
+          "url_rule": {
+            "endpoint": "index",
+            "rule": "/"
+          },
+          "hint": "app.add_url_rule('/', 'index')"
+        }
+      ]
+    },
+    {
+      "n": 44,
+      "goal": "List every post with its author, newest first.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/blog.py",
+        "flaskr-app/flaskr/templates/blog/index.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/blog.py",
+          "funcs": [
+            "index"
+          ],
+          "routes": [
+            "/"
+          ],
+          "hint": "@bp.route('/') def index() querying post JOIN user ordered by created DESC"
+        },
+        {
+          "t": "http",
+          "dir": "flaskr-app",
+          "app": "flaskr",
+          "path": "/",
+          "status": 200,
+          "contains": "Posts",
+          "hint": "GET / must render the posts page (run flask --app flaskr init-db first)"
+        }
+      ]
+    },
+    {
+      "n": 45,
+      "goal": "Let a logged-in user create a post that is written to the database.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/blog.py",
+        "flaskr-app/flaskr/templates/blog/create.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/blog.py",
+          "funcs": [
+            "create"
+          ],
+          "routes": [
+            "/create"
+          ],
+          "hint": "@bp.route('/create', methods=('GET','POST')) @login_required def create():"
+        },
+        {
+          "t": "script",
+          "name": "blog_write.py",
+          "dir": "flaskr-app",
+          "hint": "register, log in, POST a title/body, then find that row in instance/flaskr.sqlite"
+        }
+      ]
+    },
+    {
+      "n": 46,
+      "goal": "Let the author edit their own post.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/blog.py",
+        "flaskr-app/flaskr/templates/blog/update.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/blog.py",
+          "funcs": [
+            "update"
+          ],
+          "routes": [
+            "/<int:id>/update"
+          ],
+          "hint": "@bp.route('/<int:id>/update', methods=('GET','POST')) @login_required def update(id):"
+        },
+        {
+          "t": "script",
+          "name": "blog_update.py",
+          "dir": "flaskr-app",
+          "hint": "the update view must change the stored title/body for that post id"
+        }
+      ]
+    },
+    {
+      "n": 47,
+      "goal": "Let the author delete their own post.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/flaskr/blog.py",
+        "flaskr-app/flaskr/templates/blog/delete.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/flaskr/blog.py",
+          "funcs": [
+            "delete"
+          ],
+          "routes": [
+            "/<int:id>/delete"
+          ],
+          "hint": "@bp.route('/<int:id>/delete', methods=('POST',)) @login_required def delete(id):"
+        },
+        {
+          "t": "script",
+          "name": "blog_delete.py",
+          "dir": "flaskr-app",
+          "hint": "the delete view must remove the row, and another user's post must be rejected"
+        }
+      ]
+    },
+    {
+      "n": 48,
+      "goal": "Create the config-lab application that configuration will be attached to.",
+      "kind": "build",
+      "files": [
+        "config-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "config-lab/app.py",
+          "funcs": [
+            "hello"
+          ],
+          "routes": [
+            "/"
+          ],
+          "hint": "app = Flask(__name__) with a hello view"
+        }
+      ],
+      "state": "_states/m10-step-48"
+    },
+    {
+      "n": 49,
+      "goal": "Set DEBUG and SECRET_KEY directly on app.config.",
+      "kind": "build",
+      "files": [
+        "config-lab/app.py"
+      ],
+      "state": "_states/m10-step-49",
+      "checks": [
+        {
+          "t": "app",
+          "dir": "config-lab",
+          "target": "app:app",
+          "expect_config": {
+            "SECRET_KEY": "mysecretkey",
+            "DEBUG": true
+          },
+          "hint": "app.config['DEBUG'] = True and app.config['SECRET_KEY'] = 'mysecretkey'"
+        }
+      ]
+    },
+    {
+      "n": 50,
+      "goal": "Move configuration into a module loaded with from_object().",
+      "kind": "build",
+      "files": [
+        "config-lab/config.py",
+        "config-lab/app.py"
+      ],
+      "state": "_states/m10-step-50",
+      "checks": [
+        {
+          "t": "file",
+          "f": "config-lab/config.py",
+          "min": 2,
+          "hint": "create config-lab/config.py with DEBUG and SECRET_KEY"
+        },
+        {
+          "t": "app",
+          "dir": "config-lab",
+          "target": "app:app",
+          "expect_config": {
+            "SECRET_KEY": "myothersecretkey",
+            "DEBUG": false
+          },
+          "hint": "app.config.from_object('config') must load config.py"
+        }
+      ]
+    },
+    {
+      "n": 51,
+      "goal": "Select dev or production configuration from an environment variable.",
+      "kind": "build",
+      "files": [
+        "config-lab/config.py",
+        "config-lab/config_prod.py",
+        "config-lab/app.py"
+      ],
+      "state": "_states/m10-step-51",
+      "checks": [
+        {
+          "t": "file",
+          "f": "config-lab/config_prod.py",
+          "min": 2,
+          "hint": "create config-lab/config_prod.py"
+        },
+        {
+          "t": "app",
+          "dir": "config-lab",
+          "target": "app:app",
+          "env": {
+            "FLASK_ENV": "development"
+          },
+          "expect_config": {
+            "SECRET_KEY": "devsecretkey"
+          },
+          "hint": "FLASK_ENV=development must load the development settings"
+        },
+        {
+          "t": "app",
+          "dir": "config-lab",
+          "target": "app:app",
+          "env": {
+            "FLASK_ENV": "production"
+          },
+          "expect_config": {
+            "SECRET_KEY": "prodsecretkey"
+          },
+          "hint": "FLASK_ENV=production must load config_prod"
+        }
+      ]
+    },
+    {
+      "n": 52,
+      "goal": "Load deployment-specific settings from the instance folder.",
+      "kind": "build",
+      "files": [
+        "config-lab/instance/config.cfg",
+        "config-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "file",
+          "f": "config-lab/instance/config.cfg",
+          "min": 2,
+          "hint": "create config-lab/instance/config.cfg"
+        },
+        {
+          "t": "app",
+          "dir": "config-lab",
+          "target": "app:app",
+          "expect_config": {
+            "SECRET_KEY": "instancekey"
+          },
+          "hint": "app.config.from_pyfile('config.cfg') must load the instance file"
+        }
+      ]
+    },
+    {
+      "n": 53,
+      "goal": "Install the blinker package that Flask uses for signals.",
+      "kind": "build",
+      "files": [],
+      "checks": [
+        {
+          "t": "pkg",
+          "import": "blinker",
+          "hint": "pip install flask blinker"
+        }
+      ]
+    },
+    {
+      "n": 54,
+      "goal": "Import Flask and blinker's Namespace in the signals application.",
+      "kind": "build",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "signals-lab/app.py",
+          "imports": [
+            "flask:Flask",
+            "blinker:Namespace"
+          ],
+          "hint": "from flask import Flask; from blinker import Namespace"
+        }
+      ]
+    },
+    {
+      "n": 55,
+      "goal": "Instantiate the Flask application object.",
+      "kind": "build",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "signals-lab/app.py",
+          "assigns": [
+            "app"
+          ],
+          "hint": "app = Flask(__name__)"
+        }
+      ]
+    },
+    {
+      "n": 56,
+      "goal": "Create a signal namespace so your signals do not collide with Flask's.",
+      "kind": "build",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "signals-lab/app.py",
+          "assigns": [
+            "my_signals"
+          ],
+          "hint": "my_signals = Namespace()"
+        },
+        {
+          "t": "script",
+          "name": "signals_namespace.py",
+          "dir": "signals-lab",
+          "hint": "my_signals must be a blinker.Namespace instance"
+        }
+      ]
+    },
+    {
+      "n": 57,
+      "goal": "Define a named application signal.",
+      "kind": "build",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "signals-lab/app.py",
+          "assigns": [
+            "model_saved"
+          ],
+          "hint": "model_saved = my_signals.signal('model-saved')"
+        },
+        {
+          "t": "script",
+          "name": "signals_define.py",
+          "dir": "signals-lab",
+          "hint": "model_saved must be a blinker signal named 'model-saved'"
+        }
+      ]
+    },
+    {
+      "n": 58,
+      "goal": "Subscribe a receiver function to the signal.",
+      "kind": "build",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "signals-lab/app.py",
+          "funcs": [
+            "on_model_saved"
+          ],
+          "hint": "def on_model_saved(sender) decorated with @model_saved.connect"
+        },
+        {
+          "t": "script",
+          "name": "signals_subscribe.py",
+          "dir": "signals-lab",
+          "hint": "the signal must have at least one connected receiver"
+        }
+      ]
+    },
+    {
+      "n": 59,
+      "goal": "Emit the signal and confirm the receiver runs.",
+      "kind": "build",
+      "files": [
+        "signals-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "signals-lab/app.py",
+          "calls": [
+            "model_saved.send"
+          ],
+          "hint": "model_saved.send(app)"
+        },
+        {
+          "t": "script",
+          "name": "signals_emit.py",
+          "dir": "signals-lab",
+          "hint": "sending the signal must run the receiver and print Model saved!"
+        }
+      ]
+    },
+    {
+      "n": 60,
+      "goal": "Run the application that emits the signal during startup.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "running",
+          "match": "python.*app[.]py|flask.*run",
+          "dir": "signals-lab",
+          "port": 8080,
+          "any_status": true,
+          "hint": "cd signals-lab && python app.py --port 8080 (or flask --app app run --port 8080); the lab needs YOUR server running for this check"
+        }
+      ]
+    },
+    {
+      "n": 61,
+      "goal": "Open the Flask shell and inspect the application and request context interactively.",
+      "kind": "read",
+      "files": [],
+      "checks": [],
+      "note": "Interactive step: flask shell opens a Python REPL inside an app context, so it leaves no file artefact to grade. Run the commands in the terminal and read what they print, then continue to step 62."
+    },
+    {
+      "n": 62,
+      "goal": "Push a test request context outside a request and read request data from it.",
+      "kind": "build",
+      "files": [
+        "shell-lab/shell.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "shell-lab/shell.py",
+          "calls": [
+            "app.test_request_context"
+          ],
+          "imports": [
+            "flask:request"
+          ],
+          "hint": "with app.test_request_context('/?page=2'): read request.url and request.args"
+        },
+        {
+          "t": "cli",
+          "dir": "shell-lab",
+          "cmd": [
+            "python",
+            "shell.py"
+          ],
+          "contains": "/?page=2",
+          "hint": "python shell.py must print the request URL from the pushed context"
+        }
+      ]
+    },
+    {
+      "n": 63,
+      "goal": "Fire the before-request and after-request functions from a script.",
+      "kind": "build",
+      "files": [
+        "shell-lab/shell.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "shell-lab/shell.py",
+          "calls": [
+            "app.preprocess_request",
+            "app.process_response"
+          ],
+          "hint": "call app.preprocess_request() and app.process_response(response) inside the context"
+        }
+      ]
+    },
+    {
+      "n": 64,
+      "goal": "Expose helper functions to the shell with a shell context processor.",
+      "kind": "build",
+      "files": [
+        "shell-lab/shelltools.py",
+        "shell-lab/shell.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "shell-lab/shelltools.py",
+          "funcs": [
+            "initialize_database",
+            "drop_tables"
+          ],
+          "hint": "shelltools.py must define initialize_database() and drop_tables()"
+        },
+        {
+          "t": "ast",
+          "f": "shell-lab/shell.py",
+          "imports": [
+            "shelltools:initialize_database",
+            "shelltools:drop_tables"
+          ],
+          "calls": [
+            "app.shell_context_processor"
+          ],
+          "hint": "register app.shell_context_processor(make_shell_context) returning the helpers"
+        },
+        {
+          "t": "cli",
+          "dir": "shell-lab",
+          "cmd": [
+            "python",
+            "shell.py"
+          ],
+          "contains": "OK",
+          "hint": "python shell.py must finish and print OK"
+        }
+      ]
+    },
+    {
+      "n": 65,
+      "goal": "Create the pytest fixtures that hand the app, test client and CLI runner to tests.",
+      "kind": "build",
+      "files": [
+        "test-lab/tests/conftest.py"
+      ],
+      "checks": [
+        {
+          "t": "pkg",
+          "import": "pytest",
+          "hint": "pip install pytest"
+        },
+        {
+          "t": "ast",
+          "f": "test-lab/tests/conftest.py",
+          "funcs": [
+            "app",
+            "client",
+            "runner"
+          ],
+          "imports": [
+            "pytest:",
+            "my_app:create_app"
+          ],
+          "hint": "tests/conftest.py must define app, client and runner fixtures built on create_app()"
+        },
+        {
+          "t": "cli",
+          "dir": "test-lab",
+          "cmd": [
+            "python",
+            "-m",
+            "pytest",
+            "--collect-only",
+            "-q"
+          ],
+          "hint": "pytest must be able to collect the tests directory without errors"
+        }
+      ]
+    },
+    {
+      "n": 66,
+      "goal": "Write view tests and a CLI test that actually pass.",
+      "kind": "test",
+      "files": [
+        "test-lab/tests/test_app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "test-lab/tests/test_app.py",
+          "funcs": [
+            "test_hello",
+            "test_login",
+            "test_hello_command"
+          ],
+          "hint": "tests/test_app.py needs test_hello, test_login and test_hello_command"
+        },
+        {
+          "t": "pytest",
+          "dir": "test-lab",
+          "file": "tests/test_app.py",
+          "hint": "python -m pytest -q tests/test_app.py must pass against my_app"
+        }
+      ]
+    },
+    {
+      "n": 67,
+      "goal": "Install the test and coverage tooling for the flaskr suite.",
+      "kind": "build",
+      "files": [],
+      "checks": [
+        {
+          "t": "pkg",
+          "import": "pytest",
+          "hint": "pip install pytest coverage"
+        },
+        {
+          "t": "pkg",
+          "import": "coverage",
+          "hint": "pip install coverage"
+        }
+      ]
+    },
+    {
+      "n": 68,
+      "goal": "Build the fixtures that give every test a fresh temporary database loaded from tests/data.sql.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/tests/conftest.py",
+        "flaskr-app/tests/data.sql"
+      ],
+      "checks": [
+        {
+          "t": "file",
+          "f": "flaskr-app/tests/data.sql",
+          "min": 2,
+          "hint": "tests/data.sql holds the sample user and post rows"
+        },
+        {
+          "t": "ast",
+          "f": "flaskr-app/tests/conftest.py",
+          "funcs": [
+            "app",
+            "client",
+            "runner"
+          ],
+          "imports": [
+            "tempfile:",
+            "pytest:",
+            "flaskr:create_app",
+            "flaskr.db:get_db"
+          ],
+          "hint": "conftest.py must create the app with a temp db path, init it from data.sql, and expose app/client/runner fixtures"
+        },
+        {
+          "t": "cli",
+          "dir": "flaskr-app",
+          "cmd": [
+            "python",
+            "-m",
+            "pytest",
+            "--collect-only",
+            "-q"
+          ],
+          "hint": "pytest must collect without import errors"
+        }
+      ]
+    },
+    {
+      "n": 69,
+      "goal": "Test the application factory: configuration and the hello view.",
+      "kind": "test",
+      "files": [
+        "flaskr-app/tests/test_factory.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/tests/test_factory.py",
+          "funcs": [
+            "test_config",
+            "test_index"
+          ],
+          "hint": "test_config asserts the SECRET_KEY default; test_index checks the hello response"
+        },
+        {
+          "t": "pytest",
+          "dir": "flaskr-app",
+          "file": "tests/test_factory.py",
+          "hint": "python -m pytest -q tests/test_factory.py must pass"
+        }
+      ]
+    },
+    {
+      "n": 70,
+      "goal": "Test that database connections are registered on g and closed after the context.",
+      "kind": "test",
+      "files": [
+        "flaskr-app/tests/test_db.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/tests/test_db.py",
+          "funcs": [
+            "test_get_close"
+          ],
+          "hint": "test_get_close uses app.app_context() and asserts db.db is None after pop"
+        },
+        {
+          "t": "pytest",
+          "dir": "flaskr-app",
+          "file": "tests/test_db.py",
+          "hint": "python -m pytest -q tests/test_db.py must pass"
+        }
+      ]
+    },
+    {
+      "n": 71,
+      "goal": "Test registration, login, logout and the login guard.",
+      "kind": "test",
+      "files": [
+        "flaskr-app/tests/test_auth.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/tests/test_auth.py",
+          "funcs": [
+            "test_register",
+            "test_login_logout_edit"
+          ],
+          "hint": "the auth suite needs test_register and test_login_logout_edit (plus the auth helper fixture)"
+        },
+        {
+          "t": "pytest",
+          "dir": "flaskr-app",
+          "file": "tests/test_auth.py",
+          "hint": "python -m pytest -q tests/test_auth.py must pass"
+        }
+      ]
+    },
+    {
+      "n": 72,
+      "goal": "Test the blog views: index, create, update, delete and their guards.",
+      "kind": "test",
+      "files": [
+        "flaskr-app/tests/test_blog.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "flaskr-app/tests/test_blog.py",
+          "funcs": [
+            "test_index",
+            "test_create",
+            "test_update_get",
+            "test_delete_post"
+          ],
+          "hint": "the blog suite needs index, create, update and delete tests"
+        },
+        {
+          "t": "pytest",
+          "dir": "flaskr-app",
+          "file": "tests/test_blog.py",
+          "hint": "python -m pytest -q tests/test_blog.py must pass"
+        }
+      ]
+    },
+    {
+      "n": 73,
+      "goal": "Run the whole suite under coverage and read the report.",
+      "kind": "run",
+      "files": [
+        "flaskr-app/.coverage"
+      ],
+      "checks": [
+        {
+          "t": "cli",
+          "dir": "flaskr-app",
+          "cmd": [
+            "coverage",
+            "run",
+            "-m",
+            "pytest"
+          ],
+          "hint": "cd flaskr-app && coverage run -m pytest"
+        },
+        {
+          "t": "cli",
+          "dir": "flaskr-app",
+          "cmd": [
+            "coverage",
+            "report"
+          ],
+          "contains": "TOTAL",
+          "hint": "coverage report must print a TOTAL line"
+        },
+        {
+          "t": "cli",
+          "dir": "flaskr-app",
+          "cmd": [
+            "coverage",
+            "report"
+          ],
+          "contains_any": ["flaskr/", "flaskr\\"],
+          "hint": "the report must cover the flaskr package (check .coveragerc / source setting)"
+        }
+      ]
+    },
+    {
+      "n": 74,
+      "goal": "Render user input through Jinja2 autoescaping so a script tag stays inert data.",
+      "kind": "build",
+      "files": [
+        "secure-lab/xss/app.py",
+        "secure-lab/xss/templates/greet.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "secure-lab/xss/app.py",
+          "funcs": [
+            "greet"
+          ],
+          "routes": [
+            "/"
+          ],
+          "hint": "a / view that renders the name through a template (not render_template_string of raw input)"
+        },
+        {
+          "t": "app",
+          "dir": "secure-lab/xss",
+          "target": "app:app",
+          "get": "/",
+          "query": "name=<script>alert(1)</script>",
+          "status": 200,
+          "contains": "&lt;script&gt;",
+          "not_contains": "<script>alert(1)</script>",
+          "hint": "GET /?name=<script>alert(1)</script> must come back escaped, never as a live tag"
+        }
+      ]
+    },
+    {
+      "n": 75,
+      "goal": "Reject a state-changing request that carries no CSRF token, accept one that does.",
+      "kind": "build",
+      "files": [
+        "secure-lab/csrf/app.py",
+        "secure-lab/csrf/templates/form.html"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "secure-lab/csrf/app.py",
+          "funcs": [
+            "form",
+            "delete"
+          ],
+          "hint": "a GET form view that issues a session token and a POST /delete that verifies it"
+        },
+        {
+          "t": "script",
+          "name": "csrf_guard.py",
+          "dir": "secure-lab/csrf",
+          "hint": "POST /delete without the token must be refused; with the token from the served form it must succeed"
+        }
+      ]
+    },
+    {
+      "n": 76,
+      "goal": "Confirm the framework version that parses JSON only through Flask's safe provider.",
+      "kind": "build",
+      "files": [],
+      "checks": [
+        {
+          "t": "pkgmin",
+          "import": "flask",
+          "min": "2.0",
+          "hint": "pip install --upgrade Flask (the lab targets Flask 3.x, whose JSON provider is the mitigation)"
+        }
+      ]
+    },
+    {
+      "n": 77,
+      "goal": "Add the response headers that constrain framing, sniffing, policy loading and force HTTPS.",
+      "kind": "build",
+      "files": [
+        "secure-lab/headers/app.py"
+      ],
+      "checks": [
+        {
+          "t": "app",
+          "dir": "secure-lab/headers",
+          "target": "app:app",
+          "get": "/",
+          "status": 200,
+          "expect_headers": [
+            "X-Content-Type-Options",
+            "X-Frame-Options",
+            "Content-Security-Policy",
+            "Strict-Transport-Security"
+          ],
+          "hint": "an after_request hook (or Talisman) must set all four headers on every response"
+        }
+      ]
+    },
+    {
+      "n": 78,
+      "goal": "Set the session cookie with Secure, HttpOnly and SameSite attributes.",
+      "kind": "build",
+      "files": [
+        "secure-lab/cookies/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "secure-lab/cookies/app.py",
+          "funcs": [
+            "index"
+          ],
+          "routes": [
+            "/"
+          ],
+          "hint": "a / view that sets a cookie and configures the session cookie"
+        },
+        {
+          "t": "app",
+          "dir": "secure-lab/cookies",
+          "target": "app:app",
+          "get": "/",
+          "status": 200,
+          "expect_cookie": [
+            "Secure",
+            "HttpOnly",
+            "SameSite=Lax"
+          ],
+          "hint": "the Set-Cookie header on / must carry Secure, HttpOnly and SameSite=Lax"
+        }
+      ]
+    },
+    {
+      "n": 79,
+      "goal": "Understand why HPKP was abandoned and what replaces it.",
+      "kind": "read",
+      "files": [],
+      "checks": [],
+      "note": "History-and-judgement step. HPKP was removed from browsers (RFC 7469 deprecated) because a bad pin could lock everyone out of a site; the modern equivalent is Certificate Transparency plus short-lived certs and an expect-CT policy. Nothing to build or run, so there is no grader for this step."
+    },
+    {
+      "n": 80,
+      "goal": "Write a view that awaits a coroutine instead of blocking the worker.",
+      "kind": "build",
+      "files": [
+        "async-lab/app.py"
+      ],
+      "checks": [
+        {
+          "t": "ast",
+          "f": "async-lab/app.py",
+          "async": [
+            "async_db_query",
+            "get_data"
+          ],
+          "routes": [
+            "/get-data"
+          ],
+          "hint": "async def get_data() under @app.route('/get-data'), awaiting async_db_query()"
+        },
+        {
+          "t": "app",
+          "dir": "async-lab",
+          "target": "app:app",
+          "get": "/get-data",
+          "status": 200,
+          "ctype": "application/json",
+          "contains": "LabEx",
+          "hint": "GET /get-data must return the JSON payload produced by the awaited query"
+        }
+      ]
+    },
+    {
+      "n": 81,
+      "goal": "Build a wheel for the flaskr project so it can be installed on a server.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/dist/"
+      ],
+      "checks": [
+        {
+          "t": "pkg",
+          "import": "build",
+          "hint": "pip install build"
+        },
+        {
+          "t": "file",
+          "f": "flaskr-app/dist/flaskr-1.0.0-py3-none-any.whl",
+          "min": 0,
+          "hint": "cd flaskr-app && python -m build --wheel (the wheel must land in dist/)"
+        }
+      ]
+    },
+    {
+      "n": 82,
+      "goal": "Install the built wheel and run the CLI against the installed package.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "pkgpath",
+          "import": "flaskr",
+          "contains": "site-packages",
+          "hint": "pip install flaskr-app/dist/flaskr-1.0.0-py3-none-any.whl, then python -c \"import flaskr; print(flaskr.__file__)\" must resolve inside site-packages"
+        },
+        {
+          "t": "cli",
+          "dir": ".",
+          "cmd": [
+            "flask",
+            "--app",
+            "flaskr",
+            "init-db"
+          ],
+          "contains": "Initialized the database.",
+          "hint": "from the workspace root (outside the source tree) flask --app flaskr init-db must work"
+        }
+      ]
+    },
+    {
+      "n": 83,
+      "goal": "Give the installed application a real secret key in its instance folder.",
+      "kind": "build",
+      "files": [
+        "flaskr-app/instance/config.py"
+      ],
+      "checks": [
+        {
+          "t": "file",
+          "f": "flaskr-app/instance/config.py",
+          "min": 1,
+          "hint": "write SECRET_KEY = '<token from python -c \"import secrets; print(secrets.token_hex())\">' into flaskr-app/instance/config.py"
+        },
+        {
+          "t": "script",
+          "name": "instance_secret.py",
+          "dir": "flaskr-app",
+          "hint": "create_app() must load an instance SECRET_KEY that is not the 'dev' default and is at least 16 characters"
+        }
+      ]
+    },
+    {
+      "n": 84,
+      "goal": "Serve the application with the Waitress production server and prove it answers.",
+      "kind": "run",
+      "files": [],
+      "checks": [
+        {
+          "t": "pkg",
+          "import": "waitress",
+          "hint": "pip install waitress"
+        },
+        {
+          "t": "running",
+          "match": "waitress-serve",
+          "port": 8080,
+          "dir": "flaskr-app",
+          "path": "/",
+          "status": 200,
+          "contains": "Posts",
+          "header": "Server: waitress",
+          "hint": "cd flaskr-app && waitress-serve --listen=0.0.0.0:8080 --call 'flaskr:create_app' (this check talks to YOUR running server)"
+        }
+      ]
+    }
+  ]
+}

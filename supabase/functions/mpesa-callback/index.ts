@@ -14,7 +14,7 @@
 // Secrets: MPESA_CALLBACK_TOKEN (plus the service-role pair, already present).
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
-import { settleCheckout, safeEqual } from '../_shared/mpesa.ts';
+import { callbackAmount, redactSecrets, settleCheckout, safeEqual } from '../_shared/mpesa.ts';
 
 const ACK = (ok: boolean) =>
   new Response(JSON.stringify({ ResultCode: ok ? 0 : 1, ResultDesc: ok ? 'Success' : 'Rejected' }), {
@@ -27,6 +27,12 @@ serve(async (req: Request) => {
   if (req.method === 'GET') {
     return new Response(JSON.stringify({ ok: true, usage: 'Daraja posts STK Push results here.' }), {
       headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed.' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json', Allow: 'GET, POST, OPTIONS' },
     });
   }
   try {
@@ -52,15 +58,21 @@ serve(async (req: Request) => {
           CheckoutRequestID?: string;
           MerchantRequestID?: string;
           BillRefNumber?: string;
-          Amount?: string | number | { value?: string };
+          Amount?: string | number | { value?: string | number };
+          CallbackMetadata?: {
+            Item?: Array<{ Name?: string; Value?: string | number }>;
+          };
         };
       };
     } | null;
     const callback = payload?.Body?.stkCallback;
     if (!callback?.CheckoutRequestID || callback.ResultCode === undefined) return ACK(false);
 
-    const rawAmount = callback.Amount;
-    const paidAmount = typeof rawAmount === 'object' && rawAmount !== null ? rawAmount.value : rawAmount;
+    const paidAmount = callbackAmount(callback);
+    if (String(callback.ResultCode) === '0' && paidAmount === undefined) {
+      console.warn('mpesa-callback: success callback has no Amount; refusing to grant premium.');
+      return ACK(false);
+    }
 
     const outcome = await settleCheckout(callback.CheckoutRequestID, {
       resultCode: String(callback.ResultCode),
@@ -71,7 +83,7 @@ serve(async (req: Request) => {
     if (!outcome.ok) console.warn('mpesa-callback:', outcome.reason, callback.CheckoutRequestID);
     return ACK(true);
   } catch (e) {
-    console.error('mpesa-callback failed:', e);
+    console.error('mpesa-callback failed:', redactSecrets(e));
     return ACK(false);
   }
 });

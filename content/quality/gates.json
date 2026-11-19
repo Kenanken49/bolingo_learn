@@ -35,6 +35,14 @@
       "required": true
     },
     {
+      "id": "course-score",
+      "label": "Course quality floors (all clear)",
+      "category": "curriculum",
+      "command": "node scripts/score-courses.cjs",
+      "timeoutSeconds": 180,
+      "required": true
+    },
+    {
       "id": "solutions",
       "label": "Exercise solutions",
       "category": "curriculum",
@@ -220,7 +228,7 @@
     },
     {
       "id": "ads",
-      "label": "AdMob rewarded hearts",
+      "label": "AdMob rewarded diamonds",
       "category": "monetization",
       "command": "node scripts/check-ads.cjs",
       "timeoutSeconds": 120,
@@ -236,7 +244,7 @@
     },
     {
       "id": "classics-audiobooks",
-      "label": "Philosophy classics offline shelf",
+      "label": "Classics audiobook + ebook shelves",
       "category": "content",
       "command": "node scripts/check-classics-audiobooks.cjs",
       "timeoutSeconds": 120,
@@ -251,11 +259,43 @@
       "required": true
     },
     {
+      "id": "web-render",
+      "label": "Exported web bundle mounts every route",
+      "category": "platform",
+      "command": "node scripts/check-web-render-smoke.cjs",
+      "timeoutSeconds": 600,
+      "required": true
+    },
+    {
+      "id": "release-artifact",
+      "label": "Served APK matches its published record",
+      "category": "platform",
+      "command": "node scripts/check-release-artifact.cjs",
+      "timeoutSeconds": 900,
+      "required": true
+    },
+    {
       "id": "adaptive-ai",
       "label": "Adaptive UI + offline AI",
       "category": "platform",
       "command": "node scripts/check-adaptive-ai.cjs",
       "timeoutSeconds": 120,
+      "required": true
+    },
+    {
+      "id": "abi-clean",
+      "label": "ABI artifact cleaner stays inside its guard rails",
+      "category": "platform",
+      "command": "node scripts/check-abi-clean.cjs",
+      "timeoutSeconds": 180,
+      "required": true
+    },
+    {
+      "id": "doc-commands",
+      "label": "Documented commands, gates, file links and curriculum counts match the repository",
+      "category": "static",
+      "command": "node scripts/check-doc-commands.cjs",
+      "timeoutSeconds": 60,
       "required": true
     }
   ]

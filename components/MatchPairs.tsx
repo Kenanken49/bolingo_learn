@@ -12,7 +12,7 @@ interface Props {
   questionData: CodeQuizData;
   questionLabel: string;
   progressPct: number;
-  hearts: number;
+  diamonds: number;
   sessionKind?: BlockKind;
   onCorrect: () => void;
   onContinue: () => void;

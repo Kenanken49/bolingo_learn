@@ -10,6 +10,17 @@ it before transcription.
 This is an audit gate, not a legal determination. The learner remains
 responsible for the rights they claim, and Bolingo Learn may remove disputed content.
 
+## What the checklist does not cover: the bundled shelves
+
+The Classics Library (`docs/classics-audiobooks.md`) ships **public domain**
+content only: LibriVox recordings and Project Gutenberg texts catalogued by
+loyalbooks.com. Nobody is uploading them, so there is nothing to attest — but
+the same rule applies to the app itself: a recording or text is bundled only
+when its copyright has expired in the US. Commercial audiobooks, in-copyright
+bestsellers and any rip of a published recording are never crawled into a
+shelf, and the `classics-audiobooks` gate fails the build if a modern author
+appears in one.
+
 ## The checklist
 
 The checklist lives in [lib/contentRights.ts](../lib/contentRights.ts) and is
