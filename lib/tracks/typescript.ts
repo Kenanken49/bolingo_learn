@@ -138,7 +138,7 @@ export const TRACK_TYPESCRIPT: Record<string, CourseLesson> = {
 
   'ts-workshop-shapes': {
     id: 'ts-workshop-shapes',
-    title: 'Workshop: type a real module',
+    title: 'Paper workshop: type a real module',
     theory: [
       'The module is a session store: a status field, an optional user, a list of lesson ids, and a function that returns either an error message or a saved count. In JavaScript it worked. In TypeScript it must say what it means, and the compiler then finds three real bugs.',
       'The method is mechanical and worth practising: name the states with a union, describe the shape with an interface, parse the boundary into unknown then narrow, and let the errors lead. Do not silence an error with a cast until you have read what it was trying to tell you.',
@@ -345,7 +345,7 @@ export const TRACK_TYPESCRIPT: Record<string, CourseLesson> = {
 
   'ts-workshop-migrate': {
     id: 'ts-workshop-migrate',
-    title: 'Workshop: convert one file honestly',
+    title: 'Paper workshop: convert one file honestly',
     theory: [
       'The file is a JavaScript helper that reads a course record, formats a duration and returns either a string or null depending on a flag. Converting it is not renaming the extension: it is deciding, line by line, what the function promises.',
       'The order that works: rename to ts, run the compiler and read the whole list before typing anything, then annotate parameters from the outside in, replace the accidental any with unknown plus a guard, and let the return type be inferred where it is already correct.',

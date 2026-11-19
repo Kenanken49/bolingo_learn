@@ -1,0 +1,2983 @@
+{
+ "version": 1,
+ "cluster": "poetry",
+ "label": "Poetry & Plays",
+ "source": "https://www.loyalbooks.com/genre/Poetry?type=all",
+ "fetchedAt": "2026-11-16T13:01:41.568Z",
+ "rights": "Public domain (US): LibriVox narration via archive.org, ebook text via Project Gutenberg / LoyalBooks. Every title here is listed by LoyalBooks, whose catalog is public-domain only, so nothing in copyright is crawled or shipped. See docs/classics-audiobooks.md.",
+ "books": [
+  {
+   "slug": "songs-of-innocence-and-experience-by-william-blake",
+   "title": "Songs of Innocence and Experience",
+   "author": "William Blake",
+   "url": "https://www.loyalbooks.com/book/songs-of-innocence-and-experience-by-william-blake",
+   "cover": "https://www.loyalbooks.com/image/layout2/Songs-of-Innocence-and-Experience.jpg",
+   "genres": [
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "songs_innocence_experience_librivox",
+   "audioZip": "https://www.archive.org/download/songs_innocence_experience_librivox/songs_innocence_experience_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/SongsOfInnocenceAndExperience.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Songs-of-Innocence-and-Experience-by-William-Blake.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Songs-of-Innocence-and-Experience-by-William-Blake.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/etext99/sinex10h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "henry-wadsworth-longfellow-collection-001",
+   "title": "Henry Wadsworth Longfellow Collection Vol. 001",
+   "author": "Henry Wadsworth Longfellow",
+   "url": "https://www.loyalbooks.com/book/henry-wadsworth-longfellow-collection-001",
+   "cover": "https://www.loyalbooks.com/image/layout2/henry-wadsworth-longfellow-collection-001.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "longfellow_001_librivox",
+   "audioZip": "https://www.archive.org/download/longfellow_001_librivox/longfellow_001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/LibrivoxSelectedPoemsByHWLongfellowVol001.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "love-songs-of-childhood-by-eugene-field",
+   "title": "Love-Songs of Childhood",
+   "author": "Eugene Field",
+   "url": "https://www.loyalbooks.com/book/love-songs-of-childhood-by-eugene-field",
+   "cover": "https://www.loyalbooks.com/image/layout2/Love-Songs-of-Childhood.jpg",
+   "genres": [
+    "Kids",
+    "Fantasy",
+    "Humor",
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "lovesongs_sv_librivox",
+   "audioZip": "https://www.archive.org/download/lovesongs_sv_librivox/lovesongs_sv_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/Love-songsOfChildhood.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Love-Songs-of-Childhood-by-Eugene-Field.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Love-Songs-of-Childhood-by-Eugene-Field.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/7/2670/2670-h/2670-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "fire-and-ice-by-robert-frost",
+   "title": "Fire and Ice",
+   "author": "Robert Frost",
+   "url": "https://www.loyalbooks.com/book/fire-and-ice-by-robert-frost",
+   "cover": "https://www.loyalbooks.com/image/layout2/Fire-and-Ice.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "fire_and_ice_librivox",
+   "audioZip": "https://www.archive.org/download/fire_and_ice_librivox/fire_and_ice_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-complete-public-domain-poems-of-wallace-stevens-volume-1-of-2",
+   "title": "The Complete Poems of Wallace Stevens",
+   "author": "Wallace Stevens",
+   "url": "https://www.loyalbooks.com/book/the-complete-public-domain-poems-of-wallace-stevens-volume-1-of-2",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-complete-public-domain-poems-of-wallace-stevens-volume-1-of-2.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "poems_of_wallace_stevens_volume_1_add_librivox",
+   "audioZip": "https://www.archive.org/download/poems_of_wallace_stevens_volume_1_add_librivox/poems_of_wallace_stevens_volume_1_add_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "spirits-in-bondage-by-cs-lewis",
+   "title": "Spirits in Bondage: a cycle of lyrics",
+   "author": "C. S. Lewis",
+   "url": "https://www.loyalbooks.com/book/spirits-in-bondage-by-cs-lewis",
+   "cover": "https://www.loyalbooks.com/image/layout2/Spirits-in-Bondage-a-cycle-of-lyrics.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "spirits_bondage_librivox",
+   "audioZip": "https://www.archive.org/download/spirits_bondage_librivox/spirits_bondage_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/SpiritsInBondage.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Spirits-in-Bondage-by-Cs-Lewis.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Spirits-in-Bondage-by-Cs-Lewis.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/0/2003/2003-h/2003-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "hymns-of-the-christian-church-by-various",
+   "title": "Hymns of the Christian Church",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/hymns-of-the-christian-church-by-various",
+   "cover": "https://www.loyalbooks.com/image/layout2/hymns-of-the-christian-church-by-various.jpg",
+   "genres": [
+    "Music",
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "hymns_of_the_christian_church_0805_librivox",
+   "audioZip": "https://www.archive.org/download/hymns_of_the_christian_church_0805_librivox/hymns_of_the_christian_church_0805_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/HymnsOfTheChristianChurch.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "cathay-by-ezra-pound",
+   "title": "Cathay",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/cathay-by-ezra-pound",
+   "cover": "https://www.loyalbooks.com/image/layout2/Cathay-Ezra-Pound.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "cathay_librivox",
+   "audioZip": "https://www.archive.org/download/cathay_librivox/cathay_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Cathay.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "ophelia-by-walter-de-la-mare",
+   "title": "Ophelia",
+   "author": "Walter de la Mare",
+   "url": "https://www.loyalbooks.com/book/ophelia-by-walter-de-la-mare",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ophelia-Walter-de-la-Mare.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "ophelia_librivox",
+   "audioZip": "https://www.archive.org/download/ophelia_librivox/ophelia_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Ophelia-by-Walter-De-La-Mare.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ophelia-by-Walter-De-La-Mare.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/12031/pg12031.html.utf8",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Songs-of-Kabir",
+   "title": "Songs of Kabir",
+   "author": "Kabir",
+   "url": "https://www.loyalbooks.com/book/Songs-of-Kabir",
+   "cover": "https://www.loyalbooks.com/image/layout2/Songs-of-Kabir.jpg",
+   "genres": [
+    "Poetry",
+    "Languages"
+   ],
+   "archiveId": "songs_kabir_1006_librivox",
+   "audioZip": "https://www.archive.org/download/songs_kabir_1006_librivox/songs_kabir_1006_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Songs-of-Kabir.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Songs-of-Kabir.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6519/pg6519.html.utf8",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "danse-russe-by-william-carlos-williams",
+   "title": "Danse Russe",
+   "author": "William Carlos Williams",
+   "url": "https://www.loyalbooks.com/book/danse-russe-by-william-carlos-williams",
+   "cover": "https://www.loyalbooks.com/image/layout2/danse-russe-by-william-carlos-williams.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "danse_russe_librivox",
+   "audioZip": "https://www.archive.org/download/danse_russe_librivox/danse_russe_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "a-calendar-of-sonnets-by-helen-hunt-jackson",
+   "title": "A Calendar of Sonnets",
+   "author": "Helen Hunt Jackson",
+   "url": "https://www.loyalbooks.com/book/a-calendar-of-sonnets-by-helen-hunt-jackson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Calendar-of-Sonnets.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "calendar_of_sonnets_librivox",
+   "audioZip": "https://www.archive.org/download/calendar_of_sonnets_librivox/calendar_of_sonnets_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/CalendarOfSonnets.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Calendar-of-Sonnets-by-Helen-Hunt-Jackson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/a-calendar-of-sonnets-by-helen-hunt-jackson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9825/pg9825.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "folk-ballad-collection-001",
+   "title": "Folk Ballad Collection",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/folk-ballad-collection-001",
+   "cover": "https://www.loyalbooks.com/image/layout2/folk-ballad-collection-001.jpg",
+   "genres": [
+    "Music",
+    "Poetry"
+   ],
+   "archiveId": "folk_ballad_collection_0710",
+   "audioZip": "https://www.archive.org/download/folk_ballad_collection_0710/folk_ballad_collection_0710_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-passionate-pilgrim-by-william-shakespeare",
+   "title": "The Passionate Pilgrim",
+   "author": "William Shakespeare",
+   "url": "https://www.loyalbooks.com/book/the-passionate-pilgrim-by-william-shakespeare",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-passionate-pilgrim-by-william-shakespeare.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "passionate_pilgrim_cal_librivox",
+   "audioZip": "https://www.archive.org/download/passionate_pilgrim_cal_librivox/passionate_pilgrim_cal_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Passionate-Pilgrim-by-William-Shakespeare.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Passionate-Pilgrim-by-William-Shakespeare.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1545/pg1545.html.utf8",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-saga-of-eirik-the-red-by-anonymous",
+   "title": "Eirik the Red's Saga",
+   "author": "Anonymous",
+   "url": "https://www.loyalbooks.com/book/the-saga-of-eirik-the-red-by-anonymous",
+   "cover": "https://www.loyalbooks.com/image/layout2/Eirik-the-Reds-Saga.jpg",
+   "genres": [
+    "Poetry",
+    "Sea stories",
+    "Literature"
+   ],
+   "archiveId": "saga_of_eirik_the_red",
+   "audioZip": "https://www.archive.org/download/saga_of_eirik_the_red/saga_of_eirik_the_red_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/EirikTheRedsSaga.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Saga-of-Eirik-the-Red-by-Anonymous.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-saga-of-eirik-the-red-by-anonymous.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/17946/pg17946.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "selected-poems-of-john-clare-volume-1",
+   "title": "Selected Poems of John Clare",
+   "author": "John Clare",
+   "url": "https://www.loyalbooks.com/book/selected-poems-of-john-clare-volume-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/selected-poems-of-john-clare-volume-1.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "selected_poems_of_john_clare_vol_1_librivox",
+   "audioZip": "https://www.archive.org/download/selected_poems_of_john_clare_vol_1_librivox/selected_poems_of_john_clare_vol_1_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Antigone-Sophocles",
+   "title": "Antigone",
+   "author": "Sophocles",
+   "url": "https://www.loyalbooks.com/book/Antigone-Sophocles",
+   "cover": "https://www.loyalbooks.com/image/layout2/Antigone-Sophocles.jpg",
+   "genres": [
+    "Classics (antiquity)",
+    "Languages",
+    "Literature",
+    "Myths/Legends",
+    "Play",
+    "Poetry",
+    "Tragedy",
+    "Dramatic Works"
+   ],
+   "archiveId": "antigone_1009_librivox",
+   "audioZip": "https://www.archive.org/download/antigone_1009_librivox/antigone_1009_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Oedipus-Trilogy-by-Sophocles.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Oedipus-Trilogy-by-Sophocles.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/31/31-h/31-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "wedding-poems-for-kristin-and-corey",
+   "title": "Wedding Poems",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/wedding-poems-for-kristin-and-corey",
+   "cover": "https://www.loyalbooks.com/image/layout2/wedding-poems-for-kristin-and-corey.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "wedding_poems_librivox",
+   "audioZip": "https://www.archive.org/download/wedding_poems_librivox/wedding_poems_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/WeddingPoemsForKristinAndCorey.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Hymn-Collection",
+   "title": "Hymn Collection",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/Hymn-Collection",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hymn-Collection.jpg",
+   "genres": [
+    "Music",
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "hymn_collection_001_0909_librivox",
+   "audioZip": "https://www.archive.org/download/hymn_collection_001_0909_librivox/hymn_collection_001_0909_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/LibrivoxHymnCollectionVol.001.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "30-American-Poems",
+   "title": "30 American Poems",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/30-American-Poems",
+   "cover": "https://www.loyalbooks.com/image/layout2/30-American-Poems.jpg",
+   "genres": [
+    "History",
+    "Poetry",
+    "Romance"
+   ],
+   "archiveId": "30_american_poems_bt_librivox",
+   "audioZip": "https://www.archive.org/download/30_american_poems_bt_librivox/30_american_poems_bt_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "local-color-collection-vol-001",
+   "title": "Local Color Collection",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/local-color-collection-vol-001",
+   "cover": "https://www.loyalbooks.com/image/layout2/local-color-collection-vol-001.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Non-fiction",
+    "Poetry",
+    "Short stories"
+   ],
+   "archiveId": "localcolor001_librivox",
+   "audioZip": "https://www.archive.org/download/localcolor001_librivox/localcolor001_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "poems-of-william-blake-by-william-blake",
+   "title": "Poems of William Blake",
+   "author": "William Blake",
+   "url": "https://www.loyalbooks.com/book/poems-of-william-blake-by-william-blake",
+   "cover": "https://www.loyalbooks.com/image/layout2/poems-of-william-blake-by-william-blake.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "poems_wm_blake_ss_librivox",
+   "audioZip": "https://www.archive.org/download/poems_wm_blake_ss_librivox/poems_wm_blake_ss_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Poems-of-William-Blake-by-William-Blake.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Poems-of-William-Blake-by-William-Blake.epub",
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "babys-own-aesop-by-walter-crane",
+   "title": "Baby's Own Aesop",
+   "author": "Walter Crane",
+   "url": "https://www.loyalbooks.com/book/babys-own-aesop-by-walter-crane",
+   "cover": "https://www.loyalbooks.com/image/layout2/Baby-s-Own-Aesop.jpg",
+   "genres": [
+    "Animals",
+    "Kids",
+    "Poetry"
+   ],
+   "archiveId": "babys_own_aesop_librivox",
+   "audioZip": "https://www.archive.org/download/babys_own_aesop_librivox/babys_own_aesop_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/BabysOwnAesop.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "poems-of-gerard-manley-hopkins",
+   "title": "Poems of Gerard Manley Hopkins, ed. Robert Bridges",
+   "author": "Hopkins, Gerard Manley",
+   "url": "https://www.loyalbooks.com/book/poems-of-gerard-manley-hopkins",
+   "cover": "https://www.loyalbooks.com/image/layout2/poems-of-gerard-manley-hopkins.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "poems_gerard_hopkins_librivox",
+   "audioZip": "https://www.archive.org/download/poems_gerard_hopkins_librivox/poems_gerard_hopkins_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/PoemsOfGerardManleyHopkins.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "grimm-tales-made-gay-by-guy-wetmore-carryl",
+   "title": "Grimm Tales Made Gay",
+   "author": "Guy Wetmore Carryl",
+   "url": "https://www.loyalbooks.com/book/grimm-tales-made-gay-by-guy-wetmore-carryl",
+   "cover": "https://www.loyalbooks.com/image/layout2/grimm-tales-made-gay-by-guy-wetmore-carryl.jpg",
+   "genres": [
+    "Fairy tales",
+    "Fiction",
+    "Humor",
+    "Poetry",
+    "Literature",
+    "Historical Fiction"
+   ],
+   "archiveId": "grimmtalesmadegay_0906_librivox",
+   "audioZip": "https://www.archive.org/download/grimmtalesmadegay_0906_librivox/grimmtalesmadegay_0906_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/GrimmTalesMadeGay.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Grimm-Tales-Made-Gay-by-Guy-Wetmore-Carryl.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Grimm-Tales-Made-Gay-by-Guy-Wetmore-Carryl.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/3/0/2/23024/23024-h/23024-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "selection-from-the-temple-by-george-herbert",
+   "title": "Selection from 'The Temple'",
+   "author": "George Herbert",
+   "url": "https://www.loyalbooks.com/book/selection-from-the-temple-by-george-herbert",
+   "cover": "https://www.loyalbooks.com/image/layout2/selection-from-the-temple-by-george-herbert.jpg",
+   "genres": [
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "selection_from_the_temple_librivox_drb",
+   "audioZip": "https://www.archive.org/download/selection_from_the_temple_librivox_drb/selection_from_the_temple_librivox_drb_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "holy-sonnets-by-john-donne",
+   "title": "Holy Sonnets",
+   "author": "John Donne",
+   "url": "https://www.loyalbooks.com/book/holy-sonnets-by-john-donne",
+   "cover": "https://www.loyalbooks.com/image/layout2/Holy-Sonnets.jpg",
+   "genres": [
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "holy_sonnets_drb_librivox",
+   "audioZip": "https://www.archive.org/download/holy_sonnets_drb_librivox/holy_sonnets_drb_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/HolySonnets.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-book-of-halloween-by-ruth-edna-kelley",
+   "title": "The Book of Hallowe'en",
+   "author": "Ruth Edna Kelley",
+   "url": "https://www.loyalbooks.com/book/the-book-of-halloween-by-ruth-edna-kelley",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-book-of-halloween-by-ruth-edna-kelley.jpg",
+   "genres": [
+    "History",
+    "Myths/Legends",
+    "Non-fiction",
+    "Art",
+    "Poetry"
+   ],
+   "archiveId": "book_halloween_0910_librivox",
+   "audioZip": "https://www.archive.org/download/book_halloween_0910_librivox/book_halloween_0910_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/TheBookOfHalloween_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Book-of-Halloween-by-Ruth-Edna-Kelley.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Book-of-Halloween-by-Ruth-Edna-Kelley.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/6/4/20644/20644-h/20644-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-hand-that-rocks-the-cradle-by-william-ross-wallace",
+   "title": "The Hand that Rocks the Cradle is the Hand that Rules the World",
+   "author": "William Ross Wallace",
+   "url": "https://www.loyalbooks.com/book/the-hand-that-rocks-the-cradle-by-william-ross-wallace",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-hand-that-rocks-the-cradle-by-william-ross-wallace.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "hand_that_rocks_librivox",
+   "audioZip": "https://www.archive.org/download/hand_that_rocks_librivox/hand_that_rocks_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "paradise-regained-by-john-milton",
+   "title": "Paradise Regained",
+   "author": "John Milton",
+   "url": "https://www.loyalbooks.com/book/paradise-regained-by-john-milton",
+   "cover": "https://www.loyalbooks.com/image/layout2/paradise-regained-by-john-milton.jpg",
+   "genres": [
+    "Literature",
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "paradise_regained_0810_librivox",
+   "audioZip": "https://www.archive.org/download/paradise_regained_0810_librivox/paradise_regained_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/ParadiseRegained.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Paradise-Regained-by-John-Milton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Paradise-Regained-by-John-Milton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/58/pg58.html.utf8",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "how-to-tell-the-birds-from-the-flowers-by-robert-williams-wood",
+   "title": "How to Tell the Birds from the Flowers",
+   "author": "Robert Williams Wood",
+   "url": "https://www.loyalbooks.com/book/how-to-tell-the-birds-from-the-flowers-by-robert-williams-wood",
+   "cover": "https://www.loyalbooks.com/image/layout2/How-to-Tell-the-Birds-from-th.jpg",
+   "genres": [
+    "Kids",
+    "Comedy",
+    "Poetry",
+    "Science",
+    "Humor",
+    "Literature"
+   ],
+   "archiveId": "birds_from_flowers_librivox",
+   "audioZip": "https://www.archive.org/download/birds_from_flowers_librivox/birds_from_flowers_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/How-to-Tell-the-Birds-from-the-Flowers-by-Robert-Williams-Wood.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/How-to-Tell-the-Birds-from-the-Flowers-by-Robert-Williams-Wood.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/5/9/1593/1593-h/1593-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-ballad-of-the-white-horse-by-gk-chesterton",
+   "title": "The Ballad of the White Horse",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/the-ballad-of-the-white-horse-by-gk-chesterton",
+   "cover": "https://www.loyalbooks.com/image/layout2/ballad_of_the_white_horse.jpg",
+   "genres": [
+    "Poetry",
+    "History",
+    "Literature",
+    "Music",
+    "Fairy tales",
+    "Fiction"
+   ],
+   "archiveId": "ballad_of_the_whitehorse_jbc_librivox",
+   "audioZip": "https://www.archive.org/download/ballad_of_the_whitehorse_jbc_librivox/ballad_of_the_whitehorse_jbc_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/BalladOfTheWhiteHorse.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Ballad-of-the-White-Horse-by-Gk-Chesterton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-ballad-of-the-white-horse-by-gk-chesterton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1719/pg1719.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "ballads-of-a-bohemian-by-robert-w-service",
+   "title": "Ballads of a Bohemian",
+   "author": "Robert W. Service",
+   "url": "https://www.loyalbooks.com/book/ballads-of-a-bohemian-by-robert-w-service",
+   "cover": "https://www.loyalbooks.com/image/layout2/ballads-of-a-bohemian-by-robert-w-service.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "ballads_bohemian_librivox",
+   "audioZip": "https://www.archive.org/download/ballads_bohemian_librivox/ballads_bohemian_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Ballads-of-a-Bohemian-by-Robert-W-Service.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/ballads-of-a-bohemian-by-robert-w-service.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/995/pg995.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Mahabharata-by-Vyasa",
+   "title": "The Mahabharata by Vyasa: the epic of ancient India condensed into English verse",
+   "author": "Romesh C Dutt",
+   "url": "https://www.loyalbooks.com/book/Mahabharata-by-Vyasa",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mahabharata-by-Vyasa.jpg",
+   "genres": [
+    "Poetry",
+    "Languages"
+   ],
+   "archiveId": "mahabharata_condensed_om_librivox",
+   "audioZip": "https://www.archive.org/download/mahabharata_condensed_om_librivox/mahabharata_condensed_om_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Mahabharata.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Mahabharata-by-Vyasa.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mahabharata-by-Vyasa.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/6/3/19630/19630-h/19630-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-song-of-hiawatha-by-henry-wadsworth-longfellow",
+   "title": "Hiawatha",
+   "author": "Henry Wadsworth Longfellow",
+   "url": "https://www.loyalbooks.com/book/the-song-of-hiawatha-by-henry-wadsworth-longfellow",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-song-of-hiawatha-by-henry-wadsworth-longfellow.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "hiawatha_py_0909_librivox",
+   "audioZip": "https://www.archive.org/download/hiawatha_py_0909_librivox/hiawatha_py_0909_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/SongofHiawatha.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Song-of-Hiawatha-by-Henry-Wadsworth-Longfellow.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Song-of-Hiawatha-by-Henry-Wadsworth-Longfellow.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/19/19-h/19-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "selected-lullabies-by-eugene-field",
+   "title": "Selected Lullabies",
+   "author": "Eugene Field",
+   "url": "https://www.loyalbooks.com/book/selected-lullabies-by-eugene-field",
+   "cover": "https://www.loyalbooks.com/image/layout2/selected-lullabies-by-eugene-field.jpg",
+   "genres": [
+    "Kids",
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "field_selections_librivox",
+   "audioZip": "https://www.archive.org/download/field_selections_librivox/field_selections_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Selected-Lullabies-by-Eugene-Field.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/selected-lullabies-by-eugene-field.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9606/pg9606.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "glugs-of-gosh-by-c-j-dennis",
+   "title": "The Glugs of Gosh",
+   "author": "C. J. Dennis",
+   "url": "https://www.loyalbooks.com/book/glugs-of-gosh-by-c-j-dennis",
+   "cover": "https://www.loyalbooks.com/image/layout2/Glugs-of-Gosh.jpg",
+   "genres": [
+    "Comedy",
+    "Poetry",
+    "Satire",
+    "Teen/Young adult",
+    "Literature"
+   ],
+   "archiveId": "glugs_of_gosh_librivox",
+   "audioZip": "https://www.archive.org/download/glugs_of_gosh_librivox/glugs_of_gosh_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/GlugsOfGosh.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Glugs-of-Gosh-by-C-J-Dennis.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Glugs-of-Gosh-by-C-J-Dennis.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/3/6/16362/16362-h/16362-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "grandma-janices-poems-and-stories",
+   "title": "Grandma Janice's Poems and Stories",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/grandma-janices-poems-and-stories",
+   "cover": "https://www.loyalbooks.com/image/layout2/grandma-janices-poems-and-stories.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Poetry"
+   ],
+   "archiveId": "grandma_janice_01_librivox",
+   "audioZip": "https://www.archive.org/download/grandma_janice_01_librivox/grandma_janice_01_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/GrandmaJanicesPoemsAndStories.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "one-hundred-verses-from-old-japan-by-teika-porter",
+   "title": "One Hundred Verses from Old Japan",
+   "author": "Fujiwara no Teika",
+   "url": "https://www.loyalbooks.com/book/one-hundred-verses-from-old-japan-by-teika-porter",
+   "cover": "https://www.loyalbooks.com/image/layout2/One-Hundred-Verses-from-Old-Japan.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "100_verses_japan_librivox",
+   "audioZip": "https://www.archive.org/download/100_verses_japan_librivox/100_verses_japan_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "John-Keats-Selected-Poems",
+   "title": "John Keats: Selected Poems",
+   "author": "John Keats",
+   "url": "https://www.loyalbooks.com/book/John-Keats-Selected-Poems",
+   "cover": "https://www.loyalbooks.com/image/layout2/John-Keats-Selected-Poems.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "john_keats_selected_poems_lw_librivox",
+   "audioZip": "https://www.archive.org/download/john_keats_selected_poems_lw_librivox/john_keats_selected_poems_lw_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "some-poems-of-shakespeare-by-william-shakespeare",
+   "title": "Some Poems of Shakespeare",
+   "author": "William Shakespeare",
+   "url": "https://www.loyalbooks.com/book/some-poems-of-shakespeare-by-william-shakespeare",
+   "cover": "https://www.loyalbooks.com/image/layout2/some-poems-of-shakespeare-by-william-shakespeare.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "poems_shakespeare_c_librivox",
+   "audioZip": "https://www.archive.org/download/poems_shakespeare_c_librivox/poems_shakespeare_c_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "moments-of-vision-and-miscellaneous-verses-selection-by-thomas-hardy",
+   "title": "Moments of Vision",
+   "author": "Thomas Hardy",
+   "url": "https://www.loyalbooks.com/book/moments-of-vision-and-miscellaneous-verses-selection-by-thomas-hardy",
+   "cover": "https://www.loyalbooks.com/image/layout2/moments-of-vision-and-miscellaneous-verses-selection-by-thomas-hardy.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "moments_of_vision_0711_librivox",
+   "audioZip": "https://www.archive.org/download/moments_of_vision_0711_librivox/moments_of_vision_0711_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/MomentsOfVision.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Moments-of-Vision-and-Miscellaneous-Verses-Selection-by-Thomas-Hardy.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/moments-of-vision-and-miscellaneous-verses-selection-by-thomas-hardy.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/3255/pg3255.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "all-round-the-year-by-e-nesbit-and-s-nesbit",
+   "title": "All Round the Year",
+   "author": "Edith Nesbit",
+   "url": "https://www.loyalbooks.com/book/all-round-the-year-by-e-nesbit-and-s-nesbit",
+   "cover": "https://www.loyalbooks.com/image/layout2/all-round-the-year-by-e-nesbit-and-s-nesbit.jpg",
+   "genres": [
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "all_round_the_year_librivox",
+   "audioZip": "https://www.archive.org/download/all_round_the_year_librivox/all_round_the_year_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/All-Round-the-Year-by-E-Nesbit-and-S-Nesbit.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/all-round-the-year-by-e-nesbit-and-s-nesbit.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/20404/pg20404-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "chamber-music-by-james-joyce",
+   "title": "Chamber Music",
+   "author": "James Joyce",
+   "url": "https://www.loyalbooks.com/book/chamber-music-by-james-joyce",
+   "cover": "https://www.loyalbooks.com/image/layout2/chamber-music-by-james-joyce.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "chamber_music_librivox",
+   "audioZip": "https://www.archive.org/download/chamber_music_librivox/chamber_music_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Chamber-Music-by-James-Joyce.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/chamber-music-by-james-joyce.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2817/pg2817.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "On-the-Nature-of-Things",
+   "title": "On the Nature of Things",
+   "author": "Titus Lucretius Carus",
+   "url": "https://www.loyalbooks.com/book/On-the-Nature-of-Things",
+   "cover": "https://www.loyalbooks.com/image/layout2/On-the-Nature-of-Things.jpg",
+   "genres": [
+    "Nature",
+    "Poetry",
+    "Science",
+    "Ancient Texts",
+    "Classics (antiquity)",
+    "Languages"
+   ],
+   "archiveId": "on_the_nature_of_things_1001_librivox",
+   "audioZip": "https://www.archive.org/download/on_the_nature_of_things_1001_librivox/on_the_nature_of_things_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/OnTheNatureOfThingsPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/On-the-Nature-of-Things.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/On-the-Nature-of-Things.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/7/8/785/785-h/785-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "in-memoriam-ahh-by-alfred-lord-tennyson",
+   "title": "In Memoriam A.H.H.",
+   "author": "Alfred, Lord Tennyson",
+   "url": "https://www.loyalbooks.com/book/in-memoriam-ahh-by-alfred-lord-tennyson",
+   "cover": "https://www.loyalbooks.com/image/layout2/in-memoriam-ahh-by-alfred-lord-tennyson.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "in_memoriam_ahh_ek_librivox",
+   "audioZip": "https://www.archive.org/download/in_memoriam_ahh_ek_librivox/in_memoriam_ahh_ek_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "a-few-figs-from-thistles-by-edna-st-vincent-millay",
+   "title": "A Few Figs from Thistles",
+   "author": "Edna St. Vincent Millay",
+   "url": "https://www.loyalbooks.com/book/a-few-figs-from-thistles-by-edna-st-vincent-millay",
+   "cover": "https://www.loyalbooks.com/image/layout2/a-few-figs-from-thistles-by-edna-st-vincent-millay.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "figs_from_thistles_klh_librivox",
+   "audioZip": "https://www.archive.org/download/figs_from_thistles_klh_librivox/figs_from_thistles_klh_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Few-Figs-from-Thistles-by-Edna-St-Vincent-Millay.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/a-few-figs-from-thistles-by-edna-st-vincent-millay.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4399/pg4399.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Eighteenth-Century-Poetry",
+   "title": "Eighteenth Century Poetry and Prose Collection",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/Eighteenth-Century-Poetry",
+   "cover": "https://www.loyalbooks.com/image/layout2/Eighteenth-Century-Poetry.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Poetry"
+   ],
+   "archiveId": "18th_century_poetry_prose_0910_librivox",
+   "audioZip": "https://www.archive.org/download/18th_century_poetry_prose_0910_librivox/18th_century_poetry_prose_0910_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-song-of-roland-by-anonymus",
+   "title": "The Song of Roland",
+   "author": "Anonymous",
+   "url": "https://www.loyalbooks.com/book/the-song-of-roland-by-anonymus",
+   "cover": "https://www.loyalbooks.com/image/layout2/Song-of-Roland.jpg",
+   "genres": [
+    "Myths/Legends",
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "song_of_roland_0907_librivox",
+   "audioZip": "https://www.archive.org/download/song_of_roland_0907_librivox/song_of_roland_0907_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Song-of-Roland-by-Anonymus.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Song-of-Roland-by-Anonymus.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/391/pg391.html.utf8",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-congo-by-vachel-lindsay",
+   "title": "The Congo",
+   "author": "Vachel Lindsay",
+   "url": "https://www.loyalbooks.com/book/the-congo-by-vachel-lindsay",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-congo-by-vachel-lindsay.jpg",
+   "genres": [
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "congo_librivox",
+   "audioZip": "https://www.archive.org/download/congo_librivox/congo_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Congo-and-Others.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-congo-by-vachel-lindsay.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1021/pg1021.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Gitanjali-Rabindranath-Tagore",
+   "title": "Gitanjali",
+   "author": "Rabindranath Tagore",
+   "url": "https://www.loyalbooks.com/book/Gitanjali-Rabindranath-Tagore",
+   "cover": "https://www.loyalbooks.com/image/layout2/Gitanjali-Rabindranath-Tagore.jpg",
+   "genres": [
+    "Poetry",
+    "Languages"
+   ],
+   "archiveId": "gitanjali_1002_librivox",
+   "audioZip": "https://www.archive.org/download/gitanjali_1002_librivox/gitanjali_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Gitanjali.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Gitanjali-Rabindranath-Tagore.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Gitanjali-Rabindranath-Tagore.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/7164/pg7164.html.utf8",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Anatomy-of-Melancholy-1",
+   "title": "The Anatomy of Melancholy",
+   "author": "Robert Burton",
+   "url": "https://www.loyalbooks.com/book/Anatomy-of-Melancholy-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Anatomy-of-Melancholy-1.jpg",
+   "genres": [
+    "Literature",
+    "Instruction",
+    "Poetry",
+    "Psychology",
+    "Non-fiction"
+   ],
+   "archiveId": "anatomy_of_melancholy_1005_librivox",
+   "audioZip": "https://www.archive.org/download/anatomy_of_melancholy_1005_librivox/anatomy_of_melancholy_1005_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/AnatomyOfMelancholyVolume1Part1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Anatomy-of-Melancholy.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Anatomy-of-Melancholy.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/files/10800/10800-h/ampart3.html",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "sleep-book-by-leolyn-louise-everett",
+   "title": "Sleep-Book",
+   "author": "Leolyn Louise Everett",
+   "url": "https://www.loyalbooks.com/book/sleep-book-by-leolyn-louise-everett",
+   "cover": "https://www.loyalbooks.com/image/layout2/sleep-book-by-leolyn-louise-everett.jpg",
+   "genres": [
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "sllep_book_cjrg_librivox",
+   "audioZip": "https://www.archive.org/download/sllep_book_cjrg_librivox/sllep_book_cjrg_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Sleep-Book-by-Leolyn-Louise-Everett.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/sleep-book-by-leolyn-louise-everett.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/16637/pg16637-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "folk-tales-from-many-lands-by-lilian-gask",
+   "title": "Folk Tales from Many Lands",
+   "author": "Lilian Gask",
+   "url": "https://www.loyalbooks.com/book/folk-tales-from-many-lands-by-lilian-gask",
+   "cover": "https://www.loyalbooks.com/image/layout2/Folk-Tales-from-Many-Lands.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "folk_tales_from_many_lands_k_livrivox",
+   "audioZip": "https://www.archive.org/download/folk_tales_from_many_lands_k_livrivox/folk_tales_from_many_lands_k_livrivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/FolkTalesFromManyLands-48kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-man-from-snowy-river-and-other-verses-by-andrew-barton-banjo-paterson",
+   "title": "The Man from Snowy River and other Verses",
+   "author": "Andrew B. Paterson",
+   "url": "https://www.loyalbooks.com/book/the-man-from-snowy-river-and-other-verses-by-andrew-barton-banjo-paterson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Man-from-snowy-river-and-other-verses-by-andrew-barton.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "manfromsnowyriver_0906_librivox",
+   "audioZip": "https://www.archive.org/download/manfromsnowyriver_0906_librivox/manfromsnowyriver_0906_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Man-from-Snowy-River-and-Other-Verses.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-man-from-snowy-river-and-other-verses-by-andrew-barton-banjo-paterson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/213/pg213.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "a-soup-of-alphabets-from-a-z",
+   "title": "A Soup of Alphabets from A-Z",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/a-soup-of-alphabets-from-a-z",
+   "cover": "https://www.loyalbooks.com/image/layout2/Soup-of-Alphabets-from-A-Z.jpg",
+   "genres": [
+    "Kids",
+    "Instruction",
+    "Poetry"
+   ],
+   "archiveId": "soup_of_alphabets_0806_librivox",
+   "audioZip": "https://www.archive.org/download/soup_of_alphabets_0806_librivox/soup_of_alphabets_0806_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-hallel-psalms-113-118-translated-by-the-jewish-publication-society",
+   "title": "The Hallel (Psalms 113-118)",
+   "author": "Jewish Publication Society of America",
+   "url": "https://www.loyalbooks.com/book/the-hallel-psalms-113-118-translated-by-the-jewish-publication-society",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-hallel-psalms-113-118-translated-by-the-jewish-publication-society.jpg",
+   "genres": [
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "tanakh_jps_14_hallel_0712_librivox",
+   "audioZip": "https://www.archive.org/download/tanakh_jps_14_hallel_0712_librivox/tanakh_jps_14_hallel_0712_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Worlds-Best-Literature-Ancient-and-Modern-1",
+   "title": "Library of the World's Best Literature, Ancient and Modern",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/Worlds-Best-Literature-Ancient-and-Modern-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Worlds-Best-Literature-Ancient-and-Modern-1.jpg",
+   "genres": [
+    "Fiction",
+    "Poetry",
+    "Short stories",
+    "Literature"
+   ],
+   "archiveId": "library_worlds_best_literature_01_1007_librivox",
+   "audioZip": "https://www.archive.org/download/library_worlds_best_literature_01_1007_librivox/library_worlds_best_literature_01_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/LibraryOfTheWorldsBestLiteratureAncientAndModernVolume1Part1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Worlds-Best-Literature-Ancient-and-Modern-1.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Worlds-Best-Literature-Ancient-and-Modern.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/2/3/6/12369/12369-h/12369-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "tender-buttons-by-gertrude-stein",
+   "title": "Tender Buttons",
+   "author": "Gertrude Stein",
+   "url": "https://www.loyalbooks.com/book/tender-buttons-by-gertrude-stein",
+   "cover": "https://www.loyalbooks.com/image/layout2/tender-buttons-by-gertrude-stein.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "tenderbuttons_cs_librivox",
+   "audioZip": "https://www.archive.org/download/tenderbuttons_cs_librivox/tenderbuttons_cs_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Tender-Buttons-by-Gertrude-Stein.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/tender-buttons-by-gertrude-stein.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/15396/pg15396.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "young-adventure-by-stephen-vincent-benet",
+   "title": "A Selection from Young Adventure, A Book of Poems",
+   "author": "Stephen Vincent Benét",
+   "url": "https://www.loyalbooks.com/book/young-adventure-by-stephen-vincent-benet",
+   "cover": "https://www.loyalbooks.com/image/layout2/young-adventure-by-stephen-vincent-benet.jpg",
+   "genres": [
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "poems_benet_bn_librivox",
+   "audioZip": "https://www.archive.org/download/poems_benet_bn_librivox/poems_benet_bn_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/YoungAdventureBookOfPoems.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Young-Adventure-by-Stephen-Vincent-Benet.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/young-adventure-by-stephen-vincent-benet.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/312/pg312.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-jingle-book-by-carolyn-wells",
+   "title": "The Jingle Book",
+   "author": "Carolyn Wells",
+   "url": "https://www.loyalbooks.com/book/the-jingle-book-by-carolyn-wells",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-jingle-book-by-carolyn-wells.jpg",
+   "genres": [
+    "Animals",
+    "Kids",
+    "Humor",
+    "Poetry",
+    "Fiction"
+   ],
+   "archiveId": "jingle_book_blb_librivox",
+   "audioZip": "https://www.archive.org/download/jingle_book_blb_librivox/jingle_book_blb_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/JingleBook.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Jingle-Book-by-Carolyn-Wells.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-jingle-book-by-carolyn-wells.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/24560/pg24560-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Fisherman-and-His-Soul",
+   "title": "The Fisherman and His Soul",
+   "author": "Oscar Wilde",
+   "url": "https://www.loyalbooks.com/book/Fisherman-and-His-Soul",
+   "cover": "https://www.loyalbooks.com/image/layout2/Fisherman-and-His-Soul.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Short stories",
+    "Kids",
+    "Poetry",
+    "Fairy tales"
+   ],
+   "archiveId": "fisherman_and_soul_gm_librivox",
+   "audioZip": "https://www.archive.org/download/fisherman_and_soul_gm_librivox/fisherman_and_soul_gm_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/FishermanAndSoul_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Fisherman-and-His-Soul.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Fisherman-and-His-Soul.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/etext97/hpomg10h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Robert-Burns-250th-Anniversary-Collection",
+   "title": "Robert Burns 250th Anniversary Collection",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/Robert-Burns-250th-Anniversary-Collection",
+   "cover": "https://www.loyalbooks.com/image/layout2/Robert-Burns-250th-Anniversary-Collection.jpg",
+   "genres": [
+    "Fiction",
+    "Poetry"
+   ],
+   "archiveId": "robert_burns_250th_anniversary_1002_librivox",
+   "audioZip": "https://www.archive.org/download/robert_burns_250th_anniversary_1002_librivox/robert_burns_250th_anniversary_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/RobertBurns250thAnniversary.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "psalms-and-odes-of-solomon",
+   "title": "The Psalms and Odes of Solomon",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/psalms-and-odes-of-solomon",
+   "cover": "https://www.loyalbooks.com/image/layout2/psalms-and-odes-of-solomon.jpg",
+   "genres": [
+    "Non-fiction",
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "psalms_odes_solomon_0902_librivox",
+   "audioZip": "https://www.archive.org/download/psalms_odes_solomon_0902_librivox/psalms_odes_solomon_0902_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-first-book-of-urizen-by-william-blake",
+   "title": "The First Book of Urizen",
+   "author": "William Blake",
+   "url": "https://www.loyalbooks.com/book/the-first-book-of-urizen-by-william-blake",
+   "cover": "https://www.loyalbooks.com/image/layout2/Urizen-1-William-Blake.jpg",
+   "genres": [
+    "Fantasy",
+    "Poetry"
+   ],
+   "archiveId": "urizen_0907_librivox",
+   "audioZip": "https://www.archive.org/download/urizen_0907_librivox/urizen_0907_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/Librivoxm4bCollectionAudiobooks_12/FirstBookOfUrizen.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "cornhuskers_by_carl_sandburg",
+   "title": "Cornhuskers",
+   "author": "Carl Sandburg",
+   "url": "https://www.loyalbooks.com/book/cornhuskers_by_carl_sandburg",
+   "cover": "https://www.loyalbooks.com/image/layout2/Cornhuskers-by-carl-sandburg.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "cornhuskers_librivox",
+   "audioZip": "https://www.archive.org/download/cornhuskers_librivox/cornhuskers_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Cornhuskers.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "poems-series-one-by-emily-dickinson",
+   "title": "Poems: Series One",
+   "author": "Emily Dickinson",
+   "url": "https://www.loyalbooks.com/book/poems-series-one-by-emily-dickinson",
+   "cover": "https://www.loyalbooks.com/image/layout2/poems-series-one-by-emily-dickinson.jpg",
+   "genres": [
+    "Literature",
+    "Nature",
+    "Poetry"
+   ],
+   "archiveId": "poems_series1_dickinson_stl_librivox",
+   "audioZip": "https://www.archive.org/download/poems_series1_dickinson_stl_librivox/poems_series1_dickinson_stl_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Poems-Series-One-by-Emily-Dickinson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Poems-Series-One-by-Emily-Dickinson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2678/pg2678.html.utf8",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "elegiac-sonnets-and-other-poems-by-charlotte-turner-smith",
+   "title": "Elegiac Sonnets and Other Poems",
+   "author": "Charlotte Turner Smith",
+   "url": "https://www.loyalbooks.com/book/elegiac-sonnets-and-other-poems-by-charlotte-turner-smith",
+   "cover": "https://www.loyalbooks.com/image/layout2/Elegiac-Sonnets-and-Other-Poems.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "elegiac_sonnets_0903_librivox",
+   "audioZip": "https://www.archive.org/download/elegiac_sonnets_0903_librivox/elegiac_sonnets_0903_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/ElegiacSonnetsAndOtherPoems.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "poems-by-marianne-moore",
+   "title": "Poems",
+   "author": "Marianne Moore",
+   "url": "https://www.loyalbooks.com/book/poems-by-marianne-moore",
+   "cover": "https://www.loyalbooks.com/image/layout2/poems-by-marianne-moore.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "poems_moore_og_librivox",
+   "audioZip": "https://www.archive.org/download/poems_moore_og_librivox/poems_moore_og_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/Poems.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "astrophil-and-stella-by-sir-philip-sidney",
+   "title": "Astrophil and Stella",
+   "author": "Sir Philip Sidney",
+   "url": "https://www.loyalbooks.com/book/astrophil-and-stella-by-sir-philip-sidney",
+   "cover": "https://www.loyalbooks.com/image/layout2/astrophil-and-stella-by-sir-philip-sidney.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "astrophil_stella_0711_librivox",
+   "audioZip": "https://www.archive.org/download/astrophil_stella_0711_librivox/astrophil_stella_0711_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/AstrophilAndStella.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Selected-Poems-Christina-Rossetti",
+   "title": "Selected Poems",
+   "author": "Christina & Dante Gabriel Rossetti",
+   "url": "https://www.loyalbooks.com/book/Selected-Poems-Christina-Rossetti",
+   "cover": "https://www.loyalbooks.com/image/layout2/Selected-Poems-Christina-Rossetti.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "selected_poems_rossetti_lw_librivox",
+   "audioZip": "https://www.archive.org/download/selected_poems_rossetti_lw_librivox/selected_poems_rossetti_lw_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/SelectedPoemsByRossetti.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "temperance-gems-by-william-mcgonagall",
+   "title": "Temperance Gems",
+   "author": "William McGonagall",
+   "url": "https://www.loyalbooks.com/book/temperance-gems-by-william-mcgonagall",
+   "cover": "https://www.loyalbooks.com/image/layout2/temperance-gems-by-william-mcgonagall.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "temperance_gems_0804_librivox",
+   "audioZip": "https://www.archive.org/download/temperance_gems_0804_librivox/temperance_gems_0804_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "fables-in-rhyme-for-little-folks-by-jean-de-la-fontaine",
+   "title": "Fables in Rhyme for Little Folks",
+   "author": "Jean de La Fontaine",
+   "url": "https://www.loyalbooks.com/book/fables-in-rhyme-for-little-folks-by-jean-de-la-fontaine",
+   "cover": "https://www.loyalbooks.com/image/layout2/Fables-in-Rhyme-for-Little-Folks.jpg",
+   "genres": [
+    "Animals",
+    "Kids",
+    "Poetry",
+    "Fiction",
+    "Literature",
+    "Myths/Legends"
+   ],
+   "archiveId": "fables_in_rhyme_08_07_librivox",
+   "audioZip": "https://www.archive.org/download/fables_in_rhyme_08_07_librivox/fables_in_rhyme_08_07_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Fables-in-Rhyme-for-Little-Folks-by-Jean-De-La-Fontaine.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/fables-in-rhyme-for-little-folks-by-jean-de-la-fontaine.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/24108/pg24108-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "selected-early-poems-of-william-carlos-williams-0903",
+   "title": "Selected Early Poems of William Carlos Williams",
+   "author": "William Carlos Williams",
+   "url": "https://www.loyalbooks.com/book/selected-early-poems-of-william-carlos-williams-0903",
+   "cover": "https://www.loyalbooks.com/image/layout2/selected-early-poems-of-william-carlos-williams-0903.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "selected_early_poems_of_william_carlos_williams_add_0903_librivox-1",
+   "audioZip": "https://www.archive.org/download/selected_early_poems_of_william_carlos_williams_add_0903_librivox-1/selected_early_poems_of_william_carlos_williams_add_0903_librivox-1_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "don-juan-canto-v-by-george-gordon-byron",
+   "title": "Don Juan, Canto V",
+   "author": "Lord George Gordon Byron",
+   "url": "https://www.loyalbooks.com/book/don-juan-canto-v-by-george-gordon-byron",
+   "cover": "https://www.loyalbooks.com/image/layout2/don-juan-canto-v-by-george-gordon-byron.jpg",
+   "genres": [
+    "Poetry",
+    "Literature",
+    "Myths/Legends"
+   ],
+   "archiveId": "donjuan_5_0901_librivox",
+   "audioZip": "https://www.archive.org/download/donjuan_5_0901_librivox/donjuan_5_0901_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Don-Juan-Canto-V-by-George-Gordon-Byron.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/don-juan-canto-v-by-george-gordon-byron.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21700/pg21700-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "essay-on-criticism-by-alexander-pope",
+   "title": "An Essay on Criticism",
+   "author": "Alexander Pope",
+   "url": "https://www.loyalbooks.com/book/essay-on-criticism-by-alexander-pope",
+   "cover": "https://www.loyalbooks.com/image/layout2/essay-on-criticism-by-alexander-pope.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "essay_criticism_0906_librivox",
+   "audioZip": "https://www.archive.org/download/essay_criticism_0906_librivox/essay_criticism_0906_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Essay-on-Criticism-by-Alexander-Pope.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/essay-on-criticism-by-alexander-pope.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/7409/pg7409.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-constant-lover-by-sir-john-suckling",
+   "title": "The Constant Lover",
+   "author": "Sir John Suckling",
+   "url": "https://www.loyalbooks.com/book/the-constant-lover-by-sir-john-suckling",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-constant-lover-by-sir-john-suckling.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "constantlover_0805_librivox",
+   "audioZip": "https://www.archive.org/download/constantlover_0805_librivox/constantlover_0805_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "flower-fables-by-louisa-may-alcott",
+   "title": "Flower Fables",
+   "author": "Louisa May Alcott",
+   "url": "https://www.loyalbooks.com/book/flower-fables-by-louisa-may-alcott",
+   "cover": "https://www.loyalbooks.com/image/layout2/flower-fables-by-louisa-may-alcott.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Fairy tales",
+    "Poetry",
+    "Short stories",
+    "Teen/Young adult"
+   ],
+   "archiveId": "flower_fables_0909_librivox",
+   "audioZip": "https://www.archive.org/download/flower_fables_0909_librivox/flower_fables_0909_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Flower-Fables-by-Louisa-May-Alcott.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Flower-Fables-by-Louisa-May-Alcott.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/163/163-h/163-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "war-is-kind-collection-by-stephen-crane",
+   "title": "War is Kind (collection)",
+   "author": "Stephen Crane",
+   "url": "https://www.loyalbooks.com/book/war-is-kind-collection-by-stephen-crane",
+   "cover": "https://www.loyalbooks.com/image/layout2/War-is-Kind-collection.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "war_is_kind_librivox",
+   "audioZip": "https://www.archive.org/download/war_is_kind_librivox/war_is_kind_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/War-Is-Kind-Collection-by-Stephen-Crane.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/war-is-kind-collection-by-stephen-crane.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9870/pg9870.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "snow-bound-a-winter-idyl-by-john-greenleaf-whittier",
+   "title": "Snow-Bound: A Winter Idyl",
+   "author": "John Greenleaf Whittier",
+   "url": "https://www.loyalbooks.com/book/snow-bound-a-winter-idyl-by-john-greenleaf-whittier",
+   "cover": "https://www.loyalbooks.com/image/layout2/Snow-Bound-A-Winter-Idyl.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "snowbound_pht_librivox",
+   "audioZip": "https://www.archive.org/download/snowbound_pht_librivox/snowbound_pht_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/SnowBound.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Snow-Bound-a-Winter-Idyl-by-John-Greenleaf-Whittier.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/snow-bound-a-winter-idyl-by-john-greenleaf-whittier.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9571/pg9571.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-keepsake-by-anonymous",
+   "title": "The Keepsake",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/the-keepsake-by-anonymous",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-keepsake-by-anonymous.jpg",
+   "genres": [
+    "Advice",
+    "Kids",
+    "Poetry",
+    "Fiction"
+   ],
+   "archiveId": "keepsake_the_ss_librivox",
+   "audioZip": "https://www.archive.org/download/keepsake_the_ss_librivox/keepsake_the_ss_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Keepsake-by-Anonymous.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-keepsake-by-anonymous.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/23457/pg23457-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-dawn-and-the-day-by-henry-thayer-niles",
+   "title": "The Dawn and the Day",
+   "author": "Henry Thayer Niles",
+   "url": "https://www.loyalbooks.com/book/the-dawn-and-the-day-by-henry-thayer-niles",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-dawn-and-the-day-by-henry-thayer-niles.jpg",
+   "genres": [
+    "Fiction",
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "dawn_and_day_0802_librivox",
+   "audioZip": "https://www.archive.org/download/dawn_and_day_0802_librivox/dawn_and_day_0802_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/DawnAndTheDay.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Dawn-and-the-Day-by-Henry-Thayer-Niles.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-dawn-and-the-day-by-henry-thayer-niles.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/14360/pg14360.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Poetry-Miscellany-1",
+   "title": "Poetry Miscellany 01",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/Poetry-Miscellany-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Poetry-Miscellany-1.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "poetry_miscellany_01_add_librivox",
+   "audioZip": "https://www.archive.org/download/poetry_miscellany_01_add_librivox/poetry_miscellany_01_add_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "poems-recorded-in-deptford-and-greenwich-by-various",
+   "title": "Poems Recorded in Deptford and Greenwich",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/poems-recorded-in-deptford-and-greenwich-by-various",
+   "cover": "https://www.loyalbooks.com/image/layout2/poems-recorded-in-deptford-and-greenwich-by-various.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "poems_recorded_in_deptford_and_greenwich_0805_librivox",
+   "audioZip": "https://www.archive.org/download/poems_recorded_in_deptford_and_greenwich_0805_librivox/poems_recorded_in_deptford_and_greenwich_0805_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "poetry-miscellany-02",
+   "title": "Poetry Miscellany 02",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/poetry-miscellany-02",
+   "cover": "https://www.loyalbooks.com/image/layout2/poetry-miscellany-02.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "poetry_miscellany_02_add_librivox",
+   "audioZip": "https://www.archive.org/download/poetry_miscellany_02_add_librivox/poetry_miscellany_02_add_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "specimen-days-by-walt-whitman",
+   "title": "Specimen Days",
+   "author": "Walt Whitman",
+   "url": "https://www.loyalbooks.com/book/specimen-days-by-walt-whitman",
+   "cover": "https://www.loyalbooks.com/image/layout2/specimen-days-by-walt-whitman.jpg",
+   "genres": [
+    "Memoirs",
+    "Poetry",
+    "Travel"
+   ],
+   "archiveId": "specimen_days_0810_librivox",
+   "audioZip": "https://www.archive.org/download/specimen_days_0810_librivox/specimen_days_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/SpecimenDaysPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Specimen-Days-by-Walt-Whitman.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/specimen-days-by-walt-whitman.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/8813/pg8813.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "a-selection-of-australian-poetry-and-prose",
+   "title": "A Selection of Australian Poetry and Prose",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/a-selection-of-australian-poetry-and-prose",
+   "cover": "https://www.loyalbooks.com/image/layout2/a-selection-of-australian-poetry-and-prose.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "selection_australian_0806_librivox",
+   "audioZip": "https://www.archive.org/download/selection_australian_0806_librivox/selection_australian_0806_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Charles-Dickens-200th-Anniversary-Collection-1",
+   "title": "Charles Dickens 200th Anniversary Collection Vol. 1",
+   "author": "Charles Dickens",
+   "url": "https://www.loyalbooks.com/book/Charles-Dickens-200th-Anniversary-Collection-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Charles-Dickens-200th-Anniversary-Collection-1.jpg",
+   "genres": [
+    "Art",
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Poetry",
+    "Politics",
+    "Short stories"
+   ],
+   "archiveId": "dickens200_vol1_1202_librivox",
+   "audioZip": "https://www.archive.org/download/dickens200_vol1_1202_librivox/dickens200_vol1_1202_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/Dickens_200th_vol1.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "milton-a-poem-by-william-blake",
+   "title": "Milton: a Poem",
+   "author": "William Blake",
+   "url": "https://www.loyalbooks.com/book/milton-a-poem-by-william-blake",
+   "cover": "https://www.loyalbooks.com/image/layout2/milton-a-poem-by-william-blake.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "milton_0908_librivox",
+   "audioZip": "https://www.archive.org/download/milton_0908_librivox/milton_0908_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Ars-Poetica-and-Carmen-Saeculare",
+   "title": "Ars Poetica and Carmen Saeculare",
+   "author": "Quintus H. H. Flaccus",
+   "url": "https://www.loyalbooks.com/book/Ars-Poetica-and-Carmen-Saeculare",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ars-Poetica-and-Carmen-Saeculare.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "ars_poetica_carmen_secularae_horace_0406_leni_librivox3",
+   "audioZip": "https://www.archive.org/download/ars_poetica_carmen_secularae_horace_0406_leni_librivox3/ars_poetica_carmen_secularae_horace_0406_leni_librivox3_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-eclogues-by-publius-vergilius-maro",
+   "title": "The Eclogues",
+   "author": "Publius Vergilius Maro",
+   "url": "https://www.loyalbooks.com/book/the-eclogues-by-publius-vergilius-maro",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-eclogues-by-publius-vergilius-maro.jpg",
+   "genres": [
+    "Poetry",
+    "Classics (antiquity)",
+    "Languages"
+   ],
+   "archiveId": "eclogues_0810_librivox",
+   "audioZip": "https://www.archive.org/download/eclogues_0810_librivox/eclogues_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Eclogues.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Eclogues-by-Publius-Vergilius-Maro.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-eclogues-by-publius-vergilius-maro.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/230/pg230.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "bib-ballads-by-ring-lardner",
+   "title": "Bib Ballads",
+   "author": "Ring Lardner",
+   "url": "https://www.loyalbooks.com/book/bib-ballads-by-ring-lardner",
+   "cover": "https://www.loyalbooks.com/image/layout2/bib-ballads-by-ring-lardner.jpg",
+   "genres": [
+    "Kids",
+    "Literature",
+    "Historical Fiction",
+    "Poetry"
+   ],
+   "archiveId": "bibballads_0811_librivox",
+   "audioZip": "https://www.archive.org/download/bibballads_0811_librivox/bibballads_0811_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/BibBallads.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Bib-Ballads-by-Ring-Lardner.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/bib-ballads-by-ring-lardner.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/25961/pg25961-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "selected-riley-child-rhymes-by-james-whitcomb-riley",
+   "title": "Selected Riley Child-Rhymes",
+   "author": "James Whitcomb Riley",
+   "url": "https://www.loyalbooks.com/book/selected-riley-child-rhymes-by-james-whitcomb-riley",
+   "cover": "https://www.loyalbooks.com/image/layout2/selected-riley-child-rhymes-by-james-whitcomb-riley.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Poetry"
+   ],
+   "archiveId": "selected_riley_childrhymes_vg_0902",
+   "audioZip": "https://www.archive.org/download/selected_riley_childrhymes_vg_0902/selected_riley_childrhymes_vg_0902_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Autumn-Leaves-Anne-Wales",
+   "title": "Autumn Leaves, Original Pieces in Prose and Verse",
+   "author": "Anne Wales Abbott ed.",
+   "url": "https://www.loyalbooks.com/book/Autumn-Leaves-Anne-Wales",
+   "cover": "https://www.loyalbooks.com/image/layout2/Autumn-Leaves-Anne-Wales.jpg",
+   "genres": [
+    "Fiction",
+    "Humor",
+    "Memoirs",
+    "Poetry",
+    "Short stories",
+    "Literature"
+   ],
+   "archiveId": "autumnleaves_1010_librivox",
+   "audioZip": "https://www.archive.org/download/autumnleaves_1010_librivox/autumnleaves_1010_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Autumn-Leaves-Anne-Wales.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Autumn-Leaves-Anne-Wales.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/17189/pg17189.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "selection-from-many-voices-by-e-nesbit",
+   "title": "Many Voices (selection from)",
+   "author": "Edith Nesbit",
+   "url": "https://www.loyalbooks.com/book/selection-from-many-voices-by-e-nesbit",
+   "cover": "https://www.loyalbooks.com/image/layout2/selection-from-many-voices-by-e-nesbit.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "many_voices_librivox",
+   "audioZip": "https://www.archive.org/download/many_voices_librivox/many_voices_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Selection-from-Many-Voices-by-E-Nesbit.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/selection-from-many-voices-by-e-nesbit.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1924/pg1924.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "hymns-to-the-night-by-novalis",
+   "title": "Hymns to the Night",
+   "author": "Novalis",
+   "url": "https://www.loyalbooks.com/book/hymns-to-the-night-by-novalis",
+   "cover": "https://www.loyalbooks.com/image/layout2/hymns-to-the-night-by-novalis.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "hymns_night_pw_librivox",
+   "audioZip": "https://www.archive.org/download/hymns_night_pw_librivox/hymns_night_pw_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Balder-Dead-Matthew-Arnold",
+   "title": "Balder Dead",
+   "author": "Matthew Arnold",
+   "url": "https://www.loyalbooks.com/book/Balder-Dead-Matthew-Arnold",
+   "cover": "https://www.loyalbooks.com/image/layout2/Balder-Dead-Matthew-Arnold.jpg",
+   "genres": [
+    "Myths/Legends",
+    "Poetry"
+   ],
+   "archiveId": "balderdead_0911_librivox",
+   "audioZip": "https://www.archive.org/download/balderdead_0911_librivox/balderdead_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/Balder_Dead.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "renascence-and-other-poems-by-edna-st-vincent-millay",
+   "title": "Renascence and Other Poems",
+   "author": "Edna St. Vincent Millay",
+   "url": "https://www.loyalbooks.com/book/renascence-and-other-poems-by-edna-st-vincent-millay",
+   "cover": "https://www.loyalbooks.com/image/layout2/renascence-and-other-poems-by-edna-st-vincent-millay.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "renascence_millay_ll_librivox",
+   "audioZip": "https://www.archive.org/download/renascence_millay_ll_librivox/renascence_millay_ll_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Renascence-and-Other-Poems-by-Edna-St-Vincent-Millay.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/renascence-and-other-poems-by-edna-st-vincent-millay.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/109/pg109.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Humour-of-the-North",
+   "title": "Humour of the North",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/Humour-of-the-North",
+   "cover": "https://www.loyalbooks.com/image/layout2/Humour-of-the-North.jpg",
+   "genres": [
+    "Fiction",
+    "Humor",
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "humour_ofthe_north_0912_librivox",
+   "audioZip": "https://www.archive.org/download/humour_ofthe_north_0912_librivox/humour_ofthe_north_0912_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks_11/HumourOfTheNorth.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Humour-of-the-North.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Humour-of-the-North.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/25041/pg25041-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "second-april-by-edna-st-vincent-millay",
+   "title": "Second April",
+   "author": "Edna St. Vincent Millay",
+   "url": "https://www.loyalbooks.com/book/second-april-by-edna-st-vincent-millay",
+   "cover": "https://www.loyalbooks.com/image/layout2/Second-April-Edna-St-Vincent-Millay.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "second_april_klh_0904_librivox",
+   "audioZip": "https://www.archive.org/download/second_april_klh_0904_librivox/second_april_klh_0904_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/SecondApril.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Second-April-by-Edna-St-Vincent-Millay.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/second-april-by-edna-st-vincent-millay.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1247/pg1247.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Selection-of-Divine-Poems",
+   "title": "A Selection of Divine Poems",
+   "author": "John Donne",
+   "url": "https://www.loyalbooks.com/book/Selection-of-Divine-Poems",
+   "cover": "https://www.loyalbooks.com/image/layout2/Selection-of-Divine-Poems.jpg",
+   "genres": [
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "selectionofdivinepoems_gdsd_1004_librivox",
+   "audioZip": "https://www.archive.org/download/selectionofdivinepoems_gdsd_1004_librivox/selectionofdivinepoems_gdsd_1004_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Samson-Agonistes",
+   "title": "Samson Agonistes",
+   "author": "John Milton",
+   "url": "https://www.loyalbooks.com/book/Samson-Agonistes",
+   "cover": "https://www.loyalbooks.com/image/layout2/Samson-Agonistes.jpg",
+   "genres": [
+    "Dramatic Works",
+    "Literature",
+    "Play",
+    "Poetry",
+    "Tragedy"
+   ],
+   "archiveId": "samson_agonistes_0912_librivox",
+   "audioZip": "https://www.archive.org/download/samson_agonistes_0912_librivox/samson_agonistes_0912_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Samson-Agonistes.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Samson-Agonistes.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1745/pg1745.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Vintage-Verse-Rhapsody-a-Poetry-Collection",
+   "title": "Vintage Verse Rhapsody A Poetry Collection",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/Vintage-Verse-Rhapsody-a-Poetry-Collection",
+   "cover": "https://www.loyalbooks.com/image/layout2/Vintage-Verse-Rhapsody-A-Poetry-Collection.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "vintage_verse_rhapsody_1108_librivox",
+   "audioZip": "https://www.archive.org/download/vintage_verse_rhapsody_1108_librivox/vintage_verse_rhapsody_1108_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Rape-of-the-Lock",
+   "title": "The Rape of the Lock",
+   "author": "Alexander Pope",
+   "url": "https://www.loyalbooks.com/book/Rape-of-the-Lock",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Rape-of-the-Lock.jpg",
+   "genres": [
+    "Poetry",
+    "Satire"
+   ],
+   "archiveId": "rape_lock_rf_librivox",
+   "audioZip": "https://www.archive.org/download/rape_lock_rf_librivox/rape_lock_rf_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Poems-Katherine-Philips-Matchless-Orinda",
+   "title": "Poems by the Most Deservedly Admired Mrs. Katherine Philips, The Matchless Orinda",
+   "author": "Katherine Philips",
+   "url": "https://www.loyalbooks.com/book/Poems-Katherine-Philips-Matchless-Orinda",
+   "cover": "https://www.loyalbooks.com/image/layout2/Poems-Katherine-Philips-Matchless-Orinda.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "matchless_orinda_0911",
+   "audioZip": "https://www.archive.org/download/matchless_orinda_0911/matchless_orinda_0911_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Poems_matchless_orinda.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "the-forest-by-ben-jonson",
+   "title": "The Forest",
+   "author": "Ben Jonson",
+   "url": "https://www.loyalbooks.com/book/the-forest-by-ben-jonson",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-forest-by-ben-jonson.jpg",
+   "genres": [
+    "Poetry",
+    "Romance"
+   ],
+   "archiveId": "forest_sg_librivox",
+   "audioZip": "https://www.archive.org/download/forest_sg_librivox/forest_sg_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Battle-of-Marathon",
+   "title": "The Battle of Marathon",
+   "author": "Elizabeth Barrett Browning",
+   "url": "https://www.loyalbooks.com/book/Battle-of-Marathon",
+   "cover": "https://www.loyalbooks.com/image/layout2/Battle-of-Marathon.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "battle_marathon_n_librivox",
+   "audioZip": "https://www.archive.org/download/battle_marathon_n_librivox/battle_marathon_n_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/BattleOfMarathon.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Lord-of-the-Isles",
+   "title": "The Lord of the Isles",
+   "author": "Sir Walter Scott",
+   "url": "https://www.loyalbooks.com/book/Lord-of-the-Isles",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lord-of-the-Isles.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "lord_of_isles_1011_librivox",
+   "audioZip": "https://www.archive.org/download/lord_of_isles_1011_librivox/lord_of_isles_1011_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/LordOfTheIsles.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "From-The-Temple",
+   "title": "From The Temple",
+   "author": "George Herbert",
+   "url": "https://www.loyalbooks.com/book/From-The-Temple",
+   "cover": "https://www.loyalbooks.com/image/layout2/From-The-Temple.jpg",
+   "genres": [
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "fromthetemple_0912_librivox",
+   "audioZip": "https://www.archive.org/download/fromthetemple_0912_librivox/fromthetemple_0912_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/FromTheTemple.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Tales-of-a-Wayside-Inn",
+   "title": "Tales of a Wayside Inn",
+   "author": "Henry Wadsworth Longfellow",
+   "url": "https://www.loyalbooks.com/book/Tales-of-a-Wayside-Inn",
+   "cover": "https://www.loyalbooks.com/image/layout2/Tales-of-a-Wayside-Inn.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "tales_wayside_inn_1005_librivox",
+   "audioZip": "https://www.archive.org/download/tales_wayside_inn_1005_librivox/tales_wayside_inn_1005_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Tales_Wayside_Inn.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Tales-of-a-Wayside-Inn.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Tales-of-a-Wayside-Inn.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/25153/pg25153-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Farmers-Bride",
+   "title": "The Farmer's Bride",
+   "author": "Charlotte Mew",
+   "url": "https://www.loyalbooks.com/book/Farmers-Bride",
+   "cover": "https://www.loyalbooks.com/image/layout2/Farmers-Bride.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "farmers_bride_1001_librivox",
+   "audioZip": "https://www.archive.org/download/farmers_bride_1001_librivox/farmers_bride_1001_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Pippa-Passes",
+   "title": "Pippa Passes",
+   "author": "Robert Browning",
+   "url": "https://www.loyalbooks.com/book/Pippa-Passes",
+   "cover": "https://www.loyalbooks.com/image/layout2/Pippa-Passes.jpg",
+   "genres": [
+    "Dramatic Works",
+    "Play",
+    "Poetry"
+   ],
+   "archiveId": "pippa_passes_0911_librivox",
+   "audioZip": "https://www.archive.org/download/pippa_passes_0911_librivox/pippa_passes_0911_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Tristram-and-Iseult-Sohrab-and-Rustum",
+   "title": "Tristram and Iseult & Sohrab and Rustum",
+   "author": "Matthew Arnold",
+   "url": "https://www.loyalbooks.com/book/Tristram-and-Iseult-Sohrab-and-Rustum",
+   "cover": "https://www.loyalbooks.com/image/layout2/Tristram-and-Iseult-Sohrab-and-Rustum.jpg",
+   "genres": [
+    "Myths/Legends",
+    "Poetry"
+   ],
+   "archiveId": "narrativepoems_arnold_0912_librivox",
+   "audioZip": "https://www.archive.org/download/narrativepoems_arnold_0912_librivox/narrativepoems_arnold_0912_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Idylls-of-the-King-by-Tennyson",
+   "title": "Idylls of the King",
+   "author": "Alfred, Lord Tennyson",
+   "url": "https://www.loyalbooks.com/book/Idylls-of-the-King-by-Tennyson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Idylls-of-the-King.jpg",
+   "genres": [
+    "Literature",
+    "Poetry",
+    "Romance",
+    "Myths/Legends"
+   ],
+   "archiveId": "idyllsoftheking_etk_librivox",
+   "audioZip": "https://www.archive.org/download/idyllsoftheking_etk_librivox/idyllsoftheking_etk_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Idylls-of-the-King-by-Tennyson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Idylls-of-the-King-by-Tennyson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/610/pg610.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Don-Juan-Cantos-13-16",
+   "title": "Don Juan, Cantos 13 -16",
+   "author": "Lord George Gordon Byron",
+   "url": "https://www.loyalbooks.com/book/Don-Juan-Cantos-13-16",
+   "cover": "https://www.loyalbooks.com/image/layout2/Don-Juan-Cantos-13-16.jpg",
+   "genres": [
+    "Adventure",
+    "Fiction",
+    "Myths/Legends",
+    "Poetry",
+    "Romance"
+   ],
+   "archiveId": "don_juan_cantos_13_16_1102_librivox",
+   "audioZip": "https://www.archive.org/download/don_juan_cantos_13_16_1102_librivox/don_juan_cantos_13_16_1102_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Lays-of-Ancient-Rome",
+   "title": "The Lays of Ancient Rome",
+   "author": "Thomas Babington Macaulay",
+   "url": "https://www.loyalbooks.com/book/Lays-of-Ancient-Rome",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lays-of-Ancient-Rome.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "lays_ancient_rome_1005_librivox",
+   "audioZip": "https://www.archive.org/download/lays_ancient_rome_1005_librivox/lays_ancient_rome_1005_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/LaysOfAncientRome.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Wanderings-of-Oisin",
+   "title": "The Wanderings of Oisín",
+   "author": "William Butler Yeats",
+   "url": "https://www.loyalbooks.com/book/Wanderings-of-Oisin",
+   "cover": "https://www.loyalbooks.com/image/layout2/Wanderings-of-Oisin.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "wanderings_oisin_1001_librivox",
+   "audioZip": "https://www.archive.org/download/wanderings_oisin_1001_librivox/wanderings_oisin_1001_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Ballad-of-St-Barbara",
+   "title": "The Ballad of St. Barbara and Other Verses",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/Ballad-of-St-Barbara",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ballad-of-St-Barbara.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "balladstbarbara_1104_librivox",
+   "audioZip": "https://www.archive.org/download/balladstbarbara_1104_librivox/balladstbarbara_1104_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Ballad-of-St-Barbara.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ballad-of-St-Barbara.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/32167/pg32167.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Divine-Enchantment",
+   "title": "The Divine Enchantment",
+   "author": "John Neihardt",
+   "url": "https://www.loyalbooks.com/book/Divine-Enchantment",
+   "cover": "https://www.loyalbooks.com/image/layout2/Divine-Enchantment.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "divine_enchantment_1010_librivox",
+   "audioZip": "https://www.archive.org/download/divine_enchantment_1010_librivox/divine_enchantment_1010_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/DivineEnchantment.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Poems-G-K-Chesterton",
+   "title": "Poems",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/Poems-G-K-Chesterton",
+   "cover": "https://www.loyalbooks.com/image/layout2/Poems-G-K-Chesterton.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "poems_1102_librivox",
+   "audioZip": "https://www.archive.org/download/poems_1102_librivox/poems_1102_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Poems-G-K-Chesterton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Poems-G-K-Chesterton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/31184/pg31184.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Lara-A-Tale",
+   "title": "Lara, A Tale",
+   "author": "Lord George Gordon Byron",
+   "url": "https://www.loyalbooks.com/book/Lara-A-Tale",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lara-A-Tale.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "lara_a_tale_1009_librivox",
+   "audioZip": "https://www.archive.org/download/lara_a_tale_1009_librivox/lara_a_tale_1009_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/LaraATale.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Lusiads-Luis-Vaz-de-Camoes",
+   "title": "The Lusiads",
+   "author": "Luis Vaz de Camões",
+   "url": "https://www.loyalbooks.com/book/Lusiads-Luis-Vaz-de-Camoes",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lusiads-Luis-Vaz-de-Camoes.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "Literature",
+    "Poetry",
+    "Travel"
+   ],
+   "archiveId": "lusiads_1002_librivox",
+   "audioZip": "https://www.archive.org/download/lusiads_1002_librivox/lusiads_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks_11/Lusiads-Part1.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Ballads-of-Lost-Haven-Book-of-the-Sea",
+   "title": "Ballads of Lost Haven: A Book of the Sea",
+   "author": "Bliss Carman",
+   "url": "https://www.loyalbooks.com/book/Ballads-of-Lost-Haven-Book-of-the-Sea",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ballads-of-Lost-Haven-Book-of-the-Sea.jpg",
+   "genres": [
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "ballads_losthaven_1004_librivox",
+   "audioZip": "https://www.archive.org/download/ballads_losthaven_1004_librivox/ballads_losthaven_1004_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/BalladsOfLostHaven-ABookOfTheSea.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Ballads-of-Lost-Haven-Book-of-the-Sea.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ballads-of-Lost-Haven-Book-of-the-Sea.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/18268/pg18268-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Songs-of-a-Sentimental-Bloke",
+   "title": "The Songs of a Sentimental Bloke",
+   "author": "C. J. Dennis",
+   "url": "https://www.loyalbooks.com/book/Songs-of-a-Sentimental-Bloke",
+   "cover": "https://www.loyalbooks.com/image/layout2/Songs-of-a-Sentimental-Bloke.jpg",
+   "genres": [
+    "Adventure",
+    "Myths/Legends",
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "songs_sentimentalbloke_1011_librivox",
+   "audioZip": "https://www.archive.org/download/songs_sentimentalbloke_1011_librivox/songs_sentimentalbloke_1011_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/Songssentimentalbloke.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Songs-of-a-Sentimental-Bloke.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Songs-of-a-Sentimental-Bloke.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4730/pg4730.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Billy-in-Bunbury",
+   "title": "Billy in Bunbury",
+   "author": "Royal Baking Powder Company",
+   "url": "https://www.loyalbooks.com/book/Billy-in-Bunbury",
+   "cover": "https://www.loyalbooks.com/image/layout2/Billy-in-Bunbury.jpg",
+   "genres": [
+    "Cookery",
+    "Poetry"
+   ],
+   "archiveId": "billy_in_bunbury_pc_librivox",
+   "audioZip": "https://www.archive.org/download/billy_in_bunbury_pc_librivox/billy_in_bunbury_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Speaking-Voice",
+   "title": "The Speaking Voice",
+   "author": "Katherine Jewell Everts",
+   "url": "https://www.loyalbooks.com/book/Speaking-Voice",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Speaking-Voice.jpg",
+   "genres": [
+    "Advice",
+    "Instruction",
+    "Poetry",
+    "Short stories",
+    "Non-fiction"
+   ],
+   "archiveId": "speaking_voice_rg_librivox",
+   "audioZip": "https://www.archive.org/download/speaking_voice_rg_librivox/speaking_voice_rg_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Harold-the-Dauntless",
+   "title": "Harold the Dauntless",
+   "author": "Sir Walter Scott",
+   "url": "https://www.loyalbooks.com/book/Harold-the-Dauntless",
+   "cover": "https://www.loyalbooks.com/image/layout2/Harold-the-Dauntless.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "harold_dauntless_1008_librivox",
+   "audioZip": "https://www.archive.org/download/harold_dauntless_1008_librivox/harold_dauntless_1008_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/HaroldTheDauntless.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Translations-Imitations-of-German-Ballads",
+   "title": "Translations & Imitations of German Ballads",
+   "author": "Sir Walter Scott",
+   "url": "https://www.loyalbooks.com/book/Translations-Imitations-of-German-Ballads",
+   "cover": "https://www.loyalbooks.com/image/layout2/Translations-Imitations-of-German-Ballads.jpg",
+   "genres": [
+    "Fiction",
+    "Poetry"
+   ],
+   "archiveId": "translations_imitations_german_ballads_gds_librivox",
+   "audioZip": "https://www.archive.org/download/translations_imitations_german_ballads_gds_librivox/translations_imitations_german_ballads_gds_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Bridal-of-Triermain",
+   "title": "The Bridal of Triermain",
+   "author": "Sir Walter Scott",
+   "url": "https://www.loyalbooks.com/book/Bridal-of-Triermain",
+   "cover": "https://www.loyalbooks.com/image/layout2/Bridal-of-Triermain.jpg",
+   "genres": [
+    "Fiction",
+    "Poetry"
+   ],
+   "archiveId": "bridal_triermain_1007_librivox",
+   "audioZip": "https://www.archive.org/download/bridal_triermain_1007_librivox/bridal_triermain_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/BridalOfTriermain.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Selected-Works-Poems",
+   "title": "Selected Works: Poems",
+   "author": "Voltairine de Cleyre",
+   "url": "https://www.loyalbooks.com/book/Selected-Works-Poems",
+   "cover": "https://www.loyalbooks.com/image/layout2/Selected-Works-Poems.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "selected_poems_cleyre_0911_librivox",
+   "audioZip": "https://www.archive.org/download/selected_poems_cleyre_0911_librivox/selected_poems_cleyre_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/SelectedWorks-Poems.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Clear-CrystalsSmElements-of-Geology",
+   "title": "Clear Crystals",
+   "author": "Clara M. Beede",
+   "url": "https://www.loyalbooks.com/book/Clear-CrystalsSmElements-of-Geology",
+   "cover": "https://www.loyalbooks.com/image/layout2/Clear-CrystalsSmElements-of-Geology.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "clearcrystals_jp_librivox",
+   "audioZip": "https://www.archive.org/download/clearcrystals_jp_librivox/clearcrystals_jp_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Clear-Crystalssmelements-of-Geology.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Clear-CrystalsSmElements-of-Geology.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/15209/pg15209-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "One-Hoss-Shay",
+   "title": "The One-Hoss Shay",
+   "author": "Oliver Wendell Holmes",
+   "url": "https://www.loyalbooks.com/book/One-Hoss-Shay",
+   "cover": "https://www.loyalbooks.com/image/layout2/One-Hoss-Shay.jpg",
+   "genres": [
+    "Humor",
+    "Poetry",
+    "Literature"
+   ],
+   "archiveId": "onehossshay_1010_librivox",
+   "audioZip": "https://www.archive.org/download/onehossshay_1010_librivox/onehossshay_1010_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Onehossshay_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/One-Hoss-Shay.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/One-Hoss-Shay.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/30279/pg30279-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Ramayana-English-by-Valmiki",
+   "title": "The Ramayana Book 2",
+   "author": "Valmiki",
+   "url": "https://www.loyalbooks.com/book/Ramayana-English-by-Valmiki",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Ramayana-Book-2.jpg",
+   "genres": [
+    "Languages",
+    "Poetry",
+    "Ancient Texts",
+    "Religion",
+    "Classics (antiquity)",
+    "Non-fiction"
+   ],
+   "archiveId": "ramayana_2_om_librivox",
+   "audioZip": "https://www.archive.org/download/ramayana_2_om_librivox/ramayana_2_om_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Ramayana-English-by-Valmiki.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ramayana-English-by-Valmiki.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/8/6/24869/24869-h/24869-h.html",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Public-Domain-Hymns-01",
+   "title": "Public Domain Hymns - 01",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/Public-Domain-Hymns-01",
+   "cover": "https://www.loyalbooks.com/image/layout2/Public-Domain-Hymns-01.jpg",
+   "genres": [
+    "Music",
+    "Poetry"
+   ],
+   "archiveId": "publicdomainhymns_01_1110_librivox",
+   "audioZip": "https://www.archive.org/download/publicdomainhymns_01_1110_librivox/publicdomainhymns_01_1110_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Book-of-Strife-in-the-Form-of-The-Diary-of-an-Ol",
+   "title": "Diary of an Old Soul",
+   "author": "George MacDonald",
+   "url": "https://www.loyalbooks.com/book/Book-of-Strife-in-the-Form-of-The-Diary-of-an-Ol",
+   "cover": "https://www.loyalbooks.com/image/layout2/Diary-of-an-Old-Soul.jpg",
+   "genres": [
+    "Literature",
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "diary_old_soul_1201_librivox",
+   "audioZip": "https://www.archive.org/download/diary_old_soul_1201_librivox/diary_old_soul_1201_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Book-of-Strife-in-the-Form-of-the-Diary-of-An-Ol.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Book-of-Strife-in-the-Form-of-the-Diary-of-An-Ol.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/5/1953/1953-h/1953-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Chesterton-Calendar",
+   "title": "A Chesterton Calendar",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/Chesterton-Calendar",
+   "cover": "https://www.loyalbooks.com/image/layout2/A-Chesterton-Calendar.jpg",
+   "genres": [
+    "Advice",
+    "Poetry",
+    "Non-fiction"
+   ],
+   "archiveId": "chestertoncalendar_1108_librivox",
+   "audioZip": "https://www.archive.org/download/chestertoncalendar_1108_librivox/chestertoncalendar_1108_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Jerusalem-the-Emanation-of-the-Giant-Albion",
+   "title": "Jerusalem - The Emanation of the Giant Albion",
+   "author": "William Blake",
+   "url": "https://www.loyalbooks.com/book/Jerusalem-the-Emanation-of-the-Giant-Albion",
+   "cover": "https://www.loyalbooks.com/image/layout2/Jerusalem-The-Emanation-of-the-Giant-Albion.jpg",
+   "genres": [
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "jerusalem_emanation_1110_librivox",
+   "audioZip": "https://www.archive.org/download/jerusalem_emanation_1110_librivox/jerusalem_emanation_1110_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Lady-of-the-Lake-by-Sir-Walter-Scott",
+   "title": "The Lady of the Lake",
+   "author": "Sir Walter Scott",
+   "url": "https://www.loyalbooks.com/book/Lady-of-the-Lake-by-Sir-Walter-Scott",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Lady-of-the-Lake.jpg",
+   "genres": [
+    "Literature",
+    "Myths/Legends",
+    "Romance",
+    "Poetry"
+   ],
+   "archiveId": "lady_lake_1209_librivox",
+   "audioZip": "https://www.archive.org/download/lady_lake_1209_librivox/lady_lake_1209_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Lady-of-the-Lake-by-Sir-Walter-Scott.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lady-of-the-Lake-by-Sir-Walter-Scott.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/1/3011/3011-h/3011-h.htm",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Works-of-Lord-Byron-Vol-4-by-Byron",
+   "title": "Manfred",
+   "author": "Lord George Gordon Byron",
+   "url": "https://www.loyalbooks.com/book/Works-of-Lord-Byron-Vol-4-by-Byron",
+   "cover": "https://www.loyalbooks.com/image/layout2/Manfred.jpg",
+   "genres": [
+    "Literature",
+    "Poetry",
+    "Horror/Ghost stories",
+    "Play",
+    "Dramatic Works"
+   ],
+   "archiveId": "manfred_1205_librivox",
+   "audioZip": "https://www.archive.org/download/manfred_1205_librivox/manfred_1205_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Works-of-Lord-Byron-vol-4-by-Byron.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Works-of-Lord-Byron-Vol-4-by-Byron.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/20158/pg20158-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Works-of-Lord-Byron-Vol-3-by-Byron",
+   "title": "The Giaour",
+   "author": "Lord George Gordon Byron",
+   "url": "https://www.loyalbooks.com/book/Works-of-Lord-Byron-Vol-3-by-Byron",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Giaour.jpg",
+   "genres": [
+    "Literature",
+    "Poetry",
+    "Adventure",
+    "Romance"
+   ],
+   "archiveId": "giaour_1201_gh_librivox",
+   "audioZip": "https://www.archive.org/download/giaour_1201_gh_librivox/giaour_1201_gh_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Works-of-Lord-Byron-vol-3-by-Byron.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Works-of-Lord-Byron-Vol-3-by-Byron.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21811/pg21811-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Wild-Swans-at-Coole-by-W-B-Yeats",
+   "title": "The Wild Swans at Coole",
+   "author": "William Butler Yeats",
+   "url": "https://www.loyalbooks.com/book/Wild-Swans-at-Coole-by-W-B-Yeats",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Wild-Swans-at-Coole.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "wild_swans_coole_1205_librivox",
+   "audioZip": "https://www.archive.org/download/wild_swans_coole_1205_librivox/wild_swans_coole_1205_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Wild-Swans-at-Coole-by-W-B-Yeats.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Wild-Swans-at-Coole-by-W-B-Yeats.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/32491/pg32491-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Aucassin-and-Nicolette",
+   "title": "Aucassin and Nicolette.",
+   "author": "Francis William Bourdillon",
+   "url": "https://www.loyalbooks.com/book/Aucassin-and-Nicolette",
+   "cover": "https://www.loyalbooks.com/image/layout2/Aucassin-and-Nicolette.jpg",
+   "genres": [
+    "Literature",
+    "Myths/Legends",
+    "Romance",
+    "Fiction",
+    "Poetry"
+   ],
+   "archiveId": "aucassin_nicolette_1107_librivox",
+   "audioZip": "https://www.archive.org/download/aucassin_nicolette_1107_librivox/aucassin_nicolette_1107_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Aucassin-and-Nicolete.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Aucassin-and-Nicolette.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1578/pg1578.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Nonsense-Songs-by-Edward-Lear",
+   "title": "Nonsense Songs, Stories, Botany and Alphabets",
+   "author": "Edward Lear",
+   "url": "https://www.loyalbooks.com/book/Nonsense-Songs-by-Edward-Lear",
+   "cover": "https://www.loyalbooks.com/image/layout2/Nonsense-Songs-Stories-Botany-and-Alphabets.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Humor",
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "nonsensesongs_ap_librivox",
+   "audioZip": "https://www.archive.org/download/nonsensesongs_ap_librivox/nonsensesongs_ap_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Nonsense-Songs-by-Edward-Lear.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Nonsense-Songs-by-Edward-Lear.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/13647/pg13647-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Wine-Water-and-Song-by-G-K-Chesterton",
+   "title": "Wine, Water and Song",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/Wine-Water-and-Song-by-G-K-Chesterton",
+   "cover": "https://www.loyalbooks.com/image/layout2/Wine-Water-and-Song.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "winewatersong_1111_librivox",
+   "audioZip": "https://www.archive.org/download/winewatersong_1111_librivox/winewatersong_1111_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Wine-Water-and-Song-by-G-K-Chesterton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Wine-Water-and-Song-by-G-K-Chesterton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/35115/pg35115-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Eugene-Oneguine",
+   "title": "Eugene Onéguine",
+   "author": "Alexander Pushkin",
+   "url": "https://www.loyalbooks.com/book/Eugene-Oneguine",
+   "cover": "https://www.loyalbooks.com/image/layout2/Eugene-Oneguine.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Poetry",
+    "Romance"
+   ],
+   "archiveId": "eugene_oneguine_ma_librivox",
+   "audioZip": "https://www.archive.org/download/eugene_oneguine_ma_librivox/eugene_oneguine_ma_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Siege-of-Corinth",
+   "title": "The Siege of Corinth",
+   "author": "Lord George Gordon Byron",
+   "url": "https://www.loyalbooks.com/book/Siege-of-Corinth",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Siege-of-Corinth.jpg",
+   "genres": [
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "siege_of_corinth_0227_librivox",
+   "audioZip": "https://www.archive.org/download/siege_of_corinth_0227_librivox/siege_of_corinth_0227_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Masque-of-Anarchy",
+   "title": "The Masque of Anarchy",
+   "author": "Percy Bysshe Shelley",
+   "url": "https://www.loyalbooks.com/book/Masque-of-Anarchy",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Masque-of-Anarchy.jpg",
+   "genres": [
+    "Poetry",
+    "Politics"
+   ],
+   "archiveId": "masque_of_anarchy_pb_librivox",
+   "audioZip": "https://www.archive.org/download/masque_of_anarchy_pb_librivox/masque_of_anarchy_pb_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Rhymed-Receipts-for-Any-Occasion",
+   "title": "Rhymed Receipts for Any Occasion",
+   "author": "Imogen Clark",
+   "url": "https://www.loyalbooks.com/book/Rhymed-Receipts-for-Any-Occasion",
+   "cover": "https://www.loyalbooks.com/image/layout2/Rhymed-Receipts-for-Any-Occasion.jpg",
+   "genres": [
+    "Cookery",
+    "Humor",
+    "Instruction",
+    "Poetry",
+    "Non-fiction"
+   ],
+   "archiveId": "rhymed_receipts_any_occasion_1107_librivox",
+   "audioZip": "https://www.archive.org/download/rhymed_receipts_any_occasion_1107_librivox/rhymed_receipts_any_occasion_1107_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Rhymed_Receipts_64kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "London-Plane-Tree-and-Other-Verse",
+   "title": "A London Plane-Tree, and Other Verse",
+   "author": "Amy Levy",
+   "url": "https://www.loyalbooks.com/book/London-Plane-Tree-and-Other-Verse",
+   "cover": "https://www.loyalbooks.com/image/layout2/A-London-Plane-Tree-and-Other-Verse.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "london_plane_tree_1205_librivox",
+   "audioZip": "https://www.archive.org/download/london_plane_tree_1205_librivox/london_plane_tree_1205_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Pearl-by-Sophie-Jewett",
+   "title": "Pearl",
+   "author": "The Gawain Poet",
+   "url": "https://www.loyalbooks.com/book/Pearl-by-Sophie-Jewett",
+   "cover": "https://www.loyalbooks.com/image/layout2/Pearl.jpg",
+   "genres": [
+    "Literature",
+    "Poetry",
+    "Religion"
+   ],
+   "archiveId": "pearl_1209_librivox",
+   "audioZip": "https://www.archive.org/download/pearl_1209_librivox/pearl_1209_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Pearl-by-Sophie-Jewett.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Pearl-by-Sophie-Jewett.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/13211/pg13211.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Jerusalem-Delivered-by-Torquato-Tasso",
+   "title": "Jerusalem Delivered",
+   "author": "Torquato Tasso",
+   "url": "https://www.loyalbooks.com/book/Jerusalem-Delivered-by-Torquato-Tasso",
+   "cover": "https://www.loyalbooks.com/image/layout2/Jerusalem-Delivered.jpg",
+   "genres": [
+    "History",
+    "Literature",
+    "Poetry",
+    "Fiction",
+    "Historical Fiction"
+   ],
+   "archiveId": "jerusalem_delivered_1207_librivox",
+   "audioZip": "https://www.archive.org/download/jerusalem_delivered_1207_librivox/jerusalem_delivered_1207_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Jerusalem-Delivered-by-Torquato-Tasso.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Jerusalem-Delivered-by-Torquato-Tasso.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/392/pg392.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Poems-by-Emily-Dickinson-Series-Two-by-Dickinson",
+   "title": "Poems: Series Two",
+   "author": "Emily Dickinson",
+   "url": "https://www.loyalbooks.com/book/Poems-by-Emily-Dickinson-Series-Two-by-Dickinson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Poems-Series-Two.jpg",
+   "genres": [
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "poems_seriestwo_la_librivox",
+   "audioZip": "https://www.archive.org/download/poems_seriestwo_la_librivox/poems_seriestwo_la_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Poems-by-Emily-Dickinson-Series-Two-by-Dickinson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Poems-by-Emily-Dickinson-Series-Two-by-Dickinson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2679/pg2679.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Liber-Amoris-or-the-New-Pygmalion-by-Hazlitt",
+   "title": "Liber Amoris",
+   "author": "William Hazlitt",
+   "url": "https://www.loyalbooks.com/book/Liber-Amoris-or-the-New-Pygmalion-by-Hazlitt",
+   "cover": "https://www.loyalbooks.com/image/layout2/Liber-Amoris.jpg",
+   "genres": [
+    "Biography",
+    "Epistolary fiction",
+    "Literature",
+    "Poetry",
+    "Romance"
+   ],
+   "archiveId": "liber_amoris_1209_librivox",
+   "audioZip": "https://www.archive.org/download/liber_amoris_1209_librivox/liber_amoris_1209_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Liber-Amoris-or-the-New-Pygmalion-by-Hazlitt.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Liber-Amoris-or-the-New-Pygmalion-by-Hazlitt.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2049/pg2049.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Mind-Amongst-the-Spindles",
+   "title": "Mind Amongst the Spindles",
+   "author": "Charles Knight",
+   "url": "https://www.loyalbooks.com/book/Mind-Amongst-the-Spindles",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mind-Amongst-the-Spindles.jpg",
+   "genres": [
+    "Fiction",
+    "Poetry",
+    "Short stories"
+   ],
+   "archiveId": "mind_among_spindles_librivox_mas",
+   "audioZip": "https://www.archive.org/download/mind_among_spindles_librivox_mas/mind_among_spindles_librivox_mas_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Mind-Amongst-the-Spindles.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mind-Amongst-the-Spindles.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/37471/pg37471-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Australian-Miscellany",
+   "title": "Australian Miscellany",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/Australian-Miscellany",
+   "cover": "https://www.loyalbooks.com/image/layout2/Australian-Miscellany.jpg",
+   "genres": [
+    "History",
+    "Poetry",
+    "Travel",
+    "Non-fiction"
+   ],
+   "archiveId": "australian_miscelleny_1210",
+   "audioZip": "https://www.archive.org/download/australian_miscelleny_1210/australian_miscelleny_1210_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "An-Alphabet-of-History",
+   "title": "An Alphabet of History",
+   "author": "Wilbur D. Nesbit",
+   "url": "https://www.loyalbooks.com/book/An-Alphabet-of-History",
+   "cover": "https://www.loyalbooks.com/image/layout2/An-Alphabet-of-History.jpg",
+   "genres": [
+    "History",
+    "Poetry"
+   ],
+   "archiveId": "alphabet_history_1208_librivox",
+   "audioZip": "https://www.archive.org/download/alphabet_history_1208_librivox/alphabet_history_1208_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/ebooks/39626",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Freedmens-Book",
+   "title": "The Freedmen's Book",
+   "author": "Lydia Maria Child",
+   "url": "https://www.loyalbooks.com/book/Freedmens-Book",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Freedmens-Book.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "History",
+    "Poetry",
+    "Non-fiction"
+   ],
+   "archiveId": "freedmens_book_1207_librivox",
+   "audioZip": "https://www.archive.org/download/freedmens_book_1207_librivox/freedmens_book_1207_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/ebooks/38479",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Christmas-Roses",
+   "title": "Christmas Roses",
+   "author": "Lizzie Lawson and Robert Ellice Mack",
+   "url": "https://www.loyalbooks.com/book/Christmas-Roses",
+   "cover": "https://www.loyalbooks.com/image/layout2/Christmas-Roses.jpg",
+   "genres": [
+    "Kids",
+    "Poetry"
+   ],
+   "archiveId": "christmas_roses_1210_librivox",
+   "audioZip": "https://www.archive.org/download/christmas_roses_1210_librivox/christmas_roses_1210_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Carolina-Chansons-by-Allen-and-Heyward",
+   "title": "Carolina Chansons: Legends of the Low Country",
+   "author": "DuBose Heyward",
+   "url": "https://www.loyalbooks.com/book/Carolina-Chansons-by-Allen-and-Heyward",
+   "cover": "https://www.loyalbooks.com/image/layout2/Carolina-Chansons-Legends-of-the-Low-Country.jpg",
+   "genres": [
+    "Poetry"
+   ],
+   "archiveId": "carolinachansons_1210_librivox",
+   "audioZip": "https://www.archive.org/download/carolinachansons_1210_librivox/carolinachansons_1210_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Carolina-Chansons-by-Allen-and-Heyward.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Carolina-Chansons-by-Allen-and-Heyward.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/16064/pg16064-images.mobi",
+   "cluster": "poetry"
+  },
+  {
+   "slug": "Omar-Resung",
+   "title": "Omar Resung",
+   "author": "Charles Blanden",
+   "url": "https://www.loyalbooks.com/book/Omar-Resung",
+   "cover": "https://www.loyalbooks.com/image/layout2/Omar-Resung.jpg",
+   "genres": [
+    "Literature",
+    "Poetry"
+   ],
+   "archiveId": "omar_resung_1205_librivox",
+   "audioZip": "https://www.archive.org/download/omar_resung_1205_librivox/omar_resung_1205_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "poetry"
+  }
+ ]
+}

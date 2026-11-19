@@ -1,0 +1,2816 @@
+{
+ "version": 1,
+ "cluster": "history",
+ "label": "History & Biography",
+ "source": "https://www.loyalbooks.com/genre/History?type=all",
+ "fetchedAt": "2026-11-16T13:01:41.570Z",
+ "rights": "Public domain (US): LibriVox narration via archive.org, ebook text via Project Gutenberg / LoyalBooks. Every title here is listed by LoyalBooks, whose catalog is public-domain only, so nothing in copyright is crawled or shipped. See docs/classics-audiobooks.md.",
+ "books": [
+  {
+   "slug": "history-of-the-united-states-vol-i-by-charles-and-mary-beard",
+   "title": "History of the United States: The Colonial Period Onwards",
+   "author": "Charles Austin Beard",
+   "url": "https://www.loyalbooks.com/book/history-of-the-united-states-vol-i-by-charles-and-mary-beard",
+   "cover": "https://www.loyalbooks.com/image/layout2/5.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "us_history_vol1_librivox",
+   "audioZip": "https://www.archive.org/download/us_history_vol1_librivox/us_history_vol1_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HistoryOfTheUnitedStatesVolume1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/History-of-the-United-States.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/History-of-the-United-States.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/9/6/16960/16960-h/16960-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "this-country-of-ours-part-1-by-he-marshall",
+   "title": "This Country of Ours",
+   "author": "Henrietta Elizabeth Marshall",
+   "url": "https://www.loyalbooks.com/book/this-country-of-ours-part-1-by-he-marshall",
+   "cover": "https://www.loyalbooks.com/image/layout2/This-Country-of-Ours-Part-1.jpg",
+   "genres": [
+    "Politics",
+    "Kids",
+    "History",
+    "Short stories",
+    "Teen/Young adult",
+    "Non-fiction"
+   ],
+   "archiveId": "this_country_pt1_ks",
+   "audioZip": "https://www.archive.org/download/this_country_pt1_ks/this_country_pt1_ks_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/ThisCountryOfOursPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/This-Country-of-Ours.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/This-Country-of-Ours.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/3761/pg3761.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "history-of-england-volume-1-chapter-1",
+   "title": "The History of England, from the Accession of James the Second",
+   "author": "Thomas Babington Macaulay",
+   "url": "https://www.loyalbooks.com/book/history-of-england-volume-1-chapter-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/History-of-England-from-the-A.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "history_of_england_v1_ch1_librivox",
+   "audioZip": "https://www.archive.org/download/history_of_england_v1_ch1_librivox/history_of_england_v1_ch1_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/HistoryOfEnglandChapter0132kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/History-of-England.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/History-of-England.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/4/6/1468/1468-h/1468-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "history-of-holland",
+   "title": "History of Holland",
+   "author": "George Edmundson",
+   "url": "https://www.loyalbooks.com/book/history-of-holland",
+   "cover": "https://www.loyalbooks.com/image/layout2/History-of-Holland.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "history_of_holland__0707_librivox",
+   "audioZip": "https://www.archive.org/download/history_of_holland__0707_librivox/history_of_holland__0707_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HistoryOfHollandPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/History-of-Holland.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/History-of-Holland.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/4/9/7/14971/14971-h/14971-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-book-of-art-for-young-people-by-agnes-ethel-conway-and-sir-martin-conway",
+   "title": "The Book of Art for Young People",
+   "author": "Agnes Ethel Conway",
+   "url": "https://www.loyalbooks.com/book/the-book-of-art-for-young-people-by-agnes-ethel-conway-and-sir-martin-conway",
+   "cover": "https://www.loyalbooks.com/image/layout2/Book-of-Art-for-Young-People.jpg",
+   "genres": [
+    "Kids",
+    "History",
+    "Instruction",
+    "Non-fiction",
+    "Art"
+   ],
+   "archiveId": "book_of_art_0807",
+   "audioZip": "https://www.archive.org/download/book_of_art_0807/book_of_art_0807_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/BookOfArtForYoungPeople.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Book-of-Art-for-Young-People.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Book-of-Art-for-Young-People.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/7/3/9/17395/17395-h/17395-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "edison-his-life-by-dyer-and-martin",
+   "title": "Edison, His Life and Inventions",
+   "author": "Frank Lewis Dyer and Thomas Commerford Martin",
+   "url": "https://www.loyalbooks.com/book/edison-his-life-by-dyer-and-martin",
+   "cover": "https://www.loyalbooks.com/image/layout2/Edison-His-Life-and-Inventions.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "edison_his_life_0809_librivox",
+   "audioZip": "https://www.archive.org/download/edison_his_life_0809_librivox/edison_his_life_0809_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/EdisonHisLifeAndInventionsPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Edison-His-Life-by-Dyer-and-Martin.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Edison-His-Life-by-Dyer-and-Martin.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/8/2/820/820-h/820-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "peter-the-great-by-jacob-abbott",
+   "title": "Peter the Great",
+   "author": "Jacob Abbott",
+   "url": "https://www.loyalbooks.com/book/peter-the-great-by-jacob-abbott",
+   "cover": "https://www.loyalbooks.com/image/layout2/Peter-the-Great-by-Jacob-Abbott.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "peter_the_great_0711_librivox",
+   "audioZip": "https://www.archive.org/download/peter_the_great_0711_librivox/peter_the_great_0711_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/PeterTheGreat.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Peter-the-Great-by-Jacob-Abbott.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Peter-the-Great-by-Jacob-Abbott.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/1/8/8/21889/21889-h/21889-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-unsolved-riddle-of-social-justice-by-stephen-leacock",
+   "title": "The Unsolved Riddle of Social Justice",
+   "author": "Stephen Leacock",
+   "url": "https://www.loyalbooks.com/book/the-unsolved-riddle-of-social-justice-by-stephen-leacock",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-unsolved-riddle-of-social-justice-by-stephen-leacock.jpg",
+   "genres": [
+    "Economics/Political Economy",
+    "Non-fiction",
+    "History"
+   ],
+   "archiveId": "unsolvedriddle_0906",
+   "audioZip": "https://www.archive.org/download/unsolvedriddle_0906/unsolvedriddle_0906_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Unsolved-Riddle-of-Social-Justice-by-Stephen-Leacock.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Unsolved-Riddle-of-Social-Justice-by-Stephen-Leacock.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/6/5/22651/22651-h/22651-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-spell-of-egypt-by-robert-smythe-hichens",
+   "title": "The Spell of Egypt",
+   "author": "Robert Smythe Hichens",
+   "url": "https://www.loyalbooks.com/book/the-spell-of-egypt-by-robert-smythe-hichens",
+   "cover": "https://www.loyalbooks.com/image/layout2/Spell-of-Egypt.jpg",
+   "genres": [
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "spell_of_egypt_sd_librivox",
+   "audioZip": "https://www.archive.org/download/spell_of_egypt_sd_librivox/spell_of_egypt_sd_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/SpellOfEgypt.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Spell-of-Egypt-by-Robert-Smythe-Hichens.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Spell-of-Egypt-by-Robert-Smythe-Hichens.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/4/0/3407/3407-h/3407-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "famous-men-of-the-middle-ages-by-john-h-haaren-and-a-b-poland",
+   "title": "Famous Men of the Middle Ages",
+   "author": "John H. Haaren",
+   "url": "https://www.loyalbooks.com/book/famous-men-of-the-middle-ages-by-john-h-haaren-and-a-b-poland",
+   "cover": "https://www.loyalbooks.com/image/layout2/Famous-Men-of-the-Middle-Ages.jpg",
+   "genres": [
+    "Biography",
+    "Kids",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "famous_men_middle_ages_0802_librivox1",
+   "audioZip": "https://www.archive.org/download/famous_men_middle_ages_0802_librivox1/famous_men_middle_ages_0802_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/FamousMenOfTheMiddleAges_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "china-and-the-chinese-by-herbert-allen-giles",
+   "title": "China and the Chinese",
+   "author": "Herbert Allen Giles",
+   "url": "https://www.loyalbooks.com/book/china-and-the-chinese-by-herbert-allen-giles",
+   "cover": "https://www.loyalbooks.com/image/layout2/China-and-the-Chinese.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Languages",
+    "Literature"
+   ],
+   "archiveId": "china_chinese_librivox",
+   "audioZip": "https://www.archive.org/download/china_chinese_librivox/china_chinese_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/ChinaAndTheChinese.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/China-and-the-Chinese-by-Herbert-Allen-Giles.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/China-and-the-Chinese-by-Herbert-Allen-Giles.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/0/2/18021/18021-h/18021-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "bohemian-san-francisco-by-clarence-edwords",
+   "title": "Bohemian San Francisco",
+   "author": "Clarence Edwords",
+   "url": "https://www.loyalbooks.com/book/bohemian-san-francisco-by-clarence-edwords",
+   "cover": "https://www.loyalbooks.com/image/layout2/bohemian-san-francisco-by-clarence-edwords.jpg",
+   "genres": [
+    "Cookery",
+    "Non-fiction",
+    "History"
+   ],
+   "archiveId": "bohemian_sf_librivox",
+   "audioZip": "https://www.archive.org/download/bohemian_sf_librivox/bohemian_sf_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/BohemianSanFrancisco.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Bohemian-San-Francisco-by-Clarence-Edwords.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Bohemian-San-Francisco-by-Clarence-Edwords.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9464/pg9464.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-voyage-of-the-beagle-by-charles-darwin",
+   "title": "The Voyage of the Beagle",
+   "author": "Charles Darwin",
+   "url": "https://www.loyalbooks.com/book/the-voyage-of-the-beagle-by-charles-darwin",
+   "cover": "https://www.loyalbooks.com/image/layout2/Voyage-of-the-Beagle.jpg",
+   "genres": [
+    "History",
+    "Science",
+    "Travel"
+   ],
+   "archiveId": "voyage_beagle_0810_librivox",
+   "audioZip": "https://www.archive.org/download/voyage_beagle_0810_librivox/voyage_beagle_0810_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Voyage-of-the-Beagle-by-Charles-Darwin-2.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-voyage-of-the-beagle-by-charles-darwin.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/3704/pg3704-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "europe-revised-by-irvin-s-cobb",
+   "title": "Europe Revised",
+   "author": "Irwin S. Cobb",
+   "url": "https://www.loyalbooks.com/book/europe-revised-by-irvin-s-cobb",
+   "cover": "https://www.loyalbooks.com/image/layout2/Europe-Revised.jpg",
+   "genres": [
+    "Humor",
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "europe_revised_sd_librivox",
+   "audioZip": "https://www.archive.org/download/europe_revised_sd_librivox/europe_revised_sd_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/EuropeRevised.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Europe-Revised-by-Irvin-S-Cobb.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Europe-Revised-by-Irvin-S-Cobb.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4551/pg4551.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "famous-men-of-modern-times-by-john-h-haaren-and-ab-poland",
+   "title": "Famous Men of Modern Times",
+   "author": "John H. Haaren and A.B. Poland",
+   "url": "https://www.loyalbooks.com/book/famous-men-of-modern-times-by-john-h-haaren-and-ab-poland",
+   "cover": "https://www.loyalbooks.com/image/layout2/Famous-Men-of-Modern-Times.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "famous_men_modern_times_haaren_0803_librivox",
+   "audioZip": "https://www.archive.org/download/famous_men_modern_times_haaren_0803_librivox/famous_men_modern_times_haaren_0803_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/FamousMenOfModernTimes_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "the-atomic-bombings-of-hiroshima-and-nagasaki-by-us-army-corps-of-engineers",
+   "title": "The Atomic Bombings of Hiroshima & Nagasaki",
+   "author": "US Army Corps of Engineers, Manhattan District",
+   "url": "https://www.loyalbooks.com/book/the-atomic-bombings-of-hiroshima-and-nagasaki-by-us-army-corps-of-engineers",
+   "cover": "https://www.loyalbooks.com/image/layout2/Atomic-Bombings-of-Hiroshima-Nagasaki.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Science"
+   ],
+   "archiveId": "atomic_bombings_0808_librivox",
+   "audioZip": "https://www.archive.org/download/atomic_bombings_0808_librivox/atomic_bombings_0808_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/AtomicBombingsOfHiroshimaNagasaki_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Atomic-Bombings-of-Hiroshima-and-Nagasaki.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Atomic-Bombings-of-Hiroshima-and-Nagasaki.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/685/pg685.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "Hannibal-by-Jacob-Abbott",
+   "title": "Hannibal",
+   "author": "Jacob Abbott",
+   "url": "https://www.loyalbooks.com/book/Hannibal-by-Jacob-Abbott",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hannibal-by-Jacob-Abbott.jpg",
+   "genres": [
+    "Biography",
+    "Kids",
+    "History",
+    "Non-fiction",
+    "Literature",
+    "War stories"
+   ],
+   "archiveId": "hannibal_1004_librivox",
+   "audioZip": "https://www.archive.org/download/hannibal_1004_librivox/hannibal_1004_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HannibalPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Hannibal-by-Jacob-Abbott.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Hannibal-by-Jacob-Abbott.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/5/5/27551/27551-h/27551-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "letters-from-egypt-by-lady-lucie-duff-gordon",
+   "title": "Letters from Egypt",
+   "author": "Lady Lucie Duff-Gordon",
+   "url": "https://www.loyalbooks.com/book/letters-from-egypt-by-lady-lucie-duff-gordon",
+   "cover": "https://www.loyalbooks.com/image/layout2/Letters-from-Egypt.jpg",
+   "genres": [
+    "Memoirs",
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "letters_egypt_sd_librivox",
+   "audioZip": "https://www.archive.org/download/letters_egypt_sd_librivox/letters_egypt_sd_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/LettersFromEgyptV2Part1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Letters-from-Egypt-by-Lady-Lucie-Duff-Gordon.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/letters-from-egypt-by-lady-lucie-duff-gordon.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/17816/pg17816-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "canyons-of-the-colorado-by-john-wesley-powell",
+   "title": "Canyons of the Colorado, or The exploration of the Colorado River and its Canyons",
+   "author": "John Wesley Powell",
+   "url": "https://www.loyalbooks.com/book/canyons-of-the-colorado-by-john-wesley-powell",
+   "cover": "https://www.loyalbooks.com/image/layout2/Colorado-Canyons-and-River.jpg",
+   "genres": [
+    "History",
+    "Memoirs",
+    "Nature",
+    "Non-fiction",
+    "Science",
+    "Travel"
+   ],
+   "archiveId": "canyons_colorado_0712_librivox",
+   "audioZip": "https://www.archive.org/download/canyons_colorado_0712_librivox/canyons_colorado_0712_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/CanyonsOfTheColoradoOrTheExplorationOfTheColoradoRiverAndItsCanyonsPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Canyons-of-the-Colorado-by-John-Wesley-Powell.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Canyons-of-the-Colorado-by-John-Wesley-Powell.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/8/0/8/8082/8082-h/8082-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-autobiography-of-charles-darwin-by-charles-darwin",
+   "title": "The Autobiography of Charles Darwin",
+   "author": "Charles Darwin",
+   "url": "https://www.loyalbooks.com/book/the-autobiography-of-charles-darwin-by-charles-darwin",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-autobiography-of-charles-darwin-by-charles-darwin.jpg",
+   "genres": [
+    "Biography",
+    "Non-fiction",
+    "History",
+    "Science"
+   ],
+   "archiveId": "autobiography_charles_darwin_am_librivox",
+   "audioZip": "https://www.archive.org/download/autobiography_charles_darwin_am_librivox/autobiography_charles_darwin_am_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/AutobiographyOfCharlesDarwin.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Autobiography-of-Charles-Darwin-by-Charles-Darwin.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Autobiography-of-Charles-Darwin-by-Charles-Darwin.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/1/2010/2010-h/2010-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-story-of-a-common-soldier-of-army-life-in-the-civil-war-1861-1865-by-leander-stillwell",
+   "title": "The Story of a Common Soldier of Army Life in the Civil War, 1861-1865",
+   "author": "Leander Stillwell",
+   "url": "https://www.loyalbooks.com/book/the-story-of-a-common-soldier-of-army-life-in-the-civil-war-1861-1865-by-leander-stillwell",
+   "cover": "https://www.loyalbooks.com/image/layout2/Common-Soldier-Army-Life-in-the-Civil-War.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Memoirs",
+    "Non-fiction",
+    "War stories"
+   ],
+   "archiveId": "story_of_a_common_soldier_sa_librivox",
+   "audioZip": "https://www.archive.org/download/story_of_a_common_soldier_sa_librivox/story_of_a_common_soldier_sa_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/StoryOfACommonSoldierOfArmyLifeInTheCivilWar1861-1865Part1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Story-of-a-Common-Soldier-of-Army-Life-in-the-Civil-War-1861-1865.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Story-of-a-Common-Soldier-of-Army-Life-in-the-Civil-War.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/5/6/26561/26561-h/26561-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "a-short-life-of-abraham-lincoln-by-john-g-nicolay",
+   "title": "A Short Life of Abraham Lincoln",
+   "author": "John George Nicolay",
+   "url": "https://www.loyalbooks.com/book/a-short-life-of-abraham-lincoln-by-john-g-nicolay",
+   "cover": "https://www.loyalbooks.com/image/layout2/Short-Life-of-Abraham-Lincoln.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "shortlifelincoln_0809_librivox",
+   "audioZip": "https://www.archive.org/download/shortlifelincoln_0809_librivox/shortlifelincoln_0809_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/ShortLifeOfAbrahamLincolnPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Short-Life-of-Abraham-Lincoln-by-John-G-Nicolay.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Short-Life-of-Abraham-Lincoln-by-John-G-Nicolay.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/3/3/16332/16332-h/16332-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Antiquities-of-the-Jews-1",
+   "title": "The Antiquities of the Jews",
+   "author": "Flavius Josephus",
+   "url": "https://www.loyalbooks.com/book/Antiquities-of-the-Jews-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Antiquities-of-the-Jews-1.jpg",
+   "genres": [
+    "Ancient Texts",
+    "Classics (antiquity)",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "antiquities_of_jews_1002_librivox",
+   "audioZip": "https://www.archive.org/download/antiquities_of_jews_1002_librivox/antiquities_of_jews_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/AntiquitiesJewsVol1Pt1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Antiquities-of-the-Jews.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Antiquities-of-the-Jews.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/8/4/2848/2848-h/contents.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-tragedy-of-king-richard-ii-by-william-shakespeare",
+   "title": "King Richard II",
+   "author": "William Shakespeare",
+   "url": "https://www.loyalbooks.com/book/the-tragedy-of-king-richard-ii-by-william-shakespeare",
+   "cover": "https://www.loyalbooks.com/image/layout2/Richard-II.jpg",
+   "genres": [
+    "Dramatic Works",
+    "History",
+    "Tragedy",
+    "Literature",
+    "Play"
+   ],
+   "archiveId": "richard_ii_group_librivox",
+   "audioZip": "https://www.archive.org/download/richard_ii_group_librivox/richard_ii_group_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Tragedy-of-King-Richard-Ii-by-William-Shakespeare.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Tragedy-of-King-Richard-Ii-by-William-Shakespeare.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1512/pg1512.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "foxes-book-of-martyrs-vol-1",
+   "title": "Foxe's Book of Martyrs, A History of the Lives",
+   "author": "John Foxe",
+   "url": "https://www.loyalbooks.com/book/foxes-book-of-martyrs-vol-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/foxes-book-of-martyrs-vol-1.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Religion"
+   ],
+   "archiveId": "foxe_book_of_martyrs_vol1_librivox001",
+   "audioZip": "https://www.archive.org/download/foxe_book_of_martyrs_vol1_librivox001/foxe_book_of_martyrs_vol1_librivox001_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/FoxesBookOfMartyrsVolume1Part1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "the-amendments-to-the-constitution-of-the-united-states-of-america",
+   "title": "Bill of Rights & Amendments to the US Constitution",
+   "author": "Founding Fathers of the United States",
+   "url": "https://www.loyalbooks.com/book/the-amendments-to-the-constitution-of-the-united-states-of-america",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-amendments-to-the-constitution-of-the-united-states-of-america.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "amendments_2_librivox",
+   "audioZip": "https://www.archive.org/download/amendments_2_librivox/amendments_2_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "twelve-caesars-by-suetonius",
+   "title": "The Lives of the Twelve Caesars",
+   "author": "Gaius Suetonius Tranquillus",
+   "url": "https://www.loyalbooks.com/book/twelve-caesars-by-suetonius",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lives-of-the-Twelve-Caesars.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "lives_of_twelve_caesars_0810_librivox1",
+   "audioZip": "https://www.archive.org/download/lives_of_twelve_caesars_0810_librivox1/lives_of_twelve_caesars_0810_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/LivesOfTheTwelveCaesars64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Twelve-Caesars-by-Suetonius.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Twelve-Caesars-by-Suetonius.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/6/4/0/6400/6400-h/6400-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-theory-of-social-revolutions-by-brooks-adams",
+   "title": "The Theory of Social Revolutions",
+   "author": "Brooks Adams",
+   "url": "https://www.loyalbooks.com/book/the-theory-of-social-revolutions-by-brooks-adams",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-theory-of-social-revolutions-by-brooks-adams.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Politics"
+   ],
+   "archiveId": "revolutions_librivox",
+   "audioZip": "https://www.archive.org/download/revolutions_librivox/revolutions_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/TheoryOfSocialRevolutions.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Theory-of-Social-Revolutions-by-Brooks-Adams.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Theory-of-Social-Revolutions-by-Brooks-Adams.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/0/6/1/10613/10613-h/10613-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "army-life-in-a-black-regiment-by-thomas-wentworth-higginson",
+   "title": "Army Life in a Black Regiment",
+   "author": "Thomas Wentworth Higginson",
+   "url": "https://www.loyalbooks.com/book/army-life-in-a-black-regiment-by-thomas-wentworth-higginson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Army-Life-in-a-Black-Regiment.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "War stories",
+    "Biography"
+   ],
+   "archiveId": "army_life_0805",
+   "audioZip": "https://www.archive.org/download/army_life_0805/army_life_0805_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/ArmyLifeInABlackRegimentPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Army-Life-in-a-Black-Regiment-by-Thomas-Wentworth-Higginson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Army-Life-in-a-Black-Regiment-by-Thomas-Wentworth-Higginson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/6/7/6/6764/6764-h/6764-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "history-of-the-christian-church-by-samuel-cheetham",
+   "title": "History of the Christian church",
+   "author": "Samuel Cheetham",
+   "url": "https://www.loyalbooks.com/book/history-of-the-christian-church-by-samuel-cheetham",
+   "cover": "https://www.loyalbooks.com/image/layout2/history-of-the-christian-church-by-samuel-cheetham.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Religion"
+   ],
+   "archiveId": "history_christian_church_0906_librivox",
+   "audioZip": "https://www.archive.org/download/history_christian_church_0906_librivox/history_christian_church_0906_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HistoryOfTheChristianChurchPart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "personal-recollections-of-joan-of-arc-by-mark-twain",
+   "title": "Personal Recollections of Joan of Arc, Volumes 1 & 2",
+   "author": "Mark Twain",
+   "url": "https://www.loyalbooks.com/book/personal-recollections-of-joan-of-arc-by-mark-twain",
+   "cover": "https://www.loyalbooks.com/image/layout2/personal-recollections-of-joan-of-arc-by-mark-twain.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "History",
+    "Memoirs",
+    "War stories",
+    "Literature",
+    "Religion"
+   ],
+   "archiveId": "recollections_joan_of_arc_0903_librivox",
+   "audioZip": "https://www.archive.org/download/recollections_joan_of_arc_0903_librivox/recollections_joan_of_arc_0903_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Personal-Recollections-of-Joan-of-Arc-by-Mark-Twain.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Personal-Recollections-of-Joan-of-Arc-by-Mark-Twain.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/8/7/2874/2874-h/2874-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-story-of-abraham-lincoln-by-mary-a-hamilton",
+   "title": "The Story of Abraham Lincoln",
+   "author": "Mary A. Hamilton",
+   "url": "https://www.loyalbooks.com/book/the-story-of-abraham-lincoln-by-mary-a-hamilton",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-story-of-abraham-lincoln-by-mary-a-hamilton.jpg",
+   "genres": [
+    "Biography",
+    "Kids",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "story_abraham_lincoln_hamilton_jl_librivox",
+   "audioZip": "https://www.archive.org/download/story_abraham_lincoln_hamilton_jl_librivox/story_abraham_lincoln_hamilton_jl_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "south-pole-by-roald-amundsen-2",
+   "title": "The South Pole; an account of the Norwegian Antarctic expedition in the Fram, 1910-12",
+   "author": "Roald Amundsen",
+   "url": "https://www.loyalbooks.com/book/south-pole-by-roald-amundsen-2",
+   "cover": "https://www.loyalbooks.com/image/layout2/South-Pole-Norwegian-Antarctic-Expedition.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Science",
+    "Travel",
+    "Art"
+   ],
+   "archiveId": "south_pole_0810_librivox",
+   "audioZip": "https://www.archive.org/download/south_pole_0810_librivox/south_pole_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/SouthPolePart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/South-Pole-by-Roald-Amundsen-2.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/South-Pole-by-Roald-Amundsen.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/etext03/tsp1210h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "a-ladys-life-in-the-rocky-mountains-by-isabella-l-bird",
+   "title": "A Lady's Life in the Rocky Mountains",
+   "author": "Isabella L. Bird",
+   "url": "https://www.loyalbooks.com/book/a-ladys-life-in-the-rocky-mountains-by-isabella-l-bird",
+   "cover": "https://www.loyalbooks.com/image/layout2/a-ladys-life-in-the-rocky-mountains-by-isabella-l-bird.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "History",
+    "Memoirs",
+    "Nature",
+    "Non-fiction",
+    "Travel",
+    "Biography"
+   ],
+   "archiveId": "ladys_life_rocky_mtns_lc_librivox",
+   "audioZip": "https://www.archive.org/download/ladys_life_rocky_mtns_lc_librivox/ladys_life_rocky_mtns_lc_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/LadysLifeInTheRockyMountainsPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Ladys-Life-in-the-Rocky-Mountains-by-Isabella-L-Bird.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ladys-Life-in-the-Rocky-Mountains-by-Isabella-L-Bird.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/7/5/755/755-h/755-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "great-pirate-stories-by-joseph-lewis-french",
+   "title": "Great Pirate Stories",
+   "author": "Joseph Lewis French",
+   "url": "https://www.loyalbooks.com/book/great-pirate-stories-by-joseph-lewis-french",
+   "cover": "https://www.loyalbooks.com/image/layout2/Great-Pirate-Stories.jpg",
+   "genres": [
+    "History",
+    "Art"
+   ],
+   "archiveId": "great_pirate_stories_0905_librivox.org",
+   "audioZip": "https://www.archive.org/download/great_pirate_stories_0905_librivox.org/great_pirate_stories_0905_librivox.org_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/GreatPirateStoriesPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Great-Pirate-Stories-by-Joseph-Lewis-French.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Great-Pirate-Stories-by-Joseph-Lewis-French.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/0/9/27090/27090-h/27090-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "popular-history-of-ireland-book-01-by-thomas-darcy-mcgee",
+   "title": "Popular History of Ireland",
+   "author": "Thomas D’Arcy McGee",
+   "url": "https://www.loyalbooks.com/book/popular-history-of-ireland-book-01-by-thomas-darcy-mcgee",
+   "cover": "https://www.loyalbooks.com/image/layout2/popular-history-of-ireland-book-01-by-thomas-darcy-mcgee.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "popular_history_ireland_book01_0803_librivox1",
+   "audioZip": "https://www.archive.org/download/popular_history_ireland_book01_0803_librivox1/popular_history_ireland_book01_0803_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/PopularHistoryOfIrelandByThomasDarcyMcgeeBooks1-8-64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Popular-History-of-Ireland.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Popular-History-of-Ireland.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6634/pg6634.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-first-battle-of-bull-run-by-pierre-gustave-toutant-beauregard",
+   "title": "The First Battle of Bull Run",
+   "author": "Pierre Gustave Toutant Beauregard",
+   "url": "https://www.loyalbooks.com/book/the-first-battle-of-bull-run-by-pierre-gustave-toutant-beauregard",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-first-battle-of-bull-run-by-pierre-gustave-toutant-beauregard.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "first_battle_bull_run_librivox",
+   "audioZip": "https://www.archive.org/download/first_battle_bull_run_librivox/first_battle_bull_run_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/FirstBattleOfBullRun_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "magna-carta",
+   "title": "Magna Carta",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/magna-carta",
+   "cover": "https://www.loyalbooks.com/image/layout2/Magna-Carta.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "History",
+    "Non-fiction",
+    "Politics",
+    "Art"
+   ],
+   "archiveId": "magna_carta_jm_librivox",
+   "audioZip": "https://www.archive.org/download/magna_carta_jm_librivox/magna_carta_jm_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Magna-Carta.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Magna-Carta.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/10000/pg10000.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "History-of-Julius-Caesar",
+   "title": "History of Julius Caesar",
+   "author": "Jacob Abbott",
+   "url": "https://www.loyalbooks.com/book/History-of-Julius-Caesar",
+   "cover": "https://www.loyalbooks.com/image/layout2/History-of-Julius-Caesar.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "history_julius_caesar_1102_librivox",
+   "audioZip": "https://www.archive.org/download/history_julius_caesar_1102_librivox/history_julius_caesar_1102_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HistoryOfJuliusCaesar_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/History-of-Julius-Caesar.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/History-of-Julius-Caesar.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/1/6/8/11688/11688-h/11688-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "selected-house-of-commons-speeches-by-winston-churchill",
+   "title": "Selected House of Commons Speeches",
+   "author": "Winston S. Churchill",
+   "url": "https://www.loyalbooks.com/book/selected-house-of-commons-speeches-by-winston-churchill",
+   "cover": "https://www.loyalbooks.com/image/layout2/selected-house-of-commons-speeches-by-winston-churchill.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Politics"
+   ],
+   "archiveId": "commons_speeches_librivox",
+   "audioZip": "https://www.archive.org/download/commons_speeches_librivox/commons_speeches_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/SelectedHouseOfCommonSpeechesPart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "early-kings-of-norway-by-thomas-carlyle",
+   "title": "Early Kings of Norway",
+   "author": "Thomas Carlyle",
+   "url": "https://www.loyalbooks.com/book/early-kings-of-norway-by-thomas-carlyle",
+   "cover": "https://www.loyalbooks.com/image/layout2/early-kings-of-norway-by-thomas-carlyle.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Myths/Legends",
+    "Non-fiction"
+   ],
+   "archiveId": "early_kings_norway_0807_libtivox1",
+   "audioZip": "https://www.archive.org/download/early_kings_norway_0807_libtivox1/early_kings_norway_0807_libtivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/EarlyKingsOfNorway_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Early-Kings-of-Norway-by-Thomas-Carlyle.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Early-Kings-of-Norway-by-Thomas-Carlyle.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/3/1932/1932-h/1932-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "germania_tacitus",
+   "title": "Germania",
+   "author": "Publius Cornelius Tacitus",
+   "url": "https://www.loyalbooks.com/book/germania_tacitus",
+   "cover": "https://www.loyalbooks.com/image/layout2/Germania-tacitus.jpg",
+   "genres": [
+    "Ancient Texts",
+    "History",
+    "Non-fiction",
+    "Travel"
+   ],
+   "archiveId": "germania_tacitus_0906_librivox1",
+   "audioZip": "https://www.archive.org/download/germania_tacitus_0906_librivox1/germania_tacitus_0906_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/Germania_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "four-weeks-in-the-trenches-by-fritz-kreisler",
+   "title": "Four Weeks in the Trenches",
+   "author": "Fritz Kreisler",
+   "url": "https://www.loyalbooks.com/book/four-weeks-in-the-trenches-by-fritz-kreisler",
+   "cover": "https://www.loyalbooks.com/image/layout2/Four-Weeks-in-the-Trenches.jpg",
+   "genres": [
+    "Non-fiction",
+    "War stories",
+    "History"
+   ],
+   "archiveId": "four_weeks_trenches_0910_librivox",
+   "audioZip": "https://www.archive.org/download/four_weeks_trenches_0910_librivox/four_weeks_trenches_0910_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/FourWeeksInTheTrenches.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Four-Weeks-in-the-Trenches-by-Fritz-Kreisler.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Four-Weeks-in-the-Trenches-by-Fritz-Kreisler.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/10967/pg10967.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "letters-from-england-1846-1849-by-ed-bancroft",
+   "title": "Letters from England, 1846-1849",
+   "author": "Elizabeth Davis Bancroft",
+   "url": "https://www.loyalbooks.com/book/letters-from-england-1846-1849-by-ed-bancroft",
+   "cover": "https://www.loyalbooks.com/image/layout2/Letters-from-England.jpg",
+   "genres": [
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "letters_from_england_sd_librivox",
+   "audioZip": "https://www.archive.org/download/letters_from_england_sd_librivox/letters_from_england_sd_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Letters-from-England-1846-1849-by-Ed-Bancroft.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/letters-from-england-1846-1849-by-ed-bancroft.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1936/pg1936.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "in-the-field-1914-1915-by-marcel-dupont",
+   "title": "In the Field (1914-1915)",
+   "author": "Marcel Dupont",
+   "url": "https://www.loyalbooks.com/book/in-the-field-1914-1915-by-marcel-dupont",
+   "cover": "https://www.loyalbooks.com/image/layout2/in-the-field-1914-1915-by-marcel-dupont.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "War stories"
+   ],
+   "archiveId": "inthefield_fnh_librivox",
+   "audioZip": "https://www.archive.org/download/inthefield_fnh_librivox/inthefield_fnh_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/InTheField1914-1915_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/In-the-Field-1914-1915-by-Marcel-Dupont.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/In-the-Field-1914-1915-by-Marcel-Dupont.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/1/7/18177/18177-h/18177-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "works-of-tacitus-ed-trans-thomas-gordon",
+   "title": "The Works of Tacitus Vol. I, edited, translated, and with essays by Thomas Gordon",
+   "author": "Tacitus, Publius Cornelius",
+   "url": "https://www.loyalbooks.com/book/works-of-tacitus-ed-trans-thomas-gordon",
+   "cover": "https://www.loyalbooks.com/image/layout2/works-of-tacitus-ed-trans-thomas-gordon.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "works_tacitus_0801_librivox1",
+   "audioZip": "https://www.archive.org/download/works_tacitus_0801_librivox1/works_tacitus_0801_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/WorksOfTacitusVol1Part1.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "secret-chambers-and-hiding-places-by-allan-fea",
+   "title": "Secret Chambers and Hiding Places",
+   "author": "Allan Fea",
+   "url": "https://www.loyalbooks.com/book/secret-chambers-and-hiding-places-by-allan-fea",
+   "cover": "https://www.loyalbooks.com/image/layout2/Secret-Chambers-and-Hiding-Places.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "secret_chambers_librivox",
+   "audioZip": "https://www.archive.org/download/secret_chambers_librivox/secret_chambers_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/SecretChambersAndHidingPlaces_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Secret-Chambers-and-Hiding-Places-by-Allan-Fea.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Secret-Chambers-and-Hiding-Places-by-Allan-Fea.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/3/9/1/13918/13918-h/13918-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "peeps-at-many-lands-egypt-by-r-talbot-kelly",
+   "title": "Peeps at Many Lands: Egypt",
+   "author": "R. Talbot Kelly",
+   "url": "https://www.loyalbooks.com/book/peeps-at-many-lands-egypt-by-r-talbot-kelly",
+   "cover": "https://www.loyalbooks.com/image/layout2/Peeps-at-Many-Lands-Egypt.jpg",
+   "genres": [
+    "Kids",
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "peeps_at_many_lands_egypt_sd_librivox",
+   "audioZip": "https://www.archive.org/download/peeps_at_many_lands_egypt_sd_librivox/peeps_at_many_lands_egypt_sd_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/PeepsAtManyLandsEgypt.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Peeps-at-Many-Lands-Egypt-by-R-Talbot-Kelly.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/peeps-at-many-lands-egypt-by-r-talbot-kelly.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/18647/pg18647-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "my-mark-twain-by-william-dean-howells",
+   "title": "My Mark Twain",
+   "author": "William Dean Howells",
+   "url": "https://www.loyalbooks.com/book/my-mark-twain-by-william-dean-howells",
+   "cover": "https://www.loyalbooks.com/image/layout2/my-mark-twain-by-william-dean-howells.jpg",
+   "genres": [
+    "Biography",
+    "Non-fiction",
+    "History",
+    "Literature"
+   ],
+   "archiveId": "my_mark_twain_librivox",
+   "audioZip": "https://www.archive.org/download/my_mark_twain_librivox/my_mark_twain_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/MyMarkTwain.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/My-Mark-Twain-by-William-Dean-Howells.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/my-mark-twain-by-william-dean-howells.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/3390/pg3390.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "indian-frontier-policy-by-general-sir-john-adye",
+   "title": "Indian Frontier Policy, an Historical Sketch",
+   "author": "General Sir John Miller Adye",
+   "url": "https://www.loyalbooks.com/book/indian-frontier-policy-by-general-sir-john-adye",
+   "cover": "https://www.loyalbooks.com/image/layout2/Indian-Frontier-Policyn-Histo.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "War stories"
+   ],
+   "archiveId": "indian_frontier_policy_drb_librivox",
+   "audioZip": "https://www.archive.org/download/indian_frontier_policy_drb_librivox/indian_frontier_policy_drb_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/IndianFrontierPolicyAnHistoricalSketch_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Indian-Frontier-Policy-by-General-Sir-John-Adye.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Indian-Frontier-Policy-by-General-Sir-John-Adye.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/7021/pg7021.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "pirates-of-panama-by-alexandre-exquemelin",
+   "title": "The Pirates of Panama",
+   "author": "Alexandre Exquemelin",
+   "url": "https://www.loyalbooks.com/book/pirates-of-panama-by-alexandre-exquemelin",
+   "cover": "https://www.loyalbooks.com/image/layout2/Pirates-of-Panama.jpg",
+   "genres": [
+    "History",
+    "Memoirs",
+    "Non-fiction",
+    "Sea stories",
+    "Teen/Young adult"
+   ],
+   "archiveId": "pirates_of_panama_0812_librivox",
+   "audioZip": "https://www.archive.org/download/pirates_of_panama_0812_librivox/pirates_of_panama_0812_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/PiratesOfPanamaPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Pirates-of-Panama-by-Alexandre-Exquemelin.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Pirates-of-Panama-by-Alexandre-Exquemelin.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/6/9/26690/26690-h/26690-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "discoverers-and-explorers-by-edward-r-shaw",
+   "title": "Discoverers and Explorers",
+   "author": "Edward R. Shaw",
+   "url": "https://www.loyalbooks.com/book/discoverers-and-explorers-by-edward-r-shaw",
+   "cover": "https://www.loyalbooks.com/image/layout2/Discoverers-and-Explorers.jpg",
+   "genres": [
+    "Biography",
+    "Kids",
+    "History",
+    "Non-fiction",
+    "Teen/Young adult",
+    "Art"
+   ],
+   "archiveId": "discoverers_and_explorers_0901_librivox",
+   "audioZip": "https://www.archive.org/download/discoverers_and_explorers_0901_librivox/discoverers_and_explorers_0901_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/DiscoverersAndExplorers_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Discoverers-and-Explorers-by-Edward-R-Shaw.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Discoverers-and-Explorers-by-Edward-R-Shaw.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/1/1/22116/22116-h/22116-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "who-was-who-5000-bc-1914-by-irwin-leslie-gordon",
+   "title": "Who Was Who: 5000 BC – 1914",
+   "author": "Irwin Leslie Gordon",
+   "url": "https://www.loyalbooks.com/book/who-was-who-5000-bc-1914-by-irwin-leslie-gordon",
+   "cover": "https://www.loyalbooks.com/image/layout2/who-was-who-5000-bc-1914-by-irwin-leslie-gordon.jpg",
+   "genres": [
+    "Biography",
+    "Fiction",
+    "History",
+    "Humor"
+   ],
+   "archiveId": "who_was_who_0711",
+   "audioZip": "https://www.archive.org/download/who_was_who_0711/who_was_who_0711_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/WhoWasWho-5000Bc-1914_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Who-Was-Who-5000-Bc-1914-by-Irwin-Leslie-Gordon.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Who-Was-Who-5000-Bc-1914-by-Irwin-Leslie-Gordon.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/9/8/984/984-h/984-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Richard-III-William-Shakespeare",
+   "title": "Richard III",
+   "author": "William Shakespeare",
+   "url": "https://www.loyalbooks.com/book/Richard-III-William-Shakespeare",
+   "cover": "https://www.loyalbooks.com/image/layout2/Richard-III-William-Shakespeare.jpg",
+   "genres": [
+    "Dramatic Works",
+    "Play",
+    "Tragedy",
+    "History",
+    "Literature"
+   ],
+   "archiveId": "richard_iii_1006_librivox",
+   "audioZip": "https://www.archive.org/download/richard_iii_1006_librivox/richard_iii_1006_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/RichardIii.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Richard-Iii-William-Shakespeare.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Richard-III-William-Shakespeare.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/etext98/2ws0410h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "short-history-of-scotland-by-andrew-lang",
+   "title": "A Short History of Scotland",
+   "author": "Andrew Lang",
+   "url": "https://www.loyalbooks.com/book/short-history-of-scotland-by-andrew-lang",
+   "cover": "https://www.loyalbooks.com/image/layout2/short-history-of-scotland-by-andrew-lang.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "short_hist_scotland_lang_sd_0905_librivox1",
+   "audioZip": "https://www.archive.org/download/short_hist_scotland_lang_sd_0905_librivox1/short_hist_scotland_lang_sd_0905_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/ShortHistoryOfScotlandByAndrewLang64kbps.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Short-History-of-Scotland-by-Andrew-Lang.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Short-History-of-Scotland-by-Andrew-Lang.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/5/9/5/15955/15955-h/15955-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "hero-tales-from-american-history-by-henry-cabot-lodge-and-theodore-roosevelt",
+   "title": "Hero Tales from American History",
+   "author": "Henry Cabot Lodge",
+   "url": "https://www.loyalbooks.com/book/hero-tales-from-american-history-by-henry-cabot-lodge-and-theodore-roosevelt",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hero-tales-from-american-history.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "War stories",
+    "Biography"
+   ],
+   "archiveId": "hero_tales_from_american_history_dl_0905_librivox",
+   "audioZip": "https://www.archive.org/download/hero_tales_from_american_history_dl_0905_librivox/hero_tales_from_american_history_dl_0905_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HeroTalesFromAmericanHistory_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Hero-Tales-from-American-History-by-Henry-Cabot-Lodge.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Hero-Tales-from-American-History-by-Henry-Cabot-Lodge.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/6/1864/1864-h/1864-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "cocoa-and-chocolate-by-arthur-william-knapp",
+   "title": "Cocoa and Chocolate: Their History from Plantation to Consumer",
+   "author": "Arthur William Knapp",
+   "url": "https://www.loyalbooks.com/book/cocoa-and-chocolate-by-arthur-william-knapp",
+   "cover": "https://www.loyalbooks.com/image/layout2/cocoa-and-chocolate-by-arthur-william-knapp.jpg",
+   "genres": [
+    "Advice",
+    "Cookery",
+    "History",
+    "Instruction",
+    "Non-fiction"
+   ],
+   "archiveId": "cocoa_chocolate_0807_librivox",
+   "audioZip": "https://www.archive.org/download/cocoa_chocolate_0807_librivox/cocoa_chocolate_0807_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/CocoaAndChocolate-TheirHistoryFromPlantationToConsumer_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Cocoa-and-Chocolate-by-Arthur-William-Knapp.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Cocoa-and-Chocolate-by-Arthur-William-Knapp.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/0/7/19073/19073-h/19073-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-awakening-of-europe-by-m-b-synge",
+   "title": "The Awakening of Europe",
+   "author": "M. B. Synge",
+   "url": "https://www.loyalbooks.com/book/the-awakening-of-europe-by-m-b-synge",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-awakening-of-europe-by-m-b-synge.jpg",
+   "genres": [
+    "Kids",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "awakening_of_europe_lc_librivox",
+   "audioZip": "https://www.archive.org/download/awakening_of_europe_lc_librivox/awakening_of_europe_lc_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/AwakeningOfEuropePart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "annals-vol-1-by-tacitus",
+   "title": "The Annals",
+   "author": "Publius Cornelius Tacitus",
+   "url": "https://www.loyalbooks.com/book/annals-vol-1-by-tacitus",
+   "cover": "https://www.loyalbooks.com/image/layout2/annals-vol-1-by-tacitus.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "annals1_tacitus_0908_libtivox1",
+   "audioZip": "https://www.archive.org/download/annals1_tacitus_0908_libtivox1/annals1_tacitus_0908_libtivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/TheAnnalsVolume1Part1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "Geronimos-Story-of-His-Life",
+   "title": "Geronimo’s Story of His Life",
+   "author": "Geronimo",
+   "url": "https://www.loyalbooks.com/book/Geronimos-Story-of-His-Life",
+   "cover": "https://www.loyalbooks.com/image/layout2/Geronimos-Story-of-His-Life.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "geronimo_story_1101_librivox",
+   "audioZip": "https://www.archive.org/download/geronimo_story_1101_librivox/geronimo_story_1101_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Geronimo.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "Daniel-Boone-by-John-Abbott",
+   "title": "Daniel Boone",
+   "author": "John S. C. Abbott",
+   "url": "https://www.loyalbooks.com/book/Daniel-Boone-by-John-Abbott",
+   "cover": "https://www.loyalbooks.com/image/layout2/Daniel-Boone-by-John-Abbott.jpg",
+   "genres": [
+    "Biography",
+    "Non-fiction",
+    "History"
+   ],
+   "archiveId": "daniel_boone_ah_librivox",
+   "audioZip": "https://www.archive.org/download/daniel_boone_ah_librivox/daniel_boone_ah_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/DanielBoone.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Daniel-Boone-by-John-Abbott.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Daniel-Boone-by-John-Abbott.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/3/7/9/23798/23798-h/23798-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "plutarchs_parallel_lives_vol_1",
+   "title": "Parallel Lives of the Noble Greeks and Romans, translated by Bernadotte Perrin (1847-1920)",
+   "author": "Lucius Mestrius Plutarchus",
+   "url": "https://www.loyalbooks.com/book/plutarchs_parallel_lives_vol_1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Plutarchs-parallel-lives-vol-1.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "parallel_lives01_0810_librivox1",
+   "audioZip": "https://www.archive.org/download/parallel_lives01_0810_librivox1/parallel_lives01_0810_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/ParallelLivesOfTheNobleGreeksAndRomansVolume1Part1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "memoirs-of-extraordinary-popular-delusions-and-the-madness-of-crowds-volume-i-by-charles-mackay",
+   "title": "Memoirs of Extraordinary Popular Delusions and the Madness of Crowds",
+   "author": "Charles Mackay",
+   "url": "https://www.loyalbooks.com/book/memoirs-of-extraordinary-popular-delusions-and-the-madness-of-crowds-volume-i-by-charles-mackay",
+   "cover": "https://www.loyalbooks.com/image/layout2/Memoirs-of-extraordinary-popular-delusions-and-the-madness-of-crowds.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Non-fiction",
+    "Psychology",
+    "History",
+    "Religion"
+   ],
+   "archiveId": "memoirs_popular_delusions_0810_librivox",
+   "audioZip": "https://www.archive.org/download/memoirs_popular_delusions_0810_librivox/memoirs_popular_delusions_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/MemoirsOfExtraordinaryPopularDelusionsAndTheMadnessOfCrowdsVolumeIPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Memoirs-of-Extraordinary-Popular-Delusions-and-the-Madness-of-Crowds-1.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Memoirs-of-Extraordinary-Popular-Delusions-and-the-Madness-of-Crowds.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/5/1/24518/24518-h/24518-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "mary-barton-by-elizabeth-cleghorn-gaskell",
+   "title": "Mary Barton",
+   "author": "Elizabeth Gaskell",
+   "url": "https://www.loyalbooks.com/book/mary-barton-by-elizabeth-cleghorn-gaskell",
+   "cover": "https://www.loyalbooks.com/image/layout2/mary-barton-by-elizabeth-cleghorn-gaskell.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Romance",
+    "History"
+   ],
+   "archiveId": "mary_barton_0810_librivox",
+   "audioZip": "https://www.archive.org/download/mary_barton_0810_librivox/mary_barton_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks1a/MaryBartonPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Mary-Barton-by-Elizabeth-Cleghorn-Gaskell.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mary-Barton-by-Elizabeth-Cleghorn-Gaskell.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2153/pg2153.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-life-of-charlemagne-by-einhard",
+   "title": "The Life of Charlemagne",
+   "author": "Einhard",
+   "url": "https://www.loyalbooks.com/book/the-life-of-charlemagne-by-einhard",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-life-of-charlemagne-by-einhard.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "charl_einhd_0712_librivox",
+   "audioZip": "https://www.archive.org/download/charl_einhd_0712_librivox/charl_einhd_0712_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/LifeOfCharlemagne_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "life-in-mexico-by-frances-calderon-de-la-barca",
+   "title": "Life in Mexico",
+   "author": "Frances Calderón de la Barca",
+   "url": "https://www.loyalbooks.com/book/life-in-mexico-by-frances-calderon-de-la-barca",
+   "cover": "https://www.loyalbooks.com/image/layout2/Life-in-Mexico.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Travel"
+   ],
+   "archiveId": "life_mexico_k_librivox",
+   "audioZip": "https://www.archive.org/download/life_mexico_k_librivox/life_mexico_k_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/LifeInMexicoPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Life-in-Mexico-by-Frances-Calderon-De-La-Barca.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Life-in-Mexico-by-Frances-Calderon-De-La-Barca.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/9364/pg9364.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "richard-i-by-jacob-abbott",
+   "title": "Richard I",
+   "author": "Jacob Abbott",
+   "url": "https://www.loyalbooks.com/book/richard-i-by-jacob-abbott",
+   "cover": "https://www.loyalbooks.com/image/layout2/Richard-I-by-Jacob-Abbott.jpg",
+   "genres": [
+    "Biography",
+    "Kids",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "richard_first_0902_librivox",
+   "audioZip": "https://www.archive.org/download/richard_first_0902_librivox/richard_first_0902_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/RichardIPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Richard-I-by-Jacob-Abbott.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Richard-I-by-Jacob-Abbott.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/9/3/26939/26939-h/26939-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Army-Letters-from-an-Officers-Wife",
+   "title": "Army Letters from an Officer's Wife, 1871-1888",
+   "author": "Frances M. A. Roe",
+   "url": "https://www.loyalbooks.com/book/Army-Letters-from-an-Officers-Wife",
+   "cover": "https://www.loyalbooks.com/image/layout2/Army-Letters-from-an-Officers-Wife.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Memoirs",
+    "Non-fiction",
+    "War stories",
+    "Travel"
+   ],
+   "archiveId": "army_letters_officers_wife_sa_librivox",
+   "audioZip": "https://www.archive.org/download/army_letters_officers_wife_sa_librivox/army_letters_officers_wife_sa_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/ArmyLettersFromAnOfficersWifePart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Army-Letters-from-An-Officers-Wife.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Army-Letters-from-an-Officers-Wife.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6823/pg6823.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "high-adventure-a-narrative-of-air-fighting-in-france",
+   "title": "High Adventure A Narrative of Air Fighting in France",
+   "author": "www.mikevendetti.com",
+   "url": "https://www.loyalbooks.com/book/high-adventure-a-narrative-of-air-fighting-in-france",
+   "cover": "https://www.loyalbooks.com/image/layout2/high-adventure-a-narrative-of-air-fighting-in-france.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "War stories",
+    "Biography"
+   ],
+   "archiveId": "high_adventure_mv_0810_librivox",
+   "audioZip": "https://www.archive.org/download/high_adventure_mv_0810_librivox/high_adventure_mv_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HighAdventureANarrativeOfAirFightingInFrance_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/High-Adventure-a-Narrative-of-Air-Fighting-in-France.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/high-adventure-a-narrative-of-air-fighting-in-france.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/24570/pg24570-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "a-narrative-of-the-life-of-rev-noah-davis-a-colored-man-by-noah-davis",
+   "title": "A Narrative of the Life of Rev. Noah Davis, A Colored Man",
+   "author": "Noah Davis",
+   "url": "https://www.loyalbooks.com/book/a-narrative-of-the-life-of-rev-noah-davis-a-colored-man-by-noah-davis",
+   "cover": "https://www.loyalbooks.com/image/layout2/a-narrative-of-the-life-of-rev-noah-davis-a-colored-man-by-noah-davis.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Memoirs",
+    "Non-fiction"
+   ],
+   "archiveId": "narrative_davis_bn",
+   "audioZip": "https://www.archive.org/download/narrative_davis_bn/narrative_davis_bn_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/NarrativeOfTheLifeOfRev.NoahDavisAColoredMan_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Narrative-of-the-Life-of-Rev-Noah-Davis-a-Colored-Man-by-Noah-Davis.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/a-narrative-of-the-life-of-rev-noah-davis-a-colored-man-by-noah-davis.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/20005/pg20005-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "hospital-sketches-by-louisa-may-alcott",
+   "title": "Hospital Sketches",
+   "author": "Louisa May Alcott",
+   "url": "https://www.loyalbooks.com/book/hospital-sketches-by-louisa-may-alcott",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hospital-Sketches-Louisa-May-Alcott.jpg",
+   "genres": [
+    "Memoirs",
+    "Non-fiction",
+    "Biography",
+    "History"
+   ],
+   "archiveId": "hospital_sketches1_ae_librivox1",
+   "audioZip": "https://www.archive.org/download/hospital_sketches1_ae_librivox1/hospital_sketches1_ae_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/HospitalSketches.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Hospital-Sketches-by-Louisa-May-Alcott.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Hospital-Sketches-by-Louisa-May-Alcott.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/8/3/3837/3837-h/3837-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "studnts-roman-empire-pt-1-by-j-b-bury",
+   "title": "The Students' Roman Empire",
+   "author": "John B. Bury",
+   "url": "https://www.loyalbooks.com/book/studnts-roman-empire-pt-1-by-j-b-bury",
+   "cover": "https://www.loyalbooks.com/image/layout2/studnts-roman-empire-pt-1-by-j-b-bury.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "students_roman_empire_vol1_0908_librivox2",
+   "audioZip": "https://www.archive.org/download/students_roman_empire_vol1_0908_librivox2/students_roman_empire_vol1_0908_librivox2_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/StudentsRomanEmpirePart1Part1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "agricola-by-tacitus",
+   "title": "Agricola",
+   "author": "Publius Cornelius Tacitus",
+   "url": "https://www.loyalbooks.com/book/agricola-by-tacitus",
+   "cover": "https://www.loyalbooks.com/image/layout2/agricola-by-tacitus.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "agricola_tacitus_0906_librivox1",
+   "audioZip": "https://www.archive.org/download/agricola_tacitus_0906_librivox1/agricola_tacitus_0906_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/Agricola_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "River-War-An-Account-of-the-Reconquest-of-the-Sudan",
+   "title": "The River War: An Account of the Reconquest of the Sudan",
+   "author": "Winston Churchill",
+   "url": "https://www.loyalbooks.com/book/River-War-An-Account-of-the-Reconquest-of-the-Sudan",
+   "cover": "https://www.loyalbooks.com/image/layout2/River-War-An-Account-of-the-Reconquest-of-the-Sudan.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "War stories"
+   ],
+   "archiveId": "riverwar_1003_librivox",
+   "audioZip": "https://www.archive.org/download/riverwar_1003_librivox/riverwar_1003_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/RiverWarPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/River-War-An-Account-of-the-Reconquest-of-the-Sudan.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/River-War-An-Account-of-the-Reconquest-of-the-Sudan.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/4/9/4/4943/4943-h/4943-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "history-of-florence-by-machiavelli-vol-1",
+   "title": "History of Florence and of the Affairs of Italy",
+   "author": "Niccolò Machiavelli",
+   "url": "https://www.loyalbooks.com/book/history-of-florence-by-machiavelli-vol-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/history-of-florence-by-machiavelli-vol-1.jpg",
+   "genres": [
+    "Politics",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "hist_of_florence1_0901_librivox2",
+   "audioZip": "https://www.archive.org/download/hist_of_florence1_0901_librivox2/hist_of_florence1_0901_librivox2_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/History-of-Florence-by-Machiavelli-vol-1.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/History-of-Florence-by-Machiavelli-vol-1.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/6/2464/2464-h/2464-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "young-americans-abroad-by-j-o-choules",
+   "title": "Young Americans Abroad – Vacation in Europe",
+   "author": "J. O. Choules",
+   "url": "https://www.loyalbooks.com/book/young-americans-abroad-by-j-o-choules",
+   "cover": "https://www.loyalbooks.com/image/layout2/Young-Americans-Abroad-Travels-in-Europe.jpg",
+   "genres": [
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "young_americans_abroad_sd_librivox",
+   "audioZip": "https://www.archive.org/download/young_americans_abroad_sd_librivox/young_americans_abroad_sd_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/YoungAmericansAbroadPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Young-Americans-Abroad-by-J-O-Choules.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/young-americans-abroad-by-j-o-choules.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/20625/pg20625-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "what-i-saw-in-america-by-chesterton",
+   "title": "What I Saw in America",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/what-i-saw-in-america-by-chesterton",
+   "cover": "https://www.loyalbooks.com/image/layout2/what-i-saw-in-america-by-chesterton.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "what_i_saw_in_america_chesterton_0905_rc_librivox1",
+   "audioZip": "https://www.archive.org/download/what_i_saw_in_america_chesterton_0905_rc_librivox1/what_i_saw_in_america_chesterton_0905_rc_librivox1_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/What-I-Saw-in-America-by-Chesterton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/What-I-Saw-in-America-by-Chesterton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/2/5/27250/27250-h/27250-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Dragon-and-the-Raven",
+   "title": "The Dragon and the Raven",
+   "author": "George Alfred Henty",
+   "url": "https://www.loyalbooks.com/book/Dragon-and-the-Raven",
+   "cover": "https://www.loyalbooks.com/image/layout2/Dragon-and-the-Raven.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "Teen/Young adult",
+    "History",
+    "Literature"
+   ],
+   "archiveId": "dragon_raven_1007_librivox",
+   "audioZip": "https://www.archive.org/download/dragon_raven_1007_librivox/dragon_raven_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/DragonAndTheRaven.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Dragon-and-the-Raven.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Dragon-and-the-Raven.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/6/7/3674/3674-h/3674-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "united-kingdom-house-of-commons-speeches-collection",
+   "title": "United Kingdom House of Commons Speeches Collection",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/united-kingdom-house-of-commons-speeches-collection",
+   "cover": "https://www.loyalbooks.com/image/layout2/United-Kingdom-House-of-Commons-Speeches-Collection.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Politics"
+   ],
+   "archiveId": "commons_0811_librivox",
+   "audioZip": "https://www.archive.org/download/commons_0811_librivox/commons_0811_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/UnitedKingdomHouseOfCommonsSpeechesCollectionVolume1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "history-of-the-conquest-of-mexico-by-prescott",
+   "title": "History of the Conquest of Mexico by William H Prescott  (d. 1859)",
+   "author": "William H. Prescott",
+   "url": "https://www.loyalbooks.com/book/history-of-the-conquest-of-mexico-by-prescott",
+   "cover": "https://www.loyalbooks.com/image/layout2/history-of-the-conquest-of-mexico-by-prescott.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "conquest_of_mexico_0908_librivox2",
+   "audioZip": "https://www.archive.org/download/conquest_of_mexico_0908_librivox2/conquest_of_mexico_0908_librivox2_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/ConquestOfMexicoBook1_34kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "new-jerusalem-by-g-k-chesterton",
+   "title": "The New Jerusalem",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/new-jerusalem-by-g-k-chesterton",
+   "cover": "https://www.loyalbooks.com/image/layout2/new-jerusalem-by-g-k-chesterton.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Non-fiction",
+    "Religion",
+    "History"
+   ],
+   "archiveId": "new_jerusalem_0806_librivox1",
+   "audioZip": "https://www.archive.org/download/new_jerusalem_0806_librivox1/new_jerusalem_0806_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/NewJerusalemPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/New-Jerusalem-by-G-K-Chesterton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/New-Jerusalem-by-G-K-Chesterton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/13468/pg13468.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "philippics-by-cicero",
+   "title": "The Philippics",
+   "author": "Marcus Tullius Cicero",
+   "url": "https://www.loyalbooks.com/book/philippics-by-cicero",
+   "cover": "https://www.loyalbooks.com/image/layout2/philippics-by-cicero.jpg",
+   "genres": [
+    "Ancient Texts",
+    "Classics (antiquity)",
+    "Essay/Short nonfiction",
+    "Fiction",
+    "History",
+    "Non-fiction",
+    "Politics"
+   ],
+   "archiveId": "philippics_cicero_0907_librivox2",
+   "audioZip": "https://www.archive.org/download/philippics_cicero_0907_librivox2/philippics_cicero_0907_librivox2_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/PhilippicsPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Philippics-by-Cicero.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Philippics-by-Cicero.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/11080/pg11080.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "French-Revolution",
+   "title": "The French Revolution",
+   "author": "Hilaire Belloc",
+   "url": "https://www.loyalbooks.com/book/French-Revolution",
+   "cover": "https://www.loyalbooks.com/image/layout2/French-Revolution.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "french_revolution_1001_librivox",
+   "audioZip": "https://www.archive.org/download/french_revolution_1001_librivox/french_revolution_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/FrenchRevolutionPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/French-Revolution.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/French-Revolution.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/5/2/1/35215/35215-h/35215-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Personal-Memoirs-of-U-S-Grant",
+   "title": "Personal Memoirs of U. S. Grant",
+   "author": "Ulysses S. Grant",
+   "url": "https://www.loyalbooks.com/book/Personal-Memoirs-of-U-S-Grant",
+   "cover": "https://www.loyalbooks.com/image/layout2/Personal-Memoirs-of-U-S-Grant.jpg",
+   "genres": [
+    "Memoirs",
+    "Non-fiction",
+    "Biography",
+    "History",
+    "War stories"
+   ],
+   "archiveId": "memoirs_grant_1105_librivox",
+   "audioZip": "https://www.archive.org/download/memoirs_grant_1105_librivox/memoirs_grant_1105_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/PersonalMemoirsOfU.S.GrantPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Personal-Memoirs-of-U-S-Grant.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Personal-Memoirs-of-U-S-Grant.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/4/3/6/4367/4367-h/4367-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "st-bartholomews-eve-by-g-a-henty",
+   "title": "St. Bartholomew's Eve",
+   "author": "George Alfred Henty",
+   "url": "https://www.loyalbooks.com/book/st-bartholomews-eve-by-g-a-henty",
+   "cover": "https://www.loyalbooks.com/image/layout2/St-Bartholomews-Eve.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Historical Fiction",
+    "History",
+    "Literature"
+   ],
+   "archiveId": "st_bartholomews_eve_0812_librivox",
+   "audioZip": "https://www.archive.org/download/st_bartholomews_eve_0812_librivox/st_bartholomews_eve_0812_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/St.BartholomewsEvePart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/St-Bartholomews-Eve-by-G-a-Henty.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/St-Bartholomews-Eve-by-G-a-Henty.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/0/9/20092/20092-h/20092-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-story-of-alchemy-by-m-m-pattison-muir",
+   "title": "The Story of Alchemy and the Beginnings of Chemistry",
+   "author": "M. M. Pattison Muir",
+   "url": "https://www.loyalbooks.com/book/the-story-of-alchemy-by-m-m-pattison-muir",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-story-of-alchemy-by-m-m-pattison-muir.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Science"
+   ],
+   "archiveId": "storyofalchemy_0906",
+   "audioZip": "https://www.archive.org/download/storyofalchemy_0906/storyofalchemy_0906_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/StoryOfAlchemyAndTheBeginningsOfChemistry_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Story-of-Alchemy-by-M-M-Pattison-Muir.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Story-of-Alchemy-by-M-M-Pattison-Muir.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/4/2/1/14218/14218-h/14218-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "lincoln-at-cooper-union-by-abraham-lincoln",
+   "title": "Lincoln at Cooper Union",
+   "author": "Abraham Lincoln",
+   "url": "https://www.loyalbooks.com/book/lincoln-at-cooper-union-by-abraham-lincoln",
+   "cover": "https://www.loyalbooks.com/image/layout2/lincoln-at-cooper-union-by-abraham-lincoln.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Non-fiction",
+    "History"
+   ],
+   "archiveId": "lincoln_cooper_librivox",
+   "audioZip": "https://www.archive.org/download/lincoln_cooper_librivox/lincoln_cooper_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Lincoln-at-Cooper-Union-by-Abraham-Lincoln.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/lincoln-at-cooper-union-by-abraham-lincoln.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2657/pg2657.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "detailed-minutiae-of-soldier-life-in-the-army-of-northern-virginia-1861-1865-by-carlton-mccarthy",
+   "title": "Detailed Minutiae of Soldier Life in the Army of Northern Virginia, 1861-1865",
+   "author": "Carlton McCarthy",
+   "url": "https://www.loyalbooks.com/book/detailed-minutiae-of-soldier-life-in-the-army-of-northern-virginia-1861-1865-by-carlton-mccarthy",
+   "cover": "https://www.loyalbooks.com/image/layout2/Soldier-Life-in-the-Army-of-Northern-Virginia.jpg",
+   "genres": [
+    "History",
+    "Memoirs",
+    "Non-fiction",
+    "War stories",
+    "Biography",
+    "Art"
+   ],
+   "archiveId": "soldierlife_n-virginia_0808_librivox",
+   "audioZip": "https://www.archive.org/download/soldierlife_n-virginia_0808_librivox/soldierlife_n-virginia_0808_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/DetailedMinutiaeOfSoldierLifeInTheArmyOfNorthernVirginia1861-1865Part1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Detailed-Minutiae-of-Soldier-Life-in-the-Army-of-Northern-Virginia.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Detailed-Minutiae-of-Soldier-Life-in-the-Army-of-Northern-Virginia.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/5/6/0/25603/25603-h/25603-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-death-of-lord-nelson-by-william-beatty-md",
+   "title": "The Death of Lord Nelson",
+   "author": "William Beatty, M.D.",
+   "url": "https://www.loyalbooks.com/book/the-death-of-lord-nelson-by-william-beatty-md",
+   "cover": "https://www.loyalbooks.com/image/layout2/Death-of-Lord-Nelson.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Biography"
+   ],
+   "archiveId": "death_lord_nelson_fnh_librivox",
+   "audioZip": "https://www.archive.org/download/death_lord_nelson_fnh_librivox/death_lord_nelson_fnh_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/DeathOfLordNelson_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Death-of-Lord-Nelson-by-William-Beatty-Md.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-death-of-lord-nelson-by-william-beatty-md.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/15233/pg15233-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "expedition-of-the-donner-party-and-its-tragic-fate-by-eliza-p-donner-houghton",
+   "title": "The Expedition of the Donner Party and Its Tragic Fate",
+   "author": "Eliza P. Donner Houghton",
+   "url": "https://www.loyalbooks.com/book/expedition-of-the-donner-party-and-its-tragic-fate-by-eliza-p-donner-houghton",
+   "cover": "https://www.loyalbooks.com/image/layout2/Expedition-of-the-donner-party-and-its-tragic-fate.jpg",
+   "genres": [
+    "History",
+    "Memoirs",
+    "Non-fiction"
+   ],
+   "archiveId": "expedition_donner_party_0907_librivox",
+   "audioZip": "https://www.archive.org/download/expedition_donner_party_0907_librivox/expedition_donner_party_0907_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/ExpeditionOfTheDonnerPartyAndItsTragicFatePart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Expedition-of-the-Donner-Party-and-its-Tragic-Fate.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Expedition-of-the-Donner-Party-and-its-Tragic-Fate.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/1/1/4/11146/11146-h/11146-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Henry-5",
+   "title": "Henry V",
+   "author": "William Shakespeare",
+   "url": "https://www.loyalbooks.com/book/Henry-5",
+   "cover": "https://www.loyalbooks.com/image/layout2/Henry-5.jpg",
+   "genres": [
+    "Dramatic Works",
+    "History",
+    "Play",
+    "Literature"
+   ],
+   "archiveId": "henryv_1101_librivox",
+   "audioZip": "https://www.archive.org/download/henryv_1101_librivox/henryv_1101_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Henry-5.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Henry-V.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2253/pg2253.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "richard-of-jamestown-a-story-of-the-virginia-colony-by-james-otis",
+   "title": "Richard of Jamestown: A Story of the Virginia Colony",
+   "author": "James Otis",
+   "url": "https://www.loyalbooks.com/book/richard-of-jamestown-a-story-of-the-virginia-colony-by-james-otis",
+   "cover": "https://www.loyalbooks.com/image/layout2/Richard-of-Jamestown-Virginia-Colony.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Historical Fiction",
+    "History",
+    "Literature"
+   ],
+   "archiveId": "richard_jamestown_lc_librivox",
+   "audioZip": "https://www.archive.org/download/richard_jamestown_lc_librivox/richard_jamestown_lc_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/RichardOfJamestown.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Richard-of-Jamestown-a-Story-of-the-Virginia-Colony-by-James-Otis.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Richard-of-Jamestown-a-Story-of-the-Virginia-Colony-by-James-Otis.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/7/4/6/7465/7465-h/7465-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Beasts-Men-and-Gods",
+   "title": "Beasts, Men and Gods",
+   "author": "Ferdinand Ossendowski",
+   "url": "https://www.loyalbooks.com/book/Beasts-Men-and-Gods",
+   "cover": "https://www.loyalbooks.com/image/layout2/Beasts-Men-and-Gods.jpg",
+   "genres": [
+    "History",
+    "Memoirs",
+    "Non-fiction"
+   ],
+   "archiveId": "beasts_men_gods_ms_librivox",
+   "audioZip": "https://www.archive.org/download/beasts_men_gods_ms_librivox/beasts_men_gods_ms_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/BeastsMenAndGodsPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Beasts-Men-and-Gods.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Beasts-Men-and-Gods.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/6/2067/2067-h/2067-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-discovery-of-new-worlds-by-m-b-synge",
+   "title": "The Discovery of New Worlds",
+   "author": "M. B. Synge",
+   "url": "https://www.loyalbooks.com/book/the-discovery-of-new-worlds-by-m-b-synge",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-discovery-of-new-worlds-by-m-b-synge.jpg",
+   "genres": [
+    "Kids",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "discovery_of_new_worlds_0904_librivox",
+   "audioZip": "https://www.archive.org/download/discovery_of_new_worlds_0904_librivox/discovery_of_new_worlds_0904_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/DiscoveryOfNewWorldsPart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "Captivity-and-Restoration-of-Mary-Rowlandson",
+   "title": "A Narrative of the Captivity and Restoration of Mrs. Mary Rowlandson",
+   "author": "Mary Rowlandson",
+   "url": "https://www.loyalbooks.com/book/Captivity-and-Restoration-of-Mary-Rowlandson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Captivity-and-Restoration-of-Mary-Rowlandson.jpg",
+   "genres": [
+    "History",
+    "Memoirs",
+    "Non-fiction",
+    "Biography",
+    "War stories"
+   ],
+   "archiveId": "captivity_restoration_rowlandson_0912_librivox",
+   "audioZip": "https://www.archive.org/download/captivity_restoration_rowlandson_0912_librivox/captivity_restoration_rowlandson_0912_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/NarrativeOfTheCaptivityAndRestorationOfMrs.MaryRowlandson_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Captivity-and-Restoration-of-Mary-Rowlandson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Captivity-and-Restoration-of-Mary-Rowlandson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/8/5/851/851-h/851-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Diary-of-a-Nursing-Sister-on-the-Western-Front-1914-1915",
+   "title": "Diary of a Nursing Sister on the Western Front 1914-1915",
+   "author": "Anonymous, attributed to Kathleen Luard",
+   "url": "https://www.loyalbooks.com/book/Diary-of-a-Nursing-Sister-on-the-Western-Front-1914-1915",
+   "cover": "https://www.loyalbooks.com/image/layout2/Diary-of-a-Nursing-Sister-on-the-Western-Front-1914-1915.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "War stories"
+   ],
+   "archiveId": "diary_nursing_sister_0911_librivox",
+   "audioZip": "https://www.archive.org/download/diary_nursing_sister_0911_librivox/diary_nursing_sister_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/DiaryOfANursingSisterOnTheWesternFront1914-1915Part1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Diary-of-a-Nursing-Sister-on-the-Western-Front-1914-1915.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Diary-of-a-Nursing-Sister-on-the-Western-Front-1914-1915.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/18910/pg18910.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "henry-esmond-by-william-makepeace-thackeray",
+   "title": "The History of Henry Esmond, Esq., A Colonel in the Service of Her Majesty Queen Anne",
+   "author": "William Makepeace Thackeray",
+   "url": "https://www.loyalbooks.com/book/henry-esmond-by-william-makepeace-thackeray",
+   "cover": "https://www.loyalbooks.com/image/layout2/henry-esmond-by-william-makepeace-thackeray.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "History",
+    "Literature"
+   ],
+   "archiveId": "henry_esmond_0804_librivox1",
+   "audioZip": "https://www.archive.org/download/henry_esmond_0804_librivox1/henry_esmond_0804_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/HistoryOfHenryEsmondPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Henry-Esmond-by-William-Makepeace-Thackeray.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/henry-esmond-by-william-makepeace-thackeray.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2511/pg2511.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "a-gold-hunters-experience-by-chalkley-j-hambleton",
+   "title": "A Gold Hunter's Experience",
+   "author": "Chalkley J. Hambleton",
+   "url": "https://www.loyalbooks.com/book/a-gold-hunters-experience-by-chalkley-j-hambleton",
+   "cover": "https://www.loyalbooks.com/image/layout2/a-gold-hunters-experience-by-chalkley-j-hambleton.jpg",
+   "genres": [
+    "Biography",
+    "Memoirs",
+    "Non-fiction",
+    "Westerns",
+    "History"
+   ],
+   "archiveId": "gold_hunters_experience_sa_librivox",
+   "audioZip": "https://www.archive.org/download/gold_hunters_experience_sa_librivox/gold_hunters_experience_sa_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Gold-Hunters-Experience-by-Chalkley-J-Hambleton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Gold-Hunters-Experience-by-Chalkley-J-Hambleton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/9/3/3/29335/29335-h/29335-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Commentaries-on-the-Gallic-War",
+   "title": "Commentaries on the Gallic War",
+   "author": "Gaius Julius Caesar",
+   "url": "https://www.loyalbooks.com/book/Commentaries-on-the-Gallic-War",
+   "cover": "https://www.loyalbooks.com/image/layout2/Commentaries-on-the-Gallic-War.jpg",
+   "genres": [
+    "Ancient Texts",
+    "Classics (antiquity)",
+    "History",
+    "Non-fiction",
+    "War stories"
+   ],
+   "archiveId": "commentaries_gallic_war_1105_librivox",
+   "audioZip": "https://www.archive.org/download/commentaries_gallic_war_1105_librivox/commentaries_gallic_war_1105_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/CommentariesOnTheGallicWarPart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "the-life-of-cicero-vol-i-by-anthony-trollope",
+   "title": "The Life of Cicero",
+   "author": "Anthony Trollope",
+   "url": "https://www.loyalbooks.com/book/the-life-of-cicero-vol-i-by-anthony-trollope",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-life-of-cicero-vol-i-by-anthony-trollope.jpg",
+   "genres": [
+    "Biography",
+    "Non-fiction",
+    "History"
+   ],
+   "archiveId": "life_cicero_0809_librivox",
+   "audioZip": "https://www.archive.org/download/life_cicero_0809_librivox/life_cicero_0809_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/LifeOfCiceroVol1Part1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Life-of-Cicero-by-Anthony-Trollope.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Life-of-Cicero-by-Anthony-Trollope.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/8/9/4/8945-h/8945-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "a-history-of-the-philippines-by-barrows",
+   "title": "A History of the Philippines",
+   "author": "David Barrows",
+   "url": "https://www.loyalbooks.com/book/a-history-of-the-philippines-by-barrows",
+   "cover": "https://www.loyalbooks.com/image/layout2/a-history-of-the-philippines-by-barrows.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "history_of_the_philippines_0908_librivox1",
+   "audioZip": "https://www.archive.org/download/history_of_the_philippines_0908_librivox1/history_of_the_philippines_0908_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HistoryOfThePhilippinesPart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "the-loss-of-the-ss-titanic-by-lawrence-beesley",
+   "title": "The Loss of the S. S. Titanic",
+   "author": "Lawrence Beesley",
+   "url": "https://www.loyalbooks.com/book/the-loss-of-the-ss-titanic-by-lawrence-beesley",
+   "cover": "https://www.loyalbooks.com/image/layout2/Loss-of-the-S-S-Titanic.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Sea stories",
+    "Art"
+   ],
+   "archiveId": "loss_titanic_ah_librivox",
+   "audioZip": "https://www.archive.org/download/loss_titanic_ah_librivox/loss_titanic_ah_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/TheLossOfTheS.S.Titanic_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Loss-of-the-Ss-Titanic-by-Lawrence-Beesley.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Loss-of-the-Ss-Titanic-by-Lawrence-Beesley.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6675/pg6675.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "Diary-from-Dixie",
+   "title": "A Diary from Dixie",
+   "author": "Mary Chesnut",
+   "url": "https://www.loyalbooks.com/book/Diary-from-Dixie",
+   "cover": "https://www.loyalbooks.com/image/layout2/Diary-from-Dixie.jpg",
+   "genres": [
+    "History",
+    "Memoirs",
+    "Non-fiction",
+    "War stories"
+   ],
+   "archiveId": "diaryfromdixie_1101_librivox",
+   "audioZip": "https://www.archive.org/download/diaryfromdixie_1101_librivox/diaryfromdixie_1101_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/DiaryFromDixiePart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "mounted-police-life-in-canada-a-record-of-thirty-one-years-service-1916",
+   "title": "Mounted Police Life in Canada : a record of thirty-one years' service (1916)",
+   "author": "Richard Burton Deane",
+   "url": "https://www.loyalbooks.com/book/mounted-police-life-in-canada-a-record-of-thirty-one-years-service-1916",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mounted-police-life-in-canada-a-record-of-thirty-one-years.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Memoirs",
+    "Non-fiction"
+   ],
+   "archiveId": "mounted_police_ehl_0811_librivox",
+   "audioZip": "https://www.archive.org/download/mounted_police_ehl_0811_librivox/mounted_police_ehl_0811_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/MountedPoliceLifeInCanada-ARecordOfThirty-oneYearsService1916Part1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "life-in-a-mediaeval-city-illustrated-by-york-in-the-xvth-century-by-edwin-benson",
+   "title": "Life in a Mediaeval City, Illustrated by York in the XVth Century",
+   "author": "Edwin F. Benson",
+   "url": "https://www.loyalbooks.com/book/life-in-a-mediaeval-city-illustrated-by-york-in-the-xvth-century-by-edwin-benson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Life-in-a-Mediaeval-City.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "life_mediaeval_city_py_librivox",
+   "audioZip": "https://www.archive.org/download/life_mediaeval_city_py_librivox/life_mediaeval_city_py_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/LifeInAMedievalCity.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Life-in-a-Mediaeval-City-Illustrated-by-York-in-the-Xvth-Century.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/life-in-a-mediaeval-city-illustrated-by-york-in-the-xvth-century-by-edwin-benson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/17848/pg17848-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "Third-Class-in-Indian-Railways",
+   "title": "Third Class in Indian Railways",
+   "author": "Mohandas Karamchand Gandhi",
+   "url": "https://www.loyalbooks.com/book/Third-Class-in-Indian-Railways",
+   "cover": "https://www.loyalbooks.com/image/layout2/Third-Class-in-Indian-Railways.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Politics"
+   ],
+   "archiveId": "thirdclass_1003_librivox",
+   "audioZip": "https://www.archive.org/download/thirdclass_1003_librivox/thirdclass_1003_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/ThirdClassInIndianRailways_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Third-Class-in-Indian-Railways.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Third-Class-in-Indian-Railways.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/4/6/24461/24461-h/24461-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Charles-I-by-Jacob-Abbott",
+   "title": "Charles I",
+   "author": "Jacob Abbott",
+   "url": "https://www.loyalbooks.com/book/Charles-I-by-Jacob-Abbott",
+   "cover": "https://www.loyalbooks.com/image/layout2/Charles-I-by-Jacob-Abbott.jpg",
+   "genres": [
+    "Biography",
+    "Kids",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "charles1_0911_librivox",
+   "audioZip": "https://www.archive.org/download/charles1_0911_librivox/charles1_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/CharlesI_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Charles-I-by-Jacob-Abbott.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Charles-I-by-Jacob-Abbott.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/26734/pg26734-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "Ecclesiastical-History-of-England",
+   "title": "Ecclesiastical History of England",
+   "author": "The Venerable Bede",
+   "url": "https://www.loyalbooks.com/book/Ecclesiastical-History-of-England",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ecclesiastical-History-of-England.jpg",
+   "genres": [
+    "Ancient Texts",
+    "History",
+    "Politics",
+    "Religion",
+    "Non-fiction"
+   ],
+   "archiveId": "history_england_1209_librivox",
+   "audioZip": "https://www.archive.org/download/history_england_1209_librivox/history_england_1209_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/ebooks/38326",
+   "cluster": "history"
+  },
+  {
+   "slug": "Story-of-Electricity",
+   "title": "The Story of Electricity",
+   "author": "John Munro",
+   "url": "https://www.loyalbooks.com/book/Story-of-Electricity",
+   "cover": "https://www.loyalbooks.com/image/layout2/Story-of-Electricity.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Science"
+   ],
+   "archiveId": "story_electricity_rg_librivox",
+   "audioZip": "https://www.archive.org/download/story_electricity_rg_librivox/story_electricity_rg_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/StoryOfElectricityPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Story-of-Electricity.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Story-of-Electricity.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4710/pg4710.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "peeps-at-many-lands-ancient-egypt-by-james-baikie",
+   "title": "Peeps at Many Lands: Ancient Egypt",
+   "author": "James Baikie",
+   "url": "https://www.loyalbooks.com/book/peeps-at-many-lands-ancient-egypt-by-james-baikie",
+   "cover": "https://www.loyalbooks.com/image/layout2/peeps-at-many-lands-ancient-egypt-by-james-baikie.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Historical Fiction",
+    "History",
+    "Travel",
+    "Ancient Texts"
+   ],
+   "archiveId": "peeps_ancient_egypt_0808_librivox",
+   "audioZip": "https://www.archive.org/download/peeps_ancient_egypt_0808_librivox/peeps_ancient_egypt_0808_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/PeepsAtManyLands-AncientEgypt_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Peeps-at-Many-Lands-Ancient-Egypt-by-James-Baikie.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Peeps-at-Many-Lands-Ancient-Egypt-by-James-Baikie.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/7/9/22799/22799-h/22799-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-natural-history-of-selborne-by-gilbert-white",
+   "title": "The Natural History of Selborne",
+   "author": "Gilbert White",
+   "url": "https://www.loyalbooks.com/book/the-natural-history-of-selborne-by-gilbert-white",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-natural-history-of-selborne-by-gilbert-white.jpg",
+   "genres": [
+    "Nature",
+    "Non-fiction",
+    "History",
+    "Science",
+    "Travel"
+   ],
+   "archiveId": "selborne_py_librivox",
+   "audioZip": "https://www.archive.org/download/selborne_py_librivox/selborne_py_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/NaturalHistoryOfSelborne.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Natural-History-of-Selborne-by-Gilbert-White.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-natural-history-of-selborne-by-gilbert-white.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/1408/pg1408.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "Bradfords-History-of-the-Plymouth-Settlement",
+   "title": "Bradford's History of the Plymouth Settlement",
+   "author": "William Bradford",
+   "url": "https://www.loyalbooks.com/book/Bradfords-History-of-the-Plymouth-Settlement",
+   "cover": "https://www.loyalbooks.com/image/layout2/Bradfords-History-of-the-Plymouth-Settlement.jpg",
+   "genres": [
+    "History",
+    "Memoirs",
+    "Non-fiction"
+   ],
+   "archiveId": "history_plymoutn_settlement_1007_librivox",
+   "audioZip": "https://www.archive.org/download/history_plymoutn_settlement_1007_librivox/history_plymoutn_settlement_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/BradfordsHistoryOfThePlymouthSettlement.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "wild-life-on-the-rockies-by-enos-a-mills",
+   "title": "Wild Life on the Rockies",
+   "author": "Enos A. Mills",
+   "url": "https://www.loyalbooks.com/book/wild-life-on-the-rockies-by-enos-a-mills",
+   "cover": "https://www.loyalbooks.com/image/layout2/Wild-Life-on-the-Rockies.jpg",
+   "genres": [
+    "Biography",
+    "Nature",
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "wild_life_on_the_rockies_0908_librivox",
+   "audioZip": "https://www.archive.org/download/wild_life_on_the_rockies_0908_librivox/wild_life_on_the_rockies_0908_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/WildLifeOnTheRockies.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Wild-Life-on-the-Rockies-by-Enos-a-Mills.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Wild-Life-on-the-Rockies-by-Enos-a-Mills.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/8/5/6/28562/28562-h/28562-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "tacitus-histories",
+   "title": "Tacitus' Histories",
+   "author": "Publius Cornelius Tacitus",
+   "url": "https://www.loyalbooks.com/book/tacitus-histories",
+   "cover": "https://www.loyalbooks.com/image/layout2/tacitus-histories.jpg",
+   "genres": [
+    "History"
+   ],
+   "archiveId": "tacitus_histories_0905_librivox1",
+   "audioZip": "https://www.archive.org/download/tacitus_histories_0905_librivox1/tacitus_histories_0905_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/TheHistoriesBook1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "the-englishwoman-in-america-by-isabella-lucy-bird",
+   "title": "The Englishwoman in America",
+   "author": "Isabella L. Bird",
+   "url": "https://www.loyalbooks.com/book/the-englishwoman-in-america-by-isabella-lucy-bird",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-englishwoman-in-america-by-isabella-lucy-bird.jpg",
+   "genres": [
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "englishwoman_in_america_sd_librivox",
+   "audioZip": "https://www.archive.org/download/englishwoman_in_america_sd_librivox/englishwoman_in_america_sd_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/EnglishwomanInAmericaPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Englishwoman-in-America-by-Isabella-Lucy-Bird.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-englishwoman-in-america-by-isabella-lucy-bird.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/7526/pg7526.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "In-Ghostly-Japan",
+   "title": "In Ghostly Japan",
+   "author": "Lafcadio Hearn",
+   "url": "https://www.loyalbooks.com/book/In-Ghostly-Japan",
+   "cover": "https://www.loyalbooks.com/image/layout2/In-Ghostly-Japan.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Horror/Ghost stories",
+    "Myths/Legends",
+    "Short stories",
+    "History"
+   ],
+   "archiveId": "ghostly_japan_1101_librivox",
+   "audioZip": "https://www.archive.org/download/ghostly_japan_1101_librivox/ghostly_japan_1101_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/InGhostlyJapan.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/In-Ghostly-Japan.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/In-Ghostly-Japan.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/8128/pg8128.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "new-discoveries-at-jamestown-by-john-l-cotter-and-paul-j-hudson",
+   "title": "New Discoveries at Jamestown",
+   "author": "John L. Cotter",
+   "url": "https://www.loyalbooks.com/book/new-discoveries-at-jamestown-by-john-l-cotter-and-paul-j-hudson",
+   "cover": "https://www.loyalbooks.com/image/layout2/36.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "new_discoveries_jamestown_ms_librivox",
+   "audioZip": "https://www.archive.org/download/new_discoveries_jamestown_ms_librivox/new_discoveries_jamestown_ms_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/New-Discoveries-at-Jamestown-by-John-L-Cotter-and-Paul-J-Hudson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/new-discoveries-at-jamestown-by-john-l-cotter-and-paul-j-hudson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/16277/pg16277-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-trail-of-the-hawk",
+   "title": "The Trail of the Hawk",
+   "author": "Sinclair Lewis",
+   "url": "https://www.loyalbooks.com/book/the-trail-of-the-hawk",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-trail-of-the-hawk.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction",
+    "Fiction",
+    "Literature"
+   ],
+   "archiveId": "trail_hawk_0902_librivox",
+   "audioZip": "https://www.archive.org/download/trail_hawk_0902_librivox/trail_hawk_0902_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/Librivoxm4bCollectionAudiobooks_12/TrailOfTheHawkPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Trail-of-the-Hawk.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-trail-of-the-hawk.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/26610/pg26610-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "At-Agincourt-White-Hoods-of-Paris",
+   "title": "At Agincourt - White Hoods of Paris",
+   "author": "George Alfred Henty",
+   "url": "https://www.loyalbooks.com/book/At-Agincourt-White-Hoods-of-Paris",
+   "cover": "https://www.loyalbooks.com/image/layout2/At-Agincourt-White-Hoods-of-Paris.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Historical Fiction",
+    "War stories",
+    "History",
+    "Literature"
+   ],
+   "archiveId": "at_agincourt_1007_librivox",
+   "audioZip": "https://www.archive.org/download/at_agincourt_1007_librivox/at_agincourt_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/AtAgincourtPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/At-Agincourt-White-Hoods-of-Paris.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/At-Agincourt-White-Hoods-of-Paris.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/7060/pg7060.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "Steps-to-Christ",
+   "title": "Steps to Christ",
+   "author": "Ellen White",
+   "url": "https://www.loyalbooks.com/book/Steps-to-Christ",
+   "cover": "https://www.loyalbooks.com/image/layout2/Steps-to-Christ.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Religion"
+   ],
+   "archiveId": "steps_to_christ_1001_librivox",
+   "audioZip": "https://www.archive.org/download/steps_to_christ_1001_librivox/steps_to_christ_1001_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "plan-and-preface-to-a-dictionary-of-english-by-samuel-johnson",
+   "title": "Plan and Preface to a Dictionary of English",
+   "author": "Samuel Johnson",
+   "url": "https://www.loyalbooks.com/book/plan-and-preface-to-a-dictionary-of-english-by-samuel-johnson",
+   "cover": "https://www.loyalbooks.com/image/layout2/plan-and-preface-to-a-dictionary-of-english-by-samuel-johnson.jpg",
+   "genres": [
+    "History",
+    "Languages",
+    "Non-fiction"
+   ],
+   "archiveId": "plan_and_preface_to_a_dictionary_librivox",
+   "audioZip": "https://www.archive.org/download/plan_and_preface_to_a_dictionary_librivox/plan_and_preface_to_a_dictionary_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/PlanAndPrefaceToADictionaryOfEnglish_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "the-social-history-of-smoking-by-george-l-apperson",
+   "title": "The Social History of Smoking",
+   "author": "George L. Apperson",
+   "url": "https://www.loyalbooks.com/book/the-social-history-of-smoking-by-george-l-apperson",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-social-history-of-smoking-by-george-l-apperson.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Art"
+   ],
+   "archiveId": "social_history_smoking_0811_librivox",
+   "audioZip": "https://www.archive.org/download/social_history_smoking_0811_librivox/social_history_smoking_0811_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/SocialHistoryOfSmokingPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Social-History-of-Smoking-by-George-L-Apperson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-social-history-of-smoking-by-george-l-apperson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/18096/pg18096.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-western-united-states-by-harold-w-fairbanks",
+   "title": "The Western United States: A Geographical Reader",
+   "author": "Harold W. Fairbanks",
+   "url": "https://www.loyalbooks.com/book/the-western-united-states-by-harold-w-fairbanks",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-western-united-states-by-harold-w-fairbanks.jpg",
+   "genres": [
+    "Instruction",
+    "Non-fiction",
+    "Teen/Young adult",
+    "History"
+   ],
+   "archiveId": "western_united_states_lc_librivox",
+   "audioZip": "https://www.archive.org/download/western_united_states_lc_librivox/western_united_states_lc_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/WesternUnitedStates.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Western-United-States-by-Harold-W-Fairbanks.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-western-united-states-by-harold-w-fairbanks.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/22302/pg22302-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "School-History-of-the-Great-War",
+   "title": "A School History of the Great War",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/School-History-of-the-Great-War",
+   "cover": "https://www.loyalbooks.com/image/layout2/School-History-of-the-Great-War.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "War stories"
+   ],
+   "archiveId": "school_history_great_war_0911_librivox",
+   "audioZip": "https://www.archive.org/download/school_history_great_war_0911_librivox/school_history_great_war_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/SchoolHistoryOfTheGreatWar_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/School-History-of-the-Great-War.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/School-History-of-the-Great-War.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/7/2/1/17211/17211-h/17211-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Early-History-of-the-Airplane",
+   "title": "The Early History of the Airplane",
+   "author": "Wright, Orville and Wilbur",
+   "url": "https://www.loyalbooks.com/book/Early-History-of-the-Airplane",
+   "cover": "https://www.loyalbooks.com/image/layout2/Early-History-of-the-Airplane.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "History",
+    "Non-fiction",
+    "Short stories"
+   ],
+   "archiveId": "early_history_airplane_1003_librivox",
+   "audioZip": "https://www.archive.org/download/early_history_airplane_1003_librivox/early_history_airplane_1003_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Early_History_Airplane_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Early-History-of-the-Airplane.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Early-History-of-the-Airplane.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/5/4/2/25420/25420-h/25420-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Historical-Tales-1",
+   "title": "Historical Tales",
+   "author": "Charles Morris",
+   "url": "https://www.loyalbooks.com/book/Historical-Tales-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Historical-Tales-1.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "History"
+   ],
+   "archiveId": "historical_tales_vol1_kgb_librivox",
+   "audioZip": "https://www.archive.org/download/historical_tales_vol1_kgb_librivox/historical_tales_vol1_kgb_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HistoricalTalesVolumeI-AmericanPart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "the-insurrection-in-dublin-by-james-stephens",
+   "title": "The Insurrection in Dublin",
+   "author": "James Stephens",
+   "url": "https://www.loyalbooks.com/book/the-insurrection-in-dublin-by-james-stephens",
+   "cover": "https://www.loyalbooks.com/image/layout2/Insurrection-in-Dublin.jpg",
+   "genres": [
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "insurrection_dublin_i_librivox",
+   "audioZip": "https://www.archive.org/download/insurrection_dublin_i_librivox/insurrection_dublin_i_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/InsurrectionInDublin_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Insurrection-in-Dublin-by-James-Stephens.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-insurrection-in-dublin-by-james-stephens.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/12871/pg12871.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "Confederate-Girls-Diary",
+   "title": "A Confederate Girl's Diary",
+   "author": "Sarah Morgan Dawson",
+   "url": "https://www.loyalbooks.com/book/Confederate-Girls-Diary",
+   "cover": "https://www.loyalbooks.com/image/layout2/Confederate-Girls-Diary.jpg",
+   "genres": [
+    "Memoirs",
+    "Non-fiction",
+    "War stories",
+    "History"
+   ],
+   "archiveId": "confederate_girls_diary_1105_librivox",
+   "audioZip": "https://www.archive.org/download/confederate_girls_diary_1105_librivox/confederate_girls_diary_1105_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/ConfederateGirlsDiaryFile1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Confederate-Girls-Diary.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Confederate-Girls-Diary.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/5/0/0/25004/25004-h/25004-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "History-of-the-Inquisition-of-Spain",
+   "title": "History of the Inquisition of Spain",
+   "author": "Henry Charles Lea",
+   "url": "https://www.loyalbooks.com/book/History-of-the-Inquisition-of-Spain",
+   "cover": "https://www.loyalbooks.com/image/layout2/History-of-the-Inquisition-of-Spain.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Religion"
+   ],
+   "archiveId": "history_inquisition_spain_vol1_1004_librivox",
+   "audioZip": "https://www.archive.org/download/history_inquisition_spain_vol1_1004_librivox/history_inquisition_spain_vol1_1004_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/HistoryOfTheInquisitionOfSpainPart1_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "Journal-of-Lewis-and-Clarke",
+   "title": "The Journal of Lewis and Clarke (1840)",
+   "author": "Meriwether Lewis",
+   "url": "https://www.loyalbooks.com/book/Journal-of-Lewis-and-Clarke",
+   "cover": "https://www.loyalbooks.com/image/layout2/Journal-of-Lewis-and-Clarke.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Travel"
+   ],
+   "archiveId": "journal_lewis_clarke_1010_librivox",
+   "audioZip": "https://www.archive.org/download/journal_lewis_clarke_1010_librivox/journal_lewis_clarke_1010_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/JournalOfLewisAndClarkePart1.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "the-lincoln-story-book-by-henry-l-williams",
+   "title": "The Lincoln Story Book",
+   "author": "Henry L. Williams",
+   "url": "https://www.loyalbooks.com/book/the-lincoln-story-book-by-henry-l-williams",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-lincoln-story-book-by-henry-l-williams.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "lincoln_story_book2_0902_librivox",
+   "audioZip": "https://www.archive.org/download/lincoln_story_book2_0902_librivox/lincoln_story_book2_0902_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/LincolnStoryBookPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Lincoln-Story-Book-by-Henry-L-Williams.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-lincoln-story-book-by-henry-l-williams.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/7347/pg7347.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "fame-and-fortune-by-horatio-alger-jr",
+   "title": "Fame and Fortune",
+   "author": "Horatio Alger, Jr.",
+   "url": "https://www.loyalbooks.com/book/fame-and-fortune-by-horatio-alger-jr",
+   "cover": "https://www.loyalbooks.com/image/layout2/Fame-and-Fortune-Horatio-Alger-Jr.jpg",
+   "genres": [
+    "Fiction",
+    "History"
+   ],
+   "archiveId": "fame_fortune_0910_librivox",
+   "audioZip": "https://www.archive.org/download/fame_fortune_0910_librivox/fame_fortune_0910_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/FameAndFortune.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Fame-and-Fortune-by-Horatio-Alger-Jr.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/fame-and-fortune-by-horatio-alger-jr.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21632/pg21632-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "Stories-of-Inventors",
+   "title": "Stories of Inventors",
+   "author": "Russel Doubleday",
+   "url": "https://www.loyalbooks.com/book/Stories-of-Inventors",
+   "cover": "https://www.loyalbooks.com/image/layout2/Stories-of-Inventors.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Science"
+   ],
+   "archiveId": "stories_inventors_1007_librivox",
+   "audioZip": "https://www.archive.org/download/stories_inventors_1007_librivox/stories_inventors_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/StoriesOfInventorsPart1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Stories-of-Inventors.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Stories-of-Inventors.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/1/3/6/11368/11368-h/11368-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "Lives-of-the-Most-Eminent-Painters-1",
+   "title": "Lives of the Most Eminent Painters, Sculptors and Architects",
+   "author": "Giorgio Vasari",
+   "url": "https://www.loyalbooks.com/book/Lives-of-the-Most-Eminent-Painters-1",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lives-of-the-Most-Eminent-Painters-1.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction",
+    "Art"
+   ],
+   "archiveId": "lives_painters_vol1_1001",
+   "audioZip": "https://www.archive.org/download/lives_painters_vol1_1001/lives_painters_vol1_1001_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/TheLivesOfTheMostExcellentItalianPaintersSculptorsAndArchitectsFromCimabueToOurTimesVolume1Part1_32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Lives-of-the-Most-Eminent-Painters-1.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lives-of-the-Most-Eminent-Painters.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/5/3/2/25326/25326-h/25326-h.htm",
+   "cluster": "history"
+  },
+  {
+   "slug": "the-young-visiters-by-daisy-ashford",
+   "title": "The Young Visiters, or Mr. Salteena's Plan",
+   "author": "Daisy Ashford",
+   "url": "https://www.loyalbooks.com/book/the-young-visiters-by-daisy-ashford",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-young-visiters-by-daisy-ashford.jpg",
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "History",
+    "Humor",
+    "Kids",
+    "Literature",
+    "Romance"
+   ],
+   "archiveId": "young_visiters_dj_librivox",
+   "audioZip": "https://www.archive.org/download/young_visiters_dj_librivox/young_visiters_dj_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/YoungVisiters.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Young-Visiters-by-Daisy-Ashford.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/the-young-visiters-by-daisy-ashford.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/21415/pg21415-images.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "utopia-of-usurers-of-g-k-chesterton",
+   "title": "A Utopia of Usurers",
+   "author": "G. K. Chesterton",
+   "url": "https://www.loyalbooks.com/book/utopia-of-usurers-of-g-k-chesterton",
+   "cover": "https://www.loyalbooks.com/image/layout2/utopia-of-usurers-of-g-k-chesterton.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "Humor",
+    "Non-fiction",
+    "Religion",
+    "History",
+    "Politics"
+   ],
+   "archiveId": "utopia_of_userers_0902_rc_librivox2",
+   "audioZip": "https://www.archive.org/download/utopia_of_userers_0902_rc_librivox2/utopia_of_userers_0902_rc_librivox2_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/Librivoxm4bCollectionAudiobooks_12/UtopiaOfUsurers.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Utopia-of-Usurers-of-G-K-Chesterton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Utopia-of-Usurers-of-G-K-Chesterton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/2134/pg2134.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "a-ladys-visit-to-the-gold-diggings-of-australia-in-1852-53-by-ellen-clacy",
+   "title": "A Lady's Visit to the Gold Diggings of Australia in 1852-53,",
+   "author": "Ellen Clacy",
+   "url": "https://www.loyalbooks.com/book/a-ladys-visit-to-the-gold-diggings-of-australia-in-1852-53-by-ellen-clacy",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ladys-visit-to-the-gold-diggings-of-australia.jpg",
+   "genres": [
+    "Non-fiction",
+    "Travel",
+    "History"
+   ],
+   "archiveId": "ladys_visit_gold_diggings_0811_librivox",
+   "audioZip": "https://www.archive.org/download/ladys_visit_gold_diggings_0811_librivox/ladys_visit_gold_diggings_0811_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Ladys_visit_goldfields.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Ladys-Visit-to-the-Gold-Diggings-of-Australia-in-1852-53.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/a-ladys-visit-to-the-gold-diggings-of-australia-in-1852-53-by-ellen-clacy.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/4054/pg4054.mobi",
+   "cluster": "history"
+  },
+  {
+   "slug": "alfred-the-great-by-asser",
+   "title": "Life of Alfred the Great",
+   "author": "Asser, Bishop of Sherborne",
+   "url": "https://www.loyalbooks.com/book/alfred-the-great-by-asser",
+   "cover": "https://www.loyalbooks.com/image/layout2/alfred-the-great-by-asser.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "life_of_alfred_the_great_rs_librivox1",
+   "audioZip": "https://www.archive.org/download/life_of_alfred_the_great_rs_librivox1/life_of_alfred_the_great_rs_librivox1_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/LifeOfAlfredTheGreat_32kb_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "By-Ox-to-California",
+   "title": "By Ox Team to California - A Narrative of Crossing the Plains in 1860",
+   "author": "Lavinia Honeyman Porter",
+   "url": "https://www.loyalbooks.com/book/By-Ox-to-California",
+   "cover": "https://www.loyalbooks.com/image/layout2/By-Ox-to-California.jpg",
+   "genres": [
+    "Biography",
+    "History",
+    "Memoirs",
+    "Non-fiction",
+    "Travel",
+    "Westerns"
+   ],
+   "archiveId": "ox_team_california_sa_librivox",
+   "audioZip": "https://www.archive.org/download/ox_team_california_sa_librivox/ox_team_california_sa_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/By_Ox_Team_to_California.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "elsie-dinsmore-by-martha-finley",
+   "title": "Elsie Dinsmore",
+   "author": "Martha Finley",
+   "url": "https://www.loyalbooks.com/book/elsie-dinsmore-by-martha-finley",
+   "cover": "https://www.loyalbooks.com/image/layout2/elsie-dinsmore-by-martha-finley.jpg",
+   "genres": [
+    "Kids",
+    "Fiction",
+    "Religion",
+    "History",
+    "Teen/Young adult"
+   ],
+   "archiveId": "elsiedinsmore_0908_librivox",
+   "audioZip": "https://www.archive.org/download/elsiedinsmore_0908_librivox/elsiedinsmore_0908_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Elsie-Dinsmore-by-Martha-Finley.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Elsie-Dinsmore-by-Martha-Finley.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/6440/pg6440.html.utf8",
+   "cluster": "history"
+  },
+  {
+   "slug": "declaration-of-rights-by-the-stamp-act-congress-of-1765",
+   "title": "Declaration of Rights",
+   "author": "Stamp Act Congress of 1765",
+   "url": "https://www.loyalbooks.com/book/declaration-of-rights-by-the-stamp-act-congress-of-1765",
+   "cover": "https://www.loyalbooks.com/image/layout2/declaration-of-rights-by-the-stamp-act-congress-of-1765.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Fiction",
+    "History",
+    "Non-fiction"
+   ],
+   "archiveId": "stamp_act_congress_1765_librivox",
+   "audioZip": "https://www.archive.org/download/stamp_act_congress_1765_librivox/stamp_act_congress_1765_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  },
+  {
+   "slug": "united-kingdom-house-of-lords-speeches-collection",
+   "title": "United Kingdom House of Lords Speeches Collection",
+   "author": "Unknown",
+   "url": "https://www.loyalbooks.com/book/united-kingdom-house-of-lords-speeches-collection",
+   "cover": "https://www.loyalbooks.com/image/layout2/United-Kingdom-House-of-Lords-Speeches-Collection.jpg",
+   "genres": [
+    "History",
+    "Non-fiction",
+    "Politics"
+   ],
+   "archiveId": "lords_0901_librivox",
+   "audioZip": "https://www.archive.org/download/lords_0901_librivox/lords_0901_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxCollectionM4BAudiobook10/UnitedKingdomHouseOfLordsSpeechesCollection_32kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "history"
+  }
+ ]
+}

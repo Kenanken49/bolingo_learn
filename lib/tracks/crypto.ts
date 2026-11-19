@@ -161,7 +161,7 @@ export const TRACK_CRYPTO: Record<string, CourseLesson> = {
 
   'crypto-workshop-keys': {
     id: 'crypto-workshop-keys',
-    title: 'Workshop: design the protection for four columns',
+    title: 'Paper workshop: design the protection for four columns',
     theory: [
       'A study-report service stores four things it should not have been storing the way it does: a session token in a cookie that the client can edit, an exported report file that anyone with the URL can read, a learner email address that must be readable in the app, and the account passwords as plain SHA-256. Four columns, four different requirements, and the same mistake in all of them: one tool applied everywhere.',
       'Work the list in order of who must be able to read the result. The cookie needs a MAC and nothing else, because the server is the only reader. The report needs a capability in the URL — an unguessable random token — or an authenticated encryption of the path, because the reader is a browser that must not learn the rules. The email needs encryption with a keyed lookup, because the app shows it and the database must still find a row by it. Passwords need a slow hash with a per-user salt and nothing reversible.',
@@ -435,7 +435,7 @@ export const TRACK_CRYPTO: Record<string, CourseLesson> = {
 
   'crypto-workshop-audit': {
     id: 'crypto-workshop-audit',
-    title: 'Workshop: audit a login endpoint',
+    title: 'Paper workshop: audit a login endpoint',
     theory: [
       'The endpoint under review accepts a POST with email and password, queries the user row, compares hashes with a plain string equality, returns 404 for an unknown email and 401 for a wrong password, and has no rate limit. It uses TLS, it uses Argon2, and it is still the weakest thing in the build — which is the lesson: correct primitives do not compose into a correct system.',
       'Work outside-in. First the transport and the headers, where the only finding is a missing HSTS entry. Then the response shape, where two status codes answer a question the attacker asked for free. Then the comparison, where a normal equality leaks bytes of the expected value through timing — irrelevant for a hash with a salt, decisive for a webhook signature, and the kind of thing you want fixed while the code is short.',

@@ -1,0 +1,1768 @@
+{
+ "version": 1,
+ "cluster": "science_fiction",
+ "label": "Science Fiction & Fantasy",
+ "source": "https://www.loyalbooks.com/genre/Science_fiction?type=all",
+ "fetchedAt": "2026-11-16T13:01:41.566Z",
+ "rights": "Public domain (US): LibriVox narration via archive.org, ebook text via Project Gutenberg / LoyalBooks. Every title here is listed by LoyalBooks, whose catalog is public-domain only, so nothing in copyright is crawled or shipped. See docs/classics-audiobooks.md.",
+ "books": [
+  {
+   "slug": "moon-metal-by-garrett-p-serviss",
+   "title": "The Moon Metal",
+   "author": "Garrett P. Serviss",
+   "url": "https://www.loyalbooks.com/book/moon-metal-by-garrett-p-serviss",
+   "cover": "https://www.loyalbooks.com/image/layout2/Moon-Metal.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "moon_metal_blb_librivox",
+   "audioZip": "https://www.archive.org/download/moon_metal_blb_librivox/moon_metal_blb_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/MoonMetal_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Moon-Metal-by-Garrett-P-Serviss.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Moon-Metal-by-Garrett-P-Serviss.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/etext05/metal10h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "omnilingual-by-h-beam-piper",
+   "title": "Omnilingual",
+   "author": "H. Beam Piper",
+   "url": "https://www.loyalbooks.com/book/omnilingual-by-h-beam-piper",
+   "cover": "https://www.loyalbooks.com/image/layout2/Omnilingual.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "omnilingual_librivox",
+   "audioZip": "https://www.archive.org/download/omnilingual_librivox/omnilingual_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/Omnilingual-48kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Omnilingual-by-H-Beam-Piper.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Omnilingual-by-H-Beam-Piper.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/4/4/19445/19445-h/19445-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "operation-terror-by-murray-leinster",
+   "title": "Operation Terror",
+   "author": "Murray Leinster",
+   "url": "https://www.loyalbooks.com/book/operation-terror-by-murray-leinster",
+   "cover": "https://www.loyalbooks.com/image/layout2/operation-terror-by-murray-leinster.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "operation_terror_mn_librivox",
+   "audioZip": "https://www.archive.org/download/operation_terror_mn_librivox/operation_terror_mn_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks2/OperationTerrorByMurrayLeinster64kbps.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Operation-Terror-by-Murray-Leinster.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Operation-Terror-by-Murray-Leinster.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/7/8/7/17870/17870-h/17870-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "X-Minus-One-Project",
+   "title": "X Minus One Project",
+   "author": "Various",
+   "url": "https://www.loyalbooks.com/book/X-Minus-One-Project",
+   "cover": "https://www.loyalbooks.com/image/layout2/X-Minus-One-Project.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "x_minus_one_1008_librivox",
+   "audioZip": "https://www.archive.org/download/x_minus_one_1008_librivox/x_minus_one_1008_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/X_Minus_One_Project_64kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Space-Prison",
+   "title": "Space Prison",
+   "author": "Tom Godwin",
+   "url": "https://www.loyalbooks.com/book/Space-Prison",
+   "cover": "https://www.loyalbooks.com/image/layout2/Space-Prison.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "space_prison_0911_librivox",
+   "audioZip": "https://www.archive.org/download/space_prison_0911_librivox/space_prison_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/SpacePrison_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Space-Prison.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Space-Prison.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/5/4/22549/22549-h/22549-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "the-scarlet-plague-by-jack-london",
+   "title": "The Scarlet Plague",
+   "author": "Jack London",
+   "url": "https://www.loyalbooks.com/book/the-scarlet-plague-by-jack-london",
+   "cover": "https://www.loyalbooks.com/image/layout2/Scarlet-Plague.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "scarlet_plague_0907_librivox",
+   "audioZip": "https://www.archive.org/download/scarlet_plague_0907_librivox/scarlet_plague_0907_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/ScarletPlague_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Scarlet-Plague-by-Jack-London.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Scarlet-Plague-by-Jack-London.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/1/9/7/21970/21970-h/21970-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "wanted-7-fearless-engineers-by-warner-van-lorne",
+   "title": "Wanted – 7 Fearless Engineers!",
+   "author": "Warner Van Lorne",
+   "url": "https://www.loyalbooks.com/book/wanted-7-fearless-engineers-by-warner-van-lorne",
+   "cover": "https://www.loyalbooks.com/image/layout2/Wanted-7-Fearless-Engineers.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "wanted_-_7_fearless_engineers_0810_librivox",
+   "audioZip": "https://www.archive.org/download/wanted_-_7_fearless_engineers_0810_librivox/wanted_-_7_fearless_engineers_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Wanted-7_Fearless_Engineers.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Wanted-7-Fearless-Engineers-by-Warner-Van-Lorne.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Wanted-7-Fearless-Engineers-by-Warner-Van-Lorne.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/9/4/26941/26941-h/26941-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "the-defiant-agents-by-andre-norton",
+   "title": "The Defiant Agents",
+   "author": "Andre Norton",
+   "url": "https://www.loyalbooks.com/book/the-defiant-agents-by-andre-norton",
+   "cover": "https://www.loyalbooks.com/image/layout2/Defiant-Agents.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science",
+    "Travel"
+   ],
+   "archiveId": "defiantagents_rjd_librivox",
+   "audioZip": "https://www.archive.org/download/defiantagents_rjd_librivox/defiantagents_rjd_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks_11/DefiantAgents_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Defiant-Agents-by-Andre-Norton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Defiant-Agents-by-Andre-Norton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/5/5/5/25550/25550-h/25550-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "the-return",
+   "title": "The Return",
+   "author": "H. Beam Piper",
+   "url": "https://www.loyalbooks.com/book/the-return",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-return.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "the_return_rf_librivox",
+   "audioZip": "https://www.archive.org/download/the_return_rf_librivox/the_return_rf_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Return_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Return.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/The-Return-by-H-Piper.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/1/5/19158/19158-h/19158-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "greener-than-you-think-by-ward-moore",
+   "title": "Greener Than You Think",
+   "author": "Ward Moore",
+   "url": "https://www.loyalbooks.com/book/greener-than-you-think-by-ward-moore",
+   "cover": "https://www.loyalbooks.com/image/layout2/Greener-Than-You-Think.jpg",
+   "genres": [
+    "Fiction",
+    "Horror/Ghost stories",
+    "Satire",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "greener_than_you_think_le_librivox",
+   "audioZip": "https://www.archive.org/download/greener_than_you_think_le_librivox/greener_than_you_think_le_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/GreenerThanYouThink_48kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Greener-Than-You-Think-by-Ward-Moore.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Greener-Than-You-Think-by-Ward-Moore.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/2/4/24246/24246-h/24246-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "hunters-out-of-space-by-joseph-kelleam",
+   "title": "Hunters Out of Space",
+   "author": "Joseph E. Kelleam",
+   "url": "https://www.loyalbooks.com/book/hunters-out-of-space-by-joseph-kelleam",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hunters-Out-of-Space.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "hunters_out_space_0904_librivox",
+   "audioZip": "https://www.archive.org/download/hunters_out_space_0904_librivox/hunters_out_space_0904_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/HuntersOutSpace_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Hunters-Out-of-Space-by-Joseph-Kelleam.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Hunters-Out-of-Space-by-Joseph-Kelleam.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/5/2/7/25270/25270-h/25270-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "uller-uprising-by-h-beam-piper",
+   "title": "Uller Uprising",
+   "author": "H. Beam Piper",
+   "url": "https://www.loyalbooks.com/book/uller-uprising-by-h-beam-piper",
+   "cover": "https://www.loyalbooks.com/image/layout2/Uller-Uprising-Piper.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "uller_uprising_0812_librivox",
+   "audioZip": "https://www.archive.org/download/uller_uprising_0812_librivox/uller_uprising_0812_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/UllerUprising_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Uller-Uprising-by-H-Beam-Piper.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Uller-Uprising-by-H-Beam-Piper.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/4/7/19474/19474-h/19474-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "the-machine-stops-by-em-forster",
+   "title": "The Machine Stops",
+   "author": "Edward M. Forster",
+   "url": "https://www.loyalbooks.com/book/the-machine-stops-by-em-forster",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-machine-stops-by-em-forster.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "machine_stops_etk_librivox",
+   "audioZip": "https://www.archive.org/download/machine_stops_etk_librivox/machine_stops_etk_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/MachineStopsV2_64kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-of-Super-Science",
+   "title": "Astounding Stories of Super-Science, September 1930",
+   "author": "Harry Bates, Editor",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-of-Super-Science",
+   "cover": "https://www.loyalbooks.com/image/layout2/Astounding-Stories-of-Super-Science-1930.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Essay/Short nonfiction",
+    "Literature"
+   ],
+   "archiveId": "astoundingstories_sep1930_0911_librivox",
+   "audioZip": "https://www.archive.org/download/astoundingstories_sep1930_0911_librivox/astoundingstories_sep1930_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/AstoundingStoriesSep1930_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-of-Super-Science.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Astounding-Stories-of-Super-Science.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/9/2/5/29255/29255-h/29255-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Ethical-Engineer",
+   "title": "The Ethical Engineer",
+   "author": "Harry Harrison",
+   "url": "https://www.loyalbooks.com/book/Ethical-Engineer",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ethical-Engineer.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "ethical_engineer_1001_librivox",
+   "audioZip": "https://www.archive.org/download/ethical_engineer_1001_librivox/ethical_engineer_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/EthicalEngineer_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Ethical-Engineer.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ethical-Engineer.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/9/6/30964/30964-h/30964-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "a-journey-in-other-worlds-by-john-jacob-astor-iv",
+   "title": "A Journey in Other Worlds: A Romance of the Future",
+   "author": "John Jacob Astor IV",
+   "url": "https://www.loyalbooks.com/book/a-journey-in-other-worlds-by-john-jacob-astor-iv",
+   "cover": "https://www.loyalbooks.com/image/layout2/Journey-in-Other-Worlds-A-Romance-of-the-Future.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "journey_other_worlds_0904_librivox",
+   "audioZip": "https://www.archive.org/download/journey_other_worlds_0904_librivox/journey_other_worlds_0904_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/JourneyInOtherWorlds.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/A-Journey-in-Other-Worlds-by-John-Jacob-Astor-Iv.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Journey-in-Other-Worlds-by-John-Jacob-Astor-Iv.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/6/0/1607/1607-h/1607-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "collected-public-domain-works-of-stanley-g-weinbaum-by-stanley-g-weinbaum",
+   "title": "Works of Stanley G. Weinbaum - A Martian Odyssey",
+   "author": "Stanley Grauman Weinbaum",
+   "url": "https://www.loyalbooks.com/book/collected-public-domain-works-of-stanley-g-weinbaum-by-stanley-g-weinbaum",
+   "cover": "https://www.loyalbooks.com/image/layout2/Stanley-g-weinbaum-by-stanley-g-weinbaum.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "weinbaum_collection_0901",
+   "audioZip": "https://www.archive.org/download/weinbaum_collection_0901/weinbaum_collection_0901_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/WeinbaumCollection_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Martian-Odyssey-by-Stanley-Grauman-Weinbaum.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/collected-public-domain-works-of-stanley-g-weinbaum-by-stanley-g-weinbaum.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/23731/pg23731.mobi",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "oomphel-in-the-sky-by-h-beam-piper",
+   "title": "Oomphel in the Sky",
+   "author": "H. Beam Piper",
+   "url": "https://www.loyalbooks.com/book/oomphel-in-the-sky-by-h-beam-piper",
+   "cover": "https://www.loyalbooks.com/image/layout2/Oomphel-in-the-Sky.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Teen/Young adult",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "oomphel_in_the_sky_librivox",
+   "audioZip": "https://www.archive.org/download/oomphel_in_the_sky_librivox/oomphel_in_the_sky_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/OomphelInTheSky_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Oomphel-in-the-Sky-by-H-Beam-Piper.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Oomphel-in-the-Sky-by-H-Beam-Piper.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/6/4/20649/20649-h/20649-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Iron-Heel-Jack-London",
+   "title": "The Iron Heel",
+   "author": "Jack London",
+   "url": "https://www.loyalbooks.com/book/Iron-Heel-Jack-London",
+   "cover": "https://www.loyalbooks.com/image/layout2/Iron-Heel-Jack-London.jpg",
+   "genres": [
+    "Fiction",
+    "Politics",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "iron_heel_1007_librivox",
+   "audioZip": "https://www.archive.org/download/iron_heel_1007_librivox/iron_heel_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/IronHeel.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Iron-Heel-Jack-London.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Iron-Heel-Jack-London.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/1/6/1164/1164-h/1164-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "starmans-quest-by-robert-silverberg",
+   "title": "Starman's Quest",
+   "author": "Robert Silverberg",
+   "url": "https://www.loyalbooks.com/book/starmans-quest-by-robert-silverberg",
+   "cover": "https://www.loyalbooks.com/image/layout2/Starmans-Quest.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "starmans_quest_0906_librivox",
+   "audioZip": "https://www.archive.org/download/starmans_quest_0906_librivox/starmans_quest_0906_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/StarmansQuest_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Starmans-Quest-by-Robert-Silverberg.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Starmans-Quest-by-Robert-Silverberg.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/4/4/27444/27444-h/27444-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "edisons-conquest-of-mars-by-garrett-p-serviss",
+   "title": "Edison's Conquest of Mars",
+   "author": "Garrett P. Serviss",
+   "url": "https://www.loyalbooks.com/book/edisons-conquest-of-mars-by-garrett-p-serviss",
+   "cover": "https://www.loyalbooks.com/image/layout2/edisons-conquest-of-mars-by-garrett-p-serviss.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science",
+    "Travel",
+    "Art"
+   ],
+   "archiveId": "edisons_conquest_of_mars_0806_librivox",
+   "audioZip": "https://www.archive.org/download/edisons_conquest_of_mars_0806_librivox/edisons_conquest_of_mars_0806_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/EdisonsConquestOfMars_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Edisons-Conquest-of-Mars-by-Garrett-P-Serviss.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Edisons-Conquest-of-Mars-by-Garrett-P-Serviss.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/1/4/19141/19141-h/19141-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "lone-star-planet-by-h-beam-piper-and-john-j-mcguire",
+   "title": "Lone Star Planet",
+   "author": "H. Beam Piper and John J. McGuire",
+   "url": "https://www.loyalbooks.com/book/lone-star-planet-by-h-beam-piper-and-john-j-mcguire",
+   "cover": "https://www.loyalbooks.com/image/layout2/lone-star-planet-by-h-beam-piper-and-john-j-mcguire.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "lone_star_planet_0910_librivox",
+   "audioZip": "https://www.archive.org/download/lone_star_planet_0910_librivox/lone_star_planet_0910_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/LoneStarPlanet_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Lone-Star-Planet-by-H-Beam-Piper-and-John-J-Mcguire.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lone-Star-Planet-by-H-Beam-Piper-and-John-J-Mcguire.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/1/2/20121/20121-h/20121-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Looking-Backward-2000-1887",
+   "title": "Looking Backward: 2000-1887",
+   "author": "Edward Bellamy",
+   "url": "https://www.loyalbooks.com/book/Looking-Backward-2000-1887",
+   "cover": "https://www.loyalbooks.com/image/layout2/Looking-Backward-2000-1887.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science",
+    "Travel"
+   ],
+   "archiveId": "lookingbackward_0909_librivox",
+   "audioZip": "https://www.archive.org/download/lookingbackward_0909_librivox/lookingbackward_0909_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Looking-Backward-2000-1887.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Looking-Backward-2000-1887.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/6/2/624/624-h/624-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "gulliver-of-mars-by-edwin-l-arnold",
+   "title": "Gulliver of Mars",
+   "author": "Edwin L. Arnold",
+   "url": "https://www.loyalbooks.com/book/gulliver-of-mars-by-edwin-l-arnold",
+   "cover": "https://www.loyalbooks.com/image/layout2/gulliver-of-mars-by-edwin-l-arnold.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "gulliver_of_mars_0905_librivox",
+   "audioZip": "https://www.archive.org/download/gulliver_of_mars_0905_librivox/gulliver_of_mars_0905_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/GulliverofMars32kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Gulliver-of-Mars-by-Edwin-L-Arnold.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Gulliver-of-Mars-by-Edwin-L-Arnold.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/6/0/604/604-h/604-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Security-Poul-Anderson",
+   "title": "Security",
+   "author": "Poul Anderson",
+   "url": "https://www.loyalbooks.com/book/Security-Poul-Anderson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Security-Poul-Anderson.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "security_0912_librivox",
+   "audioZip": "https://www.archive.org/download/security_0912_librivox/security_0912_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Security_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Security-Poul-Anderson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Security-Poul-Anderson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/2/3/22239/22239-h/22239-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Spacehounds-of-IPC",
+   "title": "Spacehounds of IPC",
+   "author": "E. E. Smith",
+   "url": "https://www.loyalbooks.com/book/Spacehounds-of-IPC",
+   "cover": "https://www.loyalbooks.com/image/layout2/Spacehounds-of-IPC.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "spacehounds_of_ipc_1005_librivox",
+   "audioZip": "https://www.archive.org/download/spacehounds_of_ipc_1005_librivox/spacehounds_of_ipc_1005_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/SpacehoundsOfIpc_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Spacehounds-of-Ipc.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Spacehounds-of-Ipc.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/8/5/20857/20857-h/20857-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Legacy-James-Schmitz",
+   "title": "Legacy",
+   "author": "James Schmitz",
+   "url": "https://www.loyalbooks.com/book/Legacy-James-Schmitz",
+   "cover": "https://www.loyalbooks.com/image/layout2/Legacy-James-Schmitz.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "legacy_1008_librivox",
+   "audioZip": "https://www.archive.org/download/legacy_1008_librivox/legacy_1008_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Legacy_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Legacy-James-Schmitz.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Legacy-James-Schmitz.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/1/5/1/21510/21510-h/21510-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "victory-by-lester-del-rey",
+   "title": "Victory",
+   "author": "Lester del Rey",
+   "url": "https://www.loyalbooks.com/book/victory-by-lester-del-rey",
+   "cover": "https://www.loyalbooks.com/image/layout2/victory-by-lester-del-rey.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "War stories",
+    "Science fiction"
+   ],
+   "archiveId": "victory_0903_librivox",
+   "audioZip": "https://www.archive.org/download/victory_0903_librivox/victory_0903_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Victory_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Victory-by-Lester-Del-Rey.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Victory-by-Lester-Del-Rey.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/1/9/24196/24196-h/24196-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Planet-Savers",
+   "title": "The Planet Savers",
+   "author": "Marion Zimmer Bradley",
+   "url": "https://www.loyalbooks.com/book/Planet-Savers",
+   "cover": "https://www.loyalbooks.com/image/layout2/Planet-Savers.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "planet_savers_1005_librivox",
+   "audioZip": "https://www.archive.org/download/planet_savers_1005_librivox/planet_savers_1005_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/PlanetSavers_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Planet-Savers.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Planet-Savers.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/1/6/1/31619/31619-h/31619-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "the-edge-of-the-knife-by-h-beam-piper",
+   "title": "The Edge of the Knife",
+   "author": "H. Beam Piper",
+   "url": "https://www.loyalbooks.com/book/the-edge-of-the-knife-by-h-beam-piper",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-edge-of-the-knife-by-h-beam-piper.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "edge_of_the_knife_0902_librivox",
+   "audioZip": "https://www.archive.org/download/edge_of_the_knife_0902_librivox/edge_of_the_knife_0902_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/EdgeOfTheKnife_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Edge-of-the-Knife-by-H-Beam-Piper.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Edge-of-the-Knife-by-H-Beam-Piper.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/5/8/18584/18584-h/18584-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Voyage-to-Arcturus",
+   "title": "A Voyage to Arcturus",
+   "author": "David Lindsay",
+   "url": "https://www.loyalbooks.com/book/Voyage-to-Arcturus",
+   "cover": "https://www.loyalbooks.com/image/layout2/Voyage-to-Arcturus.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "voyagetoarcturus_mn_librivox",
+   "audioZip": "https://www.archive.org/download/voyagetoarcturus_mn_librivox/voyagetoarcturus_mn_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks5/Voyagetoarcturus_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Voyage-to-Arcturus.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Voyage-to-Arcturus.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/3/2/1329/1329-h/1329-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Little-Fuzzy",
+   "title": "Little Fuzzy",
+   "author": "H. Beam Piper",
+   "url": "https://www.loyalbooks.com/book/Little-Fuzzy",
+   "cover": "https://www.loyalbooks.com/image/layout2/Little-Fuzzy.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "little_fuzzy_0911_librivox",
+   "audioZip": "https://www.archive.org/download/little_fuzzy_0911_librivox/little_fuzzy_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Little_Fuzzy_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Little-Fuzzy.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Little-Fuzzy.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/1/3/18137/18137-h/18137-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Pirates-of-Ersatz",
+   "title": "The Pirates of Ersatz",
+   "author": "Murray Leinster",
+   "url": "https://www.loyalbooks.com/book/Pirates-of-Ersatz",
+   "cover": "https://www.loyalbooks.com/image/layout2/Pirates-of-Ersatz.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "pirates_of_ersatz_0911_librivox",
+   "audioZip": "https://www.archive.org/download/pirates_of_ersatz_0911_librivox/pirates_of_ersatz_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/PiratesOfErsatz_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Pirates-of-Ersatz.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Pirates-of-Ersatz.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/0/3/24035/24035-h/24035-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Dueling-Machine",
+   "title": "The Dueling Machine",
+   "author": "Ben Bova",
+   "url": "https://www.loyalbooks.com/book/Dueling-Machine",
+   "cover": "https://www.loyalbooks.com/image/layout2/Dueling-Machine.jpg",
+   "genres": [
+    "Fantasy",
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "dueling_machine_1002_librivox",
+   "audioZip": "https://www.archive.org/download/dueling_machine_1002_librivox/dueling_machine_1002_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Dueling_Machine_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Dueling-Machine.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Dueling-Machine.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/7/9/30796/30796-h/30796-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "police-operation-by-h-beam-piper",
+   "title": "Police Operation",
+   "author": "H. Beam Piper",
+   "url": "https://www.loyalbooks.com/book/police-operation-by-h-beam-piper",
+   "cover": "https://www.loyalbooks.com/image/layout2/police-operation-by-h-beam-piper.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Short stories",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "police_op_0810_librivox",
+   "audioZip": "https://www.archive.org/download/police_op_0810_librivox/police_op_0810_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/PoliceOperation_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Police-Operation-by-H-Beam-Piper.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Police-Operation-by-H-Beam-Piper.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/0/6/19067/19067-h/19067-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "D-99-H-B-Fyfe",
+   "title": "D-99",
+   "author": "H.B. Fyfe",
+   "url": "https://www.loyalbooks.com/book/D-99-H-B-Fyfe",
+   "cover": "https://www.loyalbooks.com/image/layout2/D-99-H-B-Fyfe.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "d99_1001_librivox",
+   "audioZip": "https://www.archive.org/download/d99_1001_librivox/d99_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/D-99_64kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Brigands-of-the-Moon",
+   "title": "Brigands of the Moon",
+   "author": "Ray Cummings",
+   "url": "https://www.loyalbooks.com/book/Brigands-of-the-Moon",
+   "cover": "https://www.loyalbooks.com/image/layout2/Brigands-of-the-Moon.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Teen/Young adult",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "brigandsmoon_1007_librivox",
+   "audioZip": "https://www.archive.org/download/brigandsmoon_1007_librivox/brigandsmoon_1007_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/BrigandsOfTheMoon.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Brigands-of-the-Moon.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Brigands-of-the-Moon.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/9/0/6/19066/19066-h/19066-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "the-highest-treason-by-randall-garrett",
+   "title": "The Highest Treason",
+   "author": "Randall Garrett",
+   "url": "https://www.loyalbooks.com/book/the-highest-treason-by-randall-garrett",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-highest-treason-by-randall-garrett.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science",
+    "War stories"
+   ],
+   "archiveId": "highest_treason_0806_librivox",
+   "audioZip": "https://www.archive.org/download/highest_treason_0806_librivox/highest_treason_0806_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/HighestTreason_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Highest-Treason-by-Randall-Garrett.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Highest-Treason-by-Randall-Garrett.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/3/0/24302/24302-h/24302-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "the-stars-my-brothers-by-edmond-hamilton",
+   "title": "The Stars, My Brothers",
+   "author": "Edmond Hamilton",
+   "url": "https://www.loyalbooks.com/book/the-stars-my-brothers-by-edmond-hamilton",
+   "cover": "https://www.loyalbooks.com/image/layout2/the-stars-my-brothers-by-edmond-hamilton.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Short stories",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "starsmybrothers_0904_librivox",
+   "audioZip": "https://www.archive.org/download/starsmybrothers_0904_librivox/starsmybrothers_0904_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/StarsMyBrothers_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/The-Stars-My-Brothers-by-Edmond-Hamilton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Stars-My-Brothers-by-Edmond-Hamilton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/8/7/24870/24870-h/24870-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Asteroid-of-Fear",
+   "title": "Asteroid of Fear",
+   "author": "Raymond Z. Gallun",
+   "url": "https://www.loyalbooks.com/book/Asteroid-of-Fear",
+   "cover": "https://www.loyalbooks.com/image/layout2/Asteroid-of-Fear.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "asteroid_of_fear_1012_librivox",
+   "audioZip": "https://www.archive.org/download/asteroid_of_fear_1012_librivox/asteroid_of_fear_1012_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/AsteroidOfFear_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Asteroid-of-Fear.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Asteroid-of-Fear.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/2/7/8/32780/32780-h/32780-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "People-of-the-Crater",
+   "title": "The People of the Crater",
+   "author": "Andre Norton",
+   "url": "https://www.loyalbooks.com/book/People-of-the-Crater",
+   "cover": "https://www.loyalbooks.com/image/layout2/People-of-the-Crater.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "peopleofcrater_1001_librivox",
+   "audioZip": "https://www.archive.org/download/peopleofcrater_1001_librivox/peopleofcrater_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/People_of_the_Crater_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/People-of-the-Crater.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/People-of-the-Crater.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/9/6/30960/30960-h/30960-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Rastignac-The-Devil",
+   "title": "Rastignac The Devil",
+   "author": "Philip Jose Farmer",
+   "url": "https://www.loyalbooks.com/book/Rastignac-The-Devil",
+   "cover": "https://www.loyalbooks.com/image/layout2/Rastignac-The-Devil.jpg",
+   "genres": [
+    "Fantasy",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "rastignac_devil_1003_librivox",
+   "audioZip": "https://www.archive.org/download/rastignac_devil_1003_librivox/rastignac_devil_1003_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Rastignac_Devil_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Rastignac-the-Devil.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Rastignac-the-Devil.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/1/2/6/31262/31262-h/31262-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Planet-Strappers",
+   "title": "The Planet Strappers",
+   "author": "Raymond Z. Gallun",
+   "url": "https://www.loyalbooks.com/book/Planet-Strappers",
+   "cover": "https://www.loyalbooks.com/image/layout2/Planet-Strappers.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "planet_strappers_1009_librivox",
+   "audioZip": "https://www.archive.org/download/planet_strappers_1009_librivox/planet_strappers_1009_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/PlanetStrappers_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Planet-Strappers.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Planet-Strappers.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/5/0/6/25067/25067-h/25067-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "This-World-Is-Taboo",
+   "title": "This World Is Taboo",
+   "author": "Murray Leinster",
+   "url": "https://www.loyalbooks.com/book/This-World-Is-Taboo",
+   "cover": "https://www.loyalbooks.com/image/layout2/This-World-Is-Taboo.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "thisworldistaboo_1006_librivox",
+   "audioZip": "https://www.archive.org/download/thisworldistaboo_1006_librivox/thisworldistaboo_1006_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/This_World_is_Taboo_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/This-World-Is-Taboo.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/This-World-Is-Taboo.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/8/1/7/18172/18172-h/18172-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Story-of-the-Stone-Age",
+   "title": "A Story of the Stone Age",
+   "author": "H. G. Wells",
+   "url": "https://www.loyalbooks.com/book/Story-of-the-Stone-Age",
+   "cover": "https://www.loyalbooks.com/image/layout2/Story-of-the-Stone-Age.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "stone_age_0912_librivox",
+   "audioZip": "https://www.archive.org/download/stone_age_0912_librivox/stone_age_0912_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/StoryOfTheStoneAge.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Story-of-the-Stone-Age.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Story-of-the-Stone-Age.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/27365/pg27365-images.mobi",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Two-Thousand-Miles-Below",
+   "title": "Two Thousand Miles Below",
+   "author": "Charles W. Diffin",
+   "url": "https://www.loyalbooks.com/book/Two-Thousand-Miles-Below",
+   "cover": "https://www.loyalbooks.com/image/layout2/Two-Thousand-Miles-Below.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "two_thousand_miles_below_1010_librivox",
+   "audioZip": "https://www.archive.org/download/two_thousand_miles_below_1010_librivox/two_thousand_miles_below_1010_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/TwoThousandMilesBelow_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Two-Thousand-Miles-Below.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Two-Thousand-Miles-Below.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/9/9/6/29965/29965-h/29965-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Hate-Disease",
+   "title": "The Hate Disease",
+   "author": "Murray Leinster",
+   "url": "https://www.loyalbooks.com/book/Hate-Disease",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hate-Disease.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "hate_disease_1010_librivox",
+   "audioZip": "https://www.archive.org/download/hate_disease_1010_librivox/hate_disease_1010_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/HateDisease_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Hate-Disease.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Hate-Disease.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/8/1/30815/30815-h/30815-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Letem-Breathe-Space",
+   "title": "Let'em Breathe Space",
+   "author": "Lester del Rey",
+   "url": "https://www.loyalbooks.com/book/Letem-Breathe-Space",
+   "cover": "https://www.loyalbooks.com/image/layout2/Letem-Breathe-Space.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "letem_breathe_space_gam_librivox",
+   "audioZip": "https://www.archive.org/download/letem_breathe_space_gam_librivox/letem_breathe_space_gam_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/LetemBreatheSpace_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Letem-Breathe-Space.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Letem-Breathe-Space.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/1/2/8/31286/31286-h/31286-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Mercenary",
+   "title": "Mercenary",
+   "author": "Mack Reynolds",
+   "url": "https://www.loyalbooks.com/book/Mercenary",
+   "cover": "https://www.loyalbooks.com/image/layout2/Mercenary.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "mercenary_sjm_librivox",
+   "audioZip": "https://www.archive.org/download/mercenary_sjm_librivox/mercenary_sjm_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Mercenary_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Mercenary.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Mercenary-by-Mack-Reynolds.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/4/3/7/24370/24370-h/24370-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Lord-of-the-World-Robert-Hugh-Benson",
+   "title": "Lord of the World",
+   "author": "Robert Hugh Benson",
+   "url": "https://www.loyalbooks.com/book/Lord-of-the-World-Robert-Hugh-Benson",
+   "cover": "https://www.loyalbooks.com/image/layout2/Lord-of-the-World-Robert-Hugh-Benson.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Religion",
+    "Science fiction",
+    "Science"
+   ],
+   "archiveId": "lordoftheworld_1104_librivox",
+   "audioZip": "https://www.archive.org/download/lordoftheworld_1104_librivox/lordoftheworld_1104_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/LordOfTheWorldPart1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Lord-of-the-World-Robert-Hugh-Benson.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Lord-of-the-World-Robert-Hugh-Benson.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/14021/pg14021.html.utf8",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "World-That-Couldnt-Be",
+   "title": "The World That Couldn't Be",
+   "author": "Clifford D. Simak",
+   "url": "https://www.loyalbooks.com/book/World-That-Couldnt-Be",
+   "cover": "https://www.loyalbooks.com/image/layout2/World-That-Couldnt-Be.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "world_that-couldnt_be_1011_librivox",
+   "audioZip": "https://www.archive.org/download/world_that-couldnt_be_1011_librivox/world_that-couldnt_be_1011_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/WorldThat-CouldntBe_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/World-That-Couldnt-Be.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/World-That-Couldnt-Be.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/2/0/2/32026/32026-h/32026-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Knights-of-Arthur",
+   "title": "The Knights of Arthur",
+   "author": "Frederik Pohl",
+   "url": "https://www.loyalbooks.com/book/Knights-of-Arthur",
+   "cover": "https://www.loyalbooks.com/image/layout2/Knights-of-Arthur.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "knights_of_arthur_1006_librivox",
+   "audioZip": "https://www.archive.org/download/knights_of_arthur_1006_librivox/knights_of_arthur_1006_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/KnightsOfArthur_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Knights-of-Arthur.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Knights-of-Arthur.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/2/0/0/32004/32004-h/32004-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "British-Barbarians",
+   "title": "The British Barbarians",
+   "author": "Grant Allen",
+   "url": "https://www.loyalbooks.com/book/British-Barbarians",
+   "cover": "https://www.loyalbooks.com/image/layout2/British-Barbarians.jpg",
+   "genres": [
+    "Fiction",
+    "Romance",
+    "Science fiction",
+    "Literature",
+    "Science",
+    "Travel"
+   ],
+   "archiveId": "british_barbarians_rg_librivox",
+   "audioZip": "https://www.archive.org/download/british_barbarians_rg_librivox/british_barbarians_rg_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/British-Barbarians.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/British-Barbarians.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/4/3/4/4340/4340-h/4340-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Runaway-Skyscraper",
+   "title": "The Runaway Skyscraper",
+   "author": "Murray Leinster",
+   "url": "https://www.loyalbooks.com/book/Runaway-Skyscraper",
+   "cover": "https://www.loyalbooks.com/image/layout2/Runaway-Skyscraper.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "runaway_skyscraper_1005_librivox",
+   "audioZip": "https://www.archive.org/download/runaway_skyscraper_1005_librivox/runaway_skyscraper_1005_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/Runaway_Skyscraper_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Runaway-Skyscraper.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Runaway-Skyscraper.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/1/7/3/5/17355/17355-h/17355-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Ultima-Thule",
+   "title": "Ultima Thule",
+   "author": "Mack Reynolds",
+   "url": "https://www.loyalbooks.com/book/Ultima-Thule",
+   "cover": "https://www.loyalbooks.com/image/layout2/Ultima-Thule.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction",
+    "Literature",
+    "Science"
+   ],
+   "archiveId": "ultima_thule_0911_librivox",
+   "audioZip": "https://www.archive.org/download/ultima_thule_0911_librivox/ultima_thule_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Ultima_Thule_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Ultima-Thule.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Ultima-Thule.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/3/3/30334/30334-h/30334-h.html",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "niels-klims-journey-under-the-ground-by-baron-ludvig-holberg",
+   "title": "Niels Klim's Journey Under the Ground",
+   "author": "Baron Ludvig Holberg",
+   "url": "https://www.loyalbooks.com/book/niels-klims-journey-under-the-ground-by-baron-ludvig-holberg",
+   "cover": "https://www.loyalbooks.com/image/layout2/Niels-Klims-Journey-Under-the-Ground.jpg",
+   "genres": [
+    "Fantasy",
+    "Fiction",
+    "Satire",
+    "Science fiction",
+    "Literature"
+   ],
+   "archiveId": "niels_klim_0904_librivox",
+   "audioZip": "https://www.archive.org/download/niels_klim_0904_librivox/niels_klim_0904_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/NielsKlimJourneyUnderTheGround_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Niels-Klims-Journey-Under-the-Ground-by-Baron-Ludvig-Holberg.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Niels-Klims-Journey-Under-the-Ground-by-Baron-Ludvig-Holberg.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/8/8/27884/27884-h/27884-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Creature-from-Cleveland-Depths",
+   "title": "The Creature from Cleveland Depths",
+   "author": "Fritz Leiber",
+   "url": "https://www.loyalbooks.com/book/Creature-from-Cleveland-Depths",
+   "cover": "https://www.loyalbooks.com/image/layout2/Creature-from-Cleveland-Depths.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "creature_cleveland_depths_gm_librivox",
+   "audioZip": "https://www.archive.org/download/creature_cleveland_depths_gm_librivox/creature_cleveland_depths_gm_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/CreatureClevelandDepths_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Creature-from-Cleveland-Depths.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Creature-from-Cleveland-Depths.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/3/1/6/23164/23164-h/23164-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Black-Star-Passes-by-John-Wood-Campbell",
+   "title": "The Black Star Passes",
+   "author": "John Wood Campbell Jr.",
+   "url": "https://www.loyalbooks.com/book/Black-Star-Passes-by-John-Wood-Campbell",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Black-Star-Passes.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "black_star_passes_1109_librivox",
+   "audioZip": "https://www.archive.org/download/black_star_passes_1109_librivox/black_star_passes_1109_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/BlackStarPasses_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Black-Star-Passes-by-John-Wood-Campbell.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Black-Star-Passes-by-John-Wood-Campbell.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/0/7/0/20707/20707-h/20707-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Crystal-Crypt-by-Philip-K-Dick",
+   "title": "The Crystal Crypt & Beyond the Door",
+   "author": "Philip K. Dick",
+   "url": "https://www.loyalbooks.com/book/Crystal-Crypt-by-Philip-K-Dick",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Crystal-Crypt-Beyond-the-Door.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Short stories",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "crystalcrypt_pc_librivox",
+   "audioZip": "https://www.archive.org/download/crystalcrypt_pc_librivox/crystalcrypt_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Crystal-Crypt-by-Philip-K-Dick.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Crystal-Crypt-by-Philip-K-Dick.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/8/6/9/28698/28698-h/28698-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Knyght-Ther-Was",
+   "title": "A Knyght Ther Was",
+   "author": "Robert F. Young",
+   "url": "https://www.loyalbooks.com/book/Knyght-Ther-Was",
+   "cover": "https://www.loyalbooks.com/image/layout2/Knyght-Ther-Was.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "knyght_ther_was_1001_librivox",
+   "audioZip": "https://www.archive.org/download/knyght_ther_was_1001_librivox/knyght_ther_was_1001_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks/Knyght_Ther_Was_64kb1.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Knyght-Ther-Was.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Knyght-Ther-Was.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/9/6/30963/30963-h/30963-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Stamped-Caution",
+   "title": "Stamped Caution",
+   "author": "Raymond Z. Gallun",
+   "url": "https://www.loyalbooks.com/book/Stamped-Caution",
+   "cover": "https://www.loyalbooks.com/image/layout2/Stamped-Caution.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "stampedcaution_1008_librivox",
+   "audioZip": "https://www.archive.org/download/stampedcaution_1008_librivox/stampedcaution_1008_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks3/Stamped_Caution_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Stamped-Caution.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Stamped-Caution.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/2/0/5/32054/32054-h/32054-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Tourmalins-Time-Cheques",
+   "title": "Tourmalin’s Time Cheques",
+   "author": "Thomas Anstey Guthrie",
+   "url": "https://www.loyalbooks.com/book/Tourmalins-Time-Cheques",
+   "cover": "https://www.loyalbooks.com/image/layout2/Tourmalins-Time-Cheques.jpg",
+   "genres": [
+    "Fantasy",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "tourmalins_time_cheques_0911_librivox",
+   "audioZip": "https://www.archive.org/download/tourmalins_time_cheques_0911_librivox/tourmalins_time_cheques_0911_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/TourmalinsTimeCheques_64kb.m4b",
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": null,
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Night-of-the-Long-Knives-by-Fritz-Leiber",
+   "title": "The Night of the Long Knives",
+   "author": "Fritz Leiber",
+   "url": "https://www.loyalbooks.com/book/Night-of-the-Long-Knives-by-Fritz-Leiber",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Night-of-the-Long-Knives.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "nightoflongknives_pc_librivox",
+   "audioZip": "https://www.archive.org/download/nightoflongknives_pc_librivox/nightoflongknives_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Night-of-the-Long-Knives-by-Fritz-Leiber.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Night-of-the-Long-Knives-by-Fritz-Leiber.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/5/0/2/25024/25024-h/25024-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Empire-by-Clifford-D-Simak",
+   "title": "Empire",
+   "author": "Clifford D. Simak",
+   "url": "https://www.loyalbooks.com/book/Empire-by-Clifford-D-Simak",
+   "cover": "https://www.loyalbooks.com/image/layout2/Empire.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "empire_kg_librivox",
+   "audioZip": "https://www.archive.org/download/empire_kg_librivox/empire_kg_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks_11/Empire_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Empire-by-Clifford-D-Simak.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Empire-by-Clifford-D-Simak.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/8/2/1/28215/28215-h/28215-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Big-Time-by-Fritz-Leiber",
+   "title": "The Big Time",
+   "author": "Fritz Leiber",
+   "url": "https://www.loyalbooks.com/book/Big-Time-by-Fritz-Leiber",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Big-Time.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Travel",
+    "War stories",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "big_time_1109_librivox",
+   "audioZip": "https://www.archive.org/download/big_time_1109_librivox/big_time_1109_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks4/BigTime_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/Big-Time-by-Fritz-Leiber.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Big-Time-by-Fritz-Leiber.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/2/2/5/32256/32256-h/32256-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Machine-That-Saved-The-World-by-Leinster",
+   "title": "The Machine that Saved the World",
+   "author": "Murray Leinster",
+   "url": "https://www.loyalbooks.com/book/Machine-That-Saved-The-World-by-Leinster",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Machine-that-Saved-the-World.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "machine_saved_world_pc_librivox",
+   "audioZip": "https://www.archive.org/download/machine_saved_world_pc_librivox/machine_saved_world_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Machine-That-Saved-the-World-by-Leinster.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Machine-That-Saved-the-World-by-Leinster.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/6/1/7/26174/26174-h/26174-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "In-the-Days-of-the-Comet-by-H-G-Wells",
+   "title": "In the Days of the Comet",
+   "author": "H. G. Wells",
+   "url": "https://www.loyalbooks.com/book/In-the-Days-of-the-Comet-by-H-G-Wells",
+   "cover": "https://www.loyalbooks.com/image/layout2/In-the-Days-of-the-Comet.jpg",
+   "genres": [
+    "Fiction",
+    "Literature",
+    "Adventure",
+    "Fantasy",
+    "Science fiction"
+   ],
+   "archiveId": "days_of_comet_1112_librivox",
+   "audioZip": "https://www.archive.org/download/days_of_comet_1112_librivox/days_of_comet_1112_librivox_64kb_mp3.zip",
+   "audioM4b": "https://www.archive.org/download/LibrivoxM4bCollectionAudiobooks_11/DaysOfTheComet_64kb.m4b",
+   "textUrl": "https://www.loyalbooks.com/download/text/In-the-Days-of-the-Comet-by-H-G-Wells.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/In-the-Days-of-the-Comet-by-H-G-Wells.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/3797/pg3797.html.utf8",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Subspace-Survivors-by-E-E-Smith",
+   "title": "Subspace Survivors",
+   "author": "E. E. Smith",
+   "url": "https://www.loyalbooks.com/book/Subspace-Survivors-by-E-E-Smith",
+   "cover": "https://www.loyalbooks.com/image/layout2/Subspace-Survivors.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Adventure",
+    "Fantasy",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "subspace_survivors_1201_librivox",
+   "audioZip": "https://www.archive.org/download/subspace_survivors_1201_librivox/subspace_survivors_1201_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Subspace-Survivors-by-E-E-Smith.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Subspace-Survivors-by-E-E-Smith.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/1/6/4/21647/21647-h/21647-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Gold-in-the-Sky-by-Alan-Edward-Nourse",
+   "title": "Five Stories by Alan Nourse",
+   "author": "Alan Edward Nourse",
+   "url": "https://www.loyalbooks.com/book/Gold-in-the-Sky-by-Alan-Edward-Nourse",
+   "cover": "https://www.loyalbooks.com/image/layout2/Five-Stories-by-Alan-Nourse.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Adventure",
+    "Fantasy",
+    "Fiction",
+    "Short stories",
+    "Science fiction"
+   ],
+   "archiveId": "five_stories_nourse_1201_librivox",
+   "audioZip": "https://www.archive.org/download/five_stories_nourse_1201_librivox/five_stories_nourse_1201_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Gold-in-the-Sky-by-Alan-Edward-Nourse.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Gold-in-the-Sky-by-Alan-Edward-Nourse.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/3/8/8/23882/23882-h/23882-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "News-from-Nowhere-or-an-Epoch-of-Rest-being-so",
+   "title": "News From Nowhere",
+   "author": "William Morris",
+   "url": "https://www.loyalbooks.com/book/News-from-Nowhere-or-an-Epoch-of-Rest-being-so",
+   "cover": "https://www.loyalbooks.com/image/layout2/News-From-Nowhere.jpg",
+   "genres": [
+    "Fiction",
+    "Politics",
+    "Fantasy",
+    "Literature",
+    "Science fiction"
+   ],
+   "archiveId": "newsfromnowhere_etk_librivox",
+   "audioZip": "https://www.archive.org/download/newsfromnowhere_etk_librivox/newsfromnowhere_etk_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/News-from-Nowhere-or-An-Epoch-of-Rest-Being-So.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/News-from-Nowhere-or-An-Epoch-of-Rest-Being-So.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/2/6/3261/3261-h/3261-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "No-Great-Magic-by-Fritz-Leiber",
+   "title": "No Great Magic",
+   "author": "Fritz Leiber",
+   "url": "https://www.loyalbooks.com/book/No-Great-Magic-by-Fritz-Leiber",
+   "cover": "https://www.loyalbooks.com/image/layout2/No-Great-Magic.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "no_great_magic_pc_librivox",
+   "audioZip": "https://www.archive.org/download/no_great_magic_pc_librivox/no_great_magic_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/No-Great-Magic-by-Fritz-Leiber.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/No-Great-Magic-by-Fritz-Leiber.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/3/1/6/23162/23162-h/23162-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Tom-Swift-and-His-Airship-by-Appleton",
+   "title": "Tom Swift and his Airship",
+   "author": "Victor Appleton",
+   "url": "https://www.loyalbooks.com/book/Tom-Swift-and-His-Airship-by-Appleton",
+   "cover": "https://www.loyalbooks.com/image/layout2/Tom-Swift-and-his-Airship.jpg",
+   "genres": [
+    "Adventure",
+    "Fiction",
+    "Teen/Young adult",
+    "Science fiction"
+   ],
+   "archiveId": "tom_swift_airship_1206_librivox",
+   "audioZip": "https://www.archive.org/download/tom_swift_airship_1206_librivox/tom_swift_airship_1206_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Tom-Swift-and-His-Airship-by-Appleton.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Tom-Swift-and-His-Airship-by-Appleton.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/3005/pg3005.mobi",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-May-1931",
+   "title": "Dark Moon",
+   "author": "Charles W. Diffin",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-May-1931",
+   "cover": "https://www.loyalbooks.com/image/layout2/Dark-Moon.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Literature",
+    "Adventure",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "dark_moon_1208_librivox",
+   "audioZip": "https://www.archive.org/download/dark_moon_1208_librivox/dark_moon_1208_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-May-1931.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Astounding-Stories-May-1931.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/3/0/5/3/30532/30532-h/30532-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Hellhounds-of-the-Cosmos-by-Clifford-D-Simak",
+   "title": "Hellhounds of  the Cosmos",
+   "author": "Clifford Simak",
+   "url": "https://www.loyalbooks.com/book/Hellhounds-of-the-Cosmos-by-Clifford-D-Simak",
+   "cover": "https://www.loyalbooks.com/image/layout2/Hellhounds-of-the-Cosmos.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "hellhoundsofthecosmos_pc_librivox",
+   "audioZip": "https://www.archive.org/download/hellhoundsofthecosmos_pc_librivox/hellhoundsofthecosmos_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Hellhounds-of-the-Cosmos-by-Clifford-D-Simak.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Hellhounds-of-the-Cosmos-by-Clifford-D-Simak.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/7/0/1/27013/27013-h/27013-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Chapter-Ends",
+   "title": "The Chapter Ends",
+   "author": "Poul Anderson",
+   "url": "https://www.loyalbooks.com/book/Chapter-Ends",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Chapter-Ends.jpg",
+   "genres": [
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "thechapterends_pc_librivox",
+   "audioZip": "https://www.archive.org/download/thechapterends_pc_librivox/thechapterends_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": null,
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/ebooks/41064",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Finding-of-Haldgren-by-Charles-Willard-Diffin",
+   "title": "The Finding of Haldgren",
+   "author": "Charles W. Diffin",
+   "url": "https://www.loyalbooks.com/book/Finding-of-Haldgren-by-Charles-Willard-Diffin",
+   "cover": "https://www.loyalbooks.com/image/layout2/The-Finding-of-Haldgren.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Adventure",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "finding_haldgren_1208_librivox",
+   "audioZip": "https://www.archive.org/download/finding_haldgren_1208_librivox/finding_haldgren_1208_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Finding-of-Haldgren-by-Charles-Willard-Diffin.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Finding-of-Haldgren-by-Charles-Willard-Diffin.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/9/7/1/29717/29717-h/29717-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Project-Mastodon-by-Clifford-D-Simak",
+   "title": "Project Mastodon",
+   "author": "Clifford Simak",
+   "url": "https://www.loyalbooks.com/book/Project-Mastodon-by-Clifford-D-Simak",
+   "cover": "https://www.loyalbooks.com/image/layout2/Project-Mastodon.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Travel",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "projectmastodon_pc_librivox",
+   "audioZip": "https://www.archive.org/download/projectmastodon_pc_librivox/projectmastodon_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Project-Mastodon-by-Clifford-D-Simak.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Project-Mastodon-by-Clifford-D-Simak.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/dirs/2/2/2/1/22216/22216-h/22216-h.htm",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Tunnel-Under-The-World-by-Frederik-Pohl",
+   "title": "Tunnel Under The World",
+   "author": "Frederik Pohl",
+   "url": "https://www.loyalbooks.com/book/Tunnel-Under-The-World-by-Frederik-Pohl",
+   "cover": "https://www.loyalbooks.com/image/layout2/Tunnel-Under-The-World-by-Frederik-Pohl.jpg",
+   "genres": [
+    "Literature",
+    "Science",
+    "Science fiction"
+   ],
+   "archiveId": "tunnelundertheworld_pc_librivox",
+   "audioZip": "https://www.archive.org/download/tunnelundertheworld_pc_librivox/tunnelundertheworld_pc_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Tunnel-Under-the-World-by-Frederik-Pohl.txt",
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/31979/pg31979-images.epub",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-of-Super-Science-August-1930",
+   "title": "Astounding Stories 08, August 1930",
+   "author": "Harl Vincent",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-of-Super-Science-August-1930",
+   "cover": "https://www.loyalbooks.com/image/layout2/Astounding-Stories-of-Super-Science-August-1930.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Literature",
+    "Science fiction"
+   ],
+   "archiveId": null,
+   "audioZip": null,
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-of-Super-Science-August-1930.txt",
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/29768/pg29768-images.epub",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-of-Super-Science-May-1930",
+   "title": "Murder Madness",
+   "author": "Murray Leinster",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-of-Super-Science-May-1930",
+   "cover": "https://www.loyalbooks.com/image/layout2/Astounding-Stories-of-Super-Science-May-1930.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Literature",
+    "Fiction",
+    "Adventure",
+    "Science fiction"
+   ],
+   "archiveId": "murder_madness_1307_librivox",
+   "audioZip": "https://www.archive.org/download/murder_madness_1307_librivox/murder_madness_1307_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-of-Super-Science-May-1930.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Astounding-Stories-of-Super-Science-May-1930.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/29809/pg29809-images.mobi",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-February-1931",
+   "title": "Astounding Stories 14, February 1931",
+   "author": "Captain S. P. Meek",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-February-1931",
+   "cover": "https://www.loyalbooks.com/image/layout2/Astounding-Stories-February-1931-by-Various.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Literature",
+    "Adventure",
+    "Science fiction"
+   ],
+   "archiveId": "astoundingstories14_1506_librivox",
+   "audioZip": "https://archive.org/download/astoundingstories14_1506_librivox/astoundingstories14_1506_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-February-1931.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Astounding-Stories-February-1931.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/30124/pg30124-images.mobi",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-of-Super-Science-January-1931",
+   "title": "Astounding Stories 13, January 1931",
+   "author": "Sewell Peaslee Wright",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-of-Super-Science-January-1931",
+   "cover": "https://www.loyalbooks.com/image/layout2/Astounding-Stories-of-Super-Science-January-1931.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Literature",
+    "Adventure",
+    "Horror/Ghost stories",
+    "Science fiction"
+   ],
+   "archiveId": null,
+   "audioZip": null,
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-of-Super-Science-January-1931.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Astounding-Stories-of-Super-Science-January-1931.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/30177/pg30177-images.mobi",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-March-1931",
+   "title": "Astounding Stories 15, March 1931",
+   "author": "Jack Williamson",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-March-1931",
+   "cover": "https://www.loyalbooks.com/image/layout2/Astounding-Stories-March-1931-by-Various.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Literature",
+    "Science fiction"
+   ],
+   "archiveId": null,
+   "audioZip": null,
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-March-1931.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Astounding-Stories-March-1931.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/30166/pg30166-images.mobi",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-of-Super-Science-June-1930",
+   "title": "Moon Master",
+   "author": "Charles Willard Diffin",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-of-Super-Science-June-1930",
+   "cover": "https://www.loyalbooks.com/image/layout2/Astounding-Stories-of-Super-Science-June-1930.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Literature",
+    "Fiction",
+    "Science fiction"
+   ],
+   "archiveId": "moon_master_1304_librivox",
+   "audioZip": "https://www.archive.org/download/moon_master_1304_librivox/moon_master_1304_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-of-Super-Science-June-1930.txt",
+   "epubUrl": "https://www.loyalbooks.com/download/epub/Astounding-Stories-of-Super-Science-June-1930.epub",
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/29848/pg29848-images.mobi",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Astounding-Stories-of-Super-Science-December-1930",
+   "title": "Astounding Stories 12, December 1930",
+   "author": "Harl Vincent",
+   "url": "https://www.loyalbooks.com/book/Astounding-Stories-of-Super-Science-December-1930",
+   "cover": "https://www.loyalbooks.com/image/layout2/Astounding-Stories-of-Super-Science-December-1930.jpg",
+   "genres": [
+    "Essay/Short nonfiction",
+    "Literature",
+    "Adventure",
+    "Science fiction"
+   ],
+   "archiveId": null,
+   "audioZip": null,
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Astounding-Stories-of-Super-Science-December-1930.txt",
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/30691/pg30691-images.epub",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Quest-of-the-Golden-Ape-by-Garrett-and-Marlowe",
+   "title": "Quest of the Golden Ape",
+   "author": "Randall Garrett",
+   "url": "https://www.loyalbooks.com/book/Quest-of-the-Golden-Ape-by-Garrett-and-Marlowe",
+   "cover": "https://www.loyalbooks.com/image/layout2/Quest-of-the-Golden-Ape-by-Garrett-and-Marlowe.jpg",
+   "genres": [
+    "Science fiction",
+    "Fantasy"
+   ],
+   "archiveId": "questgoldenape_1310_librivox",
+   "audioZip": "https://archive.org/download/questgoldenape_1310_librivox/questgoldenape_1310_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Quest-of-the-Golden-Ape-by-Garrett-and-Marlowe.txt",
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/32953/pg32953-images.epub",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Brood-of-the-Dark-Moon-by-Charles-Willard-Diffin",
+   "title": "Brood of the Dark Moon",
+   "author": "Charles Willard Diffin",
+   "url": "https://www.loyalbooks.com/book/Brood-of-the-Dark-Moon-by-Charles-Willard-Diffin",
+   "cover": "https://www.loyalbooks.com/image/layout2/Brood-of-the-Dark-Moon-by-Charles-Willard-Diffin.jpg",
+   "genres": [
+    "Science fiction"
+   ],
+   "archiveId": "brood_dark_moon_1211_librivox",
+   "audioZip": "https://www.archive.org/download/brood_dark_moon_1211_librivox/brood_dark_moon_1211_librivox_64kb_mp3.zip",
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Brood-of-the-Dark-Moon-by-Charles-Willard-Diffin.txt",
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/32398/pg32398-images.epub",
+   "cluster": "science_fiction"
+  },
+  {
+   "slug": "Planet-of-the-Gods-by-Robert-Moore-Williams",
+   "title": "Planet of the Gods",
+   "author": "Robert Moore Williams",
+   "url": "https://www.loyalbooks.com/book/Planet-of-the-Gods-by-Robert-Moore-Williams",
+   "cover": "https://www.loyalbooks.com/image/layout2/Planet-of-the-Gods-by-Robert-Moore-Williams.jpg",
+   "genres": [
+    "Science fiction"
+   ],
+   "archiveId": null,
+   "audioZip": null,
+   "audioM4b": null,
+   "textUrl": "https://www.loyalbooks.com/download/text/Planet-of-the-Gods-by-Robert-Moore-Williams.txt",
+   "epubUrl": null,
+   "gutenbergUrl": "https://www.gutenberg.org/cache/epub/32696/pg32696-images.epub",
+   "cluster": "science_fiction"
+  }
+ ]
+}

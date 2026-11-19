@@ -43,10 +43,12 @@
           "explain": "“Habari za asubuhi?” means “How are you this morning”."
         },
         {
-          "prompt": "Say “Fine.” in Swahili:",
+          "prompt": "Say “Fine.” in Swahili, out loud:",
+          "kind": "speak",
           "correctChain": ["Njema"],
           "scrambledTokens": ["Njema", "Jambo", "bwana", "Habari"],
-          "explain": "“Njema.” — Fine."
+          "speak": { "phrase": "Njema" },
+          "explain": "“Njema” — fine, or all is well. Two even beats, NYEH-mah, with the weight on the first: Swahili stress always sits on the second-to-last syllable."
         }
       ]
     }

@@ -50,8 +50,8 @@ function moduleBlocks(moduleId: string, title: string, goal: string, workshopTit
     {
       id: `${moduleId}-b-workshop`,
       kind: 'workshop',
-      title: workshopTitle,
-      blurb: 'Guided: build the decisions in order, one step at a time.',
+      title: `Paper workshop: ${workshopTitle}`,
+      blurb: 'Paper exercise, nothing runs here: order the decision steps a real build takes, one token at a time; nothing executes — your text is matched.',
       minutes: 4,
       xp: 20,
       lessonId: `${moduleId}-workshop`,
