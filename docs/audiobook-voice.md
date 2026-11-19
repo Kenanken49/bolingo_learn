@@ -193,6 +193,60 @@ Only rotate to a key that is licensed for this product and belongs to the
 workspace that owns the voice. A key from another workspace can authenticate
 but will not see a professional voice it does not own.
 
+### Tell which account a key belongs to, without printing it
+
+When `npm run audio:preflight` answers `A voice with ID '…' was not found`, the
+key is usually valid and the voice simply belongs to another ElevenLabs account.
+Settle that without putting a key value in a terminal, log or chat message.
+
+1. **Read the account, not the key.** `GET /v1/user` returns `workspace_id` and
+   a `subscription` object carrying `tier`, `voice_limit`, `voice_slots_used`,
+   `professional_voice_slots_used`, `character_count`, `character_limit` and
+   `can_use_professional_voice_cloning` (`GET /v1/user/subscription` carries the
+   same fields and a few more, and the two agree). Those fields name an account
+   well enough to end the hunt: `voice_slots_used: 0` beside a non-empty
+   `GET /v1/voices` listing means every entry there is ElevenLabs' premade set
+   rather than a voice this account saved, so an id copied from elsewhere
+   cannot resolve; a `starter` tier with
+   `can_use_professional_voice_cloning: false` cannot hold a professional clone
+   either. `Confirm the deployed TTS key` above reads only `workspace_id` from
+   this endpoint.
+
+   ```bash
+   # selected fields only; the key is read from .env.local and never echoed
+   node -e 'const k=require("fs").readFileSync(".env.local","utf8").match(/ELEVENLABS_API_KEY\s*=\s*(\S+)/)[1];fetch("https://api.elevenlabs.io/v1/user",{headers:{"xi-api-key":k}}).then(r=>r.json()).then(d=>console.log(JSON.stringify({workspace:d.workspace_id,tier:d.subscription.tier,slots:d.subscription.voice_slots_used+"/"+d.subscription.voice_limit,chars:d.subscription.character_count+"/"+d.subscription.character_limit})));'
+   ```
+
+2. **Compare keys by SHA-256 digest, never by value.** `Confirm the deployed TTS
+   key` describes this check in prose; here it is as a runnable pair. Supabase
+   secrets are write-only, so `secrets list` prints `NAME | DIGEST`, the hex
+   SHA-256 of each secret's **value**:
+
+   ```bash
+   node -e 'process.stdout.write(require("crypto").createHash("sha256").update(require("fs").readFileSync(".env.local","utf8").match(/ELEVENLABS_API_KEY\s*=\s*(\S+)/)[1]).digest("hex")+"\n")'
+   npx supabase secrets list --project-ref <ref>   # names and digests, no values
+   ```
+
+   `TTS_API_KEY` matching the local digest proves the deployment and the local
+   preview hold **the same** key, so no second ElevenLabs account is hiding on
+   this machine: a voice-not-found preflight is about which account owns the
+   voice, not about a stale secret. Equal digests still do not prove the same
+   workspace, which is why step 1 comes first.
+
+   The same comparison works on non-secret values: hash each candidate voice id
+   and match it against a digest to read what a deployment actually uses without
+   fetching or printing the secret.
+
+3. **Then check whether the id is library-only.**
+   `GET /v1/shared-voices?search=<name>` answers with `public_owner_id`,
+   `is_added_by_user` and `free_users_allowed` for any published Voice Library
+   voice. A library id with `is_added_by_user: false` is unusable until added,
+   and adding it is `POST /v1/voices/add/{public_owner_id}/{voice_id}` (undo
+   with `DELETE /v1/voices/{voice_id}`); it spends no credits but counts against
+   the account's `voice_limit`. The key must hold the `voices_write` scope or
+   the call fails `401 missing_permissions`, in which case the **Add to your
+   voices** button on the voice page does the same thing from the dashboard.
+
 ## Consent requirements
 
 The app does **not** create, train, clone or fine-tune voices itself. It sends
